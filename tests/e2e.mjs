@@ -95,6 +95,8 @@ try {
   check('judul halaman "Peta Kepribadian"', (await ev('document.title')) === 'Peta Kepribadian');
   check('h1 beranda', (await text('#home h1')) === 'Peta Kepribadian');
   check('total soal 184', (await text('#totalQ')) === '184');
+  check('tema bawaan: gelap', (await ev("document.documentElement.dataset.theme")) === 'dark' && (await ev("getComputedStyle(document.body).backgroundColor")) === 'rgb(18, 16, 25)');
+  check('pilihan tema ada di atas, "Gelap" aktif', await ev(`document.querySelector('.topbar [data-theme-set="dark"]').getAttribute('aria-pressed')==='true'&&document.querySelector('.topbar').getBoundingClientRect().top<60`));
   check('HP: peta tipe tampil di atas daftar modul', await ev("document.getElementById('ttHome').getBoundingClientRect().top<document.getElementById('mods').getBoundingClientRect().top"));
   check('HP: peta tipe kelihatan di layar pertama', await ev("document.getElementById('ttHome').getBoundingClientRect().top<innerHeight*0.75"));
   check('peta beranda: 16 sel, 4 family', await ev("document.querySelectorAll('#ttHome .cell').length===16&&new Set([...document.querySelectorAll('#ttHome small')].map(s=>s.textContent)).size===4"));
@@ -153,6 +155,8 @@ try {
   check('nama file jawaban aman', jf && path.basename(jf) === 'jawaban-peta-kepribadian-tes-qa.json', jf);
   await click('#dlCard');
   check('kartu PNG tampil di halaman', await waitFor("(()=>{const i=document.getElementById('cardPrev');return !i.hidden&&i.naturalWidth===1080&&i.naturalHeight>=1350})()", 8000));
+  const px = `(()=>{const i=document.getElementById('cardPrev'),c=document.createElement('canvas');c.width=i.naturalWidth;c.height=i.naturalHeight;const x=c.getContext('2d');x.drawImage(i,0,0);return [...x.getImageData(30,700,1,1).data].slice(0,3).join(',')})()`;
+  check('kartu PNG ikut tema gelap', (await ev(px)) === '18,16,25', await ev(px));
   const pf = await waitFile('.png');
   check('download kartu PNG valid', pf && fs.readFileSync(pf).subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])), pf || 'tidak ada file');
   if (pf) fs.copyFileSync(pf, path.join(OUT, '04-kartu.png'));
@@ -161,7 +165,10 @@ try {
 
   // F. Mode cetak (PDF)
   await cmd('Emulation.setEmulatedMedia', {media: 'print'});
+  check('cetak: latar ikut tema gelap', (await ev("getComputedStyle(document.body).backgroundColor")) === 'rgb(18, 16, 25)' && (await ev("document.getElementById('pageStyle').textContent")).includes('#121019'));
   check('cetak: tombol & footer disembunyikan, hasil tampil', await ev("getComputedStyle(document.querySelector('#res .noprint')).display==='none'&&getComputedStyle(document.querySelector('footer')).display==='none'&&getComputedStyle(document.getElementById('res')).display!=='none'"));
+  await ev("window.dispatchEvent(new Event('beforeprint'))");
+  check('cetak: tabel skor rinci ikut kebuka', await ev("[...document.querySelectorAll('#res details')].every(d=>d.open)"));
   const pdf = await cmd('Page.printToPDF', {printBackground: true});
   fs.writeFileSync(path.join(OUT, '05-hasil.pdf'), Buffer.from(pdf.data, 'base64'));
   check('cetak PDF berhasil', pdf.data.length > 10000);
@@ -207,22 +214,33 @@ try {
   await click('#dlCard');
   check('hasil sebagian: kartu PNG tetap bisa dibuat', await waitFor("(()=>{const i=document.getElementById('cardPrev');return !i.hidden&&i.naturalWidth===1080})()", 8000));
 
-  // L. Laptop + mode gelap
+  // L. Laptop + ganti tema
   if (jf) { await click('#resHome'); await setFile(jf); await waitFor("!document.getElementById('res').hidden", 4000); }
   await viewport(1280, 900, false);
   check('laptop: nggak ada scroll ke samping (hasil)', await noOverflow());
-  await shot('06-hasil-laptop');
-  const lightCell = await ev("document.querySelector('#ttHome .cell').style.background");
-  const lightTop = await ev("document.querySelector('#ttRes .cell[data-rank=\"1\"]').style.background");
-  await cmd('Emulation.setEmulatedMedia', {features: [{name: 'prefers-color-scheme', value: 'dark'}]});
-  await sleep(200);
-  check('mode gelap: warna peta beranda ikut ganti', (await ev("document.querySelector('#ttHome .cell').style.background")) !== lightCell);
-  check('mode gelap: warna tabel hasil ikut ganti', (await ev("document.querySelector('#ttRes .cell[data-rank=\"1\"]').style.background")) !== lightTop);
-  check('mode gelap: latar ikut gelap', (await ev("getComputedStyle(document.body).backgroundColor")) === 'rgb(18, 16, 25)');
-  await shot('07-hasil-gelap');
-  await click('#resHome');
+  await shot('06-hasil-laptop-gelap');
+  const darkCell = await ev("document.querySelector('#ttHome .cell').style.background");
+  const darkTop = await ev("document.querySelector('#ttRes .cell[data-rank=\"1\"]').style.background");
+  await click('#res [data-theme-set="light"]');
+  await sleep(150);
+  check('tema terang: latar putih', (await ev("getComputedStyle(document.body).backgroundColor")) === 'rgb(255, 255, 255)');
+  check('tema terang: tombol di hasil & di atas sama-sama aktif', (await ev(`[...document.querySelectorAll('[data-theme-set="light"]')].every(b=>b.getAttribute('aria-pressed')==='true')`)));
+  check('tema terang: warna peta beranda ikut ganti', (await ev("document.querySelector('#ttHome .cell').style.background")) !== darkCell);
+  check('tema terang: warna tabel hasil ikut ganti', (await ev("document.querySelector('#ttRes .cell[data-rank=\"1\"]').style.background")) !== darkTop);
+  await click('#dlCard');
+  check('kartu PNG ikut tema terang', await waitFor(`(${px})==='255,255,255'`, 6000));
+  await cmd('Emulation.setEmulatedMedia', {media: 'print'});
+  check('cetak tema terang: latar putih', (await ev("getComputedStyle(document.body).backgroundColor")) === 'rgb(255, 255, 255)' && (await ev("document.getElementById('pageStyle').textContent")).includes('#ffffff'));
+  const pdf2 = await cmd('Page.printToPDF', {printBackground: true});
+  fs.writeFileSync(path.join(OUT, '05b-hasil-terang.pdf'), Buffer.from(pdf2.data, 'base64'));
+  await cmd('Emulation.setEmulatedMedia', {media: ''});
+  await shot('07-hasil-laptop-terang');
+  await load();
+  check('tema terang tetap setelah muat ulang', (await ev("document.documentElement.dataset.theme")) === 'light');
   check('laptop: peta di kanan judul', await ev("(()=>{const a=document.getElementById('ttHome').getBoundingClientRect(),b=document.querySelector('#home h1').getBoundingClientRect();return a.left>b.right-1&&a.top<b.bottom+200})()"));
-  await shot('08-beranda-laptop-gelap');
+  await shot('08-beranda-laptop-terang');
+  await click('.topbar [data-theme-set="dark"]');
+  check('balik ke tema gelap dari tombol atas', (await ev("getComputedStyle(document.body).backgroundColor")) === 'rgb(18, 16, 25)');
 
   check('nggak ada error JavaScript sama sekali', errors.length === 0, errors.join(' | '));
 } catch (e) {
