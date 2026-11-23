@@ -210,6 +210,15 @@ try {
   fs.writeFileSync(part, JSON.stringify({app: 'tes-kepribadian', v: 1, name: '', ans: {big5: Array.from(answersFor(C, 'INTJ').big5)}}));
   await setFile(part);
   check('hasil sebagian: judul "Hasil sementara" + Big Five', await waitFor("!document.getElementById('res').hidden&&document.querySelector('#res h1').textContent==='Hasil sementara'&&/Big Five/.test(document.getElementById('res').innerText)", 4000));
+  // Kasus family beda: tipe dari fungsi ≠ family dari huruf
+  const mixed = path.join(DL, 'campur.json');
+  const mx = answersFor(C, 'INFP'); const tp = answersFor(C, 'INTP');
+  fs.writeFileSync(mixed, JSON.stringify({app: 'tes-kepribadian', v: 1, name: '', ans: {inti: Array.from(tp.inti), facet: Array.from(tp.facet), big5: Array.from(mx.big5), fungsi: Array.from(mx.fungsi)}}));
+  await click('#resHome'); await setFile(mixed);
+  await waitFor("!document.getElementById('res').hidden", 4000);
+  check('family beda: ada penjelasan kenapa', await ev("/peluang terbesar ada di/.test(document.getElementById('res').innerText)"));
+  check('family beda: hero jelasin huruf vs fungsi', await ev("/Dari huruf saja hasilnya INTP/.test(document.querySelector('#res .lead').textContent)"));
+  await click('#resHome'); await setFile(part); await waitFor("!document.getElementById('res').hidden", 4000);
   check('hasil sebagian: nggak ada NaN', await ev("!/NaN|undefined|Infinity/.test(document.getElementById('res').innerText)"));
   await click('#dlCard');
   check('hasil sebagian: kartu PNG tetap bisa dibuat', await waitFor("(()=>{const i=document.getElementById('cardPrev');return !i.hidden&&i.naturalWidth===1080})()", 8000));
