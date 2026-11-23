@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tes Kepribadian Lengkap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday: tes yang enak dikerjain bareng temen, hasilnya jujur
+   IDEA lembar tes psikometri + lembar hasil: tabel tipe MBTI 4x4 sebagai peta
+   PICTURE di beranda: tabel 16 tipe; di tes: kartu soal besar; di hasil: tabel tipe berwarna sesuai kecocokan
+   COLOUR putih, tinta hitam, indigo dominan, koral untuk hasil utama, lilac untuk panel
+   TYPE Manrope 800 + Manrope
+   LAYOUT beranda: judul + modul kiri, tabel kanan; tes: satu kolom tengah; ponsel: semua bertumpuk */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#121019);--ink:light-dark(#15151a,#ecebf3);--mute:light-dark(#5d5b6b,#a9a6ba);--ind:light-dark(#3b2fc9,#8f86ff);--acc:light-dark(#e8492c,#ff7a5c);--pan:light-dark(#f1efff,#1d1a2b);--line:light-dark(#dcd9ea,#302c42);--trk:light-dark(#e9e7f3,#2a2638)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Manrope,system-ui,sans-serif;overflow-x:clip}
+.band{padding-block:clamp(24px,4vw,52px);padding-inline:max(5vw,16px)}
+.wrap{max-width:1200px;margin:0 auto}
+h1{font-size:clamp(34px,5vw,52px);line-height:1.05;letter-spacing:-.02em;margin:0 0 12px;text-wrap:balance}
+h2{font-size:clamp(24px,3vw,32px);line-height:1.1;letter-spacing:-.02em;margin:0 0 6px;text-wrap:balance}
+h3{font-size:18px;margin:18px 0 8px}
+p{margin:0 0 12px;max-width:68ch}
+.lead{font-size:17px;color:var(--mute)}
+.mute{color:var(--mute)}
+.code{color:var(--acc)}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{min-height:46px;padding:10px 20px;border-radius:12px;border:0;background:var(--ind);color:#fff;font-weight:700}
+.btn.ghost{background:transparent;color:var(--ind);border:2px solid var(--ind)}
+.btn.warn{background:var(--acc)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn:focus-visible,.opt:focus-visible,.dotb:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:start}
+label{font-weight:700;font-size:14px;display:block;margin-bottom:6px}
+input[type=text]{font:inherit;font-size:16px;width:100%;max-width:340px;min-height:46px;padding:8px 12px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.mods{display:grid;gap:10px;margin-top:20px}
+.mod{display:grid;grid-template-columns:2.4em minmax(0,1fr) auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:14px}
+.mod .no{width:2.2em;height:2.2em;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--pan);font-weight:800;color:var(--ind)}
+.mod.ok .no{background:var(--ind);color:#fff}
+.mod b{display:block}
+.mod small{color:var(--mute);font-size:13px}
+.mini{height:6px;background:var(--trk);border-radius:3px;margin-top:6px;overflow:hidden}
+.mini i{display:block;height:100%;background:var(--ind)}
+.rowb{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;align-items:center}
+.tips{margin-top:18px;font-size:15px}
+.tt{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.cell{aspect-ratio:1.25;border-radius:10px;display:flex;flex-direction:column;justify-content:center;align-items:center;font-weight:800;font-size:clamp(14px,2vw,19px);border:2px solid transparent}
+.cell small{font-weight:600;font-size:13px;opacity:.85}
+.cell.me{border-color:var(--acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 30%,transparent)}
+.axes{display:flex;justify-content:space-between;gap:10px;color:var(--mute);font-size:13px;margin-top:8px}
+.qwrap{max-width:760px;margin:0 auto}
+.qtop{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.qtop b{font-size:15px}
+.prog{height:8px;background:var(--trk);border-radius:4px;overflow:hidden;margin:10px 0 22px}
+.prog i{display:block;height:100%;background:var(--ind);transition:width .25s}
+.qtext{font-size:clamp(20px,2.6vw,26px);line-height:1.3;font-weight:700;letter-spacing:-.01em;margin:0 0 20px;text-wrap:pretty}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.card{border-radius:14px;padding:16px;background:var(--pan);font-size:16px}
+.card b{display:block;font-size:13px;color:var(--ind);margin-bottom:4px}
+.card.b b{color:var(--acc)}
+.scale{display:flex;justify-content:space-between;align-items:center;gap:6px;margin:22px auto 6px;max-width:520px}
+.dotb{border-radius:50%;border:3px solid var(--ind);background:transparent;padding:0;flex:none}
+.dotb.r{border-color:var(--acc)}
+.dotb.m{border-color:var(--mute)}
+.dotb.on{background:var(--ind)}
+.dotb.r.on{background:var(--acc)}
+.dotb.m.on{background:var(--mute)}
+.scl{display:flex;justify-content:space-between;max-width:520px;margin:0 auto;font-size:13px;color:var(--mute)}
+.lk{display:grid;gap:8px}
+.opt{min-height:50px;border-radius:12px;border:2px solid var(--line);background:var(--bg);text-align:left;padding:10px 16px;font-weight:600;display:flex;gap:12px;align-items:center}
+.opt span{width:1.8em;height:1.8em;border-radius:50%;background:var(--pan);display:flex;align-items:center;justify-content:center;font-size:14px;flex:none}
+.opt.on{border-color:var(--ind);background:color-mix(in srgb,var(--ind) 10%,var(--bg))}
+.opt.on span{background:var(--ind);color:#fff}
+.qnav{display:flex;justify-content:space-between;gap:10px;margin-top:26px;flex-wrap:wrap}
+.hint{font-size:13px;color:var(--mute);text-align:center;margin-top:14px}
+.fit{display:grid;grid-template-columns:4.2em minmax(0,1fr) 3.2em;gap:12px;align-items:center}
+.fit b{font-size:20px}
+.fit .v,.frow .v{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+.bar{height:14px;background:var(--trk);border-radius:7px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ind);border-radius:7px}
+.bar.hi i{background:var(--acc)}
+.top3{display:grid;gap:14px;margin-top:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{background:var(--pan);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600}
+.pan{background:var(--pan)}
+.dich{display:grid;gap:22px;margin-top:20px}
+.drow{display:grid;grid-template-columns:7em minmax(0,1fr) 7.5em;gap:12px;align-items:center}
+.drow .l{text-align:right;color:var(--mute);font-size:14px}
+.drow .r{font-size:14px;font-weight:700}
+.track{position:relative;height:34px}
+.in{position:absolute;inset:0 14px}
+.in:before{content:"";position:absolute;left:0;right:0;top:16px;height:3px;background:var(--line);border-radius:2px}
+.mid{position:absolute;left:50%;top:8px;width:1px;height:20px;background:var(--line)}
+.dot{position:absolute;top:10px;width:14px;height:14px;margin-left:-7px;border-radius:50%;border:2px solid var(--bg)}
+.dot.fin{top:5px;width:24px;height:24px;margin-left:-12px;background:var(--acc)}
+.dnote{grid-column:2/4;font-size:14px;color:var(--mute);margin:-6px 0 0}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--mute);margin-top:12px}
+.legend span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;background:var(--c)}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px)}
+.frow{display:grid;grid-template-columns:3em minmax(0,1fr) 3em;gap:10px;align-items:center;margin:8px 0}
+.frow b{font-size:17px}
+.frow small{grid-column:2/4;color:var(--mute);font-size:13px;margin-top:-6px}
+.fam{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+.fcard{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--bg)}
+.fcard.me{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 8%,var(--bg))}
+.fcard b{font-size:22px;display:block}
+.all{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 40px;margin-top:12px}
+.all .fit{grid-template-columns:1.6em 3.6em minmax(0,1fr) 3em}
+.all .n{color:var(--mute);font-size:13px;text-align:right}
+.facet{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr);gap:10px;align-items:center;margin:9px 0;font-size:14px}
+.facet .a{text-align:right}
+.facet .on{font-weight:800}
+.facet .off{color:var(--mute)}
+.div{position:relative;height:12px;background:var(--trk);border-radius:6px}
+.div:after{content:"";position:absolute;left:50%;top:-3px;width:2px;height:18px;background:var(--mute)}
+.div i{position:absolute;top:0;height:100%;background:var(--ind);border-radius:6px}
+.b5{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:18px;margin-top:14px}
+.b5card{border:1px solid var(--line);border-radius:14px;padding:16px}
+.b5card h3{margin:0 0 4px;display:flex;justify-content:space-between;gap:8px}
+.b5card h3 span{font-variant-numeric:tabular-nums;color:var(--ind)}
+.b5card .frow{grid-template-columns:minmax(0,9.5em) minmax(0,1fr) 2.4em;margin:6px 0}
+.b5card .frow b{font-size:14px;font-weight:600}
+table{border-collapse:collapse;font-size:14px;width:100%}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.scroll{overflow-x:auto}
+details{margin-top:14px;border-top:1px solid var(--line);padding-top:8px}
+summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0}
+.note{background:color-mix(in srgb,var(--acc) 10%,var(--bg));border-radius:12px;padding:12px 16px;margin-top:14px;font-size:15px}
+textarea{width:100%;min-height:160px;font:14px/1.5 Manrope,sans-serif;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink);padding:10px}
+#cardPrev{display:block;max-width:min(100%,420px);border-radius:14px;margin-top:14px;border:1px solid var(--line)}
+@media print{html{color-scheme:light}body{background:#fff;color:#15151a}.noprint,#home,#quiz,#done{display:none!important}.band{padding:18px 24px}section{break-inside:avoid}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}.bar i,.div i{animation:none}}
+@media(max-width:820px){.hero,.grid2{grid-template-columns:minmax(0,1fr)}.all{grid-template-columns:minmax(0,1fr)}.fam{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.pair{grid-template-columns:minmax(0,1fr)}.drow{grid-template-columns:4.6em minmax(0,1fr) 4.8em;gap:8px}.drow .l,.drow .r{font-size:13px}.dnote{grid-column:1/4;margin:0}.facet{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.facet .div{grid-column:1/3;grid-row:2}.facet .b{text-align:right}.mod{grid-template-columns:2.4em minmax(0,1fr)}.mod .btn{grid-column:1/3}}
+@media(prefers-reduced-motion:no-preference){.bar i,.div i{animation:grow .9s ease-out both}@keyframes grow{from{clip-path:inset(0 100% 0 0)}}}
+</style>
+</head>
+<body>
+
+<main id="home" class="band"><div class="wrap hero">
+<div>
+<h1>Tes kepribadian lengkap</h1>
+<p class="lead">MBTI 4 huruf + identitas, 20 facet Step II, Big Five 30 facet, dan 8 cognitive functions. 184 soal dalam 4 modul, sekitar 25 menit. Progres kesimpan otomatis di browser ini, jadi boleh dicicil.</p>
+<label for="nama">Nama (buat judul hasil, opsional)</label>
+<input type="text" id="nama" maxlength="30" autocomplete="off" placeholder="Nama lu">
+<div class="mods" id="mods"></div>
+<div class="rowb">
+<button class="btn" id="goRes" type="button">Lihat hasil</button>
+<button class="btn ghost" id="askReset" type="button">Ulang dari awal</button>
+<button class="btn ghost" id="openFile" type="button">Buka file jawaban</button><input type="file" id="fileIn" accept=".json,application/json" hidden>
+</div>
+<p class="mute" id="fileMsg" style="margin-top:8px"></p>
+<div class="note" id="confirmReset" hidden>Semua jawaban di browser ini bakal dihapus. Yakin?
+<div class="rowb" style="margin-top:10px"><button class="btn warn" id="doReset" type="button">Hapus semua</button><button class="btn ghost" id="noReset" type="button">Batal</button></div></div>
+<div class="tips">
+<h3>Biar hasilnya akurat</h3>
+<ul>
+<li>Jawab berdasarkan kebiasaan lu 2–3 tahun terakhir, bukan cuma minggu ini.</li>
+<li>Kalau jawabannya cuma "agak", pilih yang agak. Jangan selalu ujung.</li>
+<li>Kalau soal nyebut hubungan (temen biasa, orang deket), bayangin orang itu. Kalau nggak disebut, maksudnya orang pada umumnya.</li>
+<li>Pilih yang lebih sering atau lebih dulu muncul. Tengah cuma kalau beneran seimbang.</li>
+</ul>
+</div>
+</div>
+<div>
+<div class="tt" id="ttHome" aria-hidden="true"></div>
+<div class="axes"><span>16 tipe MBTI</span><span>Hasil lu bakal nyalain salah satunya</span></div>
+</div>
+</div></main>
+
+<main id="quiz" class="band" hidden><div class="qwrap">
+<div class="qtop"><b id="qMod"></b><span class="mute" id="qCount"></span></div>
+<div class="prog"><i id="qProg"></i></div>
+<p class="qtext" id="qText"></p>
+<div id="qBody"></div>
+<div class="qnav"><button class="btn ghost" id="qBack" type="button">Sebelumnya</button><button class="btn ghost" id="qHome" type="button">Simpan &amp; keluar</button></div>
+<p class="hint">Bisa pakai keyboard: tombol 1–5 buat jawab, panah kiri buat balik.</p>
+</div></main>
+
+<main id="done" class="band" hidden><div class="qwrap">
+<h1 id="doneTitle">Modul selesai</h1>
+<p class="lead" id="doneText"></p>
+<div class="rowb"><button class="btn" id="doneNext" type="button">Lanjut modul berikutnya</button><button class="btn ghost" id="doneRes" type="button">Lihat hasil</button><button class="btn ghost" id="doneHome" type="button">Ke beranda</button></div>
+</div></main>
+
+<div id="res" hidden></div>
+
+<script src="data.js"></script>
+<script>
+{
+const KEY='tesKepribadian.v1';
+const POS={EI:'I',SN:'N',TF:'F',JP:'P',AT:'T'};
+const nm=(n,d=1)=>n.toFixed(d).replace('.',',');
+const avg=a=>a.reduce((s,x)=>s+x,0)/a.length;
+const $=id=>document.getElementById(id);
+const rr=groups=>{const out=[],g=groups.map(x=>x.slice());while(g.some(x=>x.length))g.forEach(x=>{if(x.length)out.push(x.shift())});return out};
+const flipOdd=list=>list.map((it,i)=>it.k==='fc'&&i%2?{...it,a:it.b,b:it.a,fl:true}:{...it,fl:false});
+
+const coreG=Object.keys(AX).map(ax=>CORE.filter(c=>c[0]===ax).map(c=>({k:'fc',ax,bl:c[1],q:c[2],a:c[3],b:c[4]})));
+const facG=['EI','SN','TF','JP'].map(ax=>FITEMS.filter(c=>c[0]===ax).map(c=>({k:'fc',ax,f:c[1],q:c[2],a:c[3],b:c[4]})));
+const b5P=rr(B5.map(d=>d[2].map((f,i)=>({k:'lk',d:d[0],f:i,rev:false,q:f[1]}))));
+const b5R=rr(B5.map(d=>d[2].map((f,i)=>({k:'lk',d:d[0],f:i,rev:true,q:f[2]}))));
+const fnG=['Fi','Se','Ti','Ne','Fe','Si','Te','Ni'].map(fn=>FN1.filter(x=>x[0]===fn).map(x=>({k:'lk',fn,q:x[1]})));
+const MODS=[
+{id:'inti',name:'Inti: 4 huruf + identitas',sub:'44 soal · ±7 menit',items:flipOdd(rr(coreG))},
+{id:'facet',name:'Facet Step II',sub:'40 soal · ±6 menit',items:flipOdd(rr(facG))},
+{id:'big5',name:'Big Five',sub:'60 pernyataan · ±7 menit',items:b5P.concat(b5R)},
+{id:'fungsi',name:'Cognitive functions',sub:'40 soal · ±6 menit',items:flipOdd(rr(fnG).concat(FN2.map(x=>({k:'fc',fa:x[0],fb:x[1],q:x[2],a:x[3],b:x[4]}))))}];
+
+let S={name:'',ans:{}};
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.ans)S=s}catch(e){}
+MODS.forEach(m=>{if(!Array.isArray(S.ans[m.id]))S.ans[m.id]=[]});
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const cnt=m=>m.items.reduce((s,_,i)=>s+(S.ans[m.id][i]?1:0),0);
+const isDone=m=>cnt(m)===m.items.length;
+let cur=0,qi=0;
+
+const show=id=>{['home','quiz','done','res'].forEach(x=>$(x).hidden=x!==id);window.scrollTo(0,0)};
+const TABLE=["ISTJ","ISFJ","INFJ","INTJ","ISTP","ISFP","INFP","INTP","ESTP","ESFP","ENFP","ENTP","ESTJ","ESFJ","ENFJ","ENTJ"];
+$('ttHome').innerHTML=TABLE.map((t,i)=>`<div class="cell" style="background:color-mix(in srgb,var(--ind) ${12+((i*37)%5)*14}%,var(--bg));color:${((i*37)%5)>2?'#fff':'var(--ink)'}">${t}</div>`).join('');
+
+function renderHome(){
+  $('nama').value=S.name||'';
+  $('mods').innerHTML=MODS.map((m,i)=>{const c=cnt(m),n=m.items.length,ok=c===n;return `<div class="mod ${ok?'ok':''}"><span class="no">${ok?'✓':i+1}</span><div><b>${m.name}</b><small>${m.sub} · ${ok?'selesai':c?`${c}/${n} dijawab`:'belum mulai'}</small><div class="mini"><i style="width:${c/n*100}%"></i></div></div><button class="btn ${ok?'ghost':''}" type="button" data-m="${i}">${ok?'Ulangi':c?'Lanjut':'Mulai'}</button></div>`}).join('');
+  $('goRes').disabled=!MODS.some(isDone);
+  show('home');
+}
+$('mods').addEventListener('click',e=>{const b=e.target.closest('button[data-m]');if(!b)return;const i=+b.dataset.m,m=MODS[i];if(isDone(m))S.ans[m.id]=[];start(i)});
+$('nama').addEventListener('input',e=>{S.name=e.target.value.trim();save()});
+
+function start(i){cur=i;const m=MODS[i];qi=m.items.findIndex((_,k)=>!S.ans[m.id][k]);if(qi<0)qi=0;renderQ();show('quiz')}
+function renderQ(){
+  const m=MODS[cur],it=m.items[qi],v=S.ans[m.id][qi]||0;
+  $('qMod').textContent=m.name;$('qCount').textContent=`${qi+1} / ${m.items.length}`;
+  $('qProg').style.width=`${cnt(m)/m.items.length*100}%`;
+  $('qText').textContent=it.q;
+  if(it.k==='fc'){
+    const sz=[46,36,28,36,46],cl=['','','m','r','r'],lab=['Sangat A','Agak A','Seimbang','Agak B','Sangat B'];
+    $('qBody').innerHTML=`<div class="pair"><div class="card"><b>A</b>${it.a}</div><div class="card b"><b>B</b>${it.b}</div></div><div class="scale">${sz.map((s,i)=>`<button type="button" class="dotb ${cl[i]} ${v===i+1?'on':''}" data-v="${i+1}" style="width:${s}px;height:${s}px" aria-label="${lab[i]}"></button>`).join('')}</div><div class="scl"><span>Sangat A</span><span>Seimbang</span><span>Sangat B</span></div>`;
+  }else{
+    const lab=['Sangat nggak setuju','Agak nggak setuju','Netral','Agak setuju','Sangat setuju'];
+    $('qBody').innerHTML=`<div class="lk">${lab.map((l,i)=>`<button type="button" class="opt ${v===i+1?'on':''}" data-v="${i+1}"><span>${i+1}</span>${l}</button>`).join('')}</div>`;
+  }
+  $('qBack').disabled=qi===0;
+}
+let lock=false;
+function answer(v){
+  if(lock)return;const m=MODS[cur];S.ans[m.id][qi]=v;save();renderQ();lock=true;
+  setTimeout(()=>{lock=false;const nx=m.items.findIndex((_,k)=>k>qi&&!S.ans[m.id][k]);const first=m.items.findIndex((_,k)=>!S.ans[m.id][k]);
+    if(nx>=0){qi=nx;renderQ()}else if(first>=0){qi=first;renderQ()}else finish()},180);
+}
+$('qBody').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(b)answer(+b.dataset.v)});
+$('qBack').addEventListener('click',()=>{if(qi>0){qi--;renderQ()}});
+$('qHome').addEventListener('click',renderHome);
+document.addEventListener('keydown',e=>{if($('quiz').hidden||e.target.tagName==='INPUT')return;if(/^[1-5]$/.test(e.key))answer(+e.key);if(e.key==='ArrowLeft'&&qi>0){qi--;renderQ()}});
+
+function finish(){
+  const left=MODS.filter(m=>!isDone(m));
+  $('doneTitle').textContent=`${MODS[cur].name} selesai`;
+  $('doneText').textContent=left.length?`Tinggal ${left.length} modul lagi: ${left.map(m=>m.name).join(', ')}. Hasil sementara udah bisa dilihat, tapi baru lengkap setelah semua selesai.`:'Semua modul selesai. Hasil lengkap lu udah siap.';
+  $('doneNext').hidden=!left.length;$('doneNext').onclick=()=>start(MODS.indexOf(left[0]));
+  show('done');
+}
+$('doneRes').addEventListener('click',()=>renderRes());
+$('doneHome').addEventListener('click',renderHome);
+$('goRes').addEventListener('click',()=>renderRes());
+$('openFile').addEventListener('click',()=>$('fileIn').click());
+$('fileIn').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||d.app!=='tes-kepribadian'||!d.ans)throw 0;MODS.forEach(m=>{S.ans[m.id]=Array.isArray(d.ans[m.id])?d.ans[m.id].slice(0,m.items.length).map(v=>[1,2,3,4,5].includes(v)?v:0):[]});S.name=typeof d.name==='string'?d.name.slice(0,30):'';save();$('fileMsg').textContent='';MODS.some(isDone)?renderRes():renderHome()}catch(err){$('fileMsg').textContent='File ini bukan file jawaban tes ini.'}};r.readAsText(f);e.target.value=''});
+$('askReset').addEventListener('click',()=>{$('confirmReset').hidden=false});
+$('noReset').addEventListener('click',()=>{$('confirmReset').hidden=true});
+$('doReset').addEventListener('click',()=>{MODS.forEach(m=>S.ans[m.id]=[]);save();$('confirmReset').hidden=true;renderHome()});
+
+const STACK={INFP:['Fi','Ne','Si','Te'],ISFP:['Fi','Se','Ni','Te'],INTP:['Ti','Ne','Si','Fe'],ISTP:['Ti','Se','Ni','Fe'],INFJ:['Ni','Fe','Ti','Se'],INTJ:['Ni','Te','Fi','Se'],ISFJ:['Si','Fe','Ti','Ne'],ISTJ:['Si','Te','Fi','Ne'],ENFP:['Ne','Fi','Te','Si'],ENTP:['Ne','Ti','Fe','Si'],ESFP:['Se','Fi','Te','Ni'],ESTP:['Se','Ti','Fe','Ni'],ENFJ:['Fe','Ni','Se','Ti'],ENTJ:['Te','Ni','Se','Fi'],ESFJ:['Fe','Si','Ne','Ti'],ESTJ:['Te','Si','Ne','Fi']};
+const FAM={NF:'Diplomat',NT:'Analyst',SJ:'Sentinel',SP:'Explorer'};
+const STRAT={IA:'Confident Individualism',EA:'People Mastery',IT:'Constant Improvement',ET:'Social Engagement'};
+const lab=p=>{const d=Math.abs(p-50);return d>=30?'sangat jelas':d>=15?'jelas':d>=5?'condong':'seimbang'};
+
+function compute(){
+  const R={done:{}},eff=(it,v)=>it.fl?6-v:v;MODS.forEach(m=>R.done[m.id]=isDone(m));
+  if(R.done.inti){R.core={};const m=MODS[0];Object.keys(AX).forEach(ax=>{const s=[];m.items.forEach((it,i)=>{if(it.ax!==ax)return;const v=eff(it,S.ans.inti[i]);s.push(it.bl===POS[ax]?v-3:3-v)});R.core[ax]=50+avg(s)*25})}
+  if(R.done.facet){R.fac={};R.facAx={};const m=MODS[1];Object.keys(FACETS).forEach(ax=>{R.fac[ax]=FACETS[ax].map((_,f)=>{const s=[];m.items.forEach((it,i)=>{if(it.ax===ax&&it.f===f)s.push(eff(it,S.ans.facet[i])-3)});return avg(s)});R.facAx[ax]=50+avg(R.fac[ax])*25})}
+  if(R.done.big5){R.b5={};const m=MODS[2];B5.forEach(d=>{const fs=d[2].map((_,f)=>{const s=[];m.items.forEach((it,i)=>{if(it.d===d[0]&&it.f===f)s.push(it.rev?6-S.ans.big5[i]:S.ans.big5[i])});return avg(s)});R.b5[d[0]]={name:d[1],fs,dom:avg(fs)}})}
+  if(R.done.fungsi){const p1={},p2={},m=MODS[3];m.items.forEach((it,i)=>{const v=S.ans.fungsi[i];if(it.k==='lk')(p1[it.fn]=p1[it.fn]||[]).push(v);else{const e=eff(it,v);(p2[it.fb]=p2[it.fb]||[]).push(e);(p2[it.fa]=p2[it.fa]||[]).push(6-e)}});R.fn=Object.keys(p1).map(f=>{const a=avg(p1[f]),b=p2[f]?avg(p2[f]):a;return {f,a,b,g:(a+b)/2}}).sort((x,y)=>y.g-x.g)}
+  R.ax={};R.src={};
+  Object.keys(AX).forEach(ax=>{const src={};if(R.core)src.inti=R.core[ax];if(R.facAx&&R.facAx[ax]!=null)src.facet=R.facAx[ax];if(ax==='AT'&&R.b5)src.b5=(R.b5.N.dom-1)/4*100;const v=Object.values(src);R.src[ax]=src;R.ax[ax]=v.length?avg(v):null});
+  R.hasType=['EI','SN','TF','JP'].every(ax=>R.ax[ax]!=null);
+  if(R.hasType){
+    const p=ax=>R.ax[ax]/100,lp=(L,ax)=>L===POS[ax]?p(ax):1-p(ax);
+    const fnMap=R.fn?Object.fromEntries(R.fn.map(x=>[x.f,x.g])):null;
+    R.fits=Object.keys(STACK).map(t=>{const d=avg([lp(t[0],'EI'),lp(t[1],'SN'),lp(t[2],'TF'),lp(t[3],'JP')])*100;const st=fnMap?STACK[t].reduce((s,f,i)=>s+[4,3,2,1][i]*(fnMap[f]-1)/4,0)/10*100:null;return {t,d,st,v:st==null?d:(st+d)/2}}).sort((a,b)=>b.v-a.v);
+    R.type=R.fits[0].t;
+    R.letters=['EI','SN','TF','JP'].map(ax=>R.ax[ax]>=50?POS[ax]:AX[ax][0]).join('');
+    R.id=R.ax.AT!=null?(R.ax.AT>=50?'T':'A'):'';
+    const pN=p('SN'),pF=p('TF'),pP=p('JP');const fam={NF:pN*pF,NT:pN*(1-pF),SP:(1-pN)*pP,SJ:(1-pN)*(1-pP)};const tot=Object.values(fam).reduce((a,b)=>a+b,0);
+    R.fam=Object.entries(fam).map(([k,v])=>[k,v/tot*100]).sort((a,b)=>b[1]-a[1]);
+    R.strat=R.id?STRAT[(R.ax.EI>=50?'I':'E')+R.id]:'';
+  }
+  const all=MODS.flatMap(m=>S.ans[m.id].filter(Boolean));R.ext=all.length?all.filter(v=>v===1||v===5).length/all.length:0;
+  return R;
+}
+
+function renderRes(){
+  const R=compute(),name=(S.name||'').replace(/[<>&"]/g,'');
+  const done=MODS.filter(m=>R.done[m.id]).length;
+  let h='';
+  if(R.hasType){
+    const lo=Math.min(...R.fits.map(f=>f.v)),hi=Math.max(...R.fits.map(f=>f.v)),fx=Object.fromEntries(R.fits.map(f=>[f.t,f.v]));
+    const sumAx=['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax],L=p>=50?AX[ax][3]:AX[ax][2];return `${L} ${lab(p)}`});
+    h+=`<section class="band"><div class="wrap hero"><div><h1>${name?name+', p':'P'}aling cocok <span class="code">${R.type}${R.id?'-'+R.id:''}</span></h1><p class="lead">${sumAx.join(' · ')}.${R.letters!==R.type?` Dari huruf saja hasilnya ${R.letters}, tapi urutan fungsi lebih cocok ke ${R.type}.`:''}</p>
+    <h3>Tiga tipe paling cocok</h3><div class="top3">${R.fits.slice(0,3).map((f,i)=>`<div class="fit"><b>${f.t}</b><div class="bar ${i?'':'hi'}"><i style="width:${f.v}%"></i></div><span class="v">${nm(f.v)}</span></div>`).join('')}</div>
+    <div class="chips"><span class="chip">Family: ${FAM[R.fam[0][0]]} (${R.fam[0][0]})</span>${R.strat?`<span class="chip">Strategy: ${R.strat}</span>`:''}<span class="chip">${done}/4 modul selesai</span></div></div>
+    <div><div class="tt" role="img" aria-label="Tabel 16 tipe, tiga yang paling cocok menyala">${TABLE.map(t=>{const r=R.fits.slice(0,3).map(f=>f.t).indexOf(t);const st=r<0?'background:transparent;border-color:var(--line);color:var(--mute)':`background:color-mix(in srgb,var(--ind) ${[100,58,30][r]}%,var(--bg));color:${r<2?'#fff':'var(--ink)'}`;return `<div class="cell ${r===0?'me':''}" style="${st}">${t}<small>${nm(fx[t])}</small></div>`}).join('')}</div><div class="axes"><span>Nyala = 3 tipe paling cocok</span><span>Lingkaran = hasil utama</span></div></div></div></section>`;
+    const col={inti:'#3b2fc9',facet:'#1f9bd1',b5:'#c2409a'};
+    const notes={EI:'Sumber energi: dari waktu sendiri atau dari interaksi.',SN:'Cara nangkep informasi: konkret dan nyata, atau pola dan makna.',TF:'Dasar keputusan: logika yang konsisten, atau nilai dan dampaknya ke orang.',JP:'Gaya ngatur hidup: rencana dan kepastian, atau terbuka dan fleksibel.',AT:'Seberapa kuat reaksi terhadap stres, kritik, dan keraguan diri.'};
+    const rows=['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax],s=R.src[ax];const inc=s.inti!=null&&s.facet!=null&&Math.abs(s.inti-s.facet)>=25;const big=p>=50?AX[ax][3]:AX[ax][2],pp=p>=50?p:100-p;return `<div class="drow"><span class="l">${AX[ax][2]}</span><div class="track"><div class="in"><span class="mid"></span>${Object.entries(s).map(([k,v])=>`<span class="dot" style="left:${v}%;background:${col[k]}"></span>`).join('')}<span class="dot fin" style="left:${p}%"></span></div></div><span class="r">${p>=50?AX[ax][3]:AX[ax][2]} ${Math.round(pp)}%</span><p class="dnote">${notes[ax]} ${big} ${lab(p)}.${inc?' Jawaban modul Inti dan Facet di sumbu ini cukup beda, jadi hasilnya kurang stabil.':''}</p></div>`}).join('');
+    h+=`<section class="band pan"><div class="wrap"><h2>Empat huruf + identitas</h2><p class="lead">Titik koral = hasil akhir. Titik kecil = tiap modul, biar kelihatan stabil atau nggak.</p><div class="dich">${rows}</div><div class="legend"><span style="--c:#3b2fc9">Modul Inti</span><span style="--c:#1f9bd1">Modul Facet</span><span style="--c:#c2409a">Big Five Neuroticism</span></div></div></section>`;
+  }else{
+    h+=`<section class="band"><div class="wrap"><h1>Hasil sementara</h1><p class="lead">Selesaiin modul Inti atau Facet biar tipe 4 huruf lu kelihatan.</p></div></section>`;
+  }
+  if(R.fn){
+    const theo=R.hasType?STACK[R.type]:null;const ip=avg(R.fn.filter(x=>x.f.endsWith('i')).map(x=>x.g)),ep=avg(R.fn.filter(x=>x.f.endsWith('e')).map(x=>x.g));
+    const gap=R.fn.filter(x=>x.a-x.b>=1.5).map(x=>x.f);
+    h+=`<section class="band"><div class="wrap grid2"><div><h2>Cognitive functions: ${R.fn[0].f} memimpin, ${R.fn[7].f} paling bawah</h2><p class="lead">Skor 1–5, gabungan pernyataan dan adu langsung.</p>${R.fn.map((x,i)=>`<div class="frow"><b>${x.f}</b><div class="bar ${i?'':'hi'}"><i style="width:${(x.g-1)/4*100}%"></i></div><span class="v">${nm(x.g)}</span></div>`).join('')}</div><div>
+    ${theo?`<h3>Urutan teori ${R.type} vs urutan lu</h3><table><thead><tr><th>Posisi</th><th>Teori ${R.type}</th><th>Hasil lu</th></tr></thead><tbody>${['Dominan','Auxiliary','Tertiary','Inferior'].map((p,i)=>`<tr><td>${p}</td><td>${theo[i]}</td><td><b>${R.fn[i].f}</b></td></tr>`).join('')}</tbody></table>`:''}
+    <h3>Fungsi introvert vs ekstravert</h3><div class="frow"><b>i</b><div class="bar hi"><i style="width:${(ip-1)/4*100}%"></i></div><span class="v">${nm(ip)}</span></div><div class="frow"><b>e</b><div class="bar"><i style="width:${(ep-1)/4*100}%"></i></div><span class="v">${nm(ep)}</span></div>
+    ${gap.length?`<p class="note">${gap.join(', ')} tinggi di pernyataan tapi kalah di adu langsung. Bisa jadi itu kebiasaan atau kepekaan, bukan fungsi yang lu andelin.</p>`:''}
+    <details><summary>Skor mentah fungsi</summary><div class="scroll"><table><thead><tr><th>Fungsi</th><th class="n">Pernyataan</th><th class="n">Adu langsung</th><th class="n">Gabungan</th></tr></thead><tbody>${R.fn.map(x=>`<tr><td>${x.f}</td><td class="n">${nm(x.a)}</td><td class="n">${nm(x.b)}</td><td class="n">${nm(x.g)}</td></tr>`).join('')}</tbody></table></div></details></div></div></section>`;
+  }
+  if(R.hasType){
+    h+=`<section class="band pan"><div class="wrap"><h2>Family: ${FAM[R.fam[0][0]]}</h2><p class="lead">Perkiraan dari peluang tiap huruf, dijumlah jadi 100%.</p><div class="fam">${R.fam.map((f,i)=>`<div class="fcard ${i?'':'me'}"><b>${Math.round(f[1])}%</b>${f[0]} · ${FAM[f[0]]}<div class="bar ${i?'':'hi'}" style="margin-top:8px"><i style="width:${f[1]/R.fam[0][1]*100}%"></i></div></div>`).join('')}</div>${R.strat?`<p style="margin-top:14px">Strategy: <b>${R.strat}</b>.</p>`:''}</div></section>`;
+    h+=`<section class="band"><div class="wrap"><h2>Semua 16 tipe, dari yang paling cocok</h2><p class="lead">Skor 0–100. ${R.fn?'Setengah dari urutan fungsi (bobot 4-3-2-1), setengah dari peluang tiap huruf.':'Dari peluang tiap huruf. Selesaiin modul Cognitive functions biar urutan fungsi ikut dihitung.'}</p><div class="all">${R.fits.map((f,i)=>`<div class="fit"><span class="n">${i+1}</span><b style="font-size:16px">${f.t}</b><div class="bar ${i?'':'hi'}"><i style="width:${f.v}%"></i></div><span class="v">${nm(f.v)}</span></div>`).join('')}</div></div></section>`;
+  }
+  if(R.fac){
+    const fr=ax=>FACETS[ax].map((p,f)=>{const v=R.fac[ax][f],w=Math.abs(v)/2*50,left=v<0?50-w:50;return `<div class="facet"><span class="a ${v<-.4?'on':'off'}">${p[0]}</span><div class="div"><i style="left:${left}%;width:${w}%"></i></div><span class="b ${v>.4?'on':'off'}">${p[1]} <small>${(v>0?'+':'')+nm(v)}</small></span></div>`}).join('');
+    h+=`<section class="band pan"><div class="wrap"><h2>Facet Step II</h2><p class="lead">Batang dari garis tengah = arah condong, skala −2 sampai +2. Kutub yang menang ditebalkan.</p><div class="grid2"><div><h3>E/I</h3>${fr('EI')}<h3>S/N</h3>${fr('SN')}</div><div><h3>T/F</h3>${fr('TF')}<h3>J/P</h3>${fr('JP')}</div></div></div></section>`;
+  }
+  if(R.b5){
+    const fl=[];B5.forEach(d=>R.b5[d[0]].fs.forEach((v,i)=>fl.push([d[2][i][0],v])));fl.sort((a,b)=>b[1]-a[1]);
+    h+=`<section class="band"><div class="wrap"><h2>Big Five: tertinggi ${fl[0][0].toLowerCase()}, terendah ${fl[fl.length-1][0].toLowerCase()}</h2><p class="lead">Skor 1–5 per facet. Big Five adalah model dengan dukungan riset paling kuat di tes ini.</p><div class="b5">${B5.map(d=>{const x=R.b5[d[0]];return `<div class="b5card"><h3>${x.name}<span>${nm(x.dom)}</span></h3>${d[2].map((f,i)=>`<div class="frow"><b>${f[0]}</b><div class="bar ${x.fs[i]>=4.5||x.fs[i]<=1.5?'hi':''}"><i style="width:${(x.fs[i]-1)/4*100}%"></i></div><span class="v">${nm(x.fs[i])}</span></div>`).join('')}</div>`}).join('')}</div>
+    <p style="margin-top:14px">Paling menonjol: ${fl.slice(0,3).map(x=>`${x[0]} ${nm(x[1])}`).join(', ')}. Paling rendah: ${fl.slice(-3).reverse().map(x=>`${x[0]} ${nm(x[1])}`).join(', ')}.</p></div></section>`;
+  }
+  const missing=MODS.filter(m=>!R.done[m.id]);
+  h+=`<section class="band pan"><div class="wrap grid2"><div><h2>Seberapa bisa dipegang</h2><ul>
+  ${missing.length?`<li><b>Belum lengkap:</b> ${missing.map(m=>m.name).join(', ')} belum selesai.</li>`:''}
+  ${R.ext>.6?`<li><b>Gaya jawab ekstrem:</b> ${Math.round(R.ext*100)}% jawaban di ujung skala. Persentase lu kemungkinan lebih tinggi dari aslinya.</li>`:''}
+  <li>Huruf dengan skor 55–65% cuma condong. Wajar kalau tes ulang kadang ngasih huruf sebelahnya.</li>
+  <li>Soal-soal ini belum divalidasi secara ilmiah. Arahnya bisa dipercaya, angkanya kasar.</li>
+  <li>MBTI dan cognitive functions lemah secara ilmiah. Big Five paling kuat. Pembanding gratis: IPIP-NEO-120.</li></ul></div>
+  <div class="noprint"><h2>Simpan &amp; bagiin hasil</h2><p>Hasil otomatis kesimpen di browser ini. Biar aman, simpan juga ke HP atau laptop.</p><div class="rowb"><button class="btn" id="dlCard" type="button">Download kartu hasil (PNG)</button><button class="btn ghost" id="dlPdf" type="button">Simpan PDF lengkap</button><button class="btn ghost" id="dlJson" type="button">Download file jawaban</button><button class="btn ghost" id="copy" type="button">Salin ringkasan</button><button class="btn ghost" id="resHome" type="button">Ke beranda</button></div><p class="mute" id="copyMsg" style="margin-top:10px"></p><img id="cardPrev" alt="Kartu hasil" hidden><textarea id="copyBox" hidden readonly></textarea><p class="mute" style="font-size:14px">File jawaban (.json) bisa dibuka lagi lewat tombol "Buka file jawaban" di beranda, di HP atau browser mana pun.</p></div></div></div></section>`;
+  $('res').innerHTML=h;show('res');
+  const txt=[`Hasil tes kepribadian${name?' '+name:''}`,R.hasType?`Tipe: ${R.type}${R.id?'-'+R.id:''}`:'',...(R.hasType?['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax];return `${p>=50?AX[ax][3]:AX[ax][2]} ${Math.round(p>=50?p:100-p)}%`}):[]),R.hasType?`Top 3: ${R.fits.slice(0,3).map(f=>`${f.t} ${nm(f.v)}`).join(', ')}`:'',R.fn?`Fungsi: ${R.fn.map(x=>x.f).join(' > ')}`:'',R.b5?`Big Five: ${B5.map(d=>`${d[1]} ${nm(R.b5[d[0]].dom)}`).join(', ')}`:''].filter(Boolean).join('\n');
+  $('copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(txt);$('copyMsg').textContent='Ringkasan udah disalin.'}catch(e){$('copyBox').hidden=false;$('copyBox').value=txt;$('copyBox').select();$('copyMsg').textContent='Salin manual dari kotak di bawah.'}});
+  $('resHome').addEventListener('click',renderHome);
+  $('dlPdf').addEventListener('click',()=>{try{window.print()}catch(e){$('copyMsg').textContent='Browser ini nggak bisa nyetak. Pakai kartu PNG atau screenshot.'}});
+  $('dlJson').addEventListener('click',()=>{const data={app:'tes-kepribadian',v:1,name:S.name||'',date:new Date().toISOString(),ans:S.ans};dl(new Blob([JSON.stringify(data)],{type:'application/json'}),`jawaban-tes-kepribadian${name?'-'+name.replace(/\s+/g,'-').toLowerCase():''}.json`);$('copyMsg').textContent='File jawaban di-download.'});
+  $('dlCard').addEventListener('click',async()=>{$('copyMsg').textContent='Lagi bikin kartu…';try{if(document.fonts&&document.fonts.ready)await document.fonts.ready;const c=drawCard(R,name);const url=c.toDataURL('image/png');$('cardPrev').src=url;$('cardPrev').hidden=false;c.toBlob(b=>{if(b)dl(b,`hasil-kepribadian${name?'-'+name.replace(/\s+/g,'-').toLowerCase():''}.png`)});$('copyMsg').textContent='Kartu di-download. Kalau di HP nggak ke-download, tekan lama gambar di bawah lalu pilih simpan.'}catch(e){$('copyMsg').textContent='Gagal bikin kartu di browser ini. Coba Simpan PDF atau screenshot.'}});
+}
+function dl(blob,fname){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
+function drawCard(R,name){
+  const W=1080,H=1600,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const IND='#3b2fc9',ACC='#e8492c',INK='#15151a',MUTE='#5d5b6b',TRK='#e9e7f3';
+  const F=(w,z)=>`${w} ${z}px Manrope, system-ui, sans-serif`;
+  const rr=(X,Y,w,h,r,col)=>{x.fillStyle=col;x.beginPath();if(x.roundRect)x.roundRect(X,Y,w,h,r);else x.rect(X,Y,w,h);x.fill()};
+  const fit=(t,max)=>{while(x.measureText(t).width>max&&t.length>4)t=t.slice(0,-2)+'…';return t};
+  x.fillStyle='#fff';x.fillRect(0,0,W,H);x.fillStyle=IND;x.fillRect(0,0,W,420);
+  x.fillStyle='#fff';x.font=F(600,34);x.fillText(fit(name?`Hasil tes kepribadian ${name}`:'Hasil tes kepribadian',936),72,104);
+  x.font=F(800,160);x.fillText(R.hasType?R.type+(R.id?'-'+R.id:''):'Sementara',64,280);
+  x.font=F(600,32);x.fillText(fit(R.hasType?`${FAM[R.fam[0][0]]} (${R.fam[0][0]})${R.strat?' · '+R.strat:''}`:'Selesaiin modul Inti buat lihat tipe',936),72,355);
+  let y=500;
+  if(R.hasType){
+    x.fillStyle=INK;x.font=F(800,38);x.fillText('Empat huruf + identitas',72,y);y+=56;
+    ['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).forEach(ax=>{const p=R.ax[ax],big=p>=50?AX[ax][3]:AX[ax][2];
+      x.fillStyle=MUTE;x.font=F(600,24);x.textAlign='right';x.fillText(AX[ax][2],250,y+10);x.textAlign='left';
+      rr(275,y-4,490,16,8,TRK);x.fillStyle=ACC;x.beginPath();x.arc(285+p/100*470,y+4,16,0,7);x.fill();
+      x.fillStyle=INK;x.font=F(800,26);x.fillText(`${big} ${Math.round(p>=50?p:100-p)}%`,790,y+12);y+=64});
+    y+=30;x.fillStyle=INK;x.font=F(800,38);x.fillText('Tipe paling cocok',72,y);y+=54;
+    R.fits.slice(0,3).forEach((f,i)=>{x.fillStyle=INK;x.font=F(800,32);x.fillText(f.t,72,y+12);rr(220,y-6,600,20,10,TRK);rr(220,y-6,6*f.v,20,10,i?IND:ACC);x.font=F(700,28);x.textAlign='right';x.fillText(nm(f.v),1008,y+12);x.textAlign='left';y+=56});
+  }
+  if(R.fn){y+=24;x.fillStyle=INK;x.font=F(800,38);x.fillText('Urutan cognitive functions',72,y);y+=50;x.font=F(700,32);x.fillStyle=IND;x.fillText(fit(R.fn.map(f=>f.f).join('  ›  '),936),72,y);y+=40}
+  if(R.b5){y+=40;x.fillStyle=INK;x.font=F(800,38);x.fillText('Big Five (1–5)',72,y);y+=50;
+    B5.forEach(d=>{const v=R.b5[d[0]].dom;x.fillStyle=MUTE;x.font=F(600,26);x.fillText(d[1],72,y+10);rr(380,y-6,520,18,9,TRK);rr(380,y-6,(v-1)/4*520,18,9,IND);x.fillStyle=INK;x.font=F(800,26);x.textAlign='right';x.fillText(nm(v),1008,y+12);x.textAlign='left';y+=46})}
+  x.fillStyle=MUTE;x.font=F(600,24);x.fillText(location.host?location.host+location.pathname.replace(/index\.html$/,''):'Tes kepribadian lengkap',72,H-60);
+  x.textAlign='right';x.fillText(new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}),1008,H-60);x.textAlign='left';
+  const out=document.createElement('canvas');out.width=W;out.height=Math.min(H,Math.max(1350,y+130));out.getContext('2d').drawImage(c,0,0);
+  const o=out.getContext('2d');o.fillStyle='#fff';o.fillRect(0,out.height-110,W,110);o.fillStyle=MUTE;o.font=F(600,24);o.fillText(location.host?location.host+location.pathname.replace(/index\.html$/,''):'Tes kepribadian lengkap',72,out.height-50);o.textAlign='right';o.fillText(new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}),1008,out.height-50);
+  return out;
+}
+renderHome();
+}
+</script>
+</body>
+</html>
