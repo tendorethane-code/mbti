@@ -140,3 +140,17 @@ test('ringkasan teks lengkap', () => {
   assert.match(t, /Fungsi: Fi > Ne/);
   assert.match(t, /Big Five:/);
 });
+
+test('kompatibel browser HP lama: tanpa light-dark(), color-mix cuma di CSS dengan cadangan', async () => {
+  const fs = await import('node:fs');
+  const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  assert.ok(!html.includes('light-dark('), 'light-dark() nggak jalan di iOS < 17.5');
+  const script = html.slice(html.lastIndexOf('<script>'));
+  assert.ok(!script.includes('color-mix'), 'warna dari JS harus hex/rgb biasa');
+  const css = html.slice(html.indexOf('<style>'), html.indexOf('</style>'));
+  for (const rule of css.match(/\{[^{}]*color-mix[^{}]*\}/g) || []) {
+    const decls = rule.slice(1, -1).split(';').map(d => d.trim()).filter(Boolean).map(d => [d.slice(0, d.indexOf(':')), d]);
+    for (const [prop, d] of decls.filter(([, d]) => d.includes('color-mix')))
+      assert.ok(decls.some(([p2, d2]) => p2 === prop && !d2.includes('color-mix')), `nggak ada cadangan buat ${prop} di ${rule.slice(0, 70)}`);
+  }
+});

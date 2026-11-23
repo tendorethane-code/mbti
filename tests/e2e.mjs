@@ -212,7 +212,12 @@ try {
   await viewport(1280, 900, false);
   check('laptop: nggak ada scroll ke samping (hasil)', await noOverflow());
   await shot('06-hasil-laptop');
+  const lightCell = await ev("document.querySelector('#ttHome .cell').style.background");
+  const lightTop = await ev("document.querySelector('#ttRes .cell[data-rank=\"1\"]').style.background");
   await cmd('Emulation.setEmulatedMedia', {features: [{name: 'prefers-color-scheme', value: 'dark'}]});
+  await sleep(200);
+  check('mode gelap: warna peta beranda ikut ganti', (await ev("document.querySelector('#ttHome .cell').style.background")) !== lightCell);
+  check('mode gelap: warna tabel hasil ikut ganti', (await ev("document.querySelector('#ttRes .cell[data-rank=\"1\"]').style.background")) !== lightTop);
   check('mode gelap: latar ikut gelap', (await ev("getComputedStyle(document.body).backgroundColor")) === 'rgb(18, 16, 25)');
   await shot('07-hasil-gelap');
   await click('#resHome');
