@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Unit test (data soal & skoring)
+        run: node --test tests/core.test.mjs
+      - name: E2E (Chrome headless, semua alur)
+        run: node tests/e2e.mjs
+        env:
+          CHROME_BIN: google-chrome
+      - name: Simpan screenshot & PDF QA
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-screenshots
+          path: tests/artifacts
+          if-no-files-found: ignore

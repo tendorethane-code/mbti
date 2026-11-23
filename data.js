@@ -137,7 +137,7 @@ const FN2=[
 ['Te','Fi',"Nyusun rencana kerja kelompok, yang paling lu pegang:","Target, data, dan efisiensi","Apa yang sesuai sama prinsip lu"],
 ['Fe','Te',"Rapat kelompok mandek dan suasananya kaku:","Cairin suasana dan pastiin semua orang didengar","Ambil alih, bagi tugas, kejar keputusan"],
 ['Si','Ne',"Lu harus cari kost atau tempat tinggal baru di daerah yang belum pernah lu tinggalin. Yang lebih dulu muncul di kepala:","Daftar syarat dari pengalaman tempat tinggal sebelumnya (dulu berisik, jadi cari yang tenang)","Pilihan-pilihan yang belum pernah lu coba (sewa bareng temen, daerah lain yang lebih jauh)"],
-['Si','Ne',"Lu lebih nikmatin:","Ngulang hal yang udah pasti lu suka, kayak nonton atau baca ulang","Nyari hal baru yang belum pernah lu coba"],
+['Si','Ne',"Soal hiburan (film, buku, musik), lu lebih nikmatin:","Ngulang hal yang udah pasti lu suka, kayak nonton atau baca ulang","Nyari hal baru yang belum pernah lu coba"],
 ['Si','Se',"Jalan ke tempat yang sering lu datengin. Yang lebih sering lu sadari:","Apa yang beda dari biasanya","Apa yang lagi kejadian saat itu: orang, suara, gerakan"],
 ['Si','Se',"Kenikmatan fisik buat lu lebih ke:","Kenyamanan yang udah familiar, kayak kasur sendiri atau makanan favorit","Sensasi baru yang intens, kayak rasa baru atau pengalaman seru"],
 ['Ni','Ne',"Pas mikirin masa depan:","Yang kebayang satu gambaran yang kuat","Yang kebayang banyak cabang kemungkinan"],
