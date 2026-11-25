@@ -25,11 +25,13 @@ function buildModules(){
     {id:'inti',name:'Inti: 4 huruf + identitas',items:flipOdd(roundRobin(coreG))},
     {id:'facet',name:'Facet Step II',items:flipOdd(roundRobin(facG))},
     {id:'big5',name:'Big Five',items:b5P.concat(b5R)},
-    {id:'fungsi',name:'Cognitive functions',items:flipOdd(roundRobin(fnG).concat(FN2.map((x,i)=>({k:'fc',id:'m'+i,fa:x[0],fb:x[1],q:x[2],a:x[3],b:x[4]}))))}];
+    {id:'fungsi',name:'Cognitive functions',items:flipOdd(roundRobin(fnG).concat(FN2.map((x,i)=>({k:'fc',id:'m'+i,fa:x[0],fb:x[1],q:x[2],a:x[3],b:x[4]}))))},
+    {id:'dalam',name:'Pendalaman (opsional)',opt:true,items:flipOdd(DEEP.map(x=>x[1]==='fc'?{k:'fc',id:x[0],q:x[2],a:x[3],b:x[4]}:{k:'lk',id:x[0],q:x[2]}))}];
 }
 const MODS=buildModules();
-MODS.forEach(m=>{const n=m.items.length;m.sub=`${n} ${m.id==='big5'?'pernyataan':'soal'} · ±${Math.max(5,Math.round(n*9/60))} menit`});
-const TOTAL=MODS.reduce((s,m)=>s+m.items.length,0);
+MODS.forEach(m=>{const n=m.items.length;m.sub=m.opt?`${n} soal · ±3 menit · untuk temuan khusus`:`${n} ${m.id==='big5'?'pernyataan':'soal'} · ±${Math.max(5,Math.round(n*9/60))} menit`});
+const MAIN=MODS.filter(m=>!m.opt);
+const TOTAL=MAIN.reduce((s,m)=>s+m.items.length,0);
 
 const valid=v=>v===1||v===2||v===3||v===4||v===5;
 const answered=(ans,m)=>m.items.reduce((s,_,i)=>s+(ans[m.id]&&valid(ans[m.id][i])?1:0),0);
@@ -171,7 +173,7 @@ const AXSEC={EI:'sosial',SN:'pikir',TF:'putus',JP:'kerja'},B5SEC={N:'emosi',O:'p
 
 function insights(R,ans){
   const S=Object.fromEntries(SECT.map(s=>[s[0],[]])),str=[],watch=[],tips=[],special=[];
-  const c=canon(ans||{});
+  const c=canon(ans||{}),found=new Set(deepFindings(R,ans).map(x=>x.key));
   const add=(sec,t,w,b)=>S[sec].push({t,w,b});
   const fnRank=f=>R.fn?R.fn.findIndex(x=>x.f===f):-1,fnG=f=>R.fn?R.fn.find(x=>x.f===f).g:NaN;
   const b5f=(d,name)=>R.b5?R.b5[d].fs[B5.find(x=>x[0]===d)[2].findIndex(f=>f[0]===name)]:NaN;
@@ -180,15 +182,15 @@ function insights(R,ans){
   const b5B=(d,name)=>`Big Five ${name} ${nmf(b5f(d,name))}`;
   // pola gabungan
   const covered=new Set();
-  const sp=(sec,t,b,kind,cov)=>{add(sec,t,3,b);special.push({t,b,sec});if(kind==='watch')watch.push({t:t.split('. ')[0].replace(/\.$/,''),w:1.2,b});(cov||[]).forEach(k=>covered.add(k))};
+  const sp=(sec,t,b,kind,cov,key)=>{if(key&&found.has(key))return;add(sec,t,3,b);special.push({t,b,sec});if(kind==='watch')watch.push({t:t.split('. ')[0].replace(/\.$/,''),w:1.2,b});(cov||[]).forEach(k=>covered.add(k))};
   const pos=['ei-x1','ei-x2','ei-x4'].map(k=>c[k]).filter(valid),neg=[['ei-x5','kesal'],['ei-x3','gugup']].filter(([k])=>valid(c[k])&&c[k]<=2).map(x=>x[1]);
   if(pos.length===3&&avg(pos)>=4&&neg.length)sp('emosi',`Emosi yang intens seperti ${neg.join(' dan ')} lebih mudah terlihat dari luar, sementara senang, sedih, dan antusiasmu cenderung kamu simpan sendiri.`,`Soal Expressive per jenis emosi`,null,['EI1']);
-  if(R.hasType&&R.ax.EI>=75&&b5f('N','Canggung')>=4)sp('sosial','Selain butuh waktu sendiri untuk mengisi energi, situasi sosial juga bisa terasa menegangkan bagimu. Keduanya berbeda: yang pertama soal energi, yang kedua soal rasa cemas.',`Introvert ${Math.round(R.ax.EI)}% · ${b5B('N','Canggung')}`);
-  if(R.hasType&&R.ax.JP>=60&&R.fn&&fnRank('Si')<=1)sp('kerja','Kamu menyukai hal yang familiar, tapi bukan karena suka jadwal. Rutinitasmu terbentuk dari kenyamanan, bukan dari rencana.',`Prospecting ${Math.round(R.ax.JP)}% · Fungsi Si ${nmf(fnG('Si'))}`);
-  if(R.fac&&fac('JP',2)>=1&&R.b5&&(b5f('N','Mudah kewalahan')>=4||(R.ax.AT||0)>=65))sp('kerja','Kamu sering mengerjakan tugas mendekati deadline, padahal tekanan membuatmu stres. Mencicil sedikit di awal bisa mengurangi beban itu.',`${facB('JP',2)} · ${b5B('N','Mudah kewalahan')}`,'watch',['JP2']);
+  if(R.hasType&&R.ax.EI>=75&&b5f('N','Canggung')>=4)sp('sosial','Selain butuh waktu sendiri untuk mengisi energi, situasi sosial juga bisa terasa menegangkan bagimu. Keduanya berbeda: yang pertama soal energi, yang kedua soal rasa cemas.',`Introvert ${Math.round(R.ax.EI)}% · ${b5B('N','Canggung')}`,null,null,'introcanggung');
+  if(R.hasType&&R.ax.JP>=60&&R.fn&&fnRank('Si')<=1)sp('kerja','Kamu menyukai hal yang familiar, tapi bukan karena suka jadwal. Rutinitasmu terbentuk dari kenyamanan, bukan dari rencana.',`Prospecting ${Math.round(R.ax.JP)}% · Fungsi Si ${nmf(fnG('Si'))}`,null,null,'rutin');
+  if(R.fac&&fac('JP',2)>=1&&R.b5&&(b5f('N','Mudah kewalahan')>=4||(R.ax.AT||0)>=65))sp('kerja','Kamu sering mengerjakan tugas mendekati deadline, padahal tekanan membuatmu stres. Mencicil sedikit di awal bisa mengurangi beban itu.',`${facB('JP',2)} · ${b5B('N','Mudah kewalahan')}`,'watch',['JP2'],'telat');
   if(R.fn&&fnRank('Fi')<=1&&fnRank('Fe')>=5)sp('putus','Kamu berpegang pada nilai pribadi, bukan pada apa yang dianggap pantas oleh kelompok. Kamu tidak merasa wajib menjaga suasana kalau itu bertentangan dengan prinsipmu.',`Fungsi Fi ${nmf(fnG('Fi'))} · Fe ${nmf(fnG('Fe'))}`);
   if(R.src&&R.src.TF&&R.src.TF.inti!=null&&R.src.TF.facet!=null&&Math.abs(R.src.TF.inti-R.src.TF.facet)>=20){const b=`T/F modul Inti ${Math.round(R.src.TF.inti)}% F · Facet ${Math.round(R.src.TF.facet)}% F`;
-    sp('putus',R.src.TF.inti>R.src.TF.facet?'Cara memutuskanmu bergantung pada siapa orangnya. Untuk orang dekat dan hidupmu sendiri kamu memakai perasaan, tapi kepada kenalan dan urusan tugas kamu lebih logis dan tegas.':'Untuk keputusan besar kamu cenderung logis, tapi saat berhadapan langsung dengan orang kamu lebih lunak.',b)}
+    sp('putus',R.src.TF.inti>R.src.TF.facet?'Cara memutuskanmu bergantung pada siapa orangnya. Untuk orang dekat dan hidupmu sendiri kamu memakai perasaan, tapi kepada kenalan dan urusan tugas kamu lebih logis dan tegas.':'Untuk keputusan besar kamu cenderung logis, tapi saat berhadapan langsung dengan orang kamu lebih lunak.',b,null,null,'tfctx')}
   if(R.fac&&fac('TF',2)<=-1&&R.b5&&b5f('A','Mengalah')<=2.5)sp('putus','Kamu tidak mudah mengalah dalam perdebatan. Kamu lebih memilih meluruskan yang keliru walaupun suasananya jadi tegang.',`${facB('TF',2)} · ${b5B('A','Mengalah')}`,null,['TF2']);
   if(R.hasType&&R.fn){const st=STACK[R.type],ni=fnG('Ni'),ne=fnG('Ne');
     if(st.slice(0,2).includes('Ne')&&ni-ne>=.8)sp('pikir',`Intuisimu lebih berupa firasat yang mengerucut ke satu kesimpulan (Ni) daripada lompatan ke banyak kemungkinan (Ne). Ini tidak umum untuk tipe ${R.type}.`,`Fungsi Ni ${nmf(ni)} · Ne ${nmf(ne)}`);
@@ -250,6 +252,49 @@ function insights(R,ans){
   const uniq=a=>a.filter((x,i)=>a.findIndex(y=>y.t===x.t)===i);
   return {summary,special,sections:SECT.map(([id,title])=>({id,title,items:by(S[id]).slice(0,6)})).filter(s=>s.items.length),
     strengths:uniq(by(str)).filter((x,i,a)=>a.slice(0,i).filter(y=>y.cat===x.cat).length<2).slice(0,6),watch:uniq(by(watch)).slice(0,5),tips:uniq(by(tips)).slice(0,6),rel};
+}
+
+// ---------- Temuan khusus: pola dari modul Pendalaman + skor utama ----------
+function deepFindings(R,ans){
+  const c=canon(ans||{}),out=[],has=k=>valid(c[k]),hi=k=>has(k)&&c[k]>=4,lo=k=>has(k)&&c[k]<=2;
+  const b5f=(d,name)=>R.b5?R.b5[d].fs[B5.find(x=>x[0]===d)[2].findIndex(f=>f[0]===name)]:NaN;
+  const fac=(ax,f)=>R.fac?R.fac[ax][f]:NaN,fnRank=f=>R.fn?R.fn.findIndex(x=>x.f===f):-1;
+  const ax=k=>R.hasType&&R.ax[k]!=null?R.ax[k]:NaN;
+  const add=(key,tag,title,text,b)=>out.push({key,tag,title,text,b});
+  const pct=(k,i)=>`${AX[k][ax(k)>=50?3:2]} ${Math.round(ax(k)>=50?ax(k):100-ax(k))}%`;
+  if(lo('d-energi')&&ax('EI')>=60)add('introcanggung',`E/I · ${pct('EI')}`,'Introvert murni','Walaupun tanpa rasa gugup, kamu tetap memilih waktu sendiri. Introvert-mu soal sumber energi, bukan soal rasa cemas.'+(b5f('N','Canggung')>=4?' Rasa canggung di depan orang adalah lapisan terpisah di atasnya.':''),`Pendalaman · ${pct('EI')}${R.b5?` · Canggung ${nmf(b5f('N','Canggung'))}`:''}`);
+  if(hi('d-energi')&&ax('EI')>=55)add('introcanggung',`E/I · ${pct('EI')}`,'Sebagian karena cemas, bukan hanya preferensi','Kamu cenderung menjauhi keramaian, tapi tanpa rasa gugup kamu sebenarnya ingin lebih sering bersama orang. Sebagian sikap tertutupmu kemungkinan berasal dari rasa cemas, bukan dari kebutuhan energi.',`Pendalaman · ${pct('EI')}`);
+  if(hi('d-diam')&&fac('EI',4)>=.5)add('diam','Facet Quiet','Diam karena sungkan, bukan karena tidak ingin','Kamu sering diam di kelompok bukan karena tidak ada yang ingin kamu katakan, tapi karena gugup atau sungkan.',`Pendalaman · Facet Quiet ${sgn(fac('EI',4))}`);
+  if(lo('d-diam')&&fac('EI',4)>=.5)add('diam','Facet Quiet','Diam karena pilihan','Kamu diam di kelompok karena memang tidak merasa perlu bicara, bukan karena takut atau sungkan.',`Pendalaman · Facet Quiet ${sgn(fac('EI',4))}`);
+  if(has('d-dekat')&&has('d-kenal')){const b='Pendalaman: orang tersayang vs kenalan';
+    if(c['d-dekat']>=4&&c['d-kenal']<=2)add('tfctx','T/F · konteks','Filternya: siapa orangnya bagimu','Kepada orang yang kamu sayang kamu mengalah dan memaafkan, tapi kepada kenalan biasa kamu tegas. Cara memutuskanmu berubah tergantung seberapa berarti orang itu bagimu.',b);
+    else if(c['d-dekat']>=4&&c['d-kenal']>=4)add('tfctx','T/F · konteks','Mudah memaafkan siapa pun','Kamu cenderung memaafkan dan mengalah, baik kepada orang terdekat maupun kenalan biasa. Hati-hati, kebaikan ini bisa dimanfaatkan orang.',b);
+    else if(c['d-dekat']<=2&&c['d-kenal']<=2)add('tfctx','T/F · konteks','Tegas kepada siapa pun','Kamu menegur kesalahan dengan tegas, bahkan kepada orang yang paling kamu sayang. Kamu konsisten, tapi orang terdekat bisa merasa kurang diberi kelonggaran.',b)}
+  if(hi('d-pantas')&&valid(c.c21)&&c.c21>=4)add('peduli','Kepedulian','Peduli yang selektif','Penderitaan orang yang tidak bersalah menyentuhmu, tapi kepada orang yang kamu anggap jahat kamu tidak peduli. Kepedulianmu disaring oleh pantas-tidaknya orang itu dikasihani.','Pendalaman · soal Inti tentang korban banjir');
+  if(hi('d-berarti'))add('berarti','Motivasi','Saringan: berarti atau tidak bagimu','Semangatmu sangat ditentukan oleh apakah sesuatu berarti atau menguntungkan bagimu. Kewajiban saja jarang cukup untuk menggerakkanmu.'+(R.fn&&fnRank('Fi')<=1?' Ini sejalan dengan Fi-mu yang kuat.':''),`Pendalaman${R.fn?` · Fungsi Fi ${nmf(R.fn.find(x=>x.f==='Fi').g)}`:''}`);
+  {const w=[];if(hi('d-ingin-rapi')&&b5f('C','Keteraturan')<=2.5)w.push(['lebih teratur',`Keteraturan ${nmf(b5f('C','Keteraturan'))}`]);if(hi('d-ingin-produktif')&&b5f('C','Disiplin diri')<=2.5)w.push(['lebih produktif',`Disiplin diri ${nmf(b5f('C','Disiplin diri'))}`]);
+    if(w.length)add('jarak','Keinginan vs kebiasaan','Jarak antara keinginan dan kenyataan',`Kamu ingin ${w.map(x=>x[0]).join(' dan ')}, tapi kebiasaanmu saat ini belum ke sana. Jarak ini wajar, dan bisa jadi sumber rasa kurang puas pada diri sendiri.`+(ax('AT')>=65?' Ini juga bisa menjelaskan kenapa kamu cukup keras pada dirimu sendiri.':''),`Pendalaman · Big Five ${w.map(x=>x[1]).join(' · ')}`)}
+  if(hi('d-marah')&&b5f('N','Mudah marah')>=4)add('marah','Emosi','Marah yang reaktif dan lama reda','Rasa marahmu cepat naik dan lama turun. Setelah bertengkar, kamu cenderung menjauh.'+(b5f('A','Mengalah')<=2?' Kamu juga tidak mudah mengalah saat konflik.':''),`Pendalaman · Mudah marah ${nmf(b5f('N','Mudah marah'))}`);
+  if(lo('d-marah')&&b5f('N','Mudah marah')>=4)add('marah','Emosi','Cepat panas, cepat dingin','Rasa marahmu cepat naik, tapi juga cepat reda. Setelah bertengkar, kamu bisa kembali biasa.',`Pendalaman · Mudah marah ${nmf(b5f('N','Mudah marah'))}`);
+  if(lo('d-telat')&&fac('JP',2)>=1)add('telat','J/P · deadline','Mulai telat karena belum ada dorongan','Kamu bukan tipe yang sengaja menunggu tekanan. Kamu mulai telat karena dorongannya belum muncul'+(b5f('N','Mudah kewalahan')>=4?', padahal tekanan membuatmu stres. Memulai dengan langkah sangat kecil bisa membantu memancing dorongan itu.':'.'),`Pendalaman · Facet Pressure-Prompted ${sgn(fac('JP',2))}`);
+  if(hi('d-telat')&&fac('JP',2)>=1)add('telat','J/P · deadline','Tekanan sebagai bahan bakar','Kamu memang paling fokus di bawah tekanan, jadi mengerjakan mendekati deadline adalah strategimu, bukan sekadar menunda.',`Pendalaman · Facet Pressure-Prompted ${sgn(fac('JP',2))}`);
+  if(hi('d-rutin')&&(ax('JP')>=50||(R.fn&&fnRank('Si')<=2)))add('rutin',`J/P · ${pct('JP')}`,'Suka yang familiar, bukan suka jadwal','Rutinitas terasa nyaman bagimu karena familiar dan tidak menuntut adaptasi, bukan karena kamu suka merencanakan.',`Pendalaman · ${pct('JP')}`);
+  if(lo('d-rutin')&&ax('JP')<50)add('rutin',`J/P · ${pct('JP')}`,'Teratur karena rencana','Rutinitasmu nyaman karena memang terencana. Keteraturan adalah pilihan sadar, bukan sekadar kebiasaan.',`Pendalaman · ${pct('JP')}`);
+  if(R.b5&&(b5f('O','Ide')>=4||b5f('O','Nilai')>=4)&&b5f('O','Pengalaman baru')<=2.5)add('ide','Openness','Terbuka pada ide, hati-hati pada pengalaman','Kamu senang mengulik ide dan mempertanyakan nilai, tapi jarang mencoba makanan atau tempat baru. Keterbukaanmu ada di pikiran, bukan di kebiasaan.',`Big Five Ide ${nmf(b5f('O','Ide'))} · Nilai ${nmf(b5f('O','Nilai'))} · Pengalaman baru ${nmf(b5f('O','Pengalaman baru'))}`);
+  return out;
+}
+
+// ---------- Riwayat: satu entri = jawaban padat + nama + catatan ----------
+const packAns=ans=>Object.fromEntries(MODS.map(m=>[m.id,m.items.map((_,i)=>{const v=ans&&ans[m.id]&&ans[m.id][i];return valid(v)?v:0}).join('')]));
+const unpackAns=a=>Object.fromEntries(MODS.map(m=>[m.id,String(a&&a[m.id]||'').split('').map(Number)]));
+const histEntry=(D,date)=>{const e={t:date||new Date().toISOString(),n:D.name||'',a:packAns(D.ans)};if(D.summary)e.s=D.summary;if(D.notes&&D.notes.length)e.c=D.notes;return e};
+const histData=e=>e&&typeof e==='object'?sanitizeImport({app:APP_ID,v:DATA_V,name:e.n,ans:unpackAns(e.a),summary:e.s,notes:e.c}):null;
+// Tambah ke riwayat hanya kalau semua modul utama selesai. Kalau jawaban modul utama sama dengan entri terakhir, entri itu diperbarui.
+function histAdd(list,D,date){
+  const a=Array.isArray(list)?list.slice():[];if(!MAIN.every(m=>isDone(D.ans,m)))return a;
+  const e=histEntry(D,date),main=x=>JSON.stringify(MAIN.map(m=>x.a[m.id])),last=a[a.length-1];
+  if(last&&last.a&&main(last)===main(e)){a[a.length-1]={...e,t:last.t};return a}
+  a.push(e);return a.slice(-30);
 }
 
 function summaryText(R,name){

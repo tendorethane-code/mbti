@@ -158,3 +158,19 @@ const FN2=[
 ['Ni','Ne',"Sikap temanmu tiba-tiba berubah. Firasat pertamamu:","Satu kesimpulan yang kamu yakini","Beberapa kemungkinan sekaligus"],
 ['Ni','Se',"Di situasi baru yang ramai dan seru:","Pikiranmu sibuk menebak semua ini akan mengarah ke mana","Kamu ikut larut dan menikmati yang terjadi saat itu"],
 ['Ni','Se',"Kamu lebih percaya:","Firasat tentang arah jangka panjang","Apa yang bisa kamu lihat dan lakukan sekarang"]];
+
+// Modul Pendalaman (opsional, tidak memengaruhi skor tipe): pertanyaan lanjutan untuk memisahkan hal yang
+// di modul utama bisa tercampur, misalnya introvert vs cemas, atau rutinitas karena rencana vs karena familiar.
+// [id, jenis, pertanyaan, A, B]. Jenis 'fc' = pilihan A/B, 'lk' = pernyataan setuju/tidak.
+const DEEP=[
+['d-energi','fc',"Bayangkan rasa gugup atau canggung di depan orang hilang sama sekali. Kamu tetap lebih memilih:","Di rumah atau menghabiskan waktu sendiri","Lebih sering ikut kegiatan bersama orang"],
+['d-diam','fc',"Saat kamu lebih banyak diam dalam obrolan kelompok, alasannya lebih sering:","Memang tidak ingin bicara","Sebenarnya ingin bicara, tapi gugup atau sungkan"],
+['d-dekat','fc',"(Orang yang paling kamu sayang) Dia melakukan kesalahan yang merugikanmu:","Tetap kamu tegur dengan tegas","Kamu maafkan, bahkan rela mengalah lebih dulu"],
+['d-kenal','fc',"(Kenalan biasa) Dia melakukan kesalahan yang sama dan merugikanmu:","Tetap kamu tegur dengan tegas","Kamu maafkan dan mengalah"],
+['d-pantas','fc',"Orang yang dikenal suka berbuat jahat tertimpa musibah karena ulahnya sendiri:","Tetap ikut kasihan","Tidak peduli"],
+['d-berarti','lk',"Saya sulit bersemangat mengerjakan sesuatu yang tidak berarti atau tidak menguntungkan bagi saya, walaupun itu kewajiban."],
+['d-ingin-rapi','lk',"Saya ingin hidup saya lebih teratur dan rapi daripada sekarang."],
+['d-ingin-produktif','lk',"Saya ingin lebih produktif daripada sekarang."],
+['d-marah','fc',"Setelah bertengkar hebat dengan seseorang:","Emosimu cepat reda dan kamu kembali biasa","Emosimu bertahan lama dan kamu menjauh"],
+['d-telat','fc',"Kalau kamu mulai mengerjakan tugas mendekati deadline, alasan yang paling sering:","Belum ada dorongan atau suasana hati yang pas","Sengaja, karena tekanan membuatmu fokus"],
+['d-rutin','fc',"Kalau rutinitas sehari-hari terasa nyaman, alasannya lebih karena:","Teratur dan sesuai rencana","Familiar, tidak perlu berpikir atau beradaptasi"]];

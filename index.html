@@ -163,6 +163,13 @@ footer{border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
 .ncard p{font-size:15px;margin:0;max-width:none}
 .viewbar{background:var(--pan);border-bottom:1px solid var(--line);padding:14px max(5vw,16px)}
 .viewbar p{margin:0;font-weight:600}
+.hist{margin-top:26px}
+.hrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border-top:1px solid var(--line);padding:10px 0}
+.hrow b{display:block}
+.hrow small{color:var(--mute);font-size:13px}
+.hrow .btn{min-height:40px;padding:6px 14px;font-size:14px}
+.cta{border:2px dashed var(--line);border-radius:14px;padding:16px;margin-top:14px}
+.ncard .basis{margin-top:8px}
 .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:10px max(5vw,16px);border-bottom:1px solid var(--line)}
 .brand{font-weight:800;letter-spacing:-.01em}
 .seg{display:inline-flex;border:2px solid var(--line);border-radius:12px;padding:3px;gap:3px}
@@ -197,13 +204,14 @@ footer{border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
 <div class="rowb">
 <button class="btn" id="goRes" type="button">Lihat hasil</button>
 <button class="btn ghost" id="openFile" type="button">Buka file jawaban</button>
-<button class="btn ghost" id="askReset" type="button">Ulang dari awal</button>
+<button class="btn ghost" id="askReset" type="button">Mulai tes baru</button>
 <input type="file" id="fileIn" accept=".json,application/json" hidden>
 </div>
 <p class="mute" id="fileMsg" role="status" style="margin-top:8px"></p>
-<div class="note" id="confirmReset" hidden>Semua jawaban di browser ini akan dihapus. Yakin?
-<div class="rowb" style="margin-top:10px"><button class="btn warn" id="doReset" type="button">Hapus semua</button><button class="btn ghost" id="noReset" type="button">Batal</button></div></div>
-<h3>Biar hasilnya akurat</h3>
+<div class="note" id="confirmReset" hidden>Jawaban yang sedang aktif akan dikosongkan. Hasil yang sudah lengkap tetap tersimpan di riwayat. Lanjutkan?
+<div class="rowb" style="margin-top:10px"><button class="btn warn" id="doReset" type="button">Kosongkan dan mulai baru</button><button class="btn ghost" id="noReset" type="button">Batal</button></div></div>
+<div id="hist" class="hist"></div>
+<h3>Supaya hasilnya akurat</h3>
 <ul>
 <li>Jawab berdasarkan kebiasaanmu 2–3 tahun terakhir, bukan hanya minggu ini.</li>
 <li>Kalau jawabannya hanya "agak", pilih yang agak. Tidak harus selalu di ujung.</li>
@@ -226,7 +234,7 @@ footer{border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
 <main id="done" class="band" hidden><div class="qwrap">
 <h1 id="doneTitle">Modul selesai</h1>
 <p class="lead" id="doneText"></p>
-<div class="rowb"><button class="btn" id="doneNext" type="button">Lanjut modul berikutnya</button><button class="btn ghost" id="doneRes" type="button">Lihat hasil</button><button class="btn ghost" id="doneHome" type="button">Ke beranda</button></div>
+<div class="rowb"><button class="btn" id="doneNext" type="button">Lanjut ke modul berikutnya</button><button class="btn ghost" id="doneRes" type="button">Lihat hasil</button><button class="btn ghost" id="doneHome" type="button">Ke beranda</button></div>
 </div></main>
 
 <div id="viewBar" class="viewbar noprint" hidden><div class="wrap"><p id="viewText"></p><div class="rowb" style="margin-top:8px"><button class="btn" id="viewSave" type="button">Simpan hasil ini di browser ini</button><button class="btn ghost" id="viewMine" type="button">Kerjakan tesmu sendiri</button></div><div class="note" id="viewConfirm" hidden>Browser ini sudah berisi jawaban lain. Kalau disimpan, jawaban itu akan diganti. Lanjutkan?<div class="rowb" style="margin-top:10px"><button class="btn warn" id="viewSaveYes" type="button">Ganti dan simpan</button><button class="btn ghost" id="viewSaveNo" type="button">Batal</button></div></div></div></div>
@@ -246,7 +254,29 @@ let S=blank();
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');const c=s&&sanitizeImport({...s,app:APP_ID});if(c)S=c}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({v:DATA_V,name:S.name,ans:S.ans,summary:S.summary||'',notes:S.notes||[]}))}catch(e){}};
 save();
-let cur=0,qi=0,lock=false,resetArm=-1,view=null;
+let cur=0,qi=0,lock=false,resetArm=-1,view=null,histArm=-1;
+const HKEY='tesKepribadian.riwayat';
+const hLoad=()=>{try{const a=JSON.parse(localStorage.getItem(HKEY)||'[]');return Array.isArray(a)?a.filter(e=>e&&e.a&&e.t):[]}catch(e){return []}};
+const hSave=a=>{try{localStorage.setItem(HKEY,JSON.stringify(a))}catch(e){}};
+const hRecord=D=>hSave(histAdd(hLoad(),D));
+const fmtDate=t=>{const d=new Date(t);return isNaN(d)?'':d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'})+', '+d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})};
+const axShort=R=>['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax];return `${p>=50?POS[ax]:AX[ax][0]} ${Math.round(p>=50?p:100-p)}`}).join(' · ');
+function histTable(list){
+  const L=list.slice(-4).map(e=>{const d=histData(e);return d?{e,R:compute(d.ans)}:null}).filter(x=>x&&x.R.hasType);if(L.length<2)return '';
+  const cell=(R,ax)=>{const p=R.ax[ax];return p==null?'–':`${p>=50?POS[ax]:AX[ax][0]} ${Math.round(p>=50?p:100-p)}%`};
+  const a=L[L.length-2].R,b=L[L.length-1].R;
+  const delta=ax=>{if(a.ax[ax]==null||b.ax[ax]==null)return '–';const d=b.ax[ax]-a.ax[ax];return Math.abs(d)<1?'tetap':`${Math.round(Math.abs(d))} poin ke ${d>0?POS[ax]:AX[ax][0]}`};
+  return `<div class="scroll"><table><thead><tr><th>Sumbu</th>${L.map(x=>`<th class="n">${esc(fmtDate(x.e.t).split(',')[0])}</th>`).join('')}<th class="n">Perubahan terakhir</th></tr></thead><tbody>${['EI','SN','TF','JP','AT'].map(ax=>`<tr><td>${AX[ax][2]} / ${AX[ax][3]}</td>${L.map(x=>`<td class="n">${cell(x.R,ax)}</td>`).join('')}<td class="n">${delta(ax)}</td></tr>`).join('')}<tr><td>Tipe</td>${L.map(x=>`<td class="n"><b>${x.R.type}${x.R.id?'-'+x.R.id:''}</b></td>`).join('')}<td class="n">${a.type===b.type&&a.id===b.id?'sama':'berubah'}</td></tr></tbody></table></div>`;
+}
+function renderHist(){
+  const list=hLoad();if(!list.length){$('hist').innerHTML='';return}
+  const rows=list.map((e,i)=>{const d=histData(e),R=d&&compute(d.ans);return R&&R.hasType?`<div class="hrow"><div><b>${R.type}${R.id?'-'+R.id:''}${e.n?' · '+esc(e.n):''}</b><small>${esc(fmtDate(e.t))} · ${axShort(R)}</small></div><div class="rowb" style="margin:0"><button class="btn ghost" type="button" data-hv="${i}">Lihat</button><button class="btn ghost" type="button" data-hd="${i}">${histArm===i?'Ketuk lagi untuk hapus':'Hapus'}</button></div></div>`:''}).reverse().join('');
+  $('hist').innerHTML=`<h3>Riwayat tes (${list.length})</h3><p class="mute" style="font-size:14px">Setiap hasil lengkap tersimpan otomatis di browser ini, jadi kamu bisa mengulang tes dan membandingkan hasilnya.</p>${histTable(list)}${rows}`;
+}
+$('hist').addEventListener('click',e=>{const v=e.target.closest('[data-hv]'),d=e.target.closest('[data-hd]');const list=hLoad();
+  if(v){const x=list[+v.dataset.hv],dd=histData(x);if(!dd)return;view=dd;viewKind='hist';$('viewText').textContent=`Kamu sedang melihat hasil tes ${fmtDate(x.t)}. Jawabanmu yang aktif tidak berubah.`;$('viewSave').textContent='Pakai jawaban ini lagi';$('viewMine').textContent='Kembali ke beranda';$('viewConfirm').hidden=true;renderRes();return}
+  if(d){const i=+d.dataset.hd;if(histArm!==i){histArm=i;renderHist();return}list.splice(i,1);hSave(list);histArm=-1;renderHist()}});
+let viewKind='';
 const V=()=>view||S;
 
 $('totalQ').textContent=TOTAL;
@@ -274,10 +304,10 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-theme-set]
 window.addEventListener('beforeprint',()=>document.querySelectorAll('#res details').forEach(d=>d.open=true));
 
 function renderHome(){
-  view=null;
+  view=null;histArm=-1;renderHist();
   $('nama').value=S.name||'';
   $('mods').innerHTML=MODS.map((m,i)=>{const c=answered(S.ans,m),n=m.items.length,ok=c===n;return `<div class="mod ${ok?'ok':''}"><span class="no">${ok?'✓':i+1}</span><div><b>${m.name}</b><small>${m.sub} · ${ok?'selesai':c?`${c}/${n} dijawab`:'belum dimulai'}</small><div class="mini"><i style="width:${c/n*100}%"></i></div></div><button class="btn ${ok?'ghost':''}" type="button" data-m="${i}">${ok?'Ulangi':c?'Lanjutkan':'Mulai'}</button></div>`}).join('');
-  $('goRes').disabled=!MODS.some(m=>isDone(S.ans,m));
+  $('goRes').disabled=!MAIN.some(m=>isDone(S.ans,m));
   resetArm=-1;show('home');
 }
 $('mods').addEventListener('click',e=>{const b=e.target.closest('button[data-m]');if(!b)return;const i=+b.dataset.m,m=MODS[i];
@@ -311,10 +341,14 @@ $('qHome').addEventListener('click',renderHome);
 document.addEventListener('keydown',e=>{if($('quiz').hidden||e.target.tagName==='INPUT'||e.metaKey||e.ctrlKey||e.altKey)return;if(/^[1-5]$/.test(e.key))answer(+e.key);else if(e.key==='ArrowLeft'&&qi>0&&!lock){qi--;renderQ()}});
 
 function finish(){
-  const left=MODS.filter(m=>!isDone(S.ans,m));
+  const left=MAIN.filter(m=>!isDone(S.ans,m)),deep=MODS.find(m=>m.opt),deepLeft=!isDone(S.ans,deep);
   $('doneTitle').textContent=`${MODS[cur].name} selesai`;
-  $('doneText').textContent=left.length?`Tinggal ${left.length} modul lagi: ${left.map(m=>m.name).join(', ')}. Hasil sementara sudah bisa dilihat, tapi baru lengkap setelah semua modul selesai.`:'Semua modul selesai. Hasil lengkapmu sudah siap.';
-  $('doneNext').hidden=!left.length;$('doneNext').onclick=()=>start(MODS.indexOf(left[0]));
+  let next=null;
+  if(left.length){$('doneText').textContent=`Tinggal ${left.length} modul lagi: ${left.map(m=>m.name).join(', ')}. Hasil sementara sudah bisa dilihat, tapi baru lengkap setelah semua modul selesai.`;next=left[0];$('doneNext').textContent='Lanjut ke modul berikutnya'}
+  else if(deepLeft){$('doneText').textContent=`Semua modul utama selesai. Hasil lengkapmu sudah siap. Ada satu modul opsional, Pendalaman (${deep.items.length} soal, ±3 menit), untuk temuan yang lebih spesifik.`;next=deep;$('doneNext').textContent='Lanjut ke Pendalaman'}
+  else $('doneText').textContent='Semua modul selesai, termasuk Pendalaman. Hasil lengkapmu sudah siap.';
+  if(!left.length)hRecord(S);
+  $('doneNext').hidden=!next;$('doneNext').onclick=()=>start(MODS.indexOf(next));
   show('done');
 }
 $('doneRes').addEventListener('click',()=>renderRes());
@@ -322,9 +356,9 @@ $('doneHome').addEventListener('click',renderHome);
 $('goRes').addEventListener('click',()=>renderRes());
 $('askReset').addEventListener('click',()=>{$('confirmReset').hidden=false});
 $('noReset').addEventListener('click',()=>{$('confirmReset').hidden=true});
-$('doReset').addEventListener('click',()=>{S=blank();save();$('confirmReset').hidden=true;$('fileMsg').textContent='Semua jawaban sudah dihapus.';renderHome()});
+$('doReset').addEventListener('click',()=>{hRecord(S);const n=S.name;S=blank();S.name=n;save();$('confirmReset').hidden=true;renderHome();$('fileMsg').textContent='Jawaban aktif sudah dikosongkan. Hasil sebelumnya ada di riwayat.'});
 $('openFile').addEventListener('click',()=>$('fileIn').click());
-const loadMsg=d=>{const left=MODS.reduce((s,m)=>s+m.items.length-answered(d.ans,m),0);
+const loadMsg=d=>{const left=MAIN.reduce((s,m)=>s+m.items.length-answered(d.ans,m),0);
   return d.migrated?`File jawaban versi lama berhasil dibuka. Sebagian soal Facet sudah diperbarui, jadi ada ${left} soal yang perlu kamu jawab lagi.`:'File jawaban berhasil dibuka.'};
 $('fileIn').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();
   r.onload=()=>{let d=null;try{d=sanitizeImport(JSON.parse(r.result))}catch(err){}
@@ -337,13 +371,13 @@ function openShared(){
   const m=location.hash.match(/^#h=([A-Za-z0-9_-]+)$/);if(!m)return false;
   const d=decodeShare(m[1]);
   if(!d||!MODS.some(mm=>isDone(d.ans,mm))){history.replaceState(null,'',location.pathname+location.search);renderHome();$('fileMsg').textContent='Link hasil ini tidak valid atau tidak lengkap.';return true}
-  view=d;$('viewText').textContent=`Kamu sedang melihat hasil ${d.name||'seseorang'} yang dibagikan lewat link. Jawabanmu sendiri di browser ini tidak berubah.`;
+  view=d;viewKind='link';$('viewSave').textContent='Simpan hasil ini di browser ini';$('viewMine').textContent='Kerjakan tesmu sendiri';$('viewText').textContent=`Kamu sedang melihat hasil ${d.name||'seseorang'} yang dibagikan lewat link. Jawabanmu sendiri di browser ini tidak berubah.`;
   $('viewConfirm').hidden=true;renderRes();return true;
 }
 const clearHash=()=>history.replaceState(null,'',location.pathname+location.search);
 $('viewMine').addEventListener('click',()=>{clearHash();renderHome()});
-const keepShared=()=>{S={...view,ans:JSON.parse(JSON.stringify(view.ans))};save();view=null;clearHash();renderRes();$('copyMsg').textContent='Hasil ini sudah tersimpan di browser ini.'};
-$('viewSave').addEventListener('click',()=>{if(MODS.some(m=>answered(S.ans,m)>0))$('viewConfirm').hidden=false;else keepShared()});
+const keepShared=()=>{if(viewKind==='hist')hRecord(S);S={...view,ans:JSON.parse(JSON.stringify(view.ans))};save();view=null;clearHash();renderRes();$('copyMsg').textContent='Hasil ini sudah tersimpan di browser ini.'};
+$('viewSave').addEventListener('click',()=>{if(viewKind!=='hist'&&MODS.some(m=>answered(S.ans,m)>0))$('viewConfirm').hidden=false;else keepShared()});
 $('viewSaveYes').addEventListener('click',keepShared);
 $('viewSaveNo').addEventListener('click',()=>{$('viewConfirm').hidden=true});
 window.addEventListener('hashchange',()=>{if(!openShared()&&view)renderHome()});
@@ -352,15 +386,16 @@ function dl(blob,fname){const a=document.createElement('a');a.href=URL.createObj
 const li=x=>`<li${x.w>=3?' class="sp"':''}>${esc(x.t)}<span class="basis">Dasar: ${esc(x.b)}</span></li>`;
 
 function renderRes(keep){
-  const D=V(),R=compute(D.ans),name=safeName(D.name),I=insights(R,D.ans),notes=D.notes||[],own=D.summary||'';
-  const done=MODS.filter(m=>R.done[m.id]).length;
+  const D=V(),R=compute(D.ans),name=safeName(D.name),I=insights(R,D.ans),notes=D.notes||[],own=D.summary||'',F=deepFindings(R,D.ans);
+  const done=MAIN.filter(m=>R.done[m.id]).length,deep=MODS.find(m=>m.opt),mainDone=done===MAIN.length;
+  if(!view)hRecord(D);
   let h='';
   if(R.hasType){
     const fx=Object.fromEntries(R.fits.map(f=>[f.t,f.v])),top=R.fits.slice(0,3).map(f=>f.t);
     const sumAx=['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax];return `${p>=50?AX[ax][3]:AX[ax][2]} ${lab(p)}`});
     h+=`<section class="band"><div class="wrap hero"><div><h1>${name?esc(name)+', p':'P'}aling cocok <span class="code">${R.type}${R.id?'-'+R.id:''}</span></h1><p class="lead">${sumAx.join(' · ')}.${R.letters!==R.type?` Dari huruf saja hasilnya ${R.letters}, tapi urutan fungsi lebih cocok ke ${R.type}.`:''}</p>
     <h3>Tiga tipe paling cocok</h3><div class="top3">${R.fits.slice(0,3).map((f,i)=>`<div class="fit"><b>${f.t}</b><div class="bar ${i?'':'hi'}"><i style="width:${f.v}%"></i></div><span class="v">${nm(f.v)}</span></div>`).join('')}</div>
-    <div class="chips"><span class="chip">Family: ${FAM[famOf(R.type)]} (${famOf(R.type)})</span>${R.strat?`<span class="chip">Strategy: ${R.strat}</span>`:''}<span class="chip">${done}/4 modul selesai</span></div></div>
+    <div class="chips"><span class="chip">Family: ${FAM[famOf(R.type)]} (${famOf(R.type)})</span>${R.strat?`<span class="chip">Strategy: ${R.strat}</span>`:''}<span class="chip">${done}/${MAIN.length} modul utama selesai</span></div></div>
     <div><div class="tt" id="ttRes" role="img" aria-label="Tabel 16 tipe, tiga yang paling cocok menyala">${TABLE.map(t=>{const r=top.indexOf(t);const st=r<0?'background:transparent;border-color:var(--line);color:var(--mute)':`background:${mix('--ind',[100,58,30][r])};color:${r<2?'#fff':'var(--ink)'}`;return `<div class="cell ${r===0?'me':''}" data-rank="${r+1}" style="${st}">${t}<small>${nm(fx[t])}</small></div>`}).join('')}</div><div class="axes"><span>Menyala = 3 tipe paling cocok</span><span>Lingkaran = hasil utama</span></div></div></div></section>`;
   }else{
     h+=`<section class="band"><div class="wrap"><h1>Hasil sementara</h1><p class="lead">Selesaikan modul Inti atau Facet supaya tipe 4 hurufmu terlihat.</p></div></section>`;
@@ -369,8 +404,13 @@ function renderRes(keep){
     h+=`<section class="band pan" id="ringkasan"><div class="wrap grid2"><div class="sumcard" style="background:var(--bg)"><h3>${own?'Ringkasan dari sesi analisis':'Ringkasan kepribadian'}</h3><p id="sumText">${esc(own||I.summary||'Selesaikan semua modul supaya ringkasannya lengkap.')}</p>${own&&I.summary?`<p class="mute" style="margin-top:10px;font-size:14px"><b>Ringkasan otomatis:</b> ${esc(I.summary)}</p>`:''}</div>
     <div class="grid2" style="gap:18px">${I.strengths.length?`<div><h3 style="margin-top:0">Kekuatan</h3><ul class="klist">${I.strengths.map(li).join('')}</ul></div>`:''}${I.watch.length?`<div><h3 style="margin-top:0">Perlu diperhatikan</h3><ul class="klist">${I.watch.map(li).join('')}</ul></div>`:''}</div></div></section>`;
   }
-  if(notes.length){
-    h+=`<section class="band" id="catatan"><div class="wrap"><h2>Temuan khusus</h2><p class="lead">Catatan dari sesi analisis di luar tes. Bagian ini tidak dihitung dari skor.</p><div class="ncards">${notes.map(n=>`<div class="ncard">${n.tag?`<span class="tg">${esc(n.tag)}</span>`:''}${n.title?`<h3>${esc(n.title)}</h3>`:''}${n.text?`<p>${esc(n.text)}</p>`:''}</div>`).join('')}</div></div></section>`;
+  const ncard=n=>`<div class="ncard">${n.tag?`<span class="tg">${esc(n.tag)}</span>`:''}${n.title?`<h3>${esc(n.title)}</h3>`:''}${n.text?`<p>${esc(n.text)}</p>`:''}${n.b?`<span class="basis">Dasar: ${esc(n.b)}</span>`:''}</div>`;
+  const cta=!view&&mainDone&&!R.done[deep.id];
+  if(notes.length||F.length||cta){
+    h+=`<section class="band" id="catatan"><div class="wrap"><h2>Temuan khusus</h2><p class="lead">${notes.length?'Catatan dari sesi analisis di luar tes, ditambah temuan otomatis dari jawabanmu.':'Pola yang muncul dari gabungan jawaban Pendalaman dan skor utama. Setiap temuan menyebutkan dasarnya.'}</p>
+    ${notes.length?`${F.length?'<h3>Dari sesi analisis</h3>':''}<div class="ncards">${notes.map(ncard).join('')}</div>`:''}
+    ${F.length?`${notes.length?'<h3>Dari modul Pendalaman dan pola skor</h3>':''}<div class="ncards">${F.map(ncard).join('')}</div>`:''}
+    ${cta?`<div class="cta noprint"><b>${answered(D.ans,deep)?'Lanjutkan':'Kerjakan'} modul Pendalaman</b><p class="mute" style="margin:4px 0 10px">${deep.items.length} soal, sekitar 3 menit. Pertanyaan lanjutan untuk memisahkan hal yang di tes utama bisa tercampur, misalnya introvert atau cemas, dan rutinitas karena rencana atau karena familiar.</p><button class="btn" type="button" id="goDeep">${answered(D.ans,deep)?'Lanjutkan':'Mulai'} Pendalaman</button></div>`:''}</div></section>`;
   }
   if(I.sections.length){
     h+=`<section class="band${notes.length?' pan':''}" id="keseharian"><div class="wrap"><h2>Gambaran dalam keseharian</h2><p class="lead">Disusun dari jawabanmu, dan setiap kalimat menyebutkan skor dasarnya. Kalimat bergaris oranye berasal dari gabungan beberapa skor.</p><div class="secs">${I.sections.map(s=>`<div class="sec"><h3>${s.title}</h3><ul>${s.items.map(li).join('')}</ul></div>`).join('')}</div></div></section>`;
@@ -407,7 +447,8 @@ function renderRes(keep){
     h+=`<section class="band pan"><div class="wrap"><h2>Big Five: tertinggi ${fl[0][0].toLowerCase()}, terendah ${fl[fl.length-1][0].toLowerCase()}</h2><p class="lead">Skor 1–5 per facet. Big Five adalah model dengan dukungan riset paling kuat di tes ini.</p><div class="b5">${B5.map(d=>{const x=R.b5[d[0]];return `<div class="b5card" style="background:var(--bg)"><h3>${x.name}<span>${nm(x.dom)}</span></h3>${d[2].map((f,i)=>`<div class="frow"><b>${f[0]}</b><div class="bar ${x.fs[i]>=4.5||x.fs[i]<=1.5?'hi':''}"><i style="width:${(x.fs[i]-1)/4*100}%"></i></div><span class="v">${nm(x.fs[i])}</span></div>`).join('')}</div>`}).join('')}</div>
     <p style="margin-top:14px">Paling menonjol: ${fl.slice(0,3).map(x=>`${x[0]} ${nm(x[1])}`).join(', ')}. Paling rendah: ${fl.slice(-3).reverse().map(x=>`${x[0]} ${nm(x[1])}`).join(', ')}.</p></div></section>`;
   }
-  const missing=MODS.filter(m=>!R.done[m.id]),rel=I.rel;
+  const missing=MAIN.filter(m=>!R.done[m.id]),rel=I.rel,hl=view?[]:hLoad(),ht=hl.length>=2?histTable(hl):'';
+  if(ht)h+=`<section class="band pan" id="riwayat"><div class="wrap"><h2>Dibandingkan tes sebelumnya</h2><p class="lead">Dari riwayat di browser ini. Perubahan kecil (di bawah 10 poin) wajar terjadi pada tes ulang.</p>${ht}</div></section>`;
   h+=`<section class="band"><div class="wrap grid2"><div id="pegang"><h2>Seberapa bisa dipegang</h2><ul>
   ${missing.length?`<li><b>Belum lengkap:</b> ${missing.map(m=>m.name).join(', ')} belum selesai.</li>`:''}
   ${rel.sure.length?`<li><b>Paling yakin:</b> ${rel.sure.join(', ')}. Arahnya jelas dan modul-modulnya sepakat.</li>`:''}
@@ -424,17 +465,19 @@ function renderRes(keep){
   $('copy').addEventListener('click',()=>copyText(txt,'Ringkasan sudah disalin.'));
   $('shareLink').addEventListener('click',()=>copyText(location.origin+location.pathname+'#h='+encodeShare(D),'Link hasil sudah disalin. Siapa pun yang membukanya akan melihat hasil ini.'));
   $('resHome').addEventListener('click',()=>{if(view)clearHash();renderHome()});
+  if($('goDeep'))$('goDeep').addEventListener('click',()=>start(MODS.indexOf(deep)));
   $('dlPdf').addEventListener('click',()=>{try{window.print()}catch(e){$('copyMsg').textContent='Browser ini tidak bisa mencetak. Pakai kartu PNG atau screenshot.'}});
   $('dlJson').addEventListener('click',()=>{dl(new Blob([JSON.stringify(exportData(name,D.ans,{summary:own,notes}))],{type:'application/json'}),`jawaban-peta-kepribadian${slug?'-'+slug:''}.json`);$('copyMsg').textContent='File jawaban diunduh.'});
   $('dlCard').addEventListener('click',async()=>{$('copyMsg').textContent='Sedang membuat kartu…';
-    try{if(document.fonts&&document.fonts.ready)await document.fonts.ready;const c=drawCard(R,name);$('cardPrev').src=c.toDataURL('image/png');$('cardPrev').hidden=false;
+    try{if(document.fonts&&document.fonts.ready)await document.fonts.ready;const c=drawCard(R,name,I);$('cardPrev').src=c.toDataURL('image/png');$('cardPrev').hidden=false;
       c.toBlob(b=>{if(b)dl(b,`peta-kepribadian${slug?'-'+slug:''}.png`)},'image/png');
       $('copyMsg').textContent='Kartu diunduh. Kalau di HP tidak terunduh, tekan lama gambar di bawah lalu pilih simpan.'}
     catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.'}});
 }
-function drawCard(R,name){
-  const W=1080,H=1700,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
-  const dk=theme()==='dark',BG=dk?'#121019':'#ffffff',IND=dk?'#8f86ff':'#3b2fc9',ACC=dk?'#ff7a5c':'#e8492c',INK=dk?'#ecebf3':'#15151a',MUTE=dk?'#a9a6ba':'#5d5b6b',TRK=dk?'#2a2638':'#e9e7f3',BAND='#3b2fc9';
+function drawCard(R,name,I){
+  // Ukuran story (9:16), juga pas untuk dikirim lewat chat.
+  const W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const dk=theme()==='dark',BG=dk?'#121019':'#ffffff',IND=dk?'#8f86ff':'#3b2fc9',ACC=dk?'#ff7a5c':'#e8492c',INK=dk?'#ecebf3':'#15151a',MUTE=dk?'#a9a6ba':'#5d5b6b',TRK=dk?'#2a2638':'#e9e7f3',PAN=dk?'#1d1a2b':'#f1efff',BAND='#3b2fc9';
   const F=(w,z)=>`${w} ${z}px Manrope, system-ui, sans-serif`;
   const rr=(X,Y,w,h,r,col)=>{x.fillStyle=col;x.beginPath();if(x.roundRect)x.roundRect(X,Y,Math.max(w,0),h,r);else x.rect(X,Y,Math.max(w,0),h);x.fill()};
   const fit=(t,max)=>{while(x.measureText(t).width>max&&t.length>4)t=t.slice(0,-2)+'…';return t};
@@ -447,21 +490,25 @@ function drawCard(R,name){
   const head=t=>{x.fillStyle=INK;x.font=F(800,38);x.fillText(t,72,y)};
   if(R.hasType){
     head('Empat huruf + identitas');y+=56;
-    ['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).forEach(ax=>{const p=R.ax[ax],big=p>=50?AX[ax][3]:AX[ax][2];
+    ['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).forEach(ax=>{const p=R.ax[ax],big=p>=50?AX[ax][3]:AX[ax][2],d=Math.abs(p-50);
       x.fillStyle=MUTE;x.font=F(600,24);R2(AX[ax][2],250,y+10);
-      rr(275,y-4,490,16,8,TRK);x.fillStyle=ACC;x.beginPath();x.arc(285+p/100*470,y+4,16,0,Math.PI*2);x.fill();
-      x.fillStyle=INK;x.font=F(800,24);x.fillText(`${big} ${Math.round(p>=50?p:100-p)}%`,786,y+12);y+=64});
-    y+=30;head('Tipe paling cocok');y+=54;
-    R.fits.slice(0,3).forEach((f,i)=>{x.fillStyle=INK;x.font=F(800,32);x.fillText(f.t,72,y+12);rr(220,y-6,600,20,10,TRK);rr(220,y-6,6*f.v,20,10,i?IND:ACC);x.fillStyle=INK;x.font=F(700,28);R2(nm(f.v),1008,y+12);y+=56});
+      rr(275,y-4,490,16,8,TRK);x.fillStyle=ACC;x.globalAlpha=d<10||(R.src[ax]&&R.src[ax].inti!=null&&R.src[ax].facet!=null&&Math.abs(R.src[ax].inti-R.src[ax].facet)>=30)?.55:1;x.beginPath();x.arc(285+p/100*470,y+4,16,0,Math.PI*2);x.fill();x.globalAlpha=1;
+      x.fillStyle=INK;x.font=F(800,24);x.fillText(`${big} ${Math.round(p>=50?p:100-p)}%`,786,y+12);
+      const sr=R.src[ax],gap=sr&&sr.inti!=null&&sr.facet!=null?Math.abs(sr.inti-sr.facet):0,warn=d<10||gap>=30;
+      x.fillStyle=warn?ACC:MUTE;x.font=F(600,19);x.fillText(gap>=30&&d>=10?'kurang stabil':d>=30?'sangat jelas':d>=15?'jelas':d>=5?'condong, bisa berubah':'seimbang',786,y+40);y+=76});
+    y+=24;head('Tipe paling cocok');y+=54;
+    R.fits.slice(0,3).forEach((f,i)=>{x.fillStyle=INK;x.font=F(800,32);x.fillText(f.t,72,y+12);rr(220,y-6,600,20,10,TRK);rr(220,y-6,6*f.v,20,10,i?IND:ACC);x.fillStyle=INK;x.font=F(700,28);R2(nm(f.v),1008,y+12);y+=54});
   }
-  if(R.fn){y+=24;head('Urutan cognitive functions');y+=50;x.font=F(700,32);x.fillStyle=IND;x.fillText(fit(R.fn.map(f=>f.f).join('  ›  '),936),72,y);y+=40}
-  if(R.b5){y+=40;head('Big Five (skala 1–5)');y+=50;
-    B5.forEach(d=>{const v=R.b5[d[0]].dom;x.fillStyle=MUTE;x.font=F(600,26);x.fillText(d[1],72,y+10);rr(380,y-6,520,18,9,TRK);rr(380,y-6,(v-1)/4*520,18,9,IND);x.fillStyle=INK;x.font=F(800,26);R2(nm(v),1008,y+12);y+=46})}
-  const outH=Math.min(H,Math.max(1350,y+120)),out=document.createElement('canvas');out.width=W;out.height=outH;const o=out.getContext('2d');o.drawImage(c,0,0);
-  o.fillStyle=BG;o.fillRect(0,outH-100,W,100);o.fillStyle=MUTE;o.font=F(600,24);
-  o.fillText(location.host?(location.host+location.pathname).replace(/index\.html$/,''):'Peta Kepribadian',72,outH-46);
-  o.textAlign='right';o.fillText(new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}),1008,outH-46);
-  return out;
+  if(R.fn){y+=20;head('Urutan cognitive functions');y+=50;x.font=F(700,32);x.fillStyle=IND;x.fillText(fit(R.fn.map(f=>f.f).join('  ›  '),936),72,y);y+=36}
+  if(R.b5){y+=36;head('Big Five (skala 1–5)');y+=50;
+    B5.forEach(d=>{const v=R.b5[d[0]].dom;x.fillStyle=MUTE;x.font=F(600,26);x.fillText(d[1],72,y+10);rr(380,y-6,520,18,9,TRK);rr(380,y-6,(v-1)/4*520,18,9,IND);x.fillStyle=INK;x.font=F(800,26);R2(nm(v),1008,y+12);y+=44})}
+  const st=I&&I.strengths?I.strengths.slice(0,4).map(s=>s.t):[];
+  if(st.length){y+=36;head('Kekuatan');y+=30;let cx=72;x.font=F(600,26);
+    st.forEach(t=>{const w=Math.min(936,x.measureText(t).width+44);if(cx+w>1008){cx=72;y+=64}if(y>H-190)return;rr(cx,y,w,50,25,PAN);x.fillStyle=INK;x.fillText(fit(t,w-44),cx+22,y+34);cx+=w+12});y+=64}
+  x.fillStyle=BG;x.fillRect(0,H-100,W,100);x.fillStyle=MUTE;x.font=F(600,24);
+  x.fillText(location.host?(location.host+location.pathname).replace(/index\.html$/,''):'Peta Kepribadian',72,H-46);
+  x.textAlign='right';x.fillText(new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}),1008,H-46);x.textAlign='left';
+  return c;
 }
 
 if(!openShared())renderHome();
