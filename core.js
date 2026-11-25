@@ -396,6 +396,22 @@ function deepFindings(R,cIn){
 }
 
 // ---------- Riwayat: satu entri = jawaban per id + nama + catatan ----------
+// Alur cerita hasil (web dan PDF): tiga temuan paling khas tampil besar, sisanya ringkas.
+// "Khas" = paling banyak memisahkan hal yang di tes utama tercampur. Ketiganya diambil dari wilayah yang berbeda.
+const FIND_AREA={introcanggung:'EI',sendiri:'EI',diam:'EI',gugup:'emosi',bocor:'emosi',marah:'emosi',cemas:'emosi',tekanan:'emosi',sn:'SN',ide:'SN',tfctx:'TF',debat:'TF',yakin:'TF',peduli:'TF',telat:'JP',rutin:'JP',batal:'JP',berarti:'motiv',jarak:'motiv'};
+const FIND_RANK=['tfctx','sn','introcanggung','bocor','jarak','rutin','telat','debat','gugup','peduli','yakin','berarti','sendiri','batal','marah','cemas','tekanan','ide','diam'];
+function storyFindings(F,notes){
+  const rk=k=>{const i=FIND_RANK.indexOf(k);return i<0?FIND_RANK.length:i},sorted=(F||[]).slice().sort((a,b)=>rk(a.key)-rk(b.key));
+  const big=[],used=new Set();
+  for(const f of sorted){const a=FIND_AREA[f.key]||f.key;if(big.length<3&&!used.has(a)){big.push(f);used.add(a)}}
+  for(const f of sorted)if(big.length<3&&!big.includes(f))big.push(f);
+  const rest=(notes||[]).map(n=>({title:n.title,text:n.text,tag:n.tag||'Dari sesi analisis'})).concat((F||[]).filter(f=>!big.includes(f)));
+  while(big.length<3&&rest.length)big.push(rest.shift());
+  return {big,rest};
+}
+const lcFirst=t=>t?t[0].toLowerCase()+t.slice(1):'';
+// Penutup: satu kekuatan untuk dipegang, satu hal untuk dijaga (keduanya urutan teratas di insights).
+const closingLines=I=>({keep:I.strengths[0]?I.strengths[0].t:'',care:I.watch[0]?I.watch[0].t:''});
 const histEntry=(D,date)=>{const e={t:date||new Date().toISOString(),n:D.name||'',c:cleanC(D.c)};if(D.summary)e.s=D.summary;if(D.notes&&D.notes.length)e.cn=D.notes;return e};
 const histData=e=>e&&typeof e==='object'&&e.c?sanitizeImport({app:APP_ID,v:DATA_V,name:e.n,c:e.c,summary:e.s,notes:e.cn}):null;
 const mainDone=c=>{const a=fromCanon(c);return MAIN.every(m=>isDone(a,m))};

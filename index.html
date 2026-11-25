@@ -239,11 +239,67 @@ body:before{content:"";position:fixed;inset:-20vh -20vw;z-index:-1;pointer-event
 .hook{margin:18px 0 4px;padding:14px 18px;border-radius:18px;background:var(--pan);border-left:5px solid var(--fam,var(--acc))}
 .hook span{display:block;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--fam,var(--acc))}
 .hook b{display:block;font-size:18px;margin:4px 0 2px}.hook p{margin:0;font-size:15px;color:var(--mute)}
+/* Alur cerita di halaman hasil (web). Versi cetak memakai .story di bawah. */
+#res .code{background:linear-gradient(100deg,var(--fam,var(--acc)),var(--fam2,var(--ind)));-webkit-background-clip:text;background-clip:text;color:transparent}
+.htag{font-weight:600}
+.hook .jump{margin-top:8px;padding:0;min-height:32px;border:0;background:none;color:var(--fam,var(--acc));font:inherit;font-weight:800;font-size:14px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.chap{position:relative;overflow:hidden}
+.chap .ck{display:block;font-size:12px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--fam,var(--acc));margin-bottom:4px}
+#res .chap h2.ctitle{font-size:clamp(27px,3.8vw,40px);line-height:1.12;letter-spacing:-.01em;padding-left:0;margin:0 0 14px}
+#res .chap h2.ctitle:before{display:none}
+.c1{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:center}
+.c-sum{font-size:16px;line-height:1.65;color:var(--mute);max-width:60ch;margin:0}
+.c-sum .c-first{display:block;font-size:clamp(21px,2.7vw,28px);line-height:1.38;font-weight:700;color:var(--ink);margin-bottom:12px}
+.c-auto{margin-top:12px}.c-auto p{font-size:14px;color:var(--mute);margin:0;max-width:60ch}.c-auto summary{font-size:14px;color:var(--fam,var(--acc))}
+.c-map{display:grid;gap:14px;padding:18px;border-radius:22px;background:var(--pan)}
+.cm-row{display:grid;grid-template-columns:6.4em minmax(0,1fr) 7em 3em;gap:10px;align-items:center;font-size:13.5px;color:var(--mute)}
+.cm-row .on{color:var(--ink);font-weight:800}.cm-row .r{text-align:right}.cm-row em{font-style:normal;font-weight:800;color:var(--fam,var(--acc));text-align:right}
+.c-map .sm-bar{position:relative;height:10px;border-radius:5px;background:var(--trk)}
+.c-map .sm-bar:after{content:"";position:absolute;left:50%;top:-5px;width:2px;height:20px;background:var(--mute);opacity:.5}
+.c-map .sm-bar i{position:absolute;top:0;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--fam,var(--acc)),var(--fam2,var(--ind)))}
+.c-map .sm-bar i.wk{background:repeating-linear-gradient(45deg,var(--fam,var(--acc)) 0 4px,transparent 4px 8px)}
+.c-map .sm-bar b{position:absolute;top:-5px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:var(--bg);border:4px solid var(--fam,var(--acc))}
+.c-note{font-size:12.5px;color:var(--mute);margin:8px 0 0}
+.c-tiles{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px}
+.c-tiles li{display:flex;flex-direction:column;gap:6px;min-height:128px;padding:16px 18px;border-radius:20px;background:var(--bg);border:1px solid var(--line)}
+:root:not([data-theme=dark]) .c-tiles li{border-color:transparent;box-shadow:var(--shadow)}
+.c-tiles em{font-style:normal;font-weight:800;font-size:13px;color:var(--fam,var(--acc))}
+.c-tiles b{font-size:20px;line-height:1.25}.c-tiles .basis{margin-top:auto}
+.c-quote{margin:22px 0 0;max-width:46em;font-size:clamp(18px,2.2vw,22px);line-height:1.45;font-weight:600;font-style:italic;border-left:5px solid var(--fam,var(--acc));padding:4px 0 4px 18px}
+.c-quote small{display:block;font-size:12.5px;font-style:normal;font-weight:600;color:var(--mute);margin-top:6px}
+.c-feats{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin-top:6px}.c-feat:first-child{grid-column:1/-1}.c-feat:first-child h3{font-size:clamp(22px,2.8vw,30px)}.c-feat:first-child p{font-size:17px}.c-feat:first-child em{font-size:64px}
+.c-feat{display:grid;grid-template-columns:minmax(3.4rem,auto) minmax(0,1fr);gap:16px;align-items:start;padding:20px 22px!important;border-radius:22px!important}
+.c-feat em{font-style:normal;font-size:46px;line-height:.9;font-weight:800;background:linear-gradient(160deg,var(--fam,var(--acc)),var(--fam2,var(--ind)));-webkit-background-clip:text;background-clip:text;color:transparent}
+.c-feat .tg,.c-rest .tg{color:var(--fam,var(--acc))}.c-feat h3{font-size:clamp(19px,2.2vw,23px);line-height:1.25}.c-feat p{font-size:16px;line-height:1.6;max-width:62ch}
+.c-sub{margin:26px 0 0}
+.c-rest .ncard{padding:14px 16px}.c-rest h3{font-size:15px}.c-rest p{font-size:14px;color:var(--mute)}.c-rest .basis{font-size:12px}
+.c-more{margin-top:14px}.c-more summary{color:var(--fam,var(--acc))}
+.sec .c-more{margin-top:6px}.sec .c-more summary{font-size:14px;min-height:40px}
+.sic{width:26px;height:26px;fill:none;stroke:var(--fam,var(--acc));stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sec .sic+h3{margin-top:6px}
+.c-watch{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px}
+.c-watch li{padding:14px 16px;border-radius:18px;border:1.5px dashed var(--fam,var(--acc))}.c-watch b{font-size:16px;line-height:1.4}
+.c-tips{margin-top:22px;padding:20px 22px;border-radius:24px;background:var(--pan);border:1px solid var(--line)}
+.c-tips h3{margin:0;font-size:20px}.c-tips>p{margin:4px 0 8px;font-size:14px}
+.c-tips ul{margin:0;padding:0;list-style:none}.c-tips li{padding:9px 0;border-top:1px solid var(--line)}.c-tips li:first-child{border-top:0}
+.c-end{background:var(--pan);background:linear-gradient(160deg,color-mix(in srgb,var(--fam,var(--acc)) 14%,var(--bg)),var(--bg) 70%)}
+.c-end:before{content:"";position:absolute;right:-12%;bottom:-40%;width:55%;aspect-ratio:1;border-radius:50%;background:radial-gradient(closest-side,var(--fam2,var(--ind)),transparent);opacity:.18;pointer-events:none}
+.c-end .wrap{position:relative}
+.c-lab{margin:14px 0 2px;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.c-take{margin:0;font-size:clamp(25px,3.6vw,38px);line-height:1.22;font-weight:800;max-width:24em}
+.c-take2{font-size:clamp(19px,2.4vw,25px);font-weight:700;line-height:1.35}
+.c-end .lead{margin-top:20px}
+.pdivider{padding:clamp(30px,6vw,56px) max(5vw,16px) 8px;border-top:2px solid var(--line)}
+.pdivider span{display:block;font-size:12px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--fam,var(--acc))}
+.pdivider b{display:block;font-size:clamp(26px,3.6vw,36px);line-height:1.1;margin:6px 0 8px}
+.pdivider p{color:var(--mute);margin:0;max-width:60ch}
+@media(max-width:820px){.c1,.c-feats{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.cm-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;grid-template-areas:"l r p" "b b b";row-gap:6px}.cm-row .l{grid-area:l}.cm-row .r{grid-area:r}.cm-row em{grid-area:p}.cm-row .sm-bar{grid-area:b}.c-tiles li{min-height:0}.c-feat{grid-template-columns:minmax(0,1fr);gap:4px}.c-feat em,.c-feat:first-child em{font-size:36px}}
 .printonly{display:none}
 @media(max-width:820px){.home{grid-template-columns:minmax(0,1fr);grid-template-areas:"t" "p" "f"}.home .p{margin:8px 0 4px}.hero,.grid2{grid-template-columns:minmax(0,1fr)}.all{grid-template-columns:minmax(0,1fr)}.fam{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.pair{grid-template-columns:minmax(0,1fr)}.drow{grid-template-columns:4.6em minmax(0,1fr) 4.8em;gap:8px}.drow .l,.drow .r{font-size:13px}.dnote{grid-column:1/4;margin:0}.facet{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.facet .div{grid-column:1/3;grid-row:2}.facet .b{text-align:right}.mod{grid-template-columns:2.4em minmax(0,1fr)}.mod .btn{grid-column:1/3}}
 @media(prefers-reduced-motion:no-preference){.bar i,.div i{animation:grow .9s ease-out both}@keyframes grow{from{clip-path:inset(0 100% 0 0)}}}
-@media print{body:before{display:none}.printonly{display:block}#res>section.rhero,#ringkasan,#catatan,#keseharian,#tips,#riwayat,#akhir{display:none!important}
+@media print{body:before{display:none}.printonly{display:block}#res>section.rhero,#res>section.chap,#riwayat,#akhir{display:none!important}.pdivider .wrap{padding:0}
 .spage{position:relative;overflow:hidden;min-height:268mm;padding:16mm 14mm;break-after:page;display:flex;flex-direction:column;gap:6mm}
 .spage:before{content:"";position:absolute;width:120mm;height:120mm;border-radius:50%;right:-40mm;bottom:-40mm;background:radial-gradient(closest-side,var(--fam2),transparent);opacity:.18}
 .spage>*{position:relative}
@@ -276,6 +332,7 @@ body:before{content:"";position:fixed;inset:-20vh -20vw;z-index:-1;pointer-event
 .s-tips{margin-top:auto;border-radius:22px;padding:18px 20px;background:var(--pan);border:1px solid var(--line)}
 .s-tips b{font-size:18px}.s-tips ul{margin:8px 0 0;padding-left:18px}.s-tips li{font-size:13px;line-height:1.5;margin:4px 0}
 .s-end{justify-content:center}.s-take{font-size:30px;line-height:1.35;font-weight:800;max-width:160mm;margin:0}
+.s-lab{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:6mm 0 -3mm}.s-take2{font-size:22px;font-weight:700}
 .s-rel{display:flex;gap:12px;flex-wrap:wrap;margin-top:6mm}.s-rel span{font-size:12px;padding:10px 14px;border-radius:14px;background:var(--pan)}.s-rel b{display:block;font-size:11px;color:var(--fam);letter-spacing:.08em;text-transform:uppercase}
 
 .pcover{position:relative;overflow:hidden;min-height:265mm;padding:14mm 12mm 12mm;break-after:page;display:flex;flex-direction:column;gap:10px}
@@ -297,7 +354,7 @@ body:before{content:"";position:fixed;inset:-20vh -20vw;z-index:-1;pointer-event
 .pc-stats div{border:1px solid var(--line);border-radius:16px;padding:12px 14px;background:var(--bg)}
 .pc-stats b{display:block;font-size:40px;line-height:1;color:var(--fam)}.pc-stats span{font-size:13px;font-weight:700;color:var(--mute)}
 .pc-fit{font-size:13px;color:var(--mute)}.pc-fit b{color:var(--ink)}.pc-fit b.on{color:var(--fam)}
-.pdivider{break-before:page;padding:30mm 12mm 6mm;border-bottom:2px solid var(--line);margin-bottom:6mm}
+.pdivider{break-before:page;padding:30mm 12mm 6mm;border-top:0;border-bottom:2px solid var(--line);margin-bottom:6mm}
 .pdivider span{display:block;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--fam)}
 .pdivider b{display:block;font-size:34px;line-height:1.1;margin:6px 0 8px}
 .pdivider p{font-size:13px;color:var(--mute);margin:0}
@@ -529,7 +586,19 @@ function renderRes(keep){
   const done=MAIN.filter(m=>R.done[m.id]).length,mainDone=done===MAIN.length,dp=mainDone?deepPlan(R,D.c):[],dAns=dp.filter(it=>valid(D.c[it.id])).length;
   if(!view)hRecord(D);
   let h='';
-  const hook=F[0]?{t:F[0].title,x:F[0].text}:notes[0]?{t:notes[0].title,x:notes[0].text}:I.special[0]?{t:'',x:I.special[0].t}:null;
+  // Alur cerita yang sama untuk web dan PDF: hook -> satu kalimat -> kekuatan -> temuan paling khas -> keseharian -> yang perlu dijaga -> penutup -> angka.
+  const SF=storyFindings(F,notes),big=SF.big,rest=SF.rest,CL=closingLines(I);
+  const hook=big[0]?{t:big[0].title,x:big[0].text}:I.special[0]?{t:'',x:I.special[0].t}:null;
+  const firstSentence=t=>{const m=String(t||'').match(/^.*?\.(\s|$)/);return m?m[0].trim():String(t||'')};
+  const sumAll=own||I.summary||'',portrait=firstSentence(sumAll),sumRest=sumAll.slice(portrait.length).trim();
+  const quote=(I.sections.flatMap(sx=>sx.items.slice(3)).find(it=>it.q)||I.sections.flatMap(sx=>sx.items).find(it=>it.q)||{}).q;
+  const ord=['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null);
+  // Keseharian tanpa kalimat yang sudah tampil di "Yang perlu kamu jaga".
+  const inWatch=it=>I.watch.some(w=>it.t.startsWith(w.t));
+  const days=I.sections.map(sx=>({...sx,items:sx.items.filter(it=>!inWatch(it))})).filter(sx=>sx.items.length);
+  const ics={sosial:'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 9a7 7 0 0 1 14 0',pikir:'M9 18h6m-5 3h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z',putus:'M12 3v18M5 7h14M7 7l-3 6a3 3 0 0 0 6 0zm10 0l-3 6a3 3 0 0 0 6 0z',kerja:'M12 7v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z',emosi:'M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z'};
+  const icon=id=>`<svg class="sic" viewBox="0 0 24 24" aria-hidden="true"><path d="${ics[id]||ics.emosi}"/></svg>`;
+  const mapRow=(ax,cls)=>{const p=R.ax[ax],right=p>=50,pp=Math.round(right?p:100-p),wk=Math.abs(p-50)<10;return `<div class="${cls}-row"><span class="l${right?'':' on'}">${AX[ax][2]}</span><div class="sm-bar"><i style="left:${Math.min(p,50)}%;width:${Math.abs(p-50)}%" class="${wk?'wk':''}"></i><b style="left:${p}%"></b></div><span class="r${right?' on':''}">${AX[ax][3]}</span><em>${pp}%</em></div>`};
   if(R.hasType){
     const axs=['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax],d=Math.abs(p-50);return {ax,d,pp:Math.round(p>=50?p:100-p),w:p>=50?AX[ax][3]:AX[ax][2]}}).sort((a,b)=>b.d-a.d);
     const tagW={EI:x=>x.w==='Introvert'?(x.pp>=80?'Sangat Introvert':'Introvert'):(x.pp>=80?'Sangat Ekstrovert':'Ekstrovert'),SN:x=>x.w==='Intuitive'?'Konseptual':'Praktis',TF:x=>x.w==='Feeling'?'Berpegang pada Nilai':'Logis',JP:x=>x.w==='Prospecting'?'Fleksibel':'Terencana'};
@@ -541,68 +610,72 @@ function renderRes(keep){
     <div class="pc-stats">${axs.slice(0,3).map(x=>`<div><b>${x.pp}%</b><span>${x.w}</span></div>`).join('')}</div>
     <div class="pc-fit">Paling cocok: ${R.fits.slice(0,3).map((f,i)=>`<b${i?'':' class="on"'}>${f.t}</b> ${nm(f.v)}`).join(' · ')}</div></div>`;
     {
-      // Alur cerita PDF: sampul -> satu halaman -> kekuatan -> temuan paling khas -> lainnya -> keseharian -> yang perlu dijaga -> penutup -> angka.
-      const firstSentence=t=>{const m=String(t||'').match(/^.*?\.(\s|$)/);return m?m[0].trim():String(t||'')};
-      const portrait=firstSentence(own||I.summary);
-      const quote=(I.sections.flatMap(sx=>sx.items).find(it=>it.q)||{}).q;
-      const ord=['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null);
-      const ics={sosial:'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 9a7 7 0 0 1 14 0',pikir:'M9 18h6m-5 3h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z',putus:'M12 3v18M5 7h14M7 7l-3 6a3 3 0 0 0 6 0zm10 0l-3 6a3 3 0 0 0 6 0z',kerja:'M12 7v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z',emosi:'M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z'};
-      const icon=id=>`<svg class="sic" viewBox="0 0 24 24" aria-hidden="true"><path d="${ics[id]||ics.emosi}"/></svg>`;
-      const allF=F.concat(notes.map(n=>({title:n.title,text:n.text,tag:n.tag||'Dari sesi analisis'})));
-      const big=allF.slice(0,3),rest=allF.slice(3,13);
-      const takeaway=(I.special[0]&&I.special[0].t)||(F[1]&&F[1].text)||portrait;
+      const restP=rest.slice(0,10);
       h+=`<div class="story printonly">
       <div class="spage s-portrait"><span class="kick">Bab 1</span><div class="stitle">Kamu, dalam satu halaman</div>
         <p class="s-big">${esc(portrait)}</p>
         <div class="s-words">${I.strengths.slice(0,3).map(x=>`<span>${esc(x.t)}</span>`).join('')}</div>
-        <div class="s-map">${ord.map(ax=>{const p=R.ax[ax],right=p>=50,pp=Math.round(right?p:100-p),wk=Math.abs(p-50)<10;return `<div class="sm-row"><span class="${right?'':'on'}">${AX[ax][2]}</span><div class="sm-bar"><i style="left:${Math.min(p,50)}%;width:${Math.abs(p-50)}%" class="${wk?'wk':''}"></i><b style="left:${p}%"></b></div><span class="${right?'on':''}">${AX[ax][3]}</span><em>${pp}%</em></div>`}).join('')}</div>
+        <div class="s-map">${ord.map(ax=>mapRow(ax,'sm')).join('')}</div>
         <p class="s-note">Garis tengah = seimbang. Makin jauh dari tengah, makin jelas. Batang bergaris = masih tipis.</p></div>
       <div class="spage s-strength"><span class="kick">Bab 2</span><div class="stitle">Yang membuatmu kuat</div>
         <div class="s-tiles">${I.strengths.map((x,i)=>`<div><em>${String(i+1).padStart(2,'0')}</em><b>${esc(x.t)}</b><small>${esc(x.b)}</small></div>`).join('')}</div>
         ${quote?`<blockquote class="s-quote">${esc(quote)}<small>Salah satu jawabanmu sendiri</small></blockquote>`:''}</div>
       ${big.length?`<div class="spage s-find"><span class="kick">Bab 3</span><div class="stitle">Yang paling khas darimu</div>${big.map((f,i)=>`<div class="s-feat"><em>${String(i+1).padStart(2,'0')}</em><div><span>${esc(f.tag||'')}</span><b>${esc(f.title)}</b><p>${esc(f.text)}</p></div></div>`).join('')}</div>`:''}
-      ${rest.length?`<div class="spage s-more"><span class="kick">Bab 3, lanjutan</span><div class="stitle">Hal lain tentangmu</div><div class="s-list">${rest.map(f=>`<div><b>${esc(f.title)}</b><p>${esc(f.text)}</p></div>`).join('')}</div></div>`:''}
-      ${I.sections.length?`<div class="spage s-days"><span class="kick">Bab 4</span><div class="stitle">Dalam keseharianmu</div><div class="s-areas">${I.sections.map(sx=>`<div class="s-area">${icon(sx.id)}<b>${sx.title}</b><ul>${sx.items.slice(0,3).map(it=>`<li>${esc(it.t)}</li>`).join('')}</ul></div>`).join('')}</div></div>`:''}
+      ${restP.length?`<div class="spage s-more"><span class="kick">Bab 3, lanjutan</span><div class="stitle">Hal lain tentangmu</div><div class="s-list">${restP.map(f=>`<div><b>${esc(f.title)}</b><p>${esc(f.text)}</p></div>`).join('')}</div></div>`:''}
+      ${days.length?`<div class="spage s-days"><span class="kick">Bab 4</span><div class="stitle">Dalam keseharianmu</div><div class="s-areas">${days.map(sx=>`<div class="s-area">${icon(sx.id)}<b>${sx.title}</b><ul>${sx.items.slice(0,3).map(it=>`<li>${esc(it.t)}</li>`).join('')}</ul></div>`).join('')}</div></div>`:''}
       <div class="spage s-care"><span class="kick">Bab 5</span><div class="stitle">Yang perlu kamu jaga</div><p class="s-soft">Bukan kekurangan, tapi bagian dirimu yang butuh perhatian lebih. Semua orang punya.</p>
         <div class="s-watch">${I.watch.map(x=>`<div>${esc(x.t)}</div>`).join('')}</div>
         ${I.tips.length?`<div class="s-tips"><b>Untuk orang-orang terdekatmu</b><ul>${I.tips.map(x=>`<li>${esc(x.t)}</li>`).join('')}</ul></div>`:''}</div>
-      <div class="spage s-end"><span class="kick">Penutup</span><p class="s-take">${esc(takeaway)}</p><p class="s-soft">Kepribadian bukan kotak. Hasil ini gambaran dirimu saat ini, dan bisa berubah. Coba lagi beberapa bulan ke depan, lalu bandingkan di riwayat.</p>
+      <div class="spage s-end"><span class="kick">Penutup</span>${CL.keep?`<p class="s-lab">Kekuatan yang bisa kamu andalkan</p><p class="s-take">${esc(CL.keep)}.</p>`:''}${CL.care?`<p class="s-lab">Yang perlu kamu jaga</p><p class="s-take s-take2">${esc(CL.care)}.</p>`:''}<p class="s-soft">Kepribadian bukan kotak. Hasil ini gambaran dirimu saat ini, dan bisa berubah. Coba lagi beberapa bulan ke depan, lalu bandingkan di riwayat.</p>
         <div class="s-rel">${I.rel.sure.length?`<span><b>Paling yakin</b>${I.rel.sure.join(', ')}</span>`:''}${I.rel.unsure.length?`<span><b>Masih bisa berubah</b>${I.rel.unsure.join(', ')}</span>`:''}</div></div>
       </div>`;
     }
     const fx=Object.fromEntries(R.fits.map(f=>[f.t,f.v])),top=R.fits.slice(0,3).map(f=>f.t);
-    const sumAx=['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax];return `${p>=50?AX[ax][3]:AX[ax][2]} ${lab(p)}`});
-    h+=`<section class="band rhero"><div class="wrap hero"><div><h1>${name?esc(name)+', p':'P'}aling cocok <span class="code">${R.type}${R.id?'-'+R.id:''}</span></h1><p class="lead">${sumAx.join(' · ')}.${R.letters!==R.type?` Dari huruf saja hasilnya ${R.letters}, tapi urutan fungsi lebih cocok ke ${R.type}.`:''}</p>
+    h+=`<section class="band rhero"><div class="wrap hero"><div><h1>${name?esc(name)+', p':'P'}aling cocok <span class="code">${R.type}${R.id?'-'+R.id:''}</span></h1><p class="lead htag">${FAM[famOf(R.type)]}${tagline?' · '+tagline:''}.${R.letters!==R.type?` Dari huruf saja hasilnya ${R.letters}, tapi urutan fungsi lebih cocok ke ${R.type}.`:''}</p>
+    ${hook?`<div class="hook"><span>Yang paling khas darimu</span><b>${esc(hook.t||'')}</b><p>${esc(firstSentence(hook.x))}</p>${big.length?`<button type="button" class="jump noprint" data-jump="catatan">Baca selengkapnya</button>`:''}</div>`:''}
     <h3>Tiga tipe paling cocok</h3><div class="top3">${R.fits.slice(0,3).map((f,i)=>`<div class="fit"><b>${f.t}</b><div class="bar ${i?'':'hi'}"><i style="width:${f.v}%"></i></div><span class="v">${nm(f.v)}</span></div>`).join('')}</div>
-    ${hook?`<div class="hook"><span>Yang paling khas darimu</span><b>${esc(hook.t||'')}</b><p>${esc(hook.x)}</p></div>`:''}
     <div class="chips"><span class="chip">Family: ${FAM[famOf(R.type)]} (${famOf(R.type)})</span>${R.strat?`<span class="chip">Strategy: ${R.strat}</span>`:''}<span class="chip">${done}/${MAIN.length} modul utama selesai</span></div></div>
     <div><div class="tt" id="ttRes" role="img" aria-label="Tabel 16 tipe, tiga yang paling cocok menyala">${TABLE.map(t=>{const r=top.indexOf(t);const st=r<0?'background:transparent;border-color:var(--line);color:var(--mute)':`background:${mix('--ind',[100,58,30][r])};color:${r<2?'#fff':'var(--ink)'}`;return `<div class="cell ${r===0?'me':''}" data-rank="${r+1}" style="${st}">${t}<small>${nm(fx[t])}</small></div>`}).join('')}</div><div class="axes"><span>Menyala = 3 tipe paling cocok</span><span>Lingkaran = hasil utama</span></div></div></div></section>`;
   }else{
     h+=`<section class="band"><div class="wrap"><h1>Hasil sementara</h1><p class="lead">Selesaikan modul Inti atau Facet supaya tipe 4 hurufmu terlihat.</p></div></section>`;
   }
-  if(own||I.summary||I.strengths.length){
-    h+=`<section class="band pan" id="ringkasan"><div class="wrap grid2"><div class="sumcard" style="background:var(--bg)"><h3>${own?'Ringkasan dari sesi analisis':'Ringkasan kepribadian'}</h3><p id="sumText">${esc(own||I.summary||'Selesaikan semua modul supaya ringkasannya lengkap.')}</p>${own&&I.summary?`<p class="mute" style="margin-top:10px;font-size:14px"><b>Ringkasan otomatis:</b> ${esc(I.summary)}</p>`:''}</div>
-    <div class="grid2" style="gap:18px">${I.strengths.length?`<div><h3 style="margin-top:0">Kekuatan</h3><ul class="klist">${I.strengths.map(li).join('')}</ul></div>`:''}${I.watch.length?`<div><h3 style="margin-top:0">Yang perlu kamu jaga</h3><ul class="klist">${I.watch.map(li).join('')}</ul></div>`:''}</div></div></section>`;
+  if(sumAll||ord.length){
+    h+=`<section class="band chap" id="ringkasan"><div class="wrap c1"><div><span class="ck">Bab 1</span><h2 class="ctitle">Kamu, dalam satu kalimat</h2>
+    <p class="c-sum" id="sumText"><span class="c-first">${esc(portrait||'Selesaikan semua modul supaya ringkasannya lengkap.')}</span>${sumRest?' '+esc(sumRest):''}</p>${own&&I.summary?`<details class="c-auto"><summary>Ringkasan otomatis</summary><p>${esc(I.summary)}</p></details>`:''}</div>
+    ${ord.length?`<div><div class="c-map">${ord.map(ax=>mapRow(ax,'cm')).join('')}</div><p class="c-note">Garis tengah = seimbang. Makin jauh dari tengah, makin jelas. Batang bergaris = masih tipis.</p></div>`:''}</div></section>`;
+  }
+  if(I.strengths.length){
+    h+=`<section class="band pan chap" id="kekuatan"><div class="wrap"><span class="ck">Bab 2</span><h2 class="ctitle">Yang membuatmu kuat</h2>
+    <ul class="c-tiles">${I.strengths.map((x,i)=>`<li><em>${String(i+1).padStart(2,'0')}</em><b>${esc(x.t)}</b><span class="basis">Dasar: ${esc(x.b)}</span></li>`).join('')}</ul>
+    ${quote?`<blockquote class="c-quote">${esc(quote)}<small>Salah satu jawabanmu sendiri</small></blockquote>`:''}</div></section>`;
   }
   const ncard=n=>`<div class="ncard">${n.tag?`<span class="tg">${esc(n.tag)}</span>`:''}${n.title?`<h3>${esc(n.title)}</h3>`:''}${n.text?`<p>${esc(n.text)}</p>`:''}${n.b?`<span class="basis">Dasar: ${esc(n.b)}</span>`:''}</div>`;
-  const cta=!view&&mainDone&&dAns<dp.length;
-  if(notes.length||F.length||cta){
-    h+=`<section class="band" id="catatan"><div class="wrap"><h2>Temuan khusus</h2><p class="lead">${notes.length?'Catatan dari sesi analisis di luar tes, ditambah temuan otomatis dari jawabanmu.':'Pola yang muncul dari gabungan jawaban Pendalaman dan skor utama. Setiap temuan menyebutkan dasarnya.'}</p>
-    ${notes.length?`${F.length?'<h3>Dari sesi analisis</h3>':''}<div class="ncards">${notes.map(ncard).join('')}</div>`:''}
-    ${F.length?`${notes.length?'<h3>Dari modul Pendalaman dan pola skor</h3>':''}<div class="ncards">${F.map(ncard).join('')}</div>`:''}
+  const cta=!view&&mainDone&&dAns<dp.length,RV=4;
+  if(big.length||cta){
+    h+=`<section class="band chap" id="catatan"><div class="wrap"><span class="ck">Bab 3</span><h2 class="ctitle">Yang paling khas darimu</h2><p class="lead">${big.length?'Pola yang muncul dari gabungan jawaban Pendalaman dan skor utama'+(notes.length?', ditambah catatan dari sesi analisis di luar tes':'')+'. Tiga yang paling membedakanmu ada di atas.':'Belum ada temuan khusus. Modul Pendalaman memisahkan hal yang di tes utama bisa tercampur.'}</p>
+    ${big.length?`<div class="c-feats">${big.map((f,i)=>`<div class="ncard c-feat"><em>${String(i+1).padStart(2,'0')}</em><div>${f.tag?`<span class="tg">${esc(f.tag)}</span>`:''}<h3>${esc(f.title)}</h3><p>${esc(f.text)}</p>${f.b?`<span class="basis">Dasar: ${esc(f.b)}</span>`:''}</div></div>`).join('')}</div>`:''}
+    ${rest.length?`<h3 class="c-sub">Hal lain tentangmu</h3><div class="ncards c-rest">${rest.slice(0,RV).map(ncard).join('')}</div>${rest.length>RV?`<details class="c-more"><summary>Lihat ${rest.length-RV} temuan lainnya</summary><div class="ncards c-rest">${rest.slice(RV).map(ncard).join('')}</div></details>`:''}`:''}
     ${cta?`<div class="cta noprint"><b>${dAns?'Lanjutkan':'Kerjakan'} modul Pendalaman</b><p class="mute" style="margin:4px 0 10px">${dp.length} soal yang dipilih dari pola hasilmu${dAns?`, ${dAns} sudah dijawab`:''}. Soalnya menyesuaikan, dan sebagian jawaban memunculkan pertanyaan lanjutan. Tujuannya memisahkan hal yang di tes utama bisa tercampur.</p><button class="btn" type="button" id="goDeep">${dAns?'Lanjutkan':'Mulai'} Pendalaman</button></div>`:''}</div></section>`;
   }
-  if(I.sections.length){
-    h+=`<section class="band${notes.length?' pan':''}" id="keseharian"><div class="wrap"><h2>Gambaran dalam keseharian</h2><p class="lead">Disusun dari jawabanmu, dan setiap kalimat menyebutkan skor dasarnya. Kalimat bergaris oranye berasal dari gabungan beberapa skor.</p><div class="secs">${I.sections.map(s=>`<div class="sec"><h3>${s.title}</h3><ul>${s.items.map(li).join('')}</ul></div>`).join('')}</div></div></section>`;
+  if(days.length){
+    h+=`<section class="band pan chap" id="keseharian"><div class="wrap"><span class="ck">Bab 4</span><h2 class="ctitle">Dalam keseharianmu</h2><p class="lead">Tiga hal paling kuat di tiap bagian. Setiap kalimat menyebutkan skor dasarnya, dan kalimat bergaris berasal dari gabungan beberapa skor.</p><div class="secs">${days.map(sx=>`<div class="sec">${icon(sx.id)}<h3>${sx.title}</h3><ul>${sx.items.slice(0,3).map(li).join('')}</ul>${sx.items.length>3?`<details class="c-more"><summary>${sx.items.length-3} lainnya</summary><ul>${sx.items.slice(3).map(li).join('')}</ul></details>`:''}</div>`).join('')}</div></div></section>`;
   }
-  if(I.tips.length){
-    h+=`<section class="band${notes.length?'':' pan'}" id="tips"><div class="wrap"><h2>Supaya orang lain lebih dekat denganmu</h2><p class="lead">Bagian yang enak dibagikan ke teman, keluarga, atau pasangan.</p><div class="secs"><div class="sec" style="grid-column:1/-1"><ul>${I.tips.map(li).join('')}</ul></div></div></div></section>`;
+  if(I.watch.length||I.tips.length){
+    h+=`<section class="band chap" id="jaga"><div class="wrap"><span class="ck">Bab 5</span><h2 class="ctitle">Yang perlu kamu jaga</h2><p class="lead">Bukan kekurangan, tapi bagian dirimu yang butuh perhatian lebih. Semua orang punya.</p>
+    ${I.watch.length?`<ul class="c-watch">${I.watch.map(x=>`<li><b>${esc(x.t)}</b><span class="basis">Dasar: ${esc(x.b)}</span></li>`).join('')}</ul>`:''}
+    ${I.tips.length?`<div class="c-tips" id="tips"><h3>Untuk orang-orang terdekatmu</h3><p class="mute">Bagian yang enak dibagikan ke teman, keluarga, atau pasangan.</p><ul>${I.tips.map(li).join('')}</ul></div>`:''}</div></section>`;
   }
+  if(R.hasType&&(CL.keep||CL.care)){
+    h+=`<section class="band chap c-end" id="penutup"><div class="wrap"><span class="ck">Penutup</span>${CL.keep?`<p class="c-lab">Kekuatan yang bisa kamu andalkan</p><p class="c-take">${esc(CL.keep)}.</p>`:''}${CL.care?`<p class="c-lab">Yang perlu kamu jaga</p><p class="c-take c-take2">${esc(CL.care)}.</p>`:''}
+    <p class="lead">Kepribadian bukan kotak. Hasil ini gambaran dirimu saat ini, dan bisa berubah. Coba lagi beberapa bulan ke depan, lalu bandingkan di riwayat.</p></div></section>`;
+  }
+  const missing=MAIN.filter(m=>!R.done[m.id]),rel=I.rel,hl=view?[]:hLoad(),ht=hl.length>=2?histTable(hl):'';
+  h+=`<section class="band noprint c-share" id="akhir"><div class="wrap"><h2>Simpan &amp; bagikan hasil</h2><p>${view?'Hasil ini berasal dari link, dan belum tersimpan di browser ini.':'Hasil tersimpan otomatis di browser ini. Supaya aman, simpan juga ke HP atau laptop.'} Kartu PNG dan PDF mengikuti tema yang dipilih.</p><div class="seg" role="group" aria-label="Tema hasil"><span class="mute" style="align-self:center;font-size:13px;padding:0 6px 0 4px">Tema</span><button type="button" data-theme-set="dark" aria-pressed="${theme()==='dark'}">Gelap</button><button type="button" data-theme-set="light" aria-pressed="${theme()==='light'}">Terang</button></div><p class="mute" style="font-size:13px;margin:14px 0 6px">Gaya kartu</p><div class="stylepick" role="group" aria-label="Gaya kartu">${CARD_STYLES.map(([k,l])=>`<button type="button" data-card-style="${k}" aria-pressed="${cardStyle()===k}">${l}</button>`).join('')}</div><div class="rowb"><button class="btn" id="dlCard" type="button">Unduh kartu hasil (PNG)</button><button class="btn ghost" id="dlPdf" type="button">Simpan PDF lengkap</button><button class="btn ghost" id="shareLink" type="button">Salin link hasil</button><button class="btn ghost" id="dlJson" type="button">Unduh file jawaban</button><button class="btn ghost" id="copy" type="button">Salin ringkasan</button><button class="btn ghost" id="resHome" type="button">Ke beranda</button></div><p class="mute" id="copyMsg" role="status" style="margin-top:10px"></p><img id="cardPrev" alt="Kartu hasil" hidden><textarea id="copyBox" hidden readonly></textarea><p class="mute" style="font-size:14px">Link hasil memuat semua jawaban${notes.length||own?' dan catatan khusus':''}, jadi bagikan hanya ke orang yang kamu percaya. Orang yang membukanya hanya melihat hasilmu; jawaban mereka sendiri tidak berubah. File jawaban (.json) bisa dibuka lagi lewat tombol "Buka file jawaban" di beranda. Untuk PDF, pilih "Simpan sebagai PDF" di jendela cetak. Kalau latar gelapnya tidak ikut, aktifkan opsi "Background graphics" atau "Grafik latar".</p></div></section>`;
   if(R.hasType){
     const col={inti:'#3b2fc9',facet:'#1f9bd1',b5:'#c2409a'};
     const notesAx={EI:'Sumber energi: dari waktu sendiri atau dari interaksi.',SN:'Cara menangkap informasi: konkret dan nyata, atau pola dan makna.',TF:'Dasar keputusan: logika yang konsisten, atau nilai dan dampaknya ke orang.',JP:'Gaya mengatur hidup: rencana dan kepastian, atau terbuka dan fleksibel.',AT:'Seberapa kuat reaksi terhadap stres, kritik, dan keraguan diri.'};
     const rows=['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax],s=R.src[ax];const inc=s.inti!=null&&s.facet!=null&&Math.abs(s.inti-s.facet)>=25;const big=p>=50?AX[ax][3]:AX[ax][2],pp=p>=50?p:100-p;return `<div class="drow"><span class="l">${AX[ax][2]}</span><div class="track"><div class="in"><span class="mid"></span>${Object.entries(s).map(([k,v])=>`<span class="dot" style="left:${v}%;background:${col[k]}"></span>`).join('')}<span class="dot fin" style="left:${p}%"></span></div></div><span class="r">${big} ${Math.round(pp)}%</span><p class="dnote">${notesAx[ax]} ${big} ${lab(p)}.${inc?' Jawaban modul Inti dan Facet di sumbu ini cukup berbeda, jadi hasilnya kurang stabil.':''}</p></div>`}).join('');
-    h+=`<div class="pdivider printonly"><span>Bagian 2</span><b>Angka di balik hasilmu</b><p>Skor tiap sumbu, fungsi, tipe, facet, dan Big Five. Bagian ini menjelaskan dari mana semua temuan di atas berasal.</p></div>`;
+    h+=`<div class="pdivider" id="angka"><div class="wrap"><span>Bagian 2</span><b>Angka di balik hasilmu</b><p>Skor tiap sumbu, fungsi, tipe, facet, dan Big Five. Bagian ini menjelaskan dari mana semua temuan di atas berasal.</p></div></div>`;
     h+=`<section class="band"><div class="wrap"><h2>Empat huruf + identitas</h2><p class="lead">Titik koral = hasil akhir. Titik kecil = tiap modul, supaya terlihat stabil atau tidak.</p><div class="dich">${rows}</div><div class="legend"><span style="--c:#3b2fc9">Modul Inti</span><span style="--c:#1f9bd1">Modul Facet</span><span style="--c:#c2409a">Big Five Neuroticism</span></div></div></section>`;
   }
   if(R.fn){
@@ -628,9 +701,8 @@ function renderRes(keep){
     h+=`<section class="band pan"><div class="wrap"><h2>Big Five: tertinggi ${fl[0][0].toLowerCase()}, terendah ${fl[fl.length-1][0].toLowerCase()}</h2><p class="lead">Skor 1–5 per facet. Big Five adalah model dengan dukungan riset paling kuat di tes ini.</p><div class="b5">${B5.map(d=>{const x=R.b5[d[0]];return `<div class="b5card" style="background:var(--bg)"><h3>${x.name}<span>${nm(x.dom)}</span></h3>${d[2].map((f,i)=>`<div class="frow"><b>${f[0]}</b><div class="bar ${x.fs[i]>=4.5||x.fs[i]<=1.5?'hi':''}"><i style="width:${(x.fs[i]-1)/4*100}%"></i></div><span class="v">${nm(x.fs[i])}</span></div>`).join('')}</div>`}).join('')}</div>
     <p style="margin-top:14px">Paling menonjol: ${fl.slice(0,3).map(x=>`${x[0]} ${nm(x[1])}`).join(', ')}. Paling rendah: ${fl.slice(-3).reverse().map(x=>`${x[0]} ${nm(x[1])}`).join(', ')}.</p></div></section>`;
   }
-  const missing=MAIN.filter(m=>!R.done[m.id]),rel=I.rel,hl=view?[]:hLoad(),ht=hl.length>=2?histTable(hl):'';
   if(ht)h+=`<section class="band pan" id="riwayat"><div class="wrap"><h2>Dibandingkan tes sebelumnya</h2><p class="lead">Dari riwayat di browser ini. Perubahan kecil (di bawah 10 poin) wajar terjadi pada tes ulang.</p>${ht}</div></section>`;
-  h+=`<section class="band" id="akhir"><div class="wrap grid2"><div id="pegang"><h2>Seberapa bisa dipegang</h2><ul>
+  h+=`<section class="band" id="pegang"><div class="wrap"><h2>Seberapa bisa dipegang</h2><ul>
   ${missing.length?`<li><b>Belum lengkap:</b> ${missing.map(m=>m.name).join(', ')} belum selesai.</li>`:''}
   ${rel.sure.length?`<li><b>Paling yakin:</b> ${rel.sure.join(', ')}. Arahnya jelas dan modul-modulnya sepakat.</li>`:''}
   ${rel.mid.length?`<li><b>Cukup yakin:</b> ${rel.mid.join(', ')}.</li>`:''}
@@ -638,8 +710,7 @@ function renderRes(keep){
   ${R.ext>.6?`<li><b>Gaya jawab ekstrem:</b> ${Math.round(R.ext*100)}% jawaban ada di ujung skala. Persentasemu kemungkinan lebih tinggi dari aslinya. Baca 85% atau 95% sebagai "jelas", bukan "hampir total".</li>`:''}
   <li>Ringkasan dan gambaran keseharian disusun otomatis dari skor. Anggap sebagai bahan refleksi, bukan penilaian pasti.</li>
   <li>Soal-soal ini belum divalidasi secara ilmiah. Arahnya bisa dipercaya, angkanya kasar.</li>
-  <li>MBTI dan cognitive functions lemah secara ilmiah. Big Five paling kuat. Pembanding gratis: IPIP-NEO-120.</li></ul></div>
-  <div class="noprint"><h2>Simpan &amp; bagikan hasil</h2><p>${view?'Hasil ini berasal dari link, dan belum tersimpan di browser ini.':'Hasil tersimpan otomatis di browser ini. Supaya aman, simpan juga ke HP atau laptop.'} Kartu PNG dan PDF mengikuti tema yang dipilih.</p><div class="seg" role="group" aria-label="Tema hasil"><span class="mute" style="align-self:center;font-size:13px;padding:0 6px 0 4px">Tema</span><button type="button" data-theme-set="dark" aria-pressed="${theme()==='dark'}">Gelap</button><button type="button" data-theme-set="light" aria-pressed="${theme()==='light'}">Terang</button></div><p class="mute" style="font-size:13px;margin:14px 0 6px">Gaya kartu</p><div class="stylepick" role="group" aria-label="Gaya kartu">${CARD_STYLES.map(([k,l])=>`<button type="button" data-card-style="${k}" aria-pressed="${cardStyle()===k}">${l}</button>`).join('')}</div><div class="rowb"><button class="btn" id="dlCard" type="button">Unduh kartu hasil (PNG)</button><button class="btn ghost" id="dlPdf" type="button">Simpan PDF lengkap</button><button class="btn ghost" id="shareLink" type="button">Salin link hasil</button><button class="btn ghost" id="dlJson" type="button">Unduh file jawaban</button><button class="btn ghost" id="copy" type="button">Salin ringkasan</button><button class="btn ghost" id="resHome" type="button">Ke beranda</button></div><p class="mute" id="copyMsg" role="status" style="margin-top:10px"></p><img id="cardPrev" alt="Kartu hasil" hidden><textarea id="copyBox" hidden readonly></textarea><p class="mute" style="font-size:14px">Link hasil memuat semua jawaban${notes.length||own?' dan catatan khusus':''}, jadi bagikan hanya ke orang yang kamu percaya. Orang yang membukanya hanya melihat hasilmu; jawaban mereka sendiri tidak berubah. File jawaban (.json) bisa dibuka lagi lewat tombol "Buka file jawaban" di beranda. Untuk PDF, pilih "Simpan sebagai PDF" di jendela cetak. Kalau latar gelapnya tidak ikut, aktifkan opsi "Background graphics" atau "Grafik latar".</p></div></div></section>`;
+  <li>MBTI dan cognitive functions lemah secara ilmiah. Big Five paling kuat. Pembanding gratis: IPIP-NEO-120.</li></ul></div></section>`;
   const y=window.scrollY;$('res').innerHTML=h;
   // Judul tipe bergradien di sampul PDF digambar sebagai gambar, karena teks bergradien tidak tercetak benar di PDF.
   if($('pcType')&&R.hasType){const pl=typePal(R.type,theme()==='dark'),draw=()=>{const c=document.createElement('canvas'),x=c.getContext('2d');c.width=1800;c.height=380;
@@ -653,6 +724,7 @@ function renderRes(keep){
   $('shareLink').addEventListener('click',()=>copyText(location.origin+location.pathname+'#h='+encodeShare(D),'Link hasil sudah disalin. Siapa pun yang membukanya akan melihat hasil ini.'));
   $('resHome').addEventListener('click',()=>{if(view)clearHash();renderHome()});
   if($('goDeep'))$('goDeep').addEventListener('click',()=>start(DEEPI));
+  $('res').querySelectorAll('[data-jump]').forEach(b=>b.addEventListener('click',()=>{const t=$(b.dataset.jump);if(t)t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}));
   $('dlPdf').addEventListener('click',()=>{try{window.print()}catch(e){$('copyMsg').textContent='Browser ini tidak bisa mencetak. Pakai kartu PNG atau screenshot.'}});
   $('dlJson').addEventListener('click',()=>{dl(new Blob([JSON.stringify(exportData(name,D.c,{summary:own,notes}))],{type:'application/json'}),`jawaban-peta-kepribadian${slug?'-'+slug:''}.json`);$('copyMsg').textContent='File jawaban diunduh.'});
   $('dlCard').addEventListener('click',async()=>{$('copyMsg').textContent='Sedang membuat kartu…';
