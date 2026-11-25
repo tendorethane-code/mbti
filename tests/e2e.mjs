@@ -197,7 +197,7 @@ try {
   // F. Mode cetak (PDF)
   await cmd('Emulation.setEmulatedMedia', {media: 'print'});
   check('cetak: latar ikut tema gelap, diberi semburat warna tipe', await ev("(()=>{const m=getComputedStyle(document.body).backgroundColor.match(/\\d+/g).map(Number);const s=typeSurf('INFP',true).bg;return m.every(v=>v<40)&&getComputedStyle(document.body).backgroundColor===`rgb(${parseInt(s.slice(1,3),16)}, ${parseInt(s.slice(3,5),16)}, ${parseInt(s.slice(5,7),16)})`&&document.getElementById('pageStyle').textContent.includes(s)})()"));
-  check('cetak: sampul punya motif family', await ev("!!document.querySelector('#res .pcover .pc-motif.m-NF')"));
+  check('cetak: sampul punya motif khas tipe dan cap family', await waitFor("(()=>{const m=document.getElementById('pcMotif'),s=document.getElementById('pcStamp');return !!m&&m.src.startsWith('data:image/png')&&!!s&&s.src.startsWith('data:image/png')&&/Diplomat/.test(s.alt)})()", 3000));
   check('cetak: tombol & footer disembunyikan, hasil tampil', await ev("getComputedStyle(document.querySelector('#res .noprint')).display==='none'&&getComputedStyle(document.querySelector('footer')).display==='none'&&getComputedStyle(document.getElementById('res')).display!=='none'"));
   await ev("window.dispatchEvent(new Event('beforeprint'))");
   check('cetak: tabel skor rinci ikut kebuka', await ev("[...document.querySelectorAll('#res details')].every(d=>d.open)"));
@@ -280,7 +280,7 @@ try {
   await waitFor("!document.getElementById('res').hidden", 4000);
   check('catatan khusus: bagian "Temuan khusus" tampil', await ev("!!document.getElementById('catatan')&&/Judul catatan/.test(document.getElementById('catatan').innerText)"));
   check('catatan khusus: ringkasan dari file dipakai, ringkasan otomatis tetap ada', (await text('#sumText')).startsWith('Ringkasan khusus <b>tebal</b>') && /Ringkasan otomatis/.test(await text('#ringkasan')));
-  check('catatan khusus: HTML tidak dijalankan', await ev("!document.querySelector('#res img:not(#cardPrev):not(#pcType)')&&!document.querySelector('#sumText b')&&!window.__xss"));
+  check('catatan khusus: HTML tidak dijalankan', await ev("!document.querySelector('#res img:not(#cardPrev):not(#pcType):not(#pcMotif):not(#pcStamp)')&&!document.querySelector('#sumText b')&&!window.__xss"));
   await click('#dlJson');
   const nf = await waitFile('jawaban-peta-kepribadian-gama.json');
   check('catatan khusus ikut tersimpan di file jawaban', nf && JSON.parse(fs.readFileSync(nf, 'utf8')).notes?.[0]?.title === 'Judul catatan');
