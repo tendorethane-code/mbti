@@ -155,6 +155,8 @@ try {
   check('hasil: ajakan Pendalaman tidak muncul kalau sudah dikerjakan', await ev("!document.getElementById('goDeep')"));
   check('hasil: warna halaman mengikuti palet tipe (INFP)', (await ev("document.getElementById('res').style.getPropertyValue('--fam')")) === C0.typePal('INFP', true).a);
   check('hasil: hook "Yang paling khas darimu" tampil', await ev("!!document.querySelector('#res .hook b')&&document.querySelector('#res .hook b').textContent.length>3"));
+  check('cetak: alur cerita PDF (5 bab + penutup) hanya untuk PDF', await ev("(()=>{const st=document.querySelector('#res .story');return !!st&&getComputedStyle(st).display==='none'&&st.querySelectorAll('.spage').length>=6&&/Yang membuatmu kuat/.test(st.textContent)})()"));
+  check('cetak: judul tipe bergradien di sampul berupa gambar', await waitFor("(()=>{const i=document.getElementById('pcType');return !!i&&i.src.startsWith('data:image/png')})()", 3000));
   check('cetak: sampul dengan tipe dan hook, hanya untuk PDF', await ev("(()=>{const c=document.querySelector('#res .pcover');return !!c&&getComputedStyle(c).display==='none'&&/INFP/.test(c.textContent)&&/Yang paling khas darimu/.test(c.textContent)})()"));
   check('hasil: belum ada perbandingan riwayat (baru 1 tes)', await ev("!document.getElementById('riwayat')"));
   check('hasil: nggak ada NaN/undefined/null', await ev("!/NaN|undefined|null|Infinity/.test(document.getElementById('res').innerText)"));
@@ -173,10 +175,10 @@ try {
   const px = `(()=>{const i=document.getElementById('cardPrev'),c=document.createElement('canvas');c.width=i.naturalWidth;c.height=i.naturalHeight;const x=c.getContext('2d');x.drawImage(i,0,0);return [...x.getImageData(30,700,1,1).data].slice(0,3).join(',')})()`;
   check('kartu PNG ikut tema gelap', (await ev(px)) === '18,16,25', await ev(px));
   const pf = await waitFile('.png');
-  check('pilihan gaya kartu: 4 gaya tersedia, Poster bawaan', (await ev("document.querySelectorAll('[data-card-style]').length")) === 4 && (await ev("document.querySelector('[data-card-style=\"poster\"]').getAttribute('aria-pressed')")) === 'true');
+  check('pilihan gaya kartu: 6 gaya tersedia, Poster bawaan', (await ev("document.querySelectorAll('[data-card-style]').length")) === 6 && (await ev("document.querySelector('[data-card-style=\"poster\"]').getAttribute('aria-pressed')")) === 'true');
   await ev("document.getElementById('cardPrev').src=''");
-  await click('[data-card-style="koleksi"]');
-  check('ganti gaya kartu: tersimpan dan kartu dibuat ulang', await waitFor("localStorage.getItem('tesKepribadian.kartu')==='koleksi'&&document.getElementById('cardPrev').naturalHeight===1920", 6000));
+  await click('[data-card-style="paspor"]');
+  check('ganti gaya kartu: tersimpan dan kartu dibuat ulang', await waitFor("localStorage.getItem('tesKepribadian.kartu')==='paspor'&&document.getElementById('cardPrev').naturalHeight===1920", 6000));
   await click('[data-card-style="poster"]');
   check('download kartu PNG valid', pf && fs.readFileSync(pf).subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])), pf || 'tidak ada file');
   if (pf) fs.copyFileSync(pf, path.join(OUT, '04-kartu.png'));
@@ -271,7 +273,7 @@ try {
   await waitFor("!document.getElementById('res').hidden", 4000);
   check('catatan khusus: bagian "Temuan khusus" tampil', await ev("!!document.getElementById('catatan')&&/Judul catatan/.test(document.getElementById('catatan').innerText)"));
   check('catatan khusus: ringkasan dari file dipakai, ringkasan otomatis tetap ada', (await text('#sumText')).startsWith('Ringkasan khusus <b>tebal</b>') && /Ringkasan otomatis/.test(await text('#ringkasan')));
-  check('catatan khusus: HTML tidak dijalankan', await ev("!document.querySelector('#res img:not(#cardPrev)')&&!document.querySelector('#sumText b')&&!window.__xss"));
+  check('catatan khusus: HTML tidak dijalankan', await ev("!document.querySelector('#res img:not(#cardPrev):not(#pcType)')&&!document.querySelector('#sumText b')&&!window.__xss"));
   await click('#dlJson');
   const nf = await waitFile('jawaban-peta-kepribadian-gama.json');
   check('catatan khusus ikut tersimpan di file jawaban', nf && JSON.parse(fs.readFileSync(nf, 'utf8')).notes?.[0]?.title === 'Judul catatan');

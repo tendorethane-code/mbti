@@ -243,7 +243,41 @@ body:before{content:"";position:fixed;inset:-20vh -20vw;z-index:-1;pointer-event
 @media(max-width:820px){.home{grid-template-columns:minmax(0,1fr);grid-template-areas:"t" "p" "f"}.home .p{margin:8px 0 4px}.hero,.grid2{grid-template-columns:minmax(0,1fr)}.all{grid-template-columns:minmax(0,1fr)}.fam{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.pair{grid-template-columns:minmax(0,1fr)}.drow{grid-template-columns:4.6em minmax(0,1fr) 4.8em;gap:8px}.drow .l,.drow .r{font-size:13px}.dnote{grid-column:1/4;margin:0}.facet{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.facet .div{grid-column:1/3;grid-row:2}.facet .b{text-align:right}.mod{grid-template-columns:2.4em minmax(0,1fr)}.mod .btn{grid-column:1/3}}
 @media(prefers-reduced-motion:no-preference){.bar i,.div i{animation:grow .9s ease-out both}@keyframes grow{from{clip-path:inset(0 100% 0 0)}}}
-@media print{body:before{display:none}.printonly{display:block}#res>section.rhero{display:none!important}
+@media print{body:before{display:none}.printonly{display:block}#res>section.rhero,#ringkasan,#catatan,#keseharian,#tips,#riwayat,#akhir{display:none!important}
+.spage{position:relative;overflow:hidden;min-height:268mm;padding:16mm 14mm;break-after:page;display:flex;flex-direction:column;gap:6mm}
+.spage:before{content:"";position:absolute;width:120mm;height:120mm;border-radius:50%;right:-40mm;bottom:-40mm;background:radial-gradient(closest-side,var(--fam2),transparent);opacity:.18}
+.spage>*{position:relative}
+.kick{font-size:11px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--fam)}
+.stitle{font-size:34px;font-weight:800;line-height:1.1;letter-spacing:-.01em;margin-top:-3mm}
+.s-big{font-size:24px;line-height:1.45;font-weight:600;max-width:150mm;margin:8mm 0 0}
+.s-words{display:flex;flex-wrap:wrap;gap:8px}.s-words span{font-size:15px;font-weight:800;padding:8px 16px;border-radius:999px;background:var(--pan);color:var(--fam)}
+.s-map{margin-top:auto;display:grid;gap:14px;padding:16px 18px;border-radius:20px;background:var(--pan)}
+.sm-row{display:grid;grid-template-columns:28mm 1fr 30mm 14mm;gap:10px;align-items:center;font-size:13px;color:var(--mute)}
+.sm-row span.on{color:var(--ink);font-weight:800}.sm-row em{font-style:normal;font-weight:800;color:var(--fam);text-align:right}
+.sm-bar{position:relative;height:10px;border-radius:5px;background:var(--trk)}.sm-bar:after{content:"";position:absolute;left:50%;top:-5px;width:2px;height:20px;background:var(--mute);opacity:.5}
+.sm-bar i{position:absolute;top:0;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--fam),var(--fam2))}
+.sm-bar i.wk{background:repeating-linear-gradient(45deg,var(--fam) 0 4px,transparent 4px 8px)}
+.sm-bar b{position:absolute;top:-5px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:var(--bg);border:4px solid var(--fam)}
+.s-note{font-size:11px;color:var(--mute);margin:0}
+.s-tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4mm}
+.s-tiles div{border-radius:20px;padding:16px 18px;background:var(--pan);display:flex;flex-direction:column;gap:4px;min-height:34mm}
+.s-tiles em{font-style:normal;font-weight:800;font-size:13px;color:var(--fam)}.s-tiles b{font-size:21px;line-height:1.2}.s-tiles small{font-size:10.5px;color:var(--mute);margin-top:auto}
+.s-quote{margin:auto 0 0;font-size:24px;line-height:1.4;font-weight:600;font-style:italic;border-left:6px solid var(--fam);padding:6px 0 6px 18px}
+.s-quote small{display:block;font-size:11px;font-style:normal;color:var(--mute);margin-top:8px;font-weight:600}
+.s-feat{display:grid;grid-template-columns:22mm 1fr;gap:10px;align-items:start;padding:5mm 0;border-top:1px solid var(--line)}
+.s-feat em{font-style:normal;font-size:54px;line-height:.9;font-weight:800;color:var(--fam);opacity:.9}
+.s-feat span{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--fam)}.s-feat b{display:block;font-size:22px;line-height:1.2;margin:4px 0 6px}.s-feat p{font-size:14px;line-height:1.6;margin:0;max-width:none}
+.s-list{display:grid;grid-template-columns:1fr 1fr;gap:12px 18px}.s-list div{padding:12px 0;border-top:2px solid var(--line)}.s-list b{display:block;font-size:15px;margin-bottom:4px}.s-list p{font-size:12px;line-height:1.55;margin:0;color:var(--mute)}
+.s-areas{display:grid;grid-template-columns:1fr 1fr;gap:12px}.s-area{border-radius:20px;padding:14px 16px;background:var(--pan)}.s-area:last-child{grid-column:1/-1}
+.s-area b{display:block;font-size:16px;margin:6px 0 4px}.s-area ul{margin:0;padding-left:16px}.s-area li{font-size:12px;line-height:1.5;margin:3px 0}
+.sic{width:26px;height:26px;fill:none;stroke:var(--fam);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.s-soft{font-size:14px;color:var(--mute);margin:0;max-width:150mm}
+.s-watch{display:grid;grid-template-columns:1fr 1fr;gap:10px}.s-watch div{border-radius:16px;padding:14px 16px;border:1.5px dashed var(--fam);font-size:14px;font-weight:700;line-height:1.4}
+.s-tips{margin-top:auto;border-radius:22px;padding:18px 20px;background:var(--pan);border:1px solid var(--line)}
+.s-tips b{font-size:18px}.s-tips ul{margin:8px 0 0;padding-left:18px}.s-tips li{font-size:13px;line-height:1.5;margin:4px 0}
+.s-end{justify-content:center}.s-take{font-size:30px;line-height:1.35;font-weight:800;max-width:160mm;margin:0}
+.s-rel{display:flex;gap:12px;flex-wrap:wrap;margin-top:6mm}.s-rel span{font-size:12px;padding:10px 14px;border-radius:14px;background:var(--pan)}.s-rel b{display:block;font-size:11px;color:var(--fam);letter-spacing:.08em;text-transform:uppercase}
+
 .pcover{position:relative;overflow:hidden;min-height:265mm;padding:14mm 12mm 12mm;break-after:page;display:flex;flex-direction:column;gap:10px}
 .pcover:before{content:"";position:absolute;right:-40mm;top:-40mm;width:150mm;height:150mm;border-radius:50%;background:radial-gradient(closest-side,var(--fam),transparent);opacity:.35}
 .pcover:after{content:"";position:absolute;left:-50mm;bottom:-50mm;width:140mm;height:140mm;border-radius:50%;background:radial-gradient(closest-side,var(--fam2),transparent);opacity:.25}
@@ -251,8 +285,8 @@ body:before{content:"";position:fixed;inset:-20vh -20vw;z-index:-1;pointer-event
 .pc-top{display:flex;justify-content:space-between;font-size:11px;font-weight:800;letter-spacing:.2em;color:var(--fam)}
 .pc-top span:last-child{letter-spacing:0;color:var(--mute);font-weight:600}
 .pc-name{font-size:28px;font-weight:700;margin-top:24mm}
-.pc-type{font-size:150px;font-weight:800;line-height:.9;letter-spacing:-.03em;color:var(--fam)}
-.pc-type span{font-size:70px;letter-spacing:0;color:var(--fam2)}
+.pc-type{display:block;width:150mm;height:auto;margin:2mm 0 0}
+
 .pc-fam{font-size:20px;font-weight:700;color:var(--fam)}
 .pc-tag{font-size:15px;color:var(--mute);font-weight:600}
 .pc-hook{margin-top:10mm;padding:16px 20px;border-left:6px solid var(--fam);background:var(--pan);border-radius:0 18px 18px 0;max-width:150mm}
@@ -501,11 +535,41 @@ function renderRes(keep){
     const tagW={EI:x=>x.w==='Introvert'?(x.pp>=80?'Sangat Introvert':'Introvert'):(x.pp>=80?'Sangat Ekstrovert':'Ekstrovert'),SN:x=>x.w==='Intuitive'?'Konseptual':'Praktis',TF:x=>x.w==='Feeling'?'Berpegang pada Nilai':'Logis',JP:x=>x.w==='Prospecting'?'Fleksibel':'Terencana'};
     const tagline=axs.filter(x=>x.ax!=='AT'&&x.d>=10).sort((a,b)=>'EISNTFJP'.indexOf(a.ax)-'EISNTFJP'.indexOf(b.ax)).map(x=>tagW[x.ax](x)).join(' · ');
     h+=`<div class="pcover printonly"><div class="pc-top"><span>PETA KEPRIBADIAN</span><span>${esc(new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}))}</span></div>
-    <div class="pc-name">${name?esc(name):'Hasilku'}</div><div class="pc-type">${R.type}<span>${R.id?'-'+R.id:''}</span></div>
+    <div class="pc-name">${name?esc(name):'Hasilku'}</div><img class="pc-type" id="pcType" alt="${R.type}${R.id?'-'+R.id:''}">
     <div class="pc-fam">${FAM[famOf(R.type)]}${R.strat?' · '+R.strat:''}</div>${tagline?`<div class="pc-tag">${tagline}</div>`:''}
     ${hook?`<div class="pc-hook"><span>Yang paling khas darimu</span>${hook.t?`<b>${esc(hook.t)}</b>`:''}<p>${esc(hook.x)}</p></div>`:''}
     <div class="pc-stats">${axs.slice(0,3).map(x=>`<div><b>${x.pp}%</b><span>${x.w}</span></div>`).join('')}</div>
     <div class="pc-fit">Paling cocok: ${R.fits.slice(0,3).map((f,i)=>`<b${i?'':' class="on"'}>${f.t}</b> ${nm(f.v)}`).join(' · ')}</div></div>`;
+    {
+      // Alur cerita PDF: sampul -> satu halaman -> kekuatan -> temuan paling khas -> lainnya -> keseharian -> yang perlu dijaga -> penutup -> angka.
+      const firstSentence=t=>{const m=String(t||'').match(/^.*?\.(\s|$)/);return m?m[0].trim():String(t||'')};
+      const portrait=firstSentence(own||I.summary);
+      const quote=(I.sections.flatMap(sx=>sx.items).find(it=>it.q)||{}).q;
+      const ord=['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null);
+      const ics={sosial:'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 9a7 7 0 0 1 14 0',pikir:'M9 18h6m-5 3h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z',putus:'M12 3v18M5 7h14M7 7l-3 6a3 3 0 0 0 6 0zm10 0l-3 6a3 3 0 0 0 6 0z',kerja:'M12 7v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z',emosi:'M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z'};
+      const icon=id=>`<svg class="sic" viewBox="0 0 24 24" aria-hidden="true"><path d="${ics[id]||ics.emosi}"/></svg>`;
+      const allF=F.concat(notes.map(n=>({title:n.title,text:n.text,tag:n.tag||'Dari sesi analisis'})));
+      const big=allF.slice(0,3),rest=allF.slice(3,13);
+      const takeaway=(I.special[0]&&I.special[0].t)||(F[1]&&F[1].text)||portrait;
+      h+=`<div class="story printonly">
+      <div class="spage s-portrait"><span class="kick">Bab 1</span><div class="stitle">Kamu, dalam satu halaman</div>
+        <p class="s-big">${esc(portrait)}</p>
+        <div class="s-words">${I.strengths.slice(0,3).map(x=>`<span>${esc(x.t)}</span>`).join('')}</div>
+        <div class="s-map">${ord.map(ax=>{const p=R.ax[ax],right=p>=50,pp=Math.round(right?p:100-p),wk=Math.abs(p-50)<10;return `<div class="sm-row"><span class="${right?'':'on'}">${AX[ax][2]}</span><div class="sm-bar"><i style="left:${Math.min(p,50)}%;width:${Math.abs(p-50)}%" class="${wk?'wk':''}"></i><b style="left:${p}%"></b></div><span class="${right?'on':''}">${AX[ax][3]}</span><em>${pp}%</em></div>`}).join('')}</div>
+        <p class="s-note">Garis tengah = seimbang. Makin jauh dari tengah, makin jelas. Batang bergaris = masih tipis.</p></div>
+      <div class="spage s-strength"><span class="kick">Bab 2</span><div class="stitle">Yang membuatmu kuat</div>
+        <div class="s-tiles">${I.strengths.map((x,i)=>`<div><em>${String(i+1).padStart(2,'0')}</em><b>${esc(x.t)}</b><small>${esc(x.b)}</small></div>`).join('')}</div>
+        ${quote?`<blockquote class="s-quote">${esc(quote)}<small>Salah satu jawabanmu sendiri</small></blockquote>`:''}</div>
+      ${big.length?`<div class="spage s-find"><span class="kick">Bab 3</span><div class="stitle">Yang paling khas darimu</div>${big.map((f,i)=>`<div class="s-feat"><em>${String(i+1).padStart(2,'0')}</em><div><span>${esc(f.tag||'')}</span><b>${esc(f.title)}</b><p>${esc(f.text)}</p></div></div>`).join('')}</div>`:''}
+      ${rest.length?`<div class="spage s-more"><span class="kick">Bab 3, lanjutan</span><div class="stitle">Hal lain tentangmu</div><div class="s-list">${rest.map(f=>`<div><b>${esc(f.title)}</b><p>${esc(f.text)}</p></div>`).join('')}</div></div>`:''}
+      ${I.sections.length?`<div class="spage s-days"><span class="kick">Bab 4</span><div class="stitle">Dalam keseharianmu</div><div class="s-areas">${I.sections.map(sx=>`<div class="s-area">${icon(sx.id)}<b>${sx.title}</b><ul>${sx.items.slice(0,3).map(it=>`<li>${esc(it.t)}</li>`).join('')}</ul></div>`).join('')}</div></div>`:''}
+      <div class="spage s-care"><span class="kick">Bab 5</span><div class="stitle">Yang perlu kamu jaga</div><p class="s-soft">Bukan kekurangan, tapi bagian dirimu yang butuh perhatian lebih. Semua orang punya.</p>
+        <div class="s-watch">${I.watch.map(x=>`<div>${esc(x.t)}</div>`).join('')}</div>
+        ${I.tips.length?`<div class="s-tips"><b>Untuk orang-orang terdekatmu</b><ul>${I.tips.map(x=>`<li>${esc(x.t)}</li>`).join('')}</ul></div>`:''}</div>
+      <div class="spage s-end"><span class="kick">Penutup</span><p class="s-take">${esc(takeaway)}</p><p class="s-soft">Kepribadian bukan kotak. Hasil ini gambaran dirimu saat ini, dan bisa berubah. Coba lagi beberapa bulan ke depan, lalu bandingkan di riwayat.</p>
+        <div class="s-rel">${I.rel.sure.length?`<span><b>Paling yakin</b>${I.rel.sure.join(', ')}</span>`:''}${I.rel.unsure.length?`<span><b>Masih bisa berubah</b>${I.rel.unsure.join(', ')}</span>`:''}</div></div>
+      </div>`;
+    }
     const fx=Object.fromEntries(R.fits.map(f=>[f.t,f.v])),top=R.fits.slice(0,3).map(f=>f.t);
     const sumAx=['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax];return `${p>=50?AX[ax][3]:AX[ax][2]} ${lab(p)}`});
     h+=`<section class="band rhero"><div class="wrap hero"><div><h1>${name?esc(name)+', p':'P'}aling cocok <span class="code">${R.type}${R.id?'-'+R.id:''}</span></h1><p class="lead">${sumAx.join(' · ')}.${R.letters!==R.type?` Dari huruf saja hasilnya ${R.letters}, tapi urutan fungsi lebih cocok ke ${R.type}.`:''}</p>
@@ -566,7 +630,7 @@ function renderRes(keep){
   }
   const missing=MAIN.filter(m=>!R.done[m.id]),rel=I.rel,hl=view?[]:hLoad(),ht=hl.length>=2?histTable(hl):'';
   if(ht)h+=`<section class="band pan" id="riwayat"><div class="wrap"><h2>Dibandingkan tes sebelumnya</h2><p class="lead">Dari riwayat di browser ini. Perubahan kecil (di bawah 10 poin) wajar terjadi pada tes ulang.</p>${ht}</div></section>`;
-  h+=`<section class="band"><div class="wrap grid2"><div id="pegang"><h2>Seberapa bisa dipegang</h2><ul>
+  h+=`<section class="band" id="akhir"><div class="wrap grid2"><div id="pegang"><h2>Seberapa bisa dipegang</h2><ul>
   ${missing.length?`<li><b>Belum lengkap:</b> ${missing.map(m=>m.name).join(', ')} belum selesai.</li>`:''}
   ${rel.sure.length?`<li><b>Paling yakin:</b> ${rel.sure.join(', ')}. Arahnya jelas dan modul-modulnya sepakat.</li>`:''}
   ${rel.mid.length?`<li><b>Cukup yakin:</b> ${rel.mid.join(', ')}.</li>`:''}
@@ -576,7 +640,13 @@ function renderRes(keep){
   <li>Soal-soal ini belum divalidasi secara ilmiah. Arahnya bisa dipercaya, angkanya kasar.</li>
   <li>MBTI dan cognitive functions lemah secara ilmiah. Big Five paling kuat. Pembanding gratis: IPIP-NEO-120.</li></ul></div>
   <div class="noprint"><h2>Simpan &amp; bagikan hasil</h2><p>${view?'Hasil ini berasal dari link, dan belum tersimpan di browser ini.':'Hasil tersimpan otomatis di browser ini. Supaya aman, simpan juga ke HP atau laptop.'} Kartu PNG dan PDF mengikuti tema yang dipilih.</p><div class="seg" role="group" aria-label="Tema hasil"><span class="mute" style="align-self:center;font-size:13px;padding:0 6px 0 4px">Tema</span><button type="button" data-theme-set="dark" aria-pressed="${theme()==='dark'}">Gelap</button><button type="button" data-theme-set="light" aria-pressed="${theme()==='light'}">Terang</button></div><p class="mute" style="font-size:13px;margin:14px 0 6px">Gaya kartu</p><div class="stylepick" role="group" aria-label="Gaya kartu">${CARD_STYLES.map(([k,l])=>`<button type="button" data-card-style="${k}" aria-pressed="${cardStyle()===k}">${l}</button>`).join('')}</div><div class="rowb"><button class="btn" id="dlCard" type="button">Unduh kartu hasil (PNG)</button><button class="btn ghost" id="dlPdf" type="button">Simpan PDF lengkap</button><button class="btn ghost" id="shareLink" type="button">Salin link hasil</button><button class="btn ghost" id="dlJson" type="button">Unduh file jawaban</button><button class="btn ghost" id="copy" type="button">Salin ringkasan</button><button class="btn ghost" id="resHome" type="button">Ke beranda</button></div><p class="mute" id="copyMsg" role="status" style="margin-top:10px"></p><img id="cardPrev" alt="Kartu hasil" hidden><textarea id="copyBox" hidden readonly></textarea><p class="mute" style="font-size:14px">Link hasil memuat semua jawaban${notes.length||own?' dan catatan khusus':''}, jadi bagikan hanya ke orang yang kamu percaya. Orang yang membukanya hanya melihat hasilmu; jawaban mereka sendiri tidak berubah. File jawaban (.json) bisa dibuka lagi lewat tombol "Buka file jawaban" di beranda. Untuk PDF, pilih "Simpan sebagai PDF" di jendela cetak. Kalau latar gelapnya tidak ikut, aktifkan opsi "Background graphics" atau "Grafik latar".</p></div></div></section>`;
-  const y=window.scrollY;$('res').innerHTML=h;{const pl=R.hasType?typePal(R.type,theme()==='dark'):{a:cssVar('--ind'),b:cssVar('--acc')};$('res').style.setProperty('--fam',pl.a);$('res').style.setProperty('--fam2',pl.b)}show('res');if(keep)window.scrollTo(0,y);
+  const y=window.scrollY;$('res').innerHTML=h;
+  // Judul tipe bergradien di sampul PDF digambar sebagai gambar, karena teks bergradien tidak tercetak benar di PDF.
+  if($('pcType')&&R.hasType){const pl=typePal(R.type,theme()==='dark'),draw=()=>{const c=document.createElement('canvas'),x=c.getContext('2d');c.width=1800;c.height=380;
+    x.font='800 330px Manrope, system-ui, sans-serif';const w1=x.measureText(R.type).width;x.font='800 170px Manrope, system-ui, sans-serif';const w2=R.id?x.measureText('-'+R.id).width+20:0;
+    const g=x.createLinearGradient(0,0,w1+w2,200);g.addColorStop(0,pl.a);g.addColorStop(1,pl.b);x.fillStyle=g;
+    x.font='800 330px Manrope, system-ui, sans-serif';x.fillText(R.type,0,320);if(R.id){x.font='800 170px Manrope, system-ui, sans-serif';x.fillText('-'+R.id,w1+20,320)}
+    $('pcType').src=c.toDataURL('image/png')};draw();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(draw)}{const pl=R.hasType?typePal(R.type,theme()==='dark'):{a:cssVar('--ind'),b:cssVar('--acc')};$('res').style.setProperty('--fam',pl.a);$('res').style.setProperty('--fam2',pl.b)}show('res');if(keep)window.scrollTo(0,y);
   const txt=summaryText(R,name)+(own||I.summary?'\n\n'+(own||I.summary):''),slug=fileSlug(name);
   const copyText=async(t,ok)=>{try{await navigator.clipboard.writeText(t);$('copyMsg').textContent=ok}catch(e){$('copyBox').hidden=false;$('copyBox').value=t;$('copyBox').select();$('copyMsg').textContent='Salin manual dari kotak di bawah.'}};
   $('copy').addEventListener('click',()=>copyText(txt,'Ringkasan sudah disalin.'));
@@ -592,7 +662,7 @@ function renderRes(keep){
     catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.'}});
 }
 // ---------- Kartu PNG: beberapa gaya, semua ukuran story 1080x1920 ----------
-const CARD_STYLES=[['poster','Poster'],['editorial','Editorial'],['aura','Aura'],['koleksi','Koleksi']];
+const CARD_STYLES=[['poster','Poster'],['paspor','Paspor'],['peta','Peta'],['editorial','Editorial'],['aura','Aura'],['koleksi','Koleksi']];
 const cardStyle=()=>{try{const v=localStorage.getItem('tesKepribadian.kartu');return CARD_STYLES.some(s=>s[0]===v)?v:'poster'}catch(e){return 'poster'}};
 function cardKit(R){
   const W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
@@ -612,7 +682,7 @@ function cardKit(R){
 const siteName=()=>location.host?(location.host+location.pathname).replace(/index\.html$/,''):'Peta Kepribadian';
 const today=()=>new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
 const AXW=['EI','SN','TF','JP','AT'];
-function drawCard(R,name,style){const K=cardKit(R);({editorial:cardEditorial,aura:cardAura,koleksi:cardKoleksi}[style||cardStyle()]||cardPoster)(R,name,K);return K.c}
+function drawCard(R,name,style){const K=cardKit(R);({editorial:cardEditorial,aura:cardAura,koleksi:cardKoleksi,paspor:cardPaspor,peta:cardPeta}[style||cardStyle()]||cardPoster)(R,name,K);return K.c}
 function cardPoster(R,name,K){
   // Kartu ukuran story (9:16). Motif "peta": tabel 16 tipe dengan tipe utama menyala, warna mengikuti family.
   const {W,H,c,x,dk,BG,INK,MUTE,TRK,LINE,IND,COL,fam,F,rgba,rr,fit,txt,blob,cap,weakOf}=K;
@@ -672,6 +742,78 @@ function cardPoster(R,name,K){
   txt('Coba juga:',72,H-38,F(600,26),MUTE);x.font=F(600,26);const cw2=x.measureText('Coba juga: ').width;txt(fit(site,600),72+cw2,H-38,F(800,26),INK);
   txt(new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}),1008,H-38,F(600,24),MUTE,'right');
   return c;
+}
+function cardPaspor(R,name,K){
+  // Paspor kepribadian: monogram tipe, kolom identitas, cap per sumbu (cap putus-putus = tipis), baris kode di bawah.
+  const {W,H,x,dk,COL,IND,fam,F,rgba,rr,fit,txt,blob,weakOf}=K;
+  const PAPER=dk?'#14121b':'#f6f2ea',INK=dk?'#efeaf7':'#231d2e',MUTE=dk?'rgba(239,234,247,.6)':'rgba(35,29,46,.6)',PANEL=dk?'#1c1926':'#fffdf8';
+  const MONO=(w,z)=>`${w} ${z}px ui-monospace, 'SF Mono', Menlo, Consolas, monospace`;
+  x.fillStyle=PAPER;x.fillRect(0,0,W,H);blob(980,140,520,COL,dk?.25:.16);blob(80,1300,560,IND,dk?.18:.12);
+  // pola pengaman (guilloche)
+  x.lineWidth=1.2;for(let k=0;k<26;k++){x.strokeStyle=rgba(k%2?COL:IND,dk?.10:.12);x.beginPath();for(let i=0;i<=W;i+=6){const y=250+k*9+Math.sin(i/58+k*.7)*26+Math.sin(i/23+k)*7;i?x.lineTo(i,y):x.moveTo(i,y)}x.stroke()}
+  if('letterSpacing' in x)x.letterSpacing='8px';txt('PASPOR KEPRIBADIAN',72,128,F(800,30),INK);txt('PETA KEPRIBADIAN · PK',72,170,F(700,20),COL);if('letterSpacing' in x)x.letterSpacing='0px';
+  // lambang: lingkaran dengan 4 kuadran family
+  const ex=944,ey=140;['NT','NF','SJ','SP'].forEach((f,i)=>{x.fillStyle=f===fam?COL:rgba(IND,.25);x.beginPath();x.moveTo(ex,ey);x.arc(ex,ey,46,i*Math.PI/2-Math.PI/2,(i+1)*Math.PI/2-Math.PI/2);x.closePath();x.fill()});x.strokeStyle=INK;x.lineWidth=3;x.beginPath();x.arc(ex,ey,46,0,Math.PI*2);x.stroke();
+  // panel identitas
+  x.save();x.shadowColor='rgba(0,0,0,.18)';x.shadowBlur=30;x.shadowOffsetY=10;rr(56,500,968,640,30,PANEL);x.restore();
+  const g=x.createLinearGradient(96,540,416,940);g.addColorStop(0,COL);g.addColorStop(1,IND);rr(96,540,320,400,22,g);
+  if(R.hasType){[...R.type].forEach((L,i)=>txt(L,96+80+(i%2)*160,540+150+Math.floor(i/2)*170,F(800,130),'rgba(255,255,255,.95)','center'))}
+  if(R.id){rr(330,900,72,56,14,PANEL);txt(R.id,366,940,F(800,34),COL,'center')}
+  const field=(lb,v,y,big)=>{if('letterSpacing' in x)x.letterSpacing='3px';txt(lb,460,y,F(700,18),MUTE);if('letterSpacing' in x)x.letterSpacing='0px';x.font=F(800,big||34);txt(fit(v,530),460,y+(big?50:42),F(800,big||34),INK)};
+  field('NAMA',name||'Tanpa nama',580);field('TIPE',R.hasType?`${R.type}${R.id?'-'+R.id:''}`:'Sementara',680,52);
+  field('FAMILY',R.hasType?FAM[fam]:'-',800);field('STRATEGI',R.strat||'-',890,28);
+  field('FUNGSI UTAMA',R.fn?R.fn.slice(0,2).map(f=>f.f).join(' · '):'-',980);
+  txt(`Diterbitkan ${today()}`,96,1100,F(600,22),MUTE);
+  // cap per sumbu
+  if('letterSpacing' in x)x.letterSpacing='6px';txt('CAP PERJALANAN',72,1230,F(800,22),MUTE);if('letterSpacing' in x)x.letterSpacing='0px';
+  const spots=[[200,1390,-.18],[470,1350,.12],[760,1400,-.08],[320,1610,.16],[640,1620,-.14],[900,1600,.1]];
+  AXW.filter(ax=>R.hasType&&R.ax[ax]!=null).forEach((ax,i)=>{const p=R.ax[ax],right=p>=50,pp=Math.round(right?p:100-p),wk=weakOf(ax),[cx,cy,a]=spots[i],col=i%2?IND:COL;
+    x.save();x.translate(cx,cy);x.rotate(a);x.globalAlpha=.9;x.strokeStyle=col;x.lineWidth=5;if(wk)x.setLineDash([10,8]);
+    if(i%2){x.beginPath();if(x.roundRect)x.roundRect(-118,-82,236,164,18);else x.rect(-118,-82,236,164);x.stroke()}else{x.beginPath();x.arc(0,0,105,0,Math.PI*2);x.stroke();x.lineWidth=2;x.beginPath();x.arc(0,0,90,0,Math.PI*2);x.stroke()}
+    x.setLineDash([]);if('letterSpacing' in x)x.letterSpacing='3px';txt((right?AX[ax][3]:AX[ax][2]).toUpperCase(),0,-30,F(800,19),col,'center');if('letterSpacing' in x)x.letterSpacing='0px';
+    txt(`${pp}%`,0,32,F(800,54),col,'center');txt(wk?(wk==='TIPIS'?'TIPIS':'BELUM STABIL'):'DISAHKAN',0,64,F(800,15),col,'center');x.restore()});
+  // baris kode seperti paspor
+  const nm2=(name||'TANPA NAMA').toUpperCase().replace(/[^A-Z0-9]+/g,'<');
+  const l1=`P<PK<${nm2}<<${R.hasType?R.type:'XXXX'}`.padEnd(40,'<').slice(0,40);
+  const l2=(R.hasType?AXW.filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax];return Math.round(p>=50?p:100-p)+(p>=50?POS[ax]:AX[ax][0])}).join('')+'<<'+(R.fn?R.fn.slice(0,4).map(f=>f.f.toUpperCase()).join('<'):''):'').padEnd(40,'<').slice(0,40);
+  rr(0,H-210,W,210,0,dk?'rgba(255,255,255,.04)':'rgba(35,29,46,.05)');
+  if('letterSpacing' in x)x.letterSpacing='5px';txt(l1,72,H-140,MONO(700,30),INK);txt(l2,72,H-92,MONO(700,30),INK);if('letterSpacing' in x)x.letterSpacing='0px';
+  txt(siteName(),1008,H-34,F(600,20),MUTE,'right');
+}
+function cardPeta(R,name,K){
+  // Peta topografi: bukit dari garis kontur, penanda "Kamu di sini", kompas berlabel N, S, E, I.
+  const {W,H,x,dk,COL,IND,fam,F,rgba,rr,fit,txt,blob,weakOf}=K;
+  const BG1=dk?'#0f1418':'#f3f1ea',INK=dk?'#eef2f0':'#1f2a26',MUTE=dk?'rgba(238,242,240,.62)':'rgba(31,42,38,.6)';
+  x.fillStyle=BG1;x.fillRect(0,0,W,H);blob(640,700,700,COL,dk?.22:.14);blob(220,1250,520,IND,dk?.2:.12);
+  // grid peta
+  x.strokeStyle=dk?'rgba(255,255,255,.05)':'rgba(31,42,38,.06)';x.lineWidth=1;for(let i=0;i<=W;i+=90){x.beginPath();x.moveTo(i,0);x.lineTo(i,H);x.stroke()}for(let j=0;j<=H;j+=90){x.beginPath();x.moveTo(0,j);x.lineTo(W,j);x.stroke()}
+  // kontur: tinggi bukit mengikuti skor tipe teratas
+  let seed=[...(R.type||'X')].reduce((s,ch)=>s*31+ch.charCodeAt(0),11)%2147483647;const rnd=()=>(seed=seed*16807%2147483647)/2147483647;
+  const ph=[rnd()*6,rnd()*6,rnd()*6],hill=(cx,cy,n,step,col,base)=>{for(let k=n;k>=1;k--){const r0=k*step;x.strokeStyle=rgba(col,(k===1?.9:.25+.5*(1-k/n)));x.lineWidth=k%4===0?3:1.6;x.beginPath();
+    for(let t=0;t<=Math.PI*2+.01;t+=.04){const r=r0*(1+.16*Math.sin(3*t+ph[0]+k*.15)+.08*Math.sin(5*t+ph[1])+.05*Math.sin(7*t+ph[2]+k*.3))*(base||1);const px=cx+Math.cos(t)*r*1.15,py=cy+Math.sin(t)*r*.85;t?x.lineTo(px,py):x.moveTo(px,py)}x.closePath();x.stroke()}};
+  const top=R.hasType?R.fits[0].v:60,n=Math.max(8,Math.round(top/5));
+  hill(650,760,n,30,COL);hill(230,1290,8,26,IND,.9);
+  // penanda
+  const mx=650,my=760;x.fillStyle=COL;x.beginPath();x.arc(mx,my-46,30,Math.PI,0);x.lineTo(mx,my);x.closePath();x.fill();x.fillStyle=BG1;x.beginPath();x.arc(mx,my-46,12,0,Math.PI*2);x.fill();
+  rr(mx+40,my-104,250,56,28,dk?'rgba(15,20,24,.85)':'rgba(255,255,255,.9)');txt('Kamu di sini',mx+165,my-66,F(800,26),INK,'center');
+  // kepala lembar peta
+  if('letterSpacing' in x)x.letterSpacing='8px';txt('PETA KEPRIBADIAN',72,110,F(800,22),COL);if('letterSpacing' in x)x.letterSpacing='0px';
+  x.font=F(700,40);txt(fit(name?`Lembar ${name}`:'Lembarku',700),72,166,F(700,40),INK);
+  if(R.hasType){x.font=F(800,150);const tw=x.measureText(R.type).width;txt(R.type,64,330,F(800,150),INK);if(R.id)txt('-'+R.id,64+tw+6,330,F(800,80),COL);
+    x.font=F(700,30);txt(fit(`${FAM[fam]}${R.strat?' · '+R.strat:''}`,700),72,380,F(700,30),COL)}
+  // kompas: N S E I
+  const cx=930,cy=230;x.strokeStyle=INK;x.lineWidth=2;x.beginPath();x.arc(cx,cy,62,0,Math.PI*2);x.stroke();
+  [[0,-1,'N','SN'],[0,1,'S','SN'],[1,0,'E','EI'],[-1,0,'I','EI']].forEach(([dx,dy,L,ax])=>{const on=R.hasType&&R.letters.includes(L);x.fillStyle=on?COL:rgba(IND,.35);x.beginPath();x.moveTo(cx+dx*56,cy+dy*56);x.lineTo(cx+dy*12,cy-dx*12);x.lineTo(cx-dy*12,cy+dx*12);x.closePath();x.fill();txt(L,cx+dx*92,cy+dy*92+10,F(800,28),on?COL:MUTE,'center')});
+  // legenda
+  const ly=1430;rr(56,ly,968,380,28,dk?'rgba(15,20,24,.86)':'rgba(255,255,255,.88)');
+  if('letterSpacing' in x)x.letterSpacing='6px';txt('LEGENDA',96,ly+56,F(800,20),MUTE);if('letterSpacing' in x)x.letterSpacing='0px';
+  AXW.filter(ax=>R.hasType&&R.ax[ax]!=null).forEach((ax,i)=>{const p=R.ax[ax],right=p>=50,pp=Math.round(right?p:100-p),wk=weakOf(ax),col=i%2?IND:COL,y=ly+100+i*52,colx=96;
+    x.strokeStyle=col;x.lineWidth=6;x.lineCap='round';if(wk)x.setLineDash([8,9]);x.beginPath();x.moveTo(colx,y-8);x.lineTo(colx+60,y-8);x.stroke();x.setLineDash([]);
+    txt(right?AX[ax][3]:AX[ax][2],colx+84,y,F(700,28),INK);txt(`${pp}%${wk?' · '+(wk==='TIPIS'?'tipis':'kurang stabil'):''}`,610,y,F(700,26),wk?COL:INK,'right')});
+  if(R.fn){txt('Jalur fungsi',680,ly+56,F(800,20),MUTE);R.fn.slice(0,4).forEach((f,i)=>{const y=ly+100+i*52;x.fillStyle=i?rgba(COL,.3+.15*(3-i)):COL;x.beginPath();x.arc(700,y-9,13,0,Math.PI*2);x.fill();txt(`${i+1}. ${f.f}`,728,y,F(800,28),INK)})}
+  // skala
+  x.fillStyle=INK;x.fillRect(96,H-66,200,6);x.fillStyle=COL;x.fillRect(96,H-66,100,6);txt('0',96,H-76,F(600,18),MUTE);txt('100%',296,H-76,F(600,18),MUTE,'right');
+  txt(siteName(),1008,H-56,F(600,22),MUTE,'right');
 }
 function cardEditorial(R,name,K){
   // Editorial: huruf besar per sumbu. Huruf solid = jelas, huruf garis luar = tipis / kurang stabil.
