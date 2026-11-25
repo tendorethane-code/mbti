@@ -360,7 +360,7 @@ body:before{content:"";position:fixed;inset:-20vh -20vw;z-index:-1;pointer-event
 .pcover:after{content:"";position:absolute;left:-50mm;bottom:-50mm;width:140mm;height:140mm;border-radius:50%;background:radial-gradient(closest-side,var(--fam2),transparent);opacity:.25}
 .pcover>*{position:relative;z-index:1}
 .pcover>.pc-motif{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
-:root[data-theme=light] .pcover>.pc-motif{opacity:.55}
+:root[data-theme=light] .pcover>.pc-motif{opacity:.75}
 .pcover>.pc-stamp{position:absolute;z-index:2;right:10mm;bottom:62mm;width:46mm;height:46mm;opacity:.95}
 .pc-top{display:flex;justify-content:space-between;font-size:11px;font-weight:800;letter-spacing:.2em;color:var(--fam)}
 .pc-top span:last-child{letter-spacing:0;color:var(--mute);font-weight:600}
@@ -819,14 +819,32 @@ function drawMotif(type,dark){
     // Penemu: cabang-cabang kemungkinan dari satu ide (Ne), ujungnya lingkaran kecil.
     ENTP(){grid(56,.22);const br=(X,Y,an,len,d)=>{if(d>7||len<16){x.fillStyle=rgba(d%2?A:B,.9);circ(X,Y,5+rnd()*5,1);return}const X2=X+Math.cos(an)*len,Y2=Y+Math.sin(an)*len;x.strokeStyle=rgba(d%2?B:A,.9-d*.07);x.lineWidth=Math.max(1.5,7-d*.7);line(X,Y,X2,Y2);
         const n=rnd()<.35?3:2;for(let k=0;k<n;k++)br(X2,Y2,an+(k-(n-1)/2)*(.5+rnd()*.35),len*(.68+rnd()*.12),d+1)};br(W*.86,H*.44,-Math.PI/2.1,150,0)},
-    // Mediator: riak dari beberapa tetesan yang saling bertemu, bulan sabit, dan bintang (dunia dalam yang kaya).
-    INFP(){const drops=[[fx,fy,1],[W*.6,H*.06,.7],[W*1.02,H*.36,.6]];
+    // Mediator: dunia dalam yang luas. Kabut nebula seperti cat air, riak dari tiga tetesan, bulan sabit berhalo,
+    // bintang jatuh, rasi bintang, kunang-kunang, dan kelopak yang melayang.
+    INFP(){const LT=dark?'#ffffff':B;
+      [[fx,fy,520,A,.30],[W*.62,H*.1,380,B,.26],[W*.98,H*.34,420,B,.22],[W*.74,H*.3,300,A,.18],[W*.5,H*.02,260,A,.14]].forEach(([X,Y,r,col,al])=>{const g=x.createRadialGradient(X,Y,0,X,Y,r);g.addColorStop(0,rgba(col,al));g.addColorStop(.6,rgba(col,al*.35));g.addColorStop(1,rgba(col,0));x.fillStyle=g;x.fillRect(X-r,Y-r,2*r,2*r)});
+      const drops=[[fx,fy,1],[W*.6,H*.06,.7],[W*1.02,H*.36,.6]];
       drops.forEach(([cx,cy,k],di)=>{for(let r=26;r<900*k;r+=24){const wob=4+r*.012,ph=di*1.7+r*.013;x.beginPath();for(let a=0;a<=Math.PI*2+.01;a+=.04){const rr=r+Math.sin(a*5+ph)*wob*.4+Math.sin(a*3-ph)*wob*.3;x.lineTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr)}
         x.strokeStyle=rgba((r/24)%2<1?A:B,Math.max(0,.75-r/(1100*k)));x.lineWidth=r<200?2.4:1.6;x.stroke()}});
-      // bulan sabit
-      const m=document.createElement('canvas');m.width=m.height=420;const q=m.getContext('2d'),g=q.createLinearGradient(60,60,360,360);g.addColorStop(0,A);g.addColorStop(1,B);q.fillStyle=g;q.beginPath();q.arc(210,210,150,0,Math.PI*2);q.fill();q.globalCompositeOperation='destination-out';q.beginPath();q.arc(275,165,140,0,Math.PI*2);q.fill();
-      x.save();x.shadowColor=rgba(A,.9);x.shadowBlur=60;x.globalAlpha=.95;x.drawImage(m,fx-250,fy-170,330,330);x.restore();
-      for(let i=0;i<70;i++){const X=W*.35+rnd()*W*.65,Y=rnd()*H*.55,r=2+rnd()*rnd()*14;x.fillStyle=rgba(rnd()<.5?A:'#ffffff',.35+rnd()*.6);r>8?star(X,Y,r):circ(X,Y,r*.35,1)}},
+      // rasi bintang
+      const cons=[[W*.46,H*.2],[W*.53,H*.15],[W*.6,H*.19],[W*.66,H*.13],[W*.72,H*.22],[W*.79,H*.27],[W*.9,H*.24]];x.strokeStyle=rgba(LT,.45);x.lineWidth=1.6;x.setLineDash([3,7]);x.beginPath();cons.forEach(([X,Y],i)=>i?x.lineTo(X,Y):x.moveTo(X,Y));x.stroke();x.setLineDash([]);
+      cons.forEach(([X,Y])=>{x.save();x.shadowColor=rgba(A,.9);x.shadowBlur=14;x.fillStyle=rgba(LT,.95);circ(X,Y,4.5,1);x.restore()});
+      // halo dan bulan sabit
+      [205,240,282].forEach((r,i)=>{x.strokeStyle=rgba(A,.5-i*.13);x.lineWidth=i?1.5:2.5;circ(fx-85,fy-5,r)});
+      const m=document.createElement('canvas');m.width=m.height=420;const q=m.getContext('2d'),g=q.createLinearGradient(60,60,360,360);g.addColorStop(0,A);g.addColorStop(1,B);q.fillStyle=g;q.beginPath();q.arc(210,210,150,0,Math.PI*2);q.fill();
+      q.fillStyle='rgba(255,255,255,.14)';[[150,260,22],[120,190,14],[185,320,12]].forEach(([X,Y,r])=>{q.beginPath();q.arc(X,Y,r,0,Math.PI*2);q.fill()});q.globalCompositeOperation='destination-out';q.fillStyle='#000';q.beginPath();q.arc(275,165,140,0,Math.PI*2);q.fill();
+      x.save();x.shadowColor=rgba(A,.95);x.shadowBlur=80;x.drawImage(m,fx-250,fy-170,330,330);x.restore();
+      // bintang jatuh
+      {const sx=W*.3,sy=H*.07,ex=W*.62,ey=H*.25,tg=x.createLinearGradient(sx,sy,ex,ey);tg.addColorStop(0,rgba(LT,0));tg.addColorStop(1,rgba(LT,.95));x.strokeStyle=tg;x.lineWidth=4;x.beginPath();x.moveTo(sx,sy);x.quadraticCurveTo(W*.5,H*.08,ex,ey);x.stroke();
+        x.save();x.shadowColor=rgba(A,1);x.shadowBlur=30;x.fillStyle=rgba(LT,1);star(ex,ey,22);x.restore()}
+      // bintang dan kilau
+      for(let i=0;i<110;i++){const X=W*.3+rnd()*W*.7,Y=rnd()*H*.6,r=2+rnd()*rnd()*16;x.fillStyle=rgba(rnd()<.5?A:LT,.35+rnd()*.6);
+        if(r>10){x.save();x.shadowColor=rgba(A,.8);x.shadowBlur=18;star(X,Y,r);x.strokeStyle=rgba(LT,.5);x.lineWidth=1.2;line(X-r*2.2,Y,X+r*2.2,Y);line(X,Y-r*2.2,X,Y+r*2.2);x.restore()}else if(r>7)star(X,Y,r);else circ(X,Y,r*.35,1)}
+      // kunang-kunang
+      for(let i=0;i<46;i++){const X=W*.28+rnd()*W*.72,Y=H*.05+rnd()*H*.55;x.save();x.shadowColor=rgba(rnd()<.5?A:B,1);x.shadowBlur=22;x.fillStyle=rgba(dark?'#fff6e8':A,.9);circ(X,Y,2.5+rnd()*3,1);x.restore()}
+      // kelopak melayang
+      for(let i=0;i<16;i++){const X=W*.35+rnd()*W*.65,Y=H*.06+rnd()*H*.5;x.save();x.translate(X,Y);x.rotate(rnd()*Math.PI*2);const pg=x.createLinearGradient(-18,0,18,0);pg.addColorStop(0,rgba(B,.75));pg.addColorStop(1,rgba(A,.55));x.fillStyle=pg;
+        x.beginPath();x.moveTo(-18,0);x.quadraticCurveTo(0,-12,18,0);x.quadraticCurveTo(0,12,-18,0);x.fill();x.restore()}},
     // Advokat: mandala berlapis dengan kelopak, simetris dan dalam.
     INFJ(){x.save();x.translate(fx,fy);for(let ring=0;ring<7;ring++){const r=70+ring*70,n=8+ring*4;x.strokeStyle=rgba(ring%2?B:A,.85-ring*.09);x.lineWidth=2;circ(0,0,r);
         for(let k=0;k<n;k++){x.save();x.rotate(k*2*Math.PI/n);x.beginPath();x.ellipse(r+32,0,32,12,0,0,Math.PI*2);x.stroke();x.restore()}}
@@ -865,6 +883,8 @@ function drawMotif(type,dark){
     ESFP(){for(let s=0;s<6;s++){x.strokeStyle=rgba(s%2?B:A,.65);x.lineWidth=9;x.beginPath();for(let t=0;t<=1;t+=.01){const X=W*.25+t*W*.9+s*40,Y=-60+t*H*.7+s*90+Math.sin(t*16+s)*26;x.lineTo(X-s*120,Y)}x.stroke()}
       for(let i=0;i<120;i++){const X=W*.25+rnd()*W*.8,Y=rnd()*H*.6,col=rnd()<.5?A:B;x.save();x.translate(X,Y);x.rotate(rnd()*Math.PI);x.fillStyle=rgba(col,.5+rnd()*.45);const k=rnd();if(k<.5)x.fillRect(-10,-4,20,8);else if(k<.8)circ(0,0,6,1);else{x.fillStyle=rgba('#ffffff',.8);star(0,0,12)}x.restore()}}
   })[type]();
+  // Butiran halus supaya terasa bertekstur.
+  for(let i=0;i<9000;i++){const X=rnd()*W,Y=rnd()*H*.75;x.fillStyle=rgba(rnd()<.5?A:(dark?'#ffffff':B),.05+rnd()*.12);x.fillRect(X,Y,2,2)}
   // Pudar dari titik fokus (pojok kanan atas) supaya teks di sampul tetap mudah dibaca.
   x.globalCompositeOperation='destination-in';const m=x.createRadialGradient(fx,fy,0,fx,fy,W*.95);m.addColorStop(0,'rgba(0,0,0,1)');m.addColorStop(.3,'rgba(0,0,0,.75)');m.addColorStop(.58,'rgba(0,0,0,.16)');m.addColorStop(.82,'rgba(0,0,0,0)');x.fillStyle=m;x.fillRect(0,0,W,H);
   return c;
