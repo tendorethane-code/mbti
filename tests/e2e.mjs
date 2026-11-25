@@ -94,7 +94,7 @@ try {
   await load();
   check('judul halaman "Peta Kepribadian"', (await ev('document.title')) === 'Peta Kepribadian');
   check('h1 beranda', (await text('#home h1')) === 'Peta Kepribadian');
-  check('total soal 184', (await text('#totalQ')) === '184');
+  check('total soal 189', (await text('#totalQ')) === '189');
   check('tema bawaan: gelap', (await ev("document.documentElement.dataset.theme")) === 'dark' && (await ev("getComputedStyle(document.body).backgroundColor")) === 'rgb(18, 16, 25)');
   check('pilihan tema ada di atas, "Gelap" aktif', await ev(`document.querySelector('.topbar [data-theme-set="dark"]').getAttribute('aria-pressed')==='true'&&document.querySelector('.topbar').getBoundingClientRect().top<60`));
   check('HP: peta tipe tampil di atas daftar modul', await ev("document.getElementById('ttHome').getBoundingClientRect().top<document.getElementById('mods').getBoundingClientRect().top"));
@@ -118,7 +118,7 @@ try {
   check('tombol "Sebelumnya" mati di soal pertama', await ev("document.getElementById('qBack').disabled"));
   await click('#qHome');
   check('progres kesimpan: 1/44 dijawab', (await text('#mods .mod small')).includes('1/44 dijawab'));
-  check('tombol modul berubah jadi "Lanjut"', (await text('#mods button[data-m="0"]')) === 'Lanjut');
+  check('tombol modul berubah jadi "Lanjutkan"', (await text('#mods button[data-m="0"]')) === 'Lanjutkan');
 
   // C. Kerjain semua modul
   await click('#mods button[data-m="0"]');
@@ -133,7 +133,7 @@ try {
       else break;
     } else break;
   }
-  check('sisa 183 soal terjawab lewat klik (1 udah lewat keyboard)', n === 183, `terjawab ${n}`);
+  check('sisa 188 soal terjawab lewat klik (1 sudah lewat keyboard)', n === 188, `terjawab ${n}`);
   check('layar akhir: tombol lanjut hilang, semua selesai', (await text('#doneText')).includes('Semua modul selesai'));
   await click('#doneRes');
 
@@ -141,7 +141,11 @@ try {
   const h1 = await text('#res h1');
   check('hasil: tipe INFP-T dengan nama', h1.includes('INFP-T') && h1.includes('Tes QA'), h1);
   check('hasil: 3 sel nyala berurutan, 13 redup', await ev("(()=>{const r=[...document.querySelectorAll('#ttRes .cell')].map(c=>c.dataset.rank);return r.filter(x=>x==='0').length===13&&['1','2','3'].every(k=>r.filter(x=>x===k).length===1)&&document.querySelector('#ttRes .cell[data-rank=\"1\"]').textContent.startsWith('INFP')})()"));
-  check('hasil: semua bagian tampil (8 section)', (await ev("document.querySelectorAll('#res section').length")) === 8);
+  check('hasil: semua bagian tampil (11 section, tanpa catatan khusus)', (await ev("document.querySelectorAll('#res section').length")) === 11, await ev("document.querySelectorAll('#res section').length"));
+  check('hasil: ringkasan kepribadian dari skor', /^Kamu .*waktu sendiri/.test(await text('#sumText')), await text('#sumText'));
+  check('hasil: gambaran keseharian 5 kelompok, tiap kalimat ada dasarnya', await ev("(()=>{const s=document.querySelectorAll('#keseharian .sec');const li=[...document.querySelectorAll('#keseharian li')];return s.length===5&&li.length>=10&&li.every(l=>/Dasar: /.test(l.textContent))})()"));
+  check('hasil: kekuatan, perlu diperhatikan, tips teman tampil', await ev("document.querySelectorAll('#ringkasan .klist li').length>=4&&document.querySelectorAll('#tips li').length>=3"));
+  check('hasil: tidak ada bagian catatan khusus kalau file tidak punya catatan', await ev("!document.getElementById('catatan')"));
   check('hasil: nggak ada NaN/undefined/null', await ev("!/NaN|undefined|null|Infinity/.test(document.getElementById('res').innerText)"));
   check('hasil: urutan fungsi Fi duluan', (await text('#res .grid2 .frow b')) === 'Fi');
   check('HP: nggak ada scroll ke samping (hasil)', await noOverflow());
@@ -151,7 +155,7 @@ try {
   await click('#dlJson');
   const jf = await waitFile('.json');
   let jd = null; try { jd = JSON.parse(fs.readFileSync(jf, 'utf8')); } catch {}
-  check('download file jawaban (.json)', jd && jd.app === 'tes-kepribadian' && jd.name === 'Tes QA' && jd.ans.inti.length === 44 && jd.ans.fungsi.length === 40, jf || 'tidak ada file');
+  check('download file jawaban (.json) versi 2', jd && jd.app === 'tes-kepribadian' && jd.v === 2 && jd.name === 'Tes QA' && jd.ans.inti.length === 44 && jd.ans.facet.length === 45 && jd.ans.fungsi.length === 40, jf || 'tidak ada file');
   check('nama file jawaban aman', jf && path.basename(jf) === 'jawaban-peta-kepribadian-tes-qa.json', jf);
   await click('#dlCard');
   check('kartu PNG tampil di halaman', await waitFor("(()=>{const i=document.getElementById('cardPrev');return !i.hidden&&i.naturalWidth===1080&&i.naturalHeight>=1350})()", 8000));
@@ -162,6 +166,9 @@ try {
   if (pf) fs.copyFileSync(pf, path.join(OUT, '04-kartu.png'));
   await click('#copy');
   check('salin ringkasan (clipboard atau kotak manual)', await waitFor("(()=>{const m=document.getElementById('copyMsg').textContent;const b=document.getElementById('copyBox');return m.includes('disalin')||(!b.hidden&&b.value.includes('INFP-T'))})()", 3000));
+  await ev("document.getElementById('copyMsg').textContent='';document.getElementById('copyBox').hidden=true");
+  await click('#shareLink');
+  check('salin link hasil', await waitFor("(()=>{const m=document.getElementById('copyMsg').textContent;const b=document.getElementById('copyBox');return m.includes('Link hasil sudah disalin')||(!b.hidden&&/#h=[A-Za-z0-9_-]+$/.test(b.value))})()", 3000));
 
   // F. Mode cetak (PDF)
   await cmd('Emulation.setEmulatedMedia', {media: 'print'});
@@ -182,7 +189,7 @@ try {
 
   // H. Ulangi modul butuh 2 tap
   await click('#mods button[data-m="1"]');
-  check('ulangi: tap pertama cuma minta konfirmasi', (await text('#mods button[data-m="1"]')) === 'Tap lagi buat ulangi' && (await visible('home')));
+  check('ulangi: tap pertama hanya minta konfirmasi', (await text('#mods button[data-m="1"]')) === 'Ketuk lagi untuk mengulang' && (await visible('home')));
   check('ulangi: jawaban belum kehapus', (await ev("document.querySelectorAll('#mods .mod.ok').length")) === 4);
 
   // I. Hapus semua
@@ -191,7 +198,7 @@ try {
   await click('#noReset');
   check('hapus: batal nggak ngapus apa-apa', (await ev("document.querySelectorAll('#mods .mod.ok').length")) === 4);
   await click('#askReset'); await click('#doReset');
-  check('hapus: semua modul kosong lagi', (await ev("[...document.querySelectorAll('#mods small')].every(s=>s.textContent.includes('belum mulai'))")));
+  check('hapus: semua modul kosong lagi', (await ev("[...document.querySelectorAll('#mods small')].every(s=>s.textContent.includes('belum dimulai'))")));
   check('hapus: "Lihat hasil" mati lagi', await ev("document.getElementById('goRes').disabled"));
 
   // J. Buka file jawaban
@@ -207,13 +214,13 @@ try {
   // K. Hasil sebagian (cuma Big Five)
   const C = loadCore();
   const part = path.join(DL, 'sebagian.json');
-  fs.writeFileSync(part, JSON.stringify({app: 'tes-kepribadian', v: 1, name: '', ans: {big5: Array.from(answersFor(C, 'INTJ').big5)}}));
+  fs.writeFileSync(part, JSON.stringify({app: 'tes-kepribadian', v: 2, name: '', ans: {big5: Array.from(answersFor(C, 'INTJ').big5)}}));
   await setFile(part);
   check('hasil sebagian: judul "Hasil sementara" + Big Five', await waitFor("!document.getElementById('res').hidden&&document.querySelector('#res h1').textContent==='Hasil sementara'&&/Big Five/.test(document.getElementById('res').innerText)", 4000));
   // Kasus family beda: tipe dari fungsi ≠ family dari huruf
   const mixed = path.join(DL, 'campur.json');
   const mx = answersFor(C, 'INFP'); const tp = answersFor(C, 'INTP');
-  fs.writeFileSync(mixed, JSON.stringify({app: 'tes-kepribadian', v: 1, name: '', ans: {inti: Array.from(tp.inti), facet: Array.from(tp.facet), big5: Array.from(mx.big5), fungsi: Array.from(mx.fungsi)}}));
+  fs.writeFileSync(mixed, JSON.stringify({app: 'tes-kepribadian', v: 2, name: '', ans: {inti: Array.from(tp.inti), facet: Array.from(tp.facet), big5: Array.from(mx.big5), fungsi: Array.from(mx.fungsi)}}));
   await click('#resHome'); await setFile(mixed);
   await waitFor("!document.getElementById('res').hidden", 4000);
   check('family beda: ada penjelasan kenapa', await ev("/peluang terbesar ada di/.test(document.getElementById('res').innerText)"));
@@ -222,6 +229,44 @@ try {
   check('hasil sebagian: nggak ada NaN', await ev("!/NaN|undefined|Infinity/.test(document.getElementById('res').innerText)"));
   await click('#dlCard');
   check('hasil sebagian: kartu PNG tetap bisa dibuat', await waitFor("(()=>{const i=document.getElementById('cardPrev');return !i.hidden&&i.naturalWidth===1080})()", 8000));
+
+  // K2. File versi 1 (soal facet lama): beranda + pesan, facet perlu dijawab ulang
+  const old = path.join(DL, 'lama.json'); const full = answersFor(C, 'INFP');
+  fs.writeFileSync(old, JSON.stringify({app: 'tes-kepribadian', v: 1, name: 'Lama', ans: {inti: Array.from(full.inti), facet: new Array(40).fill(3), big5: Array.from(full.big5), fungsi: Array.from(full.fungsi)}}));
+  await click('#resHome'); await setFile(old);
+  check('file versi 1: buka beranda dan beri tahu soal yang perlu dijawab', await waitFor("!document.getElementById('home').hidden&&/versi lama.*30 soal yang perlu kamu jawab lagi/.test(document.getElementById('fileMsg').textContent)", 4000), await text('#fileMsg'));
+  check('file versi 1: modul Facet terisi sebagian (15/45)', (await text('#mods .mod:nth-child(2) small')).includes('15/45 dijawab'), await text('#mods .mod:nth-child(2) small'));
+
+  // K3. Catatan khusus dari file, termasuk teks berbahaya yang harus tampil sebagai teks
+  const withNotes = path.join(DL, 'catatan.json');
+  fs.writeFileSync(withNotes, JSON.stringify(C.exportData('Gama', full, {summary: 'Ringkasan khusus <b>tebal</b>', notes: [{tag: 'Pola 1', title: 'Judul catatan', text: '<img src=x onerror="window.__xss=1">isi'}]})));
+  await setFile(withNotes);
+  await waitFor("!document.getElementById('res').hidden", 4000);
+  check('catatan khusus: bagian "Temuan khusus" tampil', await ev("!!document.getElementById('catatan')&&document.querySelectorAll('#catatan .ncard').length===1"));
+  check('catatan khusus: ringkasan dari file dipakai, ringkasan otomatis tetap ada', (await text('#sumText')).startsWith('Ringkasan khusus <b>tebal</b>') && /Ringkasan otomatis/.test(await text('#ringkasan')));
+  check('catatan khusus: HTML tidak dijalankan', await ev("!document.querySelector('#res img:not(#cardPrev)')&&!document.querySelector('#sumText b')&&!window.__xss"));
+  await click('#dlJson');
+  const nf = await waitFile('jawaban-peta-kepribadian-gama.json');
+  check('catatan khusus ikut tersimpan di file jawaban', nf && JSON.parse(fs.readFileSync(nf, 'utf8')).notes?.[0]?.title === 'Judul catatan');
+
+  // K4. Link hasil: dilihat tanpa menimpa jawaban sendiri
+  if (jf) { await click('#resHome'); await setFile(jf); await waitFor("!document.getElementById('res').hidden", 4000); }
+  const other = C.sanitizeImport(C.exportData('Teman', answersFor(C, 'ESTJ', 'A'), {notes: [{title: 'Catatan teman', text: 'x'}]}));
+  const goto = async url => { await cmd('Page.navigate', {url: 'about:blank'}); await sleep(100); const done = new Promise(r => listeners.push(function f(m) { if (m.sessionId === S && m.method === 'Page.loadEventFired') { listeners.splice(listeners.indexOf(f), 1); r(); } })); await cmd('Page.navigate', {url}); await done; await sleep(200); };
+  await goto(BASE + '#h=' + C.encodeShare(other));
+  check('link hasil: tampil mode lihat dengan banner', await waitFor("!document.getElementById('res').hidden&&!document.getElementById('viewBar').hidden&&/Teman/.test(document.getElementById('viewText').textContent)", 4000));
+  check('link hasil: menampilkan hasil orang itu (ESTJ-A) dan catatannya', (await text('#res h1')).includes('ESTJ-A') && /Catatan teman/.test(await text('#catatan')));
+  check('link hasil: jawaban di browser ini tidak berubah', await ev("JSON.parse(localStorage.getItem('tesKepribadian.v1')).name==='Tes QA'"));
+  await click('#viewMine');
+  check('link hasil: "Kerjakan tesmu sendiri" kembali ke beranda dengan data sendiri', (await visible('home')) && !(await ev('location.hash')) && (await ev("document.getElementById('nama').value")) === 'Tes QA' && (await ev("document.querySelectorAll('#mods .mod.ok').length")) === 4);
+  await goto(BASE + '#h=' + C.encodeShare(other));
+  await click('#viewSave');
+  check('link hasil: simpan minta konfirmasi kalau browser sudah berisi jawaban', await visible('viewConfirm'));
+  await click('#viewSaveYes');
+  check('link hasil: setelah disimpan jadi data browser ini', await waitFor("document.getElementById('viewBar').hidden&&JSON.parse(localStorage.getItem('tesKepribadian.v1')).name==='Teman'&&!location.hash", 3000));
+  await goto(BASE + '#h=rusak123456');
+  check('link hasil rusak: pesan, tidak crash', await waitFor("!document.getElementById('home').hidden&&/tidak valid/.test(document.getElementById('fileMsg').textContent)", 3000));
+  if (jf) { await setFile(jf); await waitFor("!document.getElementById('res').hidden", 4000); }
 
   // L. Laptop + ganti tema
   if (jf) { await click('#resHome'); await setFile(jf); await waitFor("!document.getElementById('res').hidden", 4000); }

@@ -4,16 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Peta Kepribadian</title>
-<meta name="description" content="Tes 16 tipe versi lengkap: 4 huruf + identitas, 20 facet, Big Five 30 facet, dan 8 cognitive functions. Gratis, tanpa daftar, hasil bisa di-download.">
+<meta name="description" content="Tes 16 tipe versi lengkap: 4 huruf + identitas, 20 facet, Big Five 30 facet, dan 8 cognitive functions. Gratis, tanpa daftar, hasil bisa diunduh.">
 <meta property="og:title" content="Peta Kepribadian">
-<meta property="og:description" content="Tes 16 tipe versi lengkap, 184 soal. Hasil keluar otomatis dan bisa di-download.">
+<meta property="og:description" content="Tes 16 tipe versi lengkap. Hasil keluar otomatis, lengkap dengan ringkasan kepribadian, dan bisa diunduh.">
 <meta name="theme-color" content="#3b2fc9">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233b2fc9'/%3E%3Crect x='6' y='6' width='9' height='9' rx='2' fill='%23fff'/%3E%3Crect x='17' y='6' width='9' height='9' rx='2' fill='%23fff' opacity='.5'/%3E%3Crect x='6' y='17' width='9' height='9' rx='2' fill='%23fff' opacity='.5'/%3E%3Crect x='17' y='17' width='9' height='9' rx='2' fill='%23e8492c'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* VOICE everyday: tes yang enak dikerjain bareng temen, hasilnya jujur
+/* VOICE everyday: tes yang enak dikerjakan bersama teman, bahasanya rapi tapi tetap santai, hasilnya jujur
    IDEA peta: tabel 16 tipe sebagai peta, empat wilayah = empat family
    PICTURE beranda: tabel 16 tipe berwarna per family; hasil: tabel yang nyala di 3 tipe teratas
    COLOUR putih, tinta hitam, indigo dominan, koral untuk hasil utama dan Diplomat, lilac untuk panel
@@ -145,6 +145,24 @@ li{margin:4px 0}
 textarea{width:100%;min-height:160px;font:14px/1.5 Manrope,sans-serif;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink);padding:10px}
 #cardPrev{display:block;max-width:min(100%,420px);border-radius:14px;margin-top:14px;border:1px solid var(--line)}
 footer{border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
+.sumcard{background:var(--pan);border-radius:16px;padding:18px 20px}
+.sumcard p{max-width:none;margin:0}
+.sumcard h3{margin:0 0 8px}
+.secs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:16px;margin-top:14px}
+.sec{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--bg)}
+.sec h3{margin:0 0 6px}
+.sec ul,.klist{list-style:none;padding:0;margin:0}
+.sec li,.klist li{padding:9px 0;border-top:1px solid var(--line);margin:0}
+.sec li:first-child,.klist li:first-child{border-top:0}
+.sec li.sp{border-left:3px solid var(--acc);padding-left:10px}
+.basis{display:block;font-size:12.5px;color:var(--mute);margin-top:2px}
+.ncards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:14px;margin-top:14px}
+.ncard{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--bg)}
+.ncard .tg{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--acc)}
+.ncard h3{margin:4px 0 6px;font-size:16px}
+.ncard p{font-size:15px;margin:0;max-width:none}
+.viewbar{background:var(--pan);border-bottom:1px solid var(--line);padding:14px max(5vw,16px)}
+.viewbar p{margin:0;font-weight:600}
 .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:10px max(5vw,16px);border-bottom:1px solid var(--line)}
 .brand{font-weight:800;letter-spacing:-.01em}
 .seg{display:inline-flex;border:2px solid var(--line);border-radius:12px;padding:3px;gap:3px}
@@ -154,7 +172,7 @@ footer{border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
 @media(max-width:820px){.home{grid-template-columns:minmax(0,1fr);grid-template-areas:"t" "p" "f"}.home .p{margin:8px 0 4px}.hero,.grid2{grid-template-columns:minmax(0,1fr)}.all{grid-template-columns:minmax(0,1fr)}.fam{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.pair{grid-template-columns:minmax(0,1fr)}.drow{grid-template-columns:4.6em minmax(0,1fr) 4.8em;gap:8px}.drow .l,.drow .r{font-size:13px}.dnote{grid-column:1/4;margin:0}.facet{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.facet .div{grid-column:1/3;grid-row:2}.facet .b{text-align:right}.mod{grid-template-columns:2.4em minmax(0,1fr)}.mod .btn{grid-column:1/3}}
 @media(prefers-reduced-motion:no-preference){.bar i,.div i{animation:grow .9s ease-out both}@keyframes grow{from{clip-path:inset(0 100% 0 0)}}}
-@media print{html,body{background:var(--bg)!important}.noprint,#home,#quiz,#done,footer,.topbar{display:none!important}#res{display:block!important}.band{padding:14px 4px}.drow,.frow,.fcard,.b5card,.fit,tr,.cell{break-inside:avoid}h2,h3{break-after:avoid}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}.bar i,.div i{animation:none}}
+@media print{html,body{background:var(--bg)!important}.noprint,#home,#quiz,#done,footer,.topbar{display:none!important}#res{display:block!important}.band{padding:14px 4px}.drow,.frow,.fcard,.b5card,.fit,tr,.cell,.sec,.ncard,.sumcard,.klist li{break-inside:avoid}h2,h3,.lead{break-after:avoid}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}body{font-size:13px}h1{font-size:34px}h2{font-size:21px}h3{font-size:15px}.lead{font-size:13.5px}p{max-width:none}.hero,.grid2,.secs,.ncards{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:14px!important}.all{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:4px 24px!important}.fam{grid-template-columns:repeat(4,minmax(0,1fr))!important}.b5{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}.sec,.ncard,.b5card{padding:12px!important}.sec li,.klist li{padding:6px 0}.basis{font-size:11px}.ncard p{font-size:12.5px}.bar{height:10px}.fit b{font-size:16px}.facet{margin:5px 0;font-size:12px}.dich{gap:12px}.cell small{font-size:11px}.bar i,.div i{animation:none}}
 </style>
 <style id="pageStyle">@page{size:A4;margin:12mm;background:#121019}</style>
 <script>try{var t=localStorage.getItem("tesKepribadian.theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
@@ -166,15 +184,15 @@ footer{border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
 <div class="t">
 <p class="eyebrow">Tes 16 tipe · versi lengkap</p>
 <h1>Peta Kepribadian</h1>
-<p class="lead">4 huruf + identitas, 20 facet, Big Five 30 facet, dan 8 cognitive functions. <span id="totalQ">184</span> soal dalam 4 modul, sekitar 25 menit. Progres kesimpen otomatis di browser ini, jadi boleh dicicil.</p>
+<p class="lead">4 huruf + identitas, 20 facet, Big Five 30 facet, dan 8 cognitive functions. <span id="totalQ">189</span> soal dalam 4 modul, sekitar 25 menit. Progres tersimpan otomatis di browser ini, jadi boleh dicicil.</p>
 </div>
 <div class="p">
 <div class="tt" id="ttHome" role="img" aria-label="Peta 16 tipe, diwarnai per family"></div>
 <div class="famkey" id="famKey"></div>
 </div>
 <div class="f">
-<label for="nama">Nama (buat judul hasil, opsional)</label>
-<input type="text" id="nama" maxlength="30" autocomplete="off" placeholder="Nama lu">
+<label for="nama">Nama (untuk judul hasil, opsional)</label>
+<input type="text" id="nama" maxlength="30" autocomplete="off" placeholder="Namamu">
 <div class="mods" id="mods"></div>
 <div class="rowb">
 <button class="btn" id="goRes" type="button">Lihat hasil</button>
@@ -183,14 +201,15 @@ footer{border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
 <input type="file" id="fileIn" accept=".json,application/json" hidden>
 </div>
 <p class="mute" id="fileMsg" role="status" style="margin-top:8px"></p>
-<div class="note" id="confirmReset" hidden>Semua jawaban di browser ini bakal dihapus. Yakin?
+<div class="note" id="confirmReset" hidden>Semua jawaban di browser ini akan dihapus. Yakin?
 <div class="rowb" style="margin-top:10px"><button class="btn warn" id="doReset" type="button">Hapus semua</button><button class="btn ghost" id="noReset" type="button">Batal</button></div></div>
 <h3>Biar hasilnya akurat</h3>
 <ul>
-<li>Jawab berdasarkan kebiasaan lu 2–3 tahun terakhir, bukan cuma minggu ini.</li>
-<li>Kalau jawabannya cuma "agak", pilih yang agak. Jangan selalu ujung.</li>
-<li>Kalau soal nyebut hubungan (temen biasa, orang deket), bayangin orang itu. Kalau nggak disebut, maksudnya orang pada umumnya.</li>
-<li>Pilih yang lebih sering atau lebih dulu muncul. Tengah cuma kalau beneran seimbang.</li>
+<li>Jawab berdasarkan kebiasaanmu 2–3 tahun terakhir, bukan hanya minggu ini.</li>
+<li>Kalau jawabannya hanya "agak", pilih yang agak. Tidak harus selalu di ujung.</li>
+<li>Kalau soal menyebut hubungan (teman biasa, orang terdekat), bayangkan orang itu. Kalau tidak disebut, maksudnya orang pada umumnya.</li>
+<li>Pilih yang lebih sering atau lebih dulu muncul. Pilih tengah hanya kalau benar-benar seimbang.</li>
+<li>Jawab yang benar-benar terjadi, bukan yang kamu inginkan.</li>
 </ul>
 </div>
 </div></main>
@@ -201,7 +220,7 @@ footer{border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
 <p class="qtext" id="qText"></p>
 <div id="qBody"></div>
 <div class="qnav"><button class="btn ghost" id="qBack" type="button">Sebelumnya</button><button class="btn ghost" id="qHome" type="button">Simpan &amp; keluar</button></div>
-<p class="hint">Bisa pakai keyboard: tombol 1–5 buat jawab, panah kiri buat balik.</p>
+<p class="hint">Bisa memakai keyboard: tombol 1–5 untuk menjawab, panah kiri untuk kembali.</p>
 </div></main>
 
 <main id="done" class="band" hidden><div class="qwrap">
@@ -210,9 +229,10 @@ footer{border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
 <div class="rowb"><button class="btn" id="doneNext" type="button">Lanjut modul berikutnya</button><button class="btn ghost" id="doneRes" type="button">Lihat hasil</button><button class="btn ghost" id="doneHome" type="button">Ke beranda</button></div>
 </div></main>
 
+<div id="viewBar" class="viewbar noprint" hidden><div class="wrap"><p id="viewText"></p><div class="rowb" style="margin-top:8px"><button class="btn" id="viewSave" type="button">Simpan hasil ini di browser ini</button><button class="btn ghost" id="viewMine" type="button">Kerjakan tesmu sendiri</button></div><div class="note" id="viewConfirm" hidden>Browser ini sudah berisi jawaban lain. Kalau disimpan, jawaban itu akan diganti. Lanjutkan?<div class="rowb" style="margin-top:10px"><button class="btn warn" id="viewSaveYes" type="button">Ganti dan simpan</button><button class="btn ghost" id="viewSaveNo" type="button">Batal</button></div></div></div></div>
 <div id="res" hidden></div>
 
-<footer class="band"><div class="wrap">Peta Kepribadian bukan tes MBTI® resmi dan belum divalidasi secara ilmiah. MBTI adalah merek dagang The Myers-Briggs Company. Semua jawaban cuma kesimpen di browser lu sendiri.</div></footer>
+<footer class="band"><div class="wrap">Peta Kepribadian bukan tes MBTI® resmi dan belum divalidasi secara ilmiah. MBTI adalah merek dagang The Myers-Briggs Company. Jawabanmu hanya tersimpan di browser ini dan tidak dikirim ke server mana pun.</div></footer>
 
 <script src="data.js"></script>
 <script src="core.js"></script>
@@ -221,13 +241,16 @@ footer{border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
 const KEY='tesKepribadian.v1';
 const $=id=>document.getElementById(id);
 const nm=nmf;
-let S={name:'',ans:emptyAns()};
+const blank=()=>({v:DATA_V,name:'',ans:emptyAns(),summary:'',notes:[]});
+let S=blank();
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');const c=s&&sanitizeImport({...s,app:APP_ID});if(c)S=c}catch(e){}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
-let cur=0,qi=0,lock=false,resetArm=-1;
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({v:DATA_V,name:S.name,ans:S.ans,summary:S.summary||'',notes:S.notes||[]}))}catch(e){}};
+save();
+let cur=0,qi=0,lock=false,resetArm=-1,view=null;
+const V=()=>view||S;
 
 $('totalQ').textContent=TOTAL;
-const show=id=>{['home','quiz','done','res'].forEach(x=>$(x).hidden=x!==id);window.scrollTo(0,0)};
+const show=id=>{['home','quiz','done','res'].forEach(x=>$(x).hidden=x!==id);$('viewBar').hidden=!(view&&id==='res');window.scrollTo(0,0)};
 const cssVar=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const rgb=h=>{h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');const n=parseInt(h,16);return [n>>16&255,n>>8&255,n&255]};
 const mix=(a,p)=>{const A=rgb(cssVar(a)),B=rgb(cssVar('--bg'));return `rgb(${A.map((v,i)=>Math.round(v*p/100+B[i]*(1-p/100))).join(',')})`};
@@ -251,13 +274,14 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-theme-set]
 window.addEventListener('beforeprint',()=>document.querySelectorAll('#res details').forEach(d=>d.open=true));
 
 function renderHome(){
+  view=null;
   $('nama').value=S.name||'';
-  $('mods').innerHTML=MODS.map((m,i)=>{const c=answered(S.ans,m),n=m.items.length,ok=c===n;return `<div class="mod ${ok?'ok':''}"><span class="no">${ok?'✓':i+1}</span><div><b>${m.name}</b><small>${m.sub} · ${ok?'selesai':c?`${c}/${n} dijawab`:'belum mulai'}</small><div class="mini"><i style="width:${c/n*100}%"></i></div></div><button class="btn ${ok?'ghost':''}" type="button" data-m="${i}">${ok?'Ulangi':c?'Lanjut':'Mulai'}</button></div>`}).join('');
+  $('mods').innerHTML=MODS.map((m,i)=>{const c=answered(S.ans,m),n=m.items.length,ok=c===n;return `<div class="mod ${ok?'ok':''}"><span class="no">${ok?'✓':i+1}</span><div><b>${m.name}</b><small>${m.sub} · ${ok?'selesai':c?`${c}/${n} dijawab`:'belum dimulai'}</small><div class="mini"><i style="width:${c/n*100}%"></i></div></div><button class="btn ${ok?'ghost':''}" type="button" data-m="${i}">${ok?'Ulangi':c?'Lanjutkan':'Mulai'}</button></div>`}).join('');
   $('goRes').disabled=!MODS.some(m=>isDone(S.ans,m));
   resetArm=-1;show('home');
 }
 $('mods').addEventListener('click',e=>{const b=e.target.closest('button[data-m]');if(!b)return;const i=+b.dataset.m,m=MODS[i];
-  if(isDone(S.ans,m)){if(resetArm!==i){resetArm=i;b.textContent='Tap lagi buat ulangi';return}S.ans[m.id]=[];save()}
+  if(isDone(S.ans,m)){if(resetArm!==i){resetArm=i;b.textContent='Ketuk lagi untuk mengulang';return}S.ans[m.id]=[];save()}
   start(i)});
 $('nama').addEventListener('input',e=>{S.name=safeName(e.target.value);save()});
 
@@ -271,7 +295,7 @@ function renderQ(){
     const sz=[46,36,28,36,46],cl=['','','m','r','r'],lb=['Sangat A','Agak A','Seimbang','Agak B','Sangat B'];
     $('qBody').innerHTML=`<div class="pair"><div class="card"><b>A</b>${it.a}</div><div class="card b"><b>B</b>${it.b}</div></div><div class="scale">${sz.map((s,i)=>`<button type="button" class="dotb ${cl[i]} ${v===i+1?'on':''}" data-v="${i+1}" style="width:${s}px;height:${s}px" aria-label="${lb[i]}" aria-pressed="${v===i+1}"></button>`).join('')}</div><div class="scl"><span>Sangat A</span><span>Seimbang</span><span>Sangat B</span></div>`;
   }else{
-    const lb=['Sangat nggak setuju','Agak nggak setuju','Netral','Agak setuju','Sangat setuju'];
+    const lb=['Sangat tidak setuju','Agak tidak setuju','Netral','Agak setuju','Sangat setuju'];
     $('qBody').innerHTML=`<div class="lk">${lb.map((l,i)=>`<button type="button" class="opt ${v===i+1?'on':''}" data-v="${i+1}" aria-pressed="${v===i+1}"><span>${i+1}</span>${l}</button>`).join('')}</div>`;
   }
   $('qBack').disabled=qi===0;
@@ -289,7 +313,7 @@ document.addEventListener('keydown',e=>{if($('quiz').hidden||e.target.tagName===
 function finish(){
   const left=MODS.filter(m=>!isDone(S.ans,m));
   $('doneTitle').textContent=`${MODS[cur].name} selesai`;
-  $('doneText').textContent=left.length?`Tinggal ${left.length} modul lagi: ${left.map(m=>m.name).join(', ')}. Hasil sementara udah bisa dilihat, tapi baru lengkap setelah semua selesai.`:'Semua modul selesai. Hasil lengkap lu udah siap.';
+  $('doneText').textContent=left.length?`Tinggal ${left.length} modul lagi: ${left.map(m=>m.name).join(', ')}. Hasil sementara sudah bisa dilihat, tapi baru lengkap setelah semua modul selesai.`:'Semua modul selesai. Hasil lengkapmu sudah siap.';
   $('doneNext').hidden=!left.length;$('doneNext').onclick=()=>start(MODS.indexOf(left[0]));
   show('done');
 }
@@ -298,78 +322,116 @@ $('doneHome').addEventListener('click',renderHome);
 $('goRes').addEventListener('click',()=>renderRes());
 $('askReset').addEventListener('click',()=>{$('confirmReset').hidden=false});
 $('noReset').addEventListener('click',()=>{$('confirmReset').hidden=true});
-$('doReset').addEventListener('click',()=>{S.ans=emptyAns();save();$('confirmReset').hidden=true;$('fileMsg').textContent='Semua jawaban udah dihapus.';renderHome()});
+$('doReset').addEventListener('click',()=>{S=blank();save();$('confirmReset').hidden=true;$('fileMsg').textContent='Semua jawaban sudah dihapus.';renderHome()});
 $('openFile').addEventListener('click',()=>$('fileIn').click());
+const loadMsg=d=>{const left=MODS.reduce((s,m)=>s+m.items.length-answered(d.ans,m),0);
+  return d.migrated?`File jawaban versi lama berhasil dibuka. Sebagian soal Facet sudah diperbarui, jadi ada ${left} soal yang perlu kamu jawab lagi.`:'File jawaban berhasil dibuka.'};
 $('fileIn').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();
   r.onload=()=>{let d=null;try{d=sanitizeImport(JSON.parse(r.result))}catch(err){}
     if(!d){$('fileMsg').textContent='File ini bukan file jawaban Peta Kepribadian.';return}
-    S=d;save();$('fileMsg').textContent='File jawaban berhasil dibuka.';MODS.some(m=>isDone(S.ans,m))?renderRes():renderHome()};
-  r.onerror=()=>{$('fileMsg').textContent='File nggak bisa dibaca.'};r.readAsText(f);e.target.value=''});
+    const msg=loadMsg(d);S=d;save();if(!d.migrated&&MODS.some(m=>isDone(S.ans,m)))renderRes();else renderHome();$('fileMsg').textContent=msg};
+  r.onerror=()=>{$('fileMsg').textContent='File tidak bisa dibaca.'};r.readAsText(f);e.target.value=''});
+
+// Link hasil (#h=...): ditampilkan tanpa mengubah jawaban yang tersimpan di browser ini.
+function openShared(){
+  const m=location.hash.match(/^#h=([A-Za-z0-9_-]+)$/);if(!m)return false;
+  const d=decodeShare(m[1]);
+  if(!d||!MODS.some(mm=>isDone(d.ans,mm))){history.replaceState(null,'',location.pathname+location.search);renderHome();$('fileMsg').textContent='Link hasil ini tidak valid atau tidak lengkap.';return true}
+  view=d;$('viewText').textContent=`Kamu sedang melihat hasil ${d.name||'seseorang'} yang dibagikan lewat link. Jawabanmu sendiri di browser ini tidak berubah.`;
+  $('viewConfirm').hidden=true;renderRes();return true;
+}
+const clearHash=()=>history.replaceState(null,'',location.pathname+location.search);
+$('viewMine').addEventListener('click',()=>{clearHash();renderHome()});
+const keepShared=()=>{S={...view,ans:JSON.parse(JSON.stringify(view.ans))};save();view=null;clearHash();renderRes();$('copyMsg').textContent='Hasil ini sudah tersimpan di browser ini.'};
+$('viewSave').addEventListener('click',()=>{if(MODS.some(m=>answered(S.ans,m)>0))$('viewConfirm').hidden=false;else keepShared()});
+$('viewSaveYes').addEventListener('click',keepShared);
+$('viewSaveNo').addEventListener('click',()=>{$('viewConfirm').hidden=true});
+window.addEventListener('hashchange',()=>{if(!openShared()&&view)renderHome()});
 
 function dl(blob,fname){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
+const li=x=>`<li${x.w>=3?' class="sp"':''}>${esc(x.t)}<span class="basis">Dasar: ${esc(x.b)}</span></li>`;
 
 function renderRes(keep){
-  const R=compute(S.ans),name=safeName(S.name);
+  const D=V(),R=compute(D.ans),name=safeName(D.name),I=insights(R,D.ans),notes=D.notes||[],own=D.summary||'';
   const done=MODS.filter(m=>R.done[m.id]).length;
   let h='';
   if(R.hasType){
     const fx=Object.fromEntries(R.fits.map(f=>[f.t,f.v])),top=R.fits.slice(0,3).map(f=>f.t);
     const sumAx=['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax];return `${p>=50?AX[ax][3]:AX[ax][2]} ${lab(p)}`});
-    h+=`<section class="band"><div class="wrap hero"><div><h1>${name?name+', p':'P'}aling cocok <span class="code">${R.type}${R.id?'-'+R.id:''}</span></h1><p class="lead">${sumAx.join(' · ')}.${R.letters!==R.type?` Dari huruf saja hasilnya ${R.letters}, tapi urutan fungsi lebih cocok ke ${R.type}.`:''}</p>
+    h+=`<section class="band"><div class="wrap hero"><div><h1>${name?esc(name)+', p':'P'}aling cocok <span class="code">${R.type}${R.id?'-'+R.id:''}</span></h1><p class="lead">${sumAx.join(' · ')}.${R.letters!==R.type?` Dari huruf saja hasilnya ${R.letters}, tapi urutan fungsi lebih cocok ke ${R.type}.`:''}</p>
     <h3>Tiga tipe paling cocok</h3><div class="top3">${R.fits.slice(0,3).map((f,i)=>`<div class="fit"><b>${f.t}</b><div class="bar ${i?'':'hi'}"><i style="width:${f.v}%"></i></div><span class="v">${nm(f.v)}</span></div>`).join('')}</div>
     <div class="chips"><span class="chip">Family: ${FAM[famOf(R.type)]} (${famOf(R.type)})</span>${R.strat?`<span class="chip">Strategy: ${R.strat}</span>`:''}<span class="chip">${done}/4 modul selesai</span></div></div>
-    <div><div class="tt" id="ttRes" role="img" aria-label="Tabel 16 tipe, tiga yang paling cocok menyala">${TABLE.map(t=>{const r=top.indexOf(t);const st=r<0?'background:transparent;border-color:var(--line);color:var(--mute)':`background:${mix('--ind',[100,58,30][r])};color:${r<2?'#fff':'var(--ink)'}`;return `<div class="cell ${r===0?'me':''}" data-rank="${r+1}" style="${st}">${t}<small>${nm(fx[t])}</small></div>`}).join('')}</div><div class="axes"><span>Nyala = 3 tipe paling cocok</span><span>Lingkaran = hasil utama</span></div></div></div></section>`;
-    const col={inti:'#3b2fc9',facet:'#1f9bd1',b5:'#c2409a'};
-    const notes={EI:'Sumber energi: dari waktu sendiri atau dari interaksi.',SN:'Cara nangkep informasi: konkret dan nyata, atau pola dan makna.',TF:'Dasar keputusan: logika yang konsisten, atau nilai dan dampaknya ke orang.',JP:'Gaya ngatur hidup: rencana dan kepastian, atau terbuka dan fleksibel.',AT:'Seberapa kuat reaksi terhadap stres, kritik, dan keraguan diri.'};
-    const rows=['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax],s=R.src[ax];const inc=s.inti!=null&&s.facet!=null&&Math.abs(s.inti-s.facet)>=25;const big=p>=50?AX[ax][3]:AX[ax][2],pp=p>=50?p:100-p;return `<div class="drow"><span class="l">${AX[ax][2]}</span><div class="track"><div class="in"><span class="mid"></span>${Object.entries(s).map(([k,v])=>`<span class="dot" style="left:${v}%;background:${col[k]}"></span>`).join('')}<span class="dot fin" style="left:${p}%"></span></div></div><span class="r">${big} ${Math.round(pp)}%</span><p class="dnote">${notes[ax]} ${big} ${lab(p)}.${inc?' Jawaban modul Inti dan Facet di sumbu ini cukup beda, jadi hasilnya kurang stabil.':''}</p></div>`}).join('');
-    h+=`<section class="band pan"><div class="wrap"><h2>Empat huruf + identitas</h2><p class="lead">Titik koral = hasil akhir. Titik kecil = tiap modul, biar kelihatan stabil atau nggak.</p><div class="dich">${rows}</div><div class="legend"><span style="--c:#3b2fc9">Modul Inti</span><span style="--c:#1f9bd1">Modul Facet</span><span style="--c:#c2409a">Big Five Neuroticism</span></div></div></section>`;
+    <div><div class="tt" id="ttRes" role="img" aria-label="Tabel 16 tipe, tiga yang paling cocok menyala">${TABLE.map(t=>{const r=top.indexOf(t);const st=r<0?'background:transparent;border-color:var(--line);color:var(--mute)':`background:${mix('--ind',[100,58,30][r])};color:${r<2?'#fff':'var(--ink)'}`;return `<div class="cell ${r===0?'me':''}" data-rank="${r+1}" style="${st}">${t}<small>${nm(fx[t])}</small></div>`}).join('')}</div><div class="axes"><span>Menyala = 3 tipe paling cocok</span><span>Lingkaran = hasil utama</span></div></div></div></section>`;
   }else{
-    h+=`<section class="band"><div class="wrap"><h1>Hasil sementara</h1><p class="lead">Selesaiin modul Inti atau Facet biar tipe 4 huruf lu kelihatan.</p></div></section>`;
+    h+=`<section class="band"><div class="wrap"><h1>Hasil sementara</h1><p class="lead">Selesaikan modul Inti atau Facet supaya tipe 4 hurufmu terlihat.</p></div></section>`;
+  }
+  if(own||I.summary||I.strengths.length){
+    h+=`<section class="band pan" id="ringkasan"><div class="wrap grid2"><div class="sumcard" style="background:var(--bg)"><h3>${own?'Ringkasan dari sesi analisis':'Ringkasan kepribadian'}</h3><p id="sumText">${esc(own||I.summary||'Selesaikan semua modul supaya ringkasannya lengkap.')}</p>${own&&I.summary?`<p class="mute" style="margin-top:10px;font-size:14px"><b>Ringkasan otomatis:</b> ${esc(I.summary)}</p>`:''}</div>
+    <div class="grid2" style="gap:18px">${I.strengths.length?`<div><h3 style="margin-top:0">Kekuatan</h3><ul class="klist">${I.strengths.map(li).join('')}</ul></div>`:''}${I.watch.length?`<div><h3 style="margin-top:0">Perlu diperhatikan</h3><ul class="klist">${I.watch.map(li).join('')}</ul></div>`:''}</div></div></section>`;
+  }
+  if(notes.length){
+    h+=`<section class="band" id="catatan"><div class="wrap"><h2>Temuan khusus</h2><p class="lead">Catatan dari sesi analisis di luar tes. Bagian ini tidak dihitung dari skor.</p><div class="ncards">${notes.map(n=>`<div class="ncard">${n.tag?`<span class="tg">${esc(n.tag)}</span>`:''}${n.title?`<h3>${esc(n.title)}</h3>`:''}${n.text?`<p>${esc(n.text)}</p>`:''}</div>`).join('')}</div></div></section>`;
+  }
+  if(I.sections.length){
+    h+=`<section class="band${notes.length?' pan':''}" id="keseharian"><div class="wrap"><h2>Gambaran dalam keseharian</h2><p class="lead">Disusun dari jawabanmu, dan setiap kalimat menyebutkan skor dasarnya. Kalimat bergaris oranye berasal dari gabungan beberapa skor.</p><div class="secs">${I.sections.map(s=>`<div class="sec"><h3>${s.title}</h3><ul>${s.items.map(li).join('')}</ul></div>`).join('')}</div></div></section>`;
+  }
+  if(I.tips.length){
+    h+=`<section class="band${notes.length?'':' pan'}" id="tips"><div class="wrap"><h2>Supaya orang lain lebih dekat denganmu</h2><p class="lead">Bagian yang enak dibagikan ke teman, keluarga, atau pasangan.</p><div class="secs"><div class="sec" style="grid-column:1/-1"><ul>${I.tips.map(li).join('')}</ul></div></div></div></section>`;
+  }
+  if(R.hasType){
+    const col={inti:'#3b2fc9',facet:'#1f9bd1',b5:'#c2409a'};
+    const notesAx={EI:'Sumber energi: dari waktu sendiri atau dari interaksi.',SN:'Cara menangkap informasi: konkret dan nyata, atau pola dan makna.',TF:'Dasar keputusan: logika yang konsisten, atau nilai dan dampaknya ke orang.',JP:'Gaya mengatur hidup: rencana dan kepastian, atau terbuka dan fleksibel.',AT:'Seberapa kuat reaksi terhadap stres, kritik, dan keraguan diri.'};
+    const rows=['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax],s=R.src[ax];const inc=s.inti!=null&&s.facet!=null&&Math.abs(s.inti-s.facet)>=25;const big=p>=50?AX[ax][3]:AX[ax][2],pp=p>=50?p:100-p;return `<div class="drow"><span class="l">${AX[ax][2]}</span><div class="track"><div class="in"><span class="mid"></span>${Object.entries(s).map(([k,v])=>`<span class="dot" style="left:${v}%;background:${col[k]}"></span>`).join('')}<span class="dot fin" style="left:${p}%"></span></div></div><span class="r">${big} ${Math.round(pp)}%</span><p class="dnote">${notesAx[ax]} ${big} ${lab(p)}.${inc?' Jawaban modul Inti dan Facet di sumbu ini cukup berbeda, jadi hasilnya kurang stabil.':''}</p></div>`}).join('');
+    h+=`<section class="band"><div class="wrap"><h2>Empat huruf + identitas</h2><p class="lead">Titik koral = hasil akhir. Titik kecil = tiap modul, supaya terlihat stabil atau tidak.</p><div class="dich">${rows}</div><div class="legend"><span style="--c:#3b2fc9">Modul Inti</span><span style="--c:#1f9bd1">Modul Facet</span><span style="--c:#c2409a">Big Five Neuroticism</span></div></div></section>`;
   }
   if(R.fn){
     const theo=R.hasType?STACK[R.type]:null,ip=avg(R.fn.filter(x=>x.f.endsWith('i')).map(x=>x.g)),ep=avg(R.fn.filter(x=>x.f.endsWith('e')).map(x=>x.g));
     const gap=R.fn.filter(x=>x.a-x.b>=1.5).map(x=>x.f);
-    h+=`<section class="band"><div class="wrap grid2"><div><h2>Cognitive functions: ${R.fn[0].f} memimpin, ${R.fn[R.fn.length-1].f} paling bawah</h2><p class="lead">Skor 1–5, gabungan pernyataan dan adu langsung.</p>${R.fn.map((x,i)=>`<div class="frow"><b>${x.f}</b><div class="bar ${i?'':'hi'}"><i style="width:${(x.g-1)/4*100}%"></i></div><span class="v">${nm(x.g)}</span></div>`).join('')}</div><div>
-    ${theo?`<h3>Urutan teori ${R.type} vs urutan lu</h3><table><thead><tr><th>Posisi</th><th>Teori ${R.type}</th><th>Hasil lu</th></tr></thead><tbody>${['Dominan','Auxiliary','Tertiary','Inferior'].map((p,i)=>`<tr><td>${p}</td><td>${theo[i]}</td><td><b>${R.fn[i].f}</b></td></tr>`).join('')}</tbody></table>`:''}
+    h+=`<section class="band pan"><div class="wrap grid2"><div><h2>Cognitive functions: ${R.fn[0].f} memimpin, ${R.fn[R.fn.length-1].f} paling bawah</h2><p class="lead">Skor 1–5, gabungan pernyataan dan adu langsung.</p>${R.fn.map((x,i)=>`<div class="frow"><b>${x.f}</b><div class="bar ${i?'':'hi'}"><i style="width:${(x.g-1)/4*100}%"></i></div><span class="v">${nm(x.g)}</span></div>`).join('')}</div><div>
+    ${theo?`<h3>Urutan teori ${R.type} vs urutanmu</h3><table><thead><tr><th>Posisi</th><th>Teori ${R.type}</th><th>Hasilmu</th></tr></thead><tbody>${['Dominan','Auxiliary','Tertiary','Inferior'].map((p,i)=>`<tr><td>${p}</td><td>${theo[i]}</td><td><b>${R.fn[i].f}</b></td></tr>`).join('')}</tbody></table>`:''}
     <h3>Fungsi introvert vs ekstravert</h3><div class="frow"><b>i</b><div class="bar hi"><i style="width:${(ip-1)/4*100}%"></i></div><span class="v">${nm(ip)}</span></div><div class="frow"><b>e</b><div class="bar"><i style="width:${(ep-1)/4*100}%"></i></div><span class="v">${nm(ep)}</span></div>
-    ${gap.length?`<p class="note">${gap.join(', ')} tinggi di pernyataan tapi kalah di adu langsung. Bisa jadi itu kebiasaan atau kepekaan, bukan fungsi yang lu andelin.</p>`:''}
+    ${gap.length?`<p class="note">${gap.join(', ')} tinggi di pernyataan tapi kalah di adu langsung. Bisa jadi itu kebiasaan atau kepekaan, bukan fungsi yang kamu andalkan.</p>`:''}
     <details><summary>Skor mentah fungsi</summary><div class="scroll"><table><thead><tr><th>Fungsi</th><th class="n">Pernyataan</th><th class="n">Adu langsung</th><th class="n">Gabungan</th></tr></thead><tbody>${R.fn.map(x=>`<tr><td>${x.f}</td><td class="n">${nm(x.a)}</td><td class="n">${nm(x.b)}</td><td class="n">${nm(x.g)}</td></tr>`).join('')}</tbody></table></div></details></div></div></section>`;
   }
   if(R.hasType){
     const mf=famOf(R.type),mx=Math.max(...R.fam.map(f=>f[1]));
-    h+=`<section class="band pan"><div class="wrap"><h2>Family: ${FAM[mf]}</h2><p class="lead">Perkiraan peluang tiap family dari skor huruf, dijumlah jadi 100%.${R.fam[0][0]!==mf?` Tipe paling cocok lu masuk ${FAM[mf]}, tapi kalau cuma lihat skor huruf, peluang terbesar ada di ${FAM[R.fam[0][0]]} (${Math.round(R.fam[0][1])}%). Artinya sumbu yang ngebedain keduanya masih di tengah.`:''}</p><div class="fam">${R.fam.map(f=>`<div class="fcard ${f[0]===mf?'me':''}"><b>${Math.round(f[1])}%</b>${f[0]} · ${FAM[f[0]]}<div class="bar ${f[0]===mf?'hi':''}" style="margin-top:8px"><i style="width:${mx?f[1]/mx*100:0}%"></i></div></div>`).join('')}</div>${R.strat?`<p style="margin-top:14px">Strategy: <b>${R.strat}</b>.</p>`:''}</div></section>`;
-    h+=`<section class="band"><div class="wrap"><h2>Semua 16 tipe, dari yang paling cocok</h2><p class="lead">Skor 0–100. ${R.fn?'Setengah dari urutan fungsi (bobot 4-3-2-1), setengah dari peluang tiap huruf.':'Dari peluang tiap huruf. Selesaiin modul Cognitive functions biar urutan fungsi ikut dihitung.'}</p><div class="all">${R.fits.map((f,i)=>`<div class="fit"><span class="n">${i+1}</span><b style="font-size:16px">${f.t}</b><div class="bar ${i?'':'hi'}"><i style="width:${f.v}%"></i></div><span class="v">${nm(f.v)}</span></div>`).join('')}</div></div></section>`;
+    h+=`<section class="band"><div class="wrap"><h2>Family: ${FAM[mf]}</h2><p class="lead">Perkiraan peluang tiap family dari skor huruf, dijumlahkan menjadi 100%.${R.fam[0][0]!==mf?` Tipe paling cocokmu masuk ${FAM[mf]}, tapi kalau hanya melihat skor huruf, peluang terbesar ada di ${FAM[R.fam[0][0]]} (${Math.round(R.fam[0][1])}%). Artinya sumbu yang membedakan keduanya masih di tengah.`:''}</p><div class="fam">${R.fam.map(f=>`<div class="fcard ${f[0]===mf?'me':''}"><b>${Math.round(f[1])}%</b>${f[0]} · ${FAM[f[0]]}<div class="bar ${f[0]===mf?'hi':''}" style="margin-top:8px"><i style="width:${mx?f[1]/mx*100:0}%"></i></div></div>`).join('')}</div>${R.strat?`<p style="margin-top:14px">Strategy: <b>${R.strat}</b>.</p>`:''}</div></section>`;
+    h+=`<section class="band pan"><div class="wrap"><h2>Semua 16 tipe, dari yang paling cocok</h2><p class="lead">Skor 0–100. ${R.fn?'Setengah dari urutan fungsi (bobot 4-3-2-1), setengah dari peluang tiap huruf.':'Dari peluang tiap huruf. Selesaikan modul Cognitive functions supaya urutan fungsi ikut dihitung.'}</p><div class="all">${R.fits.map((f,i)=>`<div class="fit"><span class="n">${i+1}</span><b style="font-size:16px">${f.t}</b><div class="bar ${i?'':'hi'}"><i style="width:${f.v}%"></i></div><span class="v">${nm(f.v)}</span></div>`).join('')}</div></div></section>`;
   }
   if(R.fac){
     const fr=ax=>FACETS[ax].map((p,f)=>{const v=R.fac[ax][f],w=Math.abs(v)/2*50,left=v<0?50-w:50;return `<div class="facet"><span class="a ${v<-.4?'on':'off'}">${p[0]}</span><div class="div"><i style="left:${left}%;width:${w}%"></i></div><span class="b ${v>.4?'on':'off'}">${p[1]} <small>${(v>0?'+':'')+nm(v)}</small></span></div>`}).join('');
-    h+=`<section class="band pan"><div class="wrap"><h2>Facet Step II</h2><p class="lead">Batang dari garis tengah = arah condong, skala −2 sampai +2. Kutub yang menang ditebalkan.</p><div class="grid2"><div><h3>E/I</h3>${fr('EI')}<h3>S/N</h3>${fr('SN')}</div><div><h3>T/F</h3>${fr('TF')}<h3>J/P</h3>${fr('JP')}</div></div></div></section>`;
+    h+=`<section class="band"><div class="wrap"><h2>Facet Step II</h2><p class="lead">Batang dari garis tengah = arah condong, skala −2 sampai +2. Kutub yang menang ditebalkan.</p><div class="grid2"><div><h3>E/I</h3>${fr('EI')}<h3>S/N</h3>${fr('SN')}</div><div><h3>T/F</h3>${fr('TF')}<h3>J/P</h3>${fr('JP')}</div></div></div></section>`;
   }
   if(R.b5){
     const fl=[];B5.forEach(d=>R.b5[d[0]].fs.forEach((v,i)=>fl.push([d[2][i][0],v])));fl.sort((a,b)=>b[1]-a[1]);
-    h+=`<section class="band"><div class="wrap"><h2>Big Five: tertinggi ${fl[0][0].toLowerCase()}, terendah ${fl[fl.length-1][0].toLowerCase()}</h2><p class="lead">Skor 1–5 per facet. Big Five adalah model dengan dukungan riset paling kuat di tes ini.</p><div class="b5">${B5.map(d=>{const x=R.b5[d[0]];return `<div class="b5card"><h3>${x.name}<span>${nm(x.dom)}</span></h3>${d[2].map((f,i)=>`<div class="frow"><b>${f[0]}</b><div class="bar ${x.fs[i]>=4.5||x.fs[i]<=1.5?'hi':''}"><i style="width:${(x.fs[i]-1)/4*100}%"></i></div><span class="v">${nm(x.fs[i])}</span></div>`).join('')}</div>`}).join('')}</div>
+    h+=`<section class="band pan"><div class="wrap"><h2>Big Five: tertinggi ${fl[0][0].toLowerCase()}, terendah ${fl[fl.length-1][0].toLowerCase()}</h2><p class="lead">Skor 1–5 per facet. Big Five adalah model dengan dukungan riset paling kuat di tes ini.</p><div class="b5">${B5.map(d=>{const x=R.b5[d[0]];return `<div class="b5card" style="background:var(--bg)"><h3>${x.name}<span>${nm(x.dom)}</span></h3>${d[2].map((f,i)=>`<div class="frow"><b>${f[0]}</b><div class="bar ${x.fs[i]>=4.5||x.fs[i]<=1.5?'hi':''}"><i style="width:${(x.fs[i]-1)/4*100}%"></i></div><span class="v">${nm(x.fs[i])}</span></div>`).join('')}</div>`}).join('')}</div>
     <p style="margin-top:14px">Paling menonjol: ${fl.slice(0,3).map(x=>`${x[0]} ${nm(x[1])}`).join(', ')}. Paling rendah: ${fl.slice(-3).reverse().map(x=>`${x[0]} ${nm(x[1])}`).join(', ')}.</p></div></section>`;
   }
-  const missing=MODS.filter(m=>!R.done[m.id]);
-  h+=`<section class="band pan"><div class="wrap grid2"><div><h2>Seberapa bisa dipegang</h2><ul>
+  const missing=MODS.filter(m=>!R.done[m.id]),rel=I.rel;
+  h+=`<section class="band"><div class="wrap grid2"><div id="pegang"><h2>Seberapa bisa dipegang</h2><ul>
   ${missing.length?`<li><b>Belum lengkap:</b> ${missing.map(m=>m.name).join(', ')} belum selesai.</li>`:''}
-  ${R.ext>.6?`<li><b>Gaya jawab ekstrem:</b> ${Math.round(R.ext*100)}% jawaban di ujung skala. Persentase lu kemungkinan lebih tinggi dari aslinya.</li>`:''}
-  <li>Huruf dengan skor 55–65% cuma condong. Wajar kalau tes ulang kadang ngasih huruf sebelahnya.</li>
+  ${rel.sure.length?`<li><b>Paling yakin:</b> ${rel.sure.join(', ')}. Arahnya jelas dan modul-modulnya sepakat.</li>`:''}
+  ${rel.mid.length?`<li><b>Cukup yakin:</b> ${rel.mid.join(', ')}.</li>`:''}
+  ${rel.unsure.length?`<li><b>Belum bisa dipegang:</b> ${rel.unsure.join(', ')}. Skornya dekat 50% atau jawaban antarmodulnya berbeda jauh. Wajar kalau tes ulang memberi hasil berbeda.</li>`:''}
+  ${R.ext>.6?`<li><b>Gaya jawab ekstrem:</b> ${Math.round(R.ext*100)}% jawaban ada di ujung skala. Persentasemu kemungkinan lebih tinggi dari aslinya. Baca 85% atau 95% sebagai "jelas", bukan "hampir total".</li>`:''}
+  <li>Ringkasan dan gambaran keseharian disusun otomatis dari skor. Anggap sebagai bahan refleksi, bukan penilaian pasti.</li>
   <li>Soal-soal ini belum divalidasi secara ilmiah. Arahnya bisa dipercaya, angkanya kasar.</li>
   <li>MBTI dan cognitive functions lemah secara ilmiah. Big Five paling kuat. Pembanding gratis: IPIP-NEO-120.</li></ul></div>
-  <div class="noprint"><h2>Simpan &amp; bagiin hasil</h2><p>Hasil otomatis kesimpen di browser ini. Biar aman, simpan juga ke HP atau laptop. Kartu PNG dan PDF ngikut tema yang dipilih.</p><div class="seg" role="group" aria-label="Tema hasil"><span class="mute" style="align-self:center;font-size:13px;padding:0 6px 0 4px">Tema</span><button type="button" data-theme-set="dark" aria-pressed="${theme()==='dark'}">Gelap</button><button type="button" data-theme-set="light" aria-pressed="${theme()==='light'}">Terang</button></div><div class="rowb"><button class="btn" id="dlCard" type="button">Download kartu hasil (PNG)</button><button class="btn ghost" id="dlPdf" type="button">Simpan PDF lengkap</button><button class="btn ghost" id="dlJson" type="button">Download file jawaban</button><button class="btn ghost" id="copy" type="button">Salin ringkasan</button><button class="btn ghost" id="resHome" type="button">Ke beranda</button></div><p class="mute" id="copyMsg" role="status" style="margin-top:10px"></p><img id="cardPrev" alt="Kartu hasil" hidden><textarea id="copyBox" hidden readonly></textarea><p class="mute" style="font-size:14px">File jawaban (.json) bisa dibuka lagi lewat tombol "Buka file jawaban" di beranda, di HP atau browser mana pun. Simpan PDF: pilih "Simpan sebagai PDF" di jendela cetak. Kalau latar gelapnya nggak ikut, nyalain opsi "Background graphics" atau "Grafik latar".</p></div></div></section>`;
+  <div class="noprint"><h2>Simpan &amp; bagikan hasil</h2><p>${view?'Hasil ini berasal dari link, dan belum tersimpan di browser ini.':'Hasil tersimpan otomatis di browser ini. Supaya aman, simpan juga ke HP atau laptop.'} Kartu PNG dan PDF mengikuti tema yang dipilih.</p><div class="seg" role="group" aria-label="Tema hasil"><span class="mute" style="align-self:center;font-size:13px;padding:0 6px 0 4px">Tema</span><button type="button" data-theme-set="dark" aria-pressed="${theme()==='dark'}">Gelap</button><button type="button" data-theme-set="light" aria-pressed="${theme()==='light'}">Terang</button></div><div class="rowb"><button class="btn" id="dlCard" type="button">Unduh kartu hasil (PNG)</button><button class="btn ghost" id="dlPdf" type="button">Simpan PDF lengkap</button><button class="btn ghost" id="shareLink" type="button">Salin link hasil</button><button class="btn ghost" id="dlJson" type="button">Unduh file jawaban</button><button class="btn ghost" id="copy" type="button">Salin ringkasan</button><button class="btn ghost" id="resHome" type="button">Ke beranda</button></div><p class="mute" id="copyMsg" role="status" style="margin-top:10px"></p><img id="cardPrev" alt="Kartu hasil" hidden><textarea id="copyBox" hidden readonly></textarea><p class="mute" style="font-size:14px">Link hasil memuat semua jawaban${notes.length||own?' dan catatan khusus':''}, jadi bagikan hanya ke orang yang kamu percaya. Orang yang membukanya hanya melihat hasilmu; jawaban mereka sendiri tidak berubah. File jawaban (.json) bisa dibuka lagi lewat tombol "Buka file jawaban" di beranda. Untuk PDF, pilih "Simpan sebagai PDF" di jendela cetak. Kalau latar gelapnya tidak ikut, aktifkan opsi "Background graphics" atau "Grafik latar".</p></div></div></section>`;
   const y=window.scrollY;$('res').innerHTML=h;show('res');if(keep)window.scrollTo(0,y);
-  const txt=summaryText(R,name),slug=fileSlug(name);
-  $('copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(txt);$('copyMsg').textContent='Ringkasan udah disalin.'}catch(e){$('copyBox').hidden=false;$('copyBox').value=txt;$('copyBox').select();$('copyMsg').textContent='Salin manual dari kotak di bawah.'}});
-  $('resHome').addEventListener('click',renderHome);
-  $('dlPdf').addEventListener('click',()=>{try{window.print()}catch(e){$('copyMsg').textContent='Browser ini nggak bisa nyetak. Pakai kartu PNG atau screenshot.'}});
-  $('dlJson').addEventListener('click',()=>{dl(new Blob([JSON.stringify(exportData(name,S.ans))],{type:'application/json'}),`jawaban-peta-kepribadian${slug?'-'+slug:''}.json`);$('copyMsg').textContent='File jawaban di-download.'});
-  $('dlCard').addEventListener('click',async()=>{$('copyMsg').textContent='Lagi bikin kartu…';
+  const txt=summaryText(R,name)+(own||I.summary?'\n\n'+(own||I.summary):''),slug=fileSlug(name);
+  const copyText=async(t,ok)=>{try{await navigator.clipboard.writeText(t);$('copyMsg').textContent=ok}catch(e){$('copyBox').hidden=false;$('copyBox').value=t;$('copyBox').select();$('copyMsg').textContent='Salin manual dari kotak di bawah.'}};
+  $('copy').addEventListener('click',()=>copyText(txt,'Ringkasan sudah disalin.'));
+  $('shareLink').addEventListener('click',()=>copyText(location.origin+location.pathname+'#h='+encodeShare(D),'Link hasil sudah disalin. Siapa pun yang membukanya akan melihat hasil ini.'));
+  $('resHome').addEventListener('click',()=>{if(view)clearHash();renderHome()});
+  $('dlPdf').addEventListener('click',()=>{try{window.print()}catch(e){$('copyMsg').textContent='Browser ini tidak bisa mencetak. Pakai kartu PNG atau screenshot.'}});
+  $('dlJson').addEventListener('click',()=>{dl(new Blob([JSON.stringify(exportData(name,D.ans,{summary:own,notes}))],{type:'application/json'}),`jawaban-peta-kepribadian${slug?'-'+slug:''}.json`);$('copyMsg').textContent='File jawaban diunduh.'});
+  $('dlCard').addEventListener('click',async()=>{$('copyMsg').textContent='Sedang membuat kartu…';
     try{if(document.fonts&&document.fonts.ready)await document.fonts.ready;const c=drawCard(R,name);$('cardPrev').src=c.toDataURL('image/png');$('cardPrev').hidden=false;
       c.toBlob(b=>{if(b)dl(b,`peta-kepribadian${slug?'-'+slug:''}.png`)},'image/png');
-      $('copyMsg').textContent='Kartu di-download. Kalau di HP nggak ke-download, tekan lama gambar di bawah lalu pilih simpan.'}
-    catch(e){$('copyMsg').textContent='Gagal bikin kartu di browser ini. Coba Simpan PDF atau screenshot.'}});
+      $('copyMsg').textContent='Kartu diunduh. Kalau di HP tidak terunduh, tekan lama gambar di bawah lalu pilih simpan.'}
+    catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.'}});
 }
-
 function drawCard(R,name){
   const W=1080,H=1700,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
   const dk=theme()==='dark',BG=dk?'#121019':'#ffffff',IND=dk?'#8f86ff':'#3b2fc9',ACC=dk?'#ff7a5c':'#e8492c',INK=dk?'#ecebf3':'#15151a',MUTE=dk?'#a9a6ba':'#5d5b6b',TRK=dk?'#2a2638':'#e9e7f3',BAND='#3b2fc9';
@@ -380,7 +442,7 @@ function drawCard(R,name){
   x.fillStyle=BG;x.fillRect(0,0,W,H);x.fillStyle=BAND;x.fillRect(0,0,W,420);
   x.fillStyle='#fff';x.font=F(700,34);x.fillText(fit(name?`Peta Kepribadian · ${name}`:'Peta Kepribadian',936),72,104);
   x.font=F(800,160);x.fillText(R.hasType?R.type+(R.id?'-'+R.id:''):'Sementara',64,280);
-  x.font=F(600,32);x.fillText(fit(R.hasType?`${FAM[famOf(R.type)]} (${famOf(R.type)})${R.strat?' · '+R.strat:''}`:'Selesaiin modul Inti buat lihat tipe',936),72,355);
+  x.font=F(600,32);x.fillText(fit(R.hasType?`${FAM[famOf(R.type)]} (${famOf(R.type)})${R.strat?' · '+R.strat:''}`:'Selesaikan modul Inti untuk melihat tipe',936),72,355);
   let y=500;
   const head=t=>{x.fillStyle=INK;x.font=F(800,38);x.fillText(t,72,y)};
   if(R.hasType){
@@ -402,7 +464,7 @@ function drawCard(R,name){
   return out;
 }
 
-renderHome();
+if(!openShared())renderHome();
 }
 </script>
 </body>
