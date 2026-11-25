@@ -153,6 +153,9 @@ try {
   check('hasil: kekuatan, perlu diperhatikan, tips teman tampil', await ev("document.querySelectorAll('#ringkasan .klist li').length>=4&&document.querySelectorAll('#tips li').length>=3"));
   check('hasil: temuan khusus otomatis dari Pendalaman, lengkap dengan dasarnya', await ev("/Introvert murni/.test(document.getElementById('catatan').innerText)&&[...document.querySelectorAll('#catatan .ncard')].every(c=>/Dasar: /.test(c.textContent))"));
   check('hasil: ajakan Pendalaman tidak muncul kalau sudah dikerjakan', await ev("!document.getElementById('goDeep')"));
+  check('hasil: warna halaman mengikuti palet tipe (INFP)', (await ev("document.getElementById('res').style.getPropertyValue('--fam')")) === C0.typePal('INFP', true).a);
+  check('hasil: hook "Yang paling khas darimu" tampil', await ev("!!document.querySelector('#res .hook b')&&document.querySelector('#res .hook b').textContent.length>3"));
+  check('cetak: sampul dengan tipe dan hook, hanya untuk PDF', await ev("(()=>{const c=document.querySelector('#res .pcover');return !!c&&getComputedStyle(c).display==='none'&&/INFP/.test(c.textContent)&&/Yang paling khas darimu/.test(c.textContent)})()"));
   check('hasil: belum ada perbandingan riwayat (baru 1 tes)', await ev("!document.getElementById('riwayat')"));
   check('hasil: nggak ada NaN/undefined/null', await ev("!/NaN|undefined|null|Infinity/.test(document.getElementById('res').innerText)"));
   check('hasil: urutan fungsi Fi duluan', (await text('#res .grid2 .frow b')) === 'Fi');
@@ -170,10 +173,10 @@ try {
   const px = `(()=>{const i=document.getElementById('cardPrev'),c=document.createElement('canvas');c.width=i.naturalWidth;c.height=i.naturalHeight;const x=c.getContext('2d');x.drawImage(i,0,0);return [...x.getImageData(30,700,1,1).data].slice(0,3).join(',')})()`;
   check('kartu PNG ikut tema gelap', (await ev(px)) === '18,16,25', await ev(px));
   const pf = await waitFile('.png');
-  check('pilihan gaya kartu: 6 gaya tersedia, Poster bawaan', (await ev("document.querySelectorAll('[data-card-style]').length")) === 6 && (await ev("document.querySelector('[data-card-style=\"poster\"]').getAttribute('aria-pressed')")) === 'true');
+  check('pilihan gaya kartu: 4 gaya tersedia, Poster bawaan', (await ev("document.querySelectorAll('[data-card-style]').length")) === 4 && (await ev("document.querySelector('[data-card-style=\"poster\"]').getAttribute('aria-pressed')")) === 'true');
   await ev("document.getElementById('cardPrev').src=''");
-  await click('[data-card-style="jurnal"]');
-  check('ganti gaya kartu: tersimpan dan kartu dibuat ulang', await waitFor("localStorage.getItem('tesKepribadian.kartu')==='jurnal'&&document.getElementById('cardPrev').naturalHeight===1920", 6000));
+  await click('[data-card-style="koleksi"]');
+  check('ganti gaya kartu: tersimpan dan kartu dibuat ulang', await waitFor("localStorage.getItem('tesKepribadian.kartu')==='koleksi'&&document.getElementById('cardPrev').naturalHeight===1920", 6000));
   await click('[data-card-style="poster"]');
   check('download kartu PNG valid', pf && fs.readFileSync(pf).subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])), pf || 'tidak ada file');
   if (pf) fs.copyFileSync(pf, path.join(OUT, '04-kartu.png'));

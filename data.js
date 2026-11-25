@@ -168,7 +168,7 @@ const DEEP=[
 ['d-pikiran','fc',"Saat berpikir atau berdiskusi, kamu lebih nyaman dengan:","Fakta, contoh nyata, dan hal yang sudah terbukti","Konsep, pola, dan kemungkinan yang belum terjadi"],
 ['d-dekat','fc',"(Orang yang paling kamu sayang) Dia melakukan kesalahan yang merugikanmu:","Tetap kamu tegur dengan tegas","Kamu maafkan, bahkan rela mengalah lebih dulu"],
 ['d-kenal','fc',"(Kenalan biasa) Dia melakukan kesalahan yang sama dan merugikanmu:","Tetap kamu tegur dengan tegas","Kamu maafkan dan mengalah"],
-['d-dekat-ulang','fc',"(Orang yang paling kamu sayang) Dia mengulangi kesalahan yang sama berkali-kali:","Akhirnya kamu tegas juga","Tetap kamu maafkan"],
+['d-dekat-ulang','fc',"(Orang yang paling kamu sayang) Dia mengulangi kesalahan yang sama berkali-kali:","Kamu mulai menjaga jarak atau memberi konsekuensi","Tetap kamu maafkan, sambil kamu ajak bicara dari hati ke hati dengan tegas"],
 ['d-debat-dekat','fc',"Berdebat dengan orang yang kamu sayang tentang hal yang kamu yakini benar:","Tetap bertahan sampai jelas","Mengalah demi hubungan"],
 ['d-yakin','fc',"Saat memutuskan hal penting untuk dirimu sendiri, yang membuatmu yakin:","Alasannya masuk akal kalau dijelaskan ke orang lain","Terasa benar di hati, walau sulit dijelaskan"],
 ['d-pantas','fc',"Orang yang dikenal suka berbuat jahat tertimpa musibah karena ulahnya sendiri:","Tetap ikut kasihan","Tidak peduli"],
@@ -177,7 +177,7 @@ const DEEP=[
 ['d-batal','fc',"Saat rencanamu tiba-tiba batal:","Kesal dan butuh waktu untuk menyesuaikan","Cepat mencari alternatif lain"],
 ['d-berarti','lk',"Saya sulit bersemangat mengerjakan sesuatu yang tidak berarti atau tidak menguntungkan bagi saya, walaupun itu kewajiban."],
 ['d-ingin-rapi','lk',"Saya ingin hidup saya lebih teratur dan rapi daripada sekarang."],
-['d-ingin-produktif','lk',"Saya ingin lebih produktif daripada sekarang."],
+['d-ingin-tuntas','lk',"Saya ingin lebih banyak hal penting yang benar-benar selesai (bukan berarti jadwal yang lebih padat)."],
 ['d-marah','fc',"Setelah bertengkar hebat dengan seseorang:","Emosimu cepat reda dan kamu kembali biasa","Emosimu bertahan lama dan kamu menjauh"],
 ['d-cemas','fc',"Yang paling sering kamu khawatirkan:","Penilaian orang lain tentang dirimu","Hal yang akan terjadi ke depan, seperti masa depan atau rencana"],
 ['d-tekanan','fc',"Saat sedang sangat tertekan, kamu biasanya:","Menarik diri dan diam","Meluapkannya atau bercerita ke orang terdekat"]];

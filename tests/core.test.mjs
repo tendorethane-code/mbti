@@ -385,3 +385,23 @@ test('huruf kapital di awal kata untuk tagline kartu', () => {
   assert.equal(C.titleCase('sangat introvert'), 'Sangat Introvert');
   assert.equal(C.titleCase('berpegang pada nilai'), 'Berpegang pada Nilai');
 });
+
+test('palet per tipe: 16 tipe unik, kontras cukup di dua tema', () => {
+  const seen = new Set();
+  for (const t of C.TABLE) {
+    const d = C.typePal(t, true), l = C.typePal(t, false);
+    assert.ok(C.contrast(d.a, '#121019') >= 4.5 && C.contrast(d.b, '#121019') >= 4.5, `${t} gelap`);
+    assert.ok(C.contrast(l.a, '#ffffff') >= 3 && C.contrast(l.b, '#ffffff') >= 3, `${t} terang`);
+    seen.add(d.a + d.b);
+  }
+  assert.equal(seen.size, 16);
+});
+
+test('Pendalaman: jawaban tengah juga menghasilkan temuan', () => {
+  const titlesOf = c => C.deepFindings(C.resultOf(c), c).map(f => f.title);
+  const base = C.canon(answersFor(C, 'INFP'));
+  assert.ok(titlesOf({...base, 'd-yakin': 3}).includes('Logika dan hati harus sepakat'));
+  assert.ok(titlesOf({...base, 'd-cemas': 3}).includes('Cemas ke dua arah'));
+  const f = C.deepFindings(C.resultOf(base), {...base, 'd-dekat': 5, 'd-kenal': 1, 'd-dekat-ulang': 5}).find(x => x.key === 'tfctx');
+  assert.match(f.text, /sayang bukan berarti lemah/);
+});

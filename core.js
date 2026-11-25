@@ -5,6 +5,21 @@ const TABLE=["ISTJ","ISFJ","INFJ","INTJ","ISTP","ISFP","INFP","INTP","ESTP","ESF
 const STACK={INFP:['Fi','Ne','Si','Te'],ISFP:['Fi','Se','Ni','Te'],INTP:['Ti','Ne','Si','Fe'],ISTP:['Ti','Se','Ni','Fe'],INFJ:['Ni','Fe','Ti','Se'],INTJ:['Ni','Te','Fi','Se'],ISFJ:['Si','Fe','Ti','Ne'],ISTJ:['Si','Te','Fi','Ne'],ENFP:['Ne','Fi','Te','Si'],ENTP:['Ne','Ti','Fe','Si'],ESFP:['Se','Fi','Te','Ni'],ESTP:['Se','Ti','Fe','Ni'],ENFJ:['Fe','Ni','Se','Ti'],ENTJ:['Te','Ni','Se','Fi'],ESFJ:['Fe','Si','Ne','Ti'],ESTJ:['Te','Si','Ne','Fi']};
 const FAM={NF:'Diplomat',NT:'Analyst',SJ:'Sentinel',SP:'Explorer'};
 const STRAT={IA:'Confident Individualism',EA:'People Mastery',IT:'Constant Improvement',ET:'Social Engagement'};
+// Palet per tipe: [warna utama, warna kedua]. Tiap tipe unik, tetap satu nuansa dengan family-nya.
+const TYPE_PAL={INTJ:['#7f86e8','#79a8d6'],INTP:['#8b90ff','#5fcab8'],ENTJ:['#6f8cf2','#e2b65a'],ENTP:['#a785ff','#ff9473'],
+INFJ:['#c07bbd','#8cbf98'],INFP:['#f2826f','#b7a1e0'],ENFJ:['#e9739b','#f2b36b'],ENFP:['#ff9a62','#4fc5b8'],
+ISTJ:['#4fa8a0','#cfae72'],ISFJ:['#79bf98','#f0a8a0'],ESTJ:['#4f9cc0','#d8a650'],ESFJ:['#4cc4aa','#ffb48c'],
+ISTP:['#7c9cc2','#f0aa48'],ISFP:['#e08b6a','#a9bf72'],ESTP:['#ec6b72','#f0c35a'],ESFP:['#ff7f9e','#ffc96b']};
+const hexRgb=h=>{const n=parseInt(h.slice(1),16);return [n>>16&255,n>>8&255,n&255]};
+const rgbHex=a=>'#'+a.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');
+const lum=h=>{const c=hexRgb(h).map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*c[0]+.7152*c[1]+.0722*c[2]};
+const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
+// Di tema terang, warna digelapkan bertahap sampai kontrasnya dengan latar putih cukup (minimal 3:1, untuk teks besar dan grafis).
+function typePal(type,dark){
+  const p=TYPE_PAL[type]||TYPE_PAL.INFP;if(dark)return {a:p[0],b:p[1]};
+  const deep=h=>{let c=hexRgb(h);for(let i=0;i<20&&contrast(rgbHex(c),'#ffffff')<3.2;i++)c=c.map(v=>v*.9);return rgbHex(c)};
+  return {a:deep(p[0]),b:deep(p[1])};
+}
 const FUNCS=['Fi','Fe','Ti','Te','Ni','Ne','Si','Se'];
 const APP_ID='tes-kepribadian';
 const DATA_V=3;
@@ -305,7 +320,7 @@ const PROBE_RULES={
   'd-batal':X=>X.ax('JP')<=45,
   'd-berarti':X=>X.fnRank('Fi')<=1||X.b5f('C','Disiplin diri')<=2.5||X.b5f('C','Ambisi')>=4,
   'd-ingin-rapi':X=>X.b5f('C','Keteraturan')<=2.5,
-  'd-ingin-produktif':X=>X.b5f('C','Disiplin diri')<=2.5,
+  'd-ingin-tuntas':X=>X.b5f('C','Disiplin diri')<=2.5,
   'd-marah':X=>X.b5f('N','Mudah marah')>=3.5,
   'd-cemas':X=>X.b5f('N','Cemas')>=4,
   'd-tekanan':X=>R_N(X)>=3.5};
@@ -343,15 +358,18 @@ function deepFindings(R,cIn){
     if(k<=2&&p>=4)add('sn','S/N · dua wilayah','N di pikiran, S di kebiasaan','Cara berpikirmu konseptual, tapi kebiasaan sehari-harimu menyukai yang familiar. Itu yang membuat skor S/N bisa terlihat goyang: kedua sisi memang ada, di wilayah yang berbeda.',b);
     else if(k>=4&&p<=2)add('sn','S/N · dua wilayah','Praktis di pikiran, suka variasi di keseharian','Saat berpikir kamu berpegang pada fakta dan contoh nyata, tapi dalam keseharian kamu suka mencoba hal baru.',b);
     else if(k<=2&&p<=2)add('sn','S/N','Konkret dan familiar','Baik dalam berpikir maupun kebiasaan, kamu berpegang pada yang nyata dan sudah terbukti.',b);
+    else if(k<=2&&p===3)add('sn','S/N · dua wilayah','Familiar di kebiasaan, terbuka di pikiran','Kebiasaanmu menyukai yang familiar, sedangkan pikiranmu nyaman di fakta maupun konsep. Sisi S-mu lebih terlihat di kebiasaan daripada di cara berpikir.',b);
     else if(k>=4&&p>=4)add('sn','S/N','Konsep dan variasi','Baik dalam berpikir maupun kebiasaan, kamu tertarik pada kemungkinan dan hal baru.',b)}
   // T/F
-  if(has('d-dekat')&&has('d-kenal')){const b='Pendalaman · orang tersayang vs kenalan',ul=hi('d-dekat-ulang')?' Bahkan kesalahan yang berulang tetap kamu maafkan. Pastikan kebaikan ini tidak dimanfaatkan.':lo('d-dekat-ulang')?' Tapi kesabaranmu ada batasnya: kesalahan yang terus berulang tetap kamu tegur.':'';
+  if(has('d-dekat')&&has('d-kenal')){const b='Pendalaman · orang tersayang vs kenalan',ul=hi('d-dekat-ulang')?' Bagimu sayang bukan berarti lemah: kesalahan yang berulang tetap kamu maafkan, tapi kamu bicarakan dari hati ke hati dengan tegas.':lo('d-dekat-ulang')?' Tapi kesabaranmu ada batasnya: kesalahan yang terus berulang membuatmu menjaga jarak.':'';
     if(c['d-dekat']>=4&&c['d-kenal']<=2)add('tfctx','T/F · konteks','Filternya: siapa orangnya bagimu','Kepada orang yang kamu sayang kamu mengalah dan memaafkan, tapi kepada kenalan biasa kamu tegas. Cara memutuskanmu berubah tergantung seberapa berarti orang itu bagimu.'+ul,b);
     else if(c['d-dekat']>=4&&c['d-kenal']>=4)add('tfctx','T/F · konteks','Mudah memaafkan siapa pun','Kamu cenderung memaafkan dan mengalah, baik kepada orang terdekat maupun kenalan biasa.'+(ul||' Hati-hati, kebaikan ini bisa dimanfaatkan orang.'),b);
     else if(c['d-dekat']<=2&&c['d-kenal']<=2)add('tfctx','T/F · konteks','Tegas kepada siapa pun','Kamu menegur kesalahan dengan tegas, bahkan kepada orang yang paling kamu sayang. Kamu konsisten, tapi orang terdekat bisa merasa kurang diberi kelonggaran.',b)}
   if(has('d-debat-dekat')&&fac('TF',2)<=-1){const b=`Pendalaman · Facet Questioning ${sgn(fac('TF',2))}`;
     if(lo('d-debat-dekat'))add('debat','T/F · debat','Bertahan tanpa pengecualian','Kamu tetap bertahan dalam perdebatan, bahkan dengan orang yang kamu sayang. Bagimu, kebenaran lebih penting daripada suasana.',b);
-    if(hi('d-debat-dekat'))add('debat','T/F · debat','Keras kepala, kecuali kepada orang tersayang','Dengan orang lain kamu bertahan sampai tuntas, tapi dengan orang yang kamu sayang kamu memilih mengalah. Hubungan itu lebih penting daripada menang.',b)}
+    if(hi('d-debat-dekat'))add('debat','T/F · debat','Teguh, kecuali kepada orang tersayang','Dengan orang lain kamu bertahan sampai tuntas, tapi dengan orang yang kamu sayang kamu memilih mengalah. Hubungan itu lebih penting daripada menang.',b)}
+  const mid=k=>has(k)&&c[k]===3;
+  if(mid('d-yakin'))add('yakin','Cara meyakinkan diri','Logika dan hati harus sepakat','Keputusan pribadimu baru terasa mantap kalau alasannya masuk akal dan juga terasa benar di hati. Kalau salah satunya belum setuju, kamu cenderung menunda memutuskan.','Pendalaman · jawaban seimbang');
   if(lo('d-yakin'))add('yakin','Cara meyakinkan diri','Yakin lewat alasan','Keputusan pribadimu baru terasa mantap kalau alasannya bisa dijelaskan secara logis.',`Pendalaman${R.fn?` · Fungsi Ti ${nmf(R.fn.find(x=>x.f==='Ti').g)}`:''}`);
   if(hi('d-yakin'))add('yakin','Cara meyakinkan diri','Yakin lewat hati','Keputusan pribadimu bertumpu pada rasa benar di dalam diri, walau sulit dijelaskan ke orang lain. Ini ciri khas Fi.',`Pendalaman${R.fn?` · Fungsi Fi ${nmf(R.fn.find(x=>x.f==='Fi').g)}`:''}`);
   if(hi('d-pantas')&&b5f('A','Mudah tersentuh')>=3.5)add('peduli','Kepedulian','Peduli yang selektif','Penderitaan orang yang tidak bersalah menyentuhmu, tapi kepada orang yang kamu anggap jahat kamu tidak peduli. Kepedulianmu disaring oleh pantas-tidaknya orang itu dikasihani.',`Pendalaman · Big Five Mudah tersentuh ${nmf(b5f('A','Mudah tersentuh'))}`);
@@ -363,11 +381,12 @@ function deepFindings(R,cIn){
   if(lo('d-batal')&&ax('JP')<=45)add('batal',`J/P · ${pct('JP')}`,'Butuh kepastian','Rencana yang batal mendadak cukup mengganggumu. Kabar perubahan lebih awal sangat membantu.',`Pendalaman · ${pct('JP')}`);
   if(hi('d-batal')&&ax('JP')<=45)add('batal',`J/P · ${pct('JP')}`,'Terencana tapi luwes','Kamu suka rencana, tapi saat rencana batal kamu cepat beradaptasi. Rencana bagimu adalah alat, bukan aturan mati.',`Pendalaman · ${pct('JP')}`);
   if(hi('d-berarti'))add('berarti','Motivasi','Saringan: berarti atau tidak bagimu','Semangatmu sangat ditentukan oleh apakah sesuatu berarti atau menguntungkan bagimu. Kewajiban saja jarang cukup untuk menggerakkanmu.'+(R.fn&&fnRank('Fi')<=1?' Ini sejalan dengan Fi-mu yang kuat.':''),`Pendalaman${R.fn?` · Fungsi Fi ${nmf(R.fn.find(x=>x.f==='Fi').g)}`:''}`);
-  {const w=[];if(hi('d-ingin-rapi')&&b5f('C','Keteraturan')<=2.5)w.push(['lebih teratur',`Keteraturan ${nmf(b5f('C','Keteraturan'))}`]);if(hi('d-ingin-produktif')&&b5f('C','Disiplin diri')<=2.5)w.push(['lebih produktif',`Disiplin diri ${nmf(b5f('C','Disiplin diri'))}`]);
+  {const w=[];if(hi('d-ingin-rapi')&&b5f('C','Keteraturan')<=2.5)w.push(['lebih teratur',`Keteraturan ${nmf(b5f('C','Keteraturan'))}`]);if(hi('d-ingin-tuntas')&&b5f('C','Disiplin diri')<=2.5)w.push(['menuntaskan lebih banyak hal penting',`Disiplin diri ${nmf(b5f('C','Disiplin diri'))}`]);
     if(w.length)add('jarak','Keinginan vs kebiasaan','Jarak antara keinginan dan kenyataan',`Kamu ingin ${w.map(x=>x[0]).join(' dan ')}, tapi kebiasaanmu saat ini belum ke sana. Jarak ini wajar, dan bisa jadi sumber rasa kurang puas pada diri sendiri.`+(ax('AT')>=65?' Ini juga bisa menjelaskan kenapa kamu cukup keras pada dirimu sendiri.':''),`Pendalaman · Big Five ${w.map(x=>x[1]).join(' · ')}`)}
   // Emosi
   if(hi('d-marah')&&b5f('N','Mudah marah')>=3.5)add('marah','Emosi','Marah yang reaktif dan lama reda','Rasa marahmu cepat naik dan lama turun. Setelah bertengkar, kamu cenderung menjauh.'+(b5f('A','Mengalah')<=2?' Kamu juga tidak mudah mengalah saat konflik.':''),`Pendalaman · Mudah marah ${nmf(b5f('N','Mudah marah'))}`);
   if(lo('d-marah')&&b5f('N','Mudah marah')>=3.5)add('marah','Emosi','Cepat panas, cepat dingin','Rasa marahmu cepat naik, tapi juga cepat reda. Setelah bertengkar, kamu bisa kembali biasa.',`Pendalaman · Mudah marah ${nmf(b5f('N','Mudah marah'))}`);
+  if(mid('d-cemas'))add('cemas','Kecemasan','Cemas ke dua arah','Kekhawatiranmu tertuju ke dua arah sekaligus: penilaian orang tentang dirimu dan apa yang akan terjadi ke depan. Wajar kalau pikiranmu sering terasa penuh.',`Pendalaman · Cemas ${nmf(b5f('N','Cemas'))}`);
   if(lo('d-cemas'))add('cemas','Kecemasan','Cemas soal penilaian orang','Kekhawatiranmu paling sering tertuju pada bagaimana orang lain menilaimu.',`Pendalaman · Cemas ${nmf(b5f('N','Cemas'))}`);
   if(hi('d-cemas'))add('cemas','Kecemasan','Cemas soal masa depan','Kekhawatiranmu paling sering tertuju pada apa yang akan terjadi ke depan, seperti rencana dan masa depan.',`Pendalaman · Cemas ${nmf(b5f('N','Cemas'))}`);
   if(lo('d-tekanan'))add('tekanan','Saat tertekan','Menarik diri saat tertekan','Saat tertekan, kamu cenderung menarik diri dan diam. Orang di sekitarmu mungkin tidak sadar kamu sedang kesulitan.',`Pendalaman${R.b5?` · Neuroticism ${nmf(R.b5.N.dom)}`:''}`);
