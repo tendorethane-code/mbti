@@ -469,45 +469,78 @@ function renderRes(keep){
   $('dlPdf').addEventListener('click',()=>{try{window.print()}catch(e){$('copyMsg').textContent='Browser ini tidak bisa mencetak. Pakai kartu PNG atau screenshot.'}});
   $('dlJson').addEventListener('click',()=>{dl(new Blob([JSON.stringify(exportData(name,D.ans,{summary:own,notes}))],{type:'application/json'}),`jawaban-peta-kepribadian${slug?'-'+slug:''}.json`);$('copyMsg').textContent='File jawaban diunduh.'});
   $('dlCard').addEventListener('click',async()=>{$('copyMsg').textContent='Sedang membuat kartu…';
-    try{if(document.fonts&&document.fonts.ready)await document.fonts.ready;const c=drawCard(R,name,I);$('cardPrev').src=c.toDataURL('image/png');$('cardPrev').hidden=false;
+    try{if(document.fonts&&document.fonts.ready)await document.fonts.ready;const c=drawCard(R,name);$('cardPrev').src=c.toDataURL('image/png');$('cardPrev').hidden=false;
       c.toBlob(b=>{if(b)dl(b,`peta-kepribadian${slug?'-'+slug:''}.png`)},'image/png');
       $('copyMsg').textContent='Kartu diunduh. Kalau di HP tidak terunduh, tekan lama gambar di bawah lalu pilih simpan.'}
     catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.'}});
 }
-function drawCard(R,name,I){
-  // Ukuran story (9:16), juga pas untuk dikirim lewat chat.
+function drawCard(R,name){
+  // Kartu ukuran story (9:16). Motif "peta": tabel 16 tipe dengan tipe utama menyala, warna mengikuti family.
   const W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
-  const dk=theme()==='dark',BG=dk?'#121019':'#ffffff',IND=dk?'#8f86ff':'#3b2fc9',ACC=dk?'#ff7a5c':'#e8492c',INK=dk?'#ecebf3':'#15151a',MUTE=dk?'#a9a6ba':'#5d5b6b',TRK=dk?'#2a2638':'#e9e7f3',PAN=dk?'#1d1a2b':'#f1efff',BAND='#3b2fc9';
+  const dk=theme()==='dark',BG=dk?'#121019':'#ffffff',INK=dk?'#ecebf3':'#15151a',MUTE=dk?'#a9a6ba':'#5d5b6b',TRK=dk?'#2a2638':'#e9e7f3',LINE=dk?'#302c42':'#dcd9ea',IND=dk?'#8f86ff':'#3b2fc9';
+  const FC={NT:dk?'#8f86ff':'#3b2fc9',NF:dk?'#ff7a5c':'#e8492c',SJ:dk?'#2bb3a3':'#0e8f80',SP:dk?'#f2b233':'#b97c00'};
+  const fam=R.hasType?famOf(R.type):'NT',COL=FC[fam];
   const F=(w,z)=>`${w} ${z}px Manrope, system-ui, sans-serif`;
+  const rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`};
   const rr=(X,Y,w,h,r,col)=>{x.fillStyle=col;x.beginPath();if(x.roundRect)x.roundRect(X,Y,Math.max(w,0),h,r);else x.rect(X,Y,Math.max(w,0),h);x.fill()};
   const fit=(t,max)=>{while(x.measureText(t).width>max&&t.length>4)t=t.slice(0,-2)+'…';return t};
-  const R2=(t,X,Y)=>{x.textAlign='right';x.fillText(t,X,Y);x.textAlign='left'};
-  x.fillStyle=BG;x.fillRect(0,0,W,H);x.fillStyle=BAND;x.fillRect(0,0,W,420);
-  x.fillStyle='#fff';x.font=F(700,34);x.fillText(fit(name?`Peta Kepribadian · ${name}`:'Peta Kepribadian',936),72,104);
-  x.font=F(800,160);x.fillText(R.hasType?R.type+(R.id?'-'+R.id:''):'Sementara',64,280);
-  x.font=F(600,32);x.fillText(fit(R.hasType?`${FAM[famOf(R.type)]} (${famOf(R.type)})${R.strat?' · '+R.strat:''}`:'Selesaikan modul Inti untuk melihat tipe',936),72,355);
-  let y=500;
-  const head=t=>{x.fillStyle=INK;x.font=F(800,38);x.fillText(t,72,y)};
+  const txt=(t,X,Y,font,col,al)=>{x.font=font;x.fillStyle=col;x.textAlign=al||'left';x.fillText(t,X,Y);x.textAlign='left'};
+  const blob=(cx,cy,r,col,a)=>{const g=x.createRadialGradient(cx,cy,0,cx,cy,r);g.addColorStop(0,rgba(col,a));g.addColorStop(1,rgba(col,0));x.fillStyle=g;x.fillRect(cx-r,cy-r,2*r,2*r)};
+  x.fillStyle=BG;x.fillRect(0,0,W,H);
+  blob(930,250,720,COL,dk?.42:.22);blob(80,1760,520,IND,dk?.22:.10);
+  // Judul
+  if('letterSpacing' in x)x.letterSpacing='6px';
+  txt('PETA KEPRIBADIAN',72,112,F(800,24),COL);
+  if('letterSpacing' in x)x.letterSpacing='0px';
+  x.font=F(700,44);if(name)txt(fit(name,900),72,168,F(700,44),INK);
   if(R.hasType){
-    head('Empat huruf + identitas');y+=56;
-    ['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).forEach(ax=>{const p=R.ax[ax],big=p>=50?AX[ax][3]:AX[ax][2],d=Math.abs(p-50);
-      x.fillStyle=MUTE;x.font=F(600,24);R2(AX[ax][2],250,y+10);
-      rr(275,y-4,490,16,8,TRK);x.fillStyle=ACC;x.globalAlpha=d<10||(R.src[ax]&&R.src[ax].inti!=null&&R.src[ax].facet!=null&&Math.abs(R.src[ax].inti-R.src[ax].facet)>=30)?.55:1;x.beginPath();x.arc(285+p/100*470,y+4,16,0,Math.PI*2);x.fill();x.globalAlpha=1;
-      x.fillStyle=INK;x.font=F(800,24);x.fillText(`${big} ${Math.round(p>=50?p:100-p)}%`,786,y+12);
-      const sr=R.src[ax],gap=sr&&sr.inti!=null&&sr.facet!=null?Math.abs(sr.inti-sr.facet):0,warn=d<10||gap>=30;
-      x.fillStyle=warn?ACC:MUTE;x.font=F(600,19);x.fillText(gap>=30&&d>=10?'kurang stabil':d>=30?'sangat jelas':d>=15?'jelas':d>=5?'condong, bisa berubah':'seimbang',786,y+40);y+=76});
-    y+=24;head('Tipe paling cocok');y+=54;
-    R.fits.slice(0,3).forEach((f,i)=>{x.fillStyle=INK;x.font=F(800,32);x.fillText(f.t,72,y+12);rr(220,y-6,600,20,10,TRK);rr(220,y-6,6*f.v,20,10,i?IND:ACC);x.fillStyle=INK;x.font=F(700,28);R2(nm(f.v),1008,y+12);y+=54});
+    x.font=F(800,236);const tw=x.measureText(R.type).width;
+    txt(R.type,64,410,F(800,236),INK);if(R.id)txt('-'+R.id,64+tw+8,410,F(800,128),COL);
+    x.font=F(700,34);txt(fit(`${FAM[fam]}${R.strat?' · '+R.strat:''}`,936),72,470,F(700,34),COL);
+    const word={EI:p=>p>=50?(p>=80?'sangat introvert':'introvert'):(p<=20?'sangat ekstrovert':'ekstrovert'),SN:p=>p>=50?'konseptual':'praktis',TF:p=>p>=50?'berpegang pada nilai':'logis',JP:p=>p>=50?'fleksibel':'terencana'};
+    const tag=['EI','SN','TF','JP'].filter(ax=>Math.abs(R.ax[ax]-50)>=10).map(ax=>word[ax](R.ax[ax]));
+    x.font=F(600,30);if(tag.length)txt(fit(tag.join(' · '),936),72,522,F(600,30),MUTE);
+    // Peta 16 tipe
+    const top=R.fits.slice(0,3).map(f=>f.t),cw=108,ch=84,gp=10,gx=72,gy=580;
+    TABLE.forEach((t,i)=>{const cx=gx+(i%4)*(cw+gp),cy=gy+Math.floor(i/4)*(ch+gp),r=top.indexOf(t);
+      if(r===0){x.save();x.shadowColor=rgba(COL,.7);x.shadowBlur=36;rr(cx,cy,cw,ch,14,COL);x.restore()}
+      else if(r>0)rr(cx,cy,cw,ch,14,rgba(COL,r===1?.42:.24));
+      else{x.strokeStyle=LINE;x.lineWidth=2;x.beginPath();if(x.roundRect)x.roundRect(cx+1,cy+1,cw-2,ch-2,14);else x.rect(cx+1,cy+1,cw-2,ch-2);x.stroke()}
+      txt(t,cx+cw/2,cy+ch/2+9,F(800,25),r===0?'#fff':r>0?INK:MUTE,'center')});
+    // Tiga tipe teratas
+    const rx=600;txt('Paling cocok',rx,606,F(700,26),MUTE);
+    R.fits.slice(0,3).forEach((f,i)=>{const y=670+i*104;txt(f.t,rx,y,F(800,i?40:52),i?INK:COL);txt(nmf(f.v),1008,y,F(700,i?28:34),i?MUTE:INK,'right');rr(rx,y+20,408,10,5,TRK);rr(rx,y+20,408*f.v/100,10,5,i?rgba(COL,.5):COL)});
+    // Sumbu: batang dari tengah ke kutub yang menang. Sumbu tipis atau tidak stabil diarsir dan diberi label.
+    let y=1030;txt('Empat huruf + identitas',72,y,F(800,36),INK);y+=70;
+    const hatch=(()=>{const p=document.createElement('canvas');p.width=p.height=14;const q=p.getContext('2d');q.strokeStyle=COL;q.lineWidth=4;q.beginPath();q.moveTo(-2,16);q.lineTo(16,-2);q.stroke();return x.createPattern(p,'repeat')})();
+    ['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).forEach(ax=>{
+      const p=R.ax[ax],d=Math.abs(p-50),sr=R.src[ax],gap=sr&&sr.inti!=null&&sr.facet!=null?Math.abs(sr.inti-sr.facet):0,weak=d<10||gap>=30,right=p>=50,pp=Math.round(right?p:100-p);
+      txt(AX[ax][2]+(right?'':` ${pp}%`),72,y,F(right?600:800,28),right?MUTE:INK);
+      txt((right?`${pp}% `:'')+AX[ax][3],1008,y,F(right?800:600,28),right?INK:MUTE,'right');
+      if(weak){x.font=F(800,18);const lb=d<10?'TIPIS':'KURANG STABIL',w=x.measureText(lb).width+28;rr(540-w/2,y-26,w,32,16,rgba(COL,.18));txt(lb,540,y-4,F(800,18),COL,'center')}
+      const bx=72,bw=936,by=y+18,mid=bx+bw/2,end=bx+bw*p/100;
+      rr(bx,by,bw,14,7,TRK);x.fillStyle=weak?hatch:COL;x.beginPath();const l=Math.min(mid,end),w2=Math.abs(end-mid);if(x.roundRect)x.roundRect(l,by,Math.max(w2,2),14,7);else x.rect(l,by,Math.max(w2,2),14);x.fill();
+      rr(mid-2,by-8,4,30,2,MUTE);x.fillStyle=weak?BG:COL;x.strokeStyle=COL;x.lineWidth=5;x.beginPath();x.arc(end,by+7,15,0,Math.PI*2);x.fill();x.stroke();
+      y+=84});
+  }else{txt('Hasil sementara',72,410,F(800,110),INK);txt('Selesaikan modul Inti untuk melihat tipe',72,470,F(600,32),MUTE)}
+  // Big Five (radar) + urutan fungsi
+  const by0=1600;
+  if(R.b5){
+    const cx=250,cy=by0+100,rd=100,ang=i=>-Math.PI/2+i*2*Math.PI/5,pt=(i,r)=>[cx+Math.cos(ang(i))*r,cy+Math.sin(ang(i))*r];
+    txt('Big Five',72,by0-40,F(800,30),INK);
+    x.strokeStyle=LINE;x.lineWidth=2;[.25,.5,.75,1].forEach(k=>{x.beginPath();for(let i=0;i<5;i++){const[a,b]=pt(i,rd*k);i?x.lineTo(a,b):x.moveTo(a,b)}x.closePath();x.stroke()});
+    x.beginPath();B5.forEach((d,i)=>{const[a,b]=pt(i,rd*(R.b5[d[0]].dom-1)/4);i?x.lineTo(a,b):x.moveTo(a,b)});x.closePath();x.fillStyle=rgba(COL,.35);x.fill();x.strokeStyle=COL;x.lineWidth=4;x.stroke();
+    B5.forEach((d,i)=>{const[a,b]=pt(i,rd+36);txt(`${d[0]} ${nmf(R.b5[d[0]].dom)}`,a,b+9,F(700,24),INK,'center')});
   }
-  if(R.fn){y+=20;head('Urutan cognitive functions');y+=50;x.font=F(700,32);x.fillStyle=IND;x.fillText(fit(R.fn.map(f=>f.f).join('  ›  '),936),72,y);y+=36}
-  if(R.b5){y+=36;head('Big Five (skala 1–5)');y+=50;
-    B5.forEach(d=>{const v=R.b5[d[0]].dom;x.fillStyle=MUTE;x.font=F(600,26);x.fillText(d[1],72,y+10);rr(380,y-6,520,18,9,TRK);rr(380,y-6,(v-1)/4*520,18,9,IND);x.fillStyle=INK;x.font=F(800,26);R2(nm(v),1008,y+12);y+=44})}
-  const st=I&&I.strengths?I.strengths.slice(0,4).map(s=>s.t):[];
-  if(st.length){y+=36;head('Kekuatan');y+=30;let cx=72;x.font=F(600,26);
-    st.forEach(t=>{const w=Math.min(936,x.measureText(t).width+44);if(cx+w>1008){cx=72;y+=64}if(y>H-190)return;rr(cx,y,w,50,25,PAN);x.fillStyle=INK;x.fillText(fit(t,w-44),cx+22,y+34);cx+=w+12});y+=64}
-  x.fillStyle=BG;x.fillRect(0,H-100,W,100);x.fillStyle=MUTE;x.font=F(600,24);
-  x.fillText(location.host?(location.host+location.pathname).replace(/index\.html$/,''):'Peta Kepribadian',72,H-46);
-  x.textAlign='right';x.fillText(new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}),1008,H-46);x.textAlign='left';
+  if(R.fn){
+    const fx=560;txt('Urutan fungsi',fx,by0-40,F(800,30),INK);
+    R.fn.forEach((f,i)=>{const cx=fx+(i%4)*112,cy=by0+(i<4?10:110);rr(cx,cy,100,80,16,i===0?COL:rgba(COL,Math.max(.1,.5-i*.06)));txt(f.f,cx+50,cy+42,F(800,i<2?34:30),i===0?'#fff':INK,'center');txt(`${i+1}`,cx+50,cy+70,F(700,18),i===0?'rgba(255,255,255,.85)':MUTE,'center')});
+  }
+  // Footer: ajakan mencoba
+  rr(0,H-96,W,96,0,rgba(COL,dk?.16:.10));
+  const site=location.host?(location.host+location.pathname).replace(/index\.html$/,''):'Peta Kepribadian';
+  txt('Coba juga:',72,H-38,F(600,26),MUTE);x.font=F(600,26);const cw2=x.measureText('Coba juga: ').width;txt(fit(site,600),72+cw2,H-38,F(800,26),INK);
+  txt(new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}),1008,H-38,F(600,24),MUTE,'right');
   return c;
 }
 
