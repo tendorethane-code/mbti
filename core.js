@@ -28,7 +28,9 @@ function buildModules(){
     {id:'fungsi',name:'Cognitive functions',items:flipOdd(roundRobin(fnG).concat(FN2.map(x=>({k:'fc',id:x[5],fa:x[0],fb:x[1],q:x[2],a:x[3],b:x[4]}))))}];
 }
 const MODS=buildModules();
-MODS.forEach(m=>{const n=m.items.length;m.sub=`${n} ${m.id==='big5'?'pernyataan':'soal'} · ±${Math.max(5,Math.round(n*9/60))} menit`});
+MODS.forEach(m=>{const n=m.items.length;m.sub=`${n} ${m.id==='big5'?'pernyataan':'soal'}`});
+// Huruf kapital di awal tiap kata, kecuali kata sambung pendek.
+const titleCase=t=>String(t).split(' ').map((w,i)=>i>0&&['pada','dan','di','ke','yang','dari','atau','untuk'].includes(w)?w:w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
 const MAIN=MODS;
 const TOTAL=MAIN.reduce((s,m)=>s+m.items.length,0);
 

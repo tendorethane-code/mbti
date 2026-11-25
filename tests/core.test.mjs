@@ -380,3 +380,8 @@ test('riwayat: hanya hasil lengkap, jawaban utama sama memperbarui entri terakhi
   let many = []; for (let i = 0; i < 40; i++) many = C.histAdd(many, {name: '', c: C.canon(answersFor(C, C.TABLE[i % 16], i % 2 ? 'A' : 'T', 1 + (i % 2)))});
   assert.ok(many.length <= 30);
 });
+
+test('huruf kapital di awal kata untuk tagline kartu', () => {
+  assert.equal(C.titleCase('sangat introvert'), 'Sangat Introvert');
+  assert.equal(C.titleCase('berpegang pada nilai'), 'Berpegang pada Nilai');
+});

@@ -95,7 +95,8 @@ try {
   await viewport(390, 844, true);
   await load();
   check('judul halaman "Peta Kepribadian"', (await ev('document.title')) === 'Peta Kepribadian');
-  check('h1 beranda', (await text('#home h1')) === 'Peta Kepribadian');
+  check('h1 beranda', (await text('#home h1')).startsWith('Kenali cara kamu'));
+  check('beranda tanpa perkiraan waktu', await ev("!/menit/.test(document.getElementById('home').innerText)"));
   check('total soal 189', (await text('#totalQ')) === '189');
   check('tema bawaan: gelap', (await ev("document.documentElement.dataset.theme")) === 'dark' && (await ev("getComputedStyle(document.body).backgroundColor")) === 'rgb(18, 16, 25)');
   check('pilihan tema ada di atas, "Gelap" aktif', await ev(`document.querySelector('.topbar [data-theme-set="dark"]').getAttribute('aria-pressed')==='true'&&document.querySelector('.topbar').getBoundingClientRect().top<60`));
@@ -169,10 +170,10 @@ try {
   const px = `(()=>{const i=document.getElementById('cardPrev'),c=document.createElement('canvas');c.width=i.naturalWidth;c.height=i.naturalHeight;const x=c.getContext('2d');x.drawImage(i,0,0);return [...x.getImageData(30,700,1,1).data].slice(0,3).join(',')})()`;
   check('kartu PNG ikut tema gelap', (await ev(px)) === '18,16,25', await ev(px));
   const pf = await waitFile('.png');
-  check('pilihan gaya kartu: 4 gaya tersedia', (await ev("document.querySelectorAll('[data-card-style]').length")) === 4);
+  check('pilihan gaya kartu: 6 gaya tersedia, Poster bawaan', (await ev("document.querySelectorAll('[data-card-style]').length")) === 6 && (await ev("document.querySelector('[data-card-style=\"poster\"]').getAttribute('aria-pressed')")) === 'true');
   await ev("document.getElementById('cardPrev').src=''");
-  await click('[data-card-style="aura"]');
-  check('ganti gaya kartu: tersimpan dan kartu dibuat ulang', await waitFor("localStorage.getItem('tesKepribadian.kartu')==='aura'&&document.getElementById('cardPrev').naturalHeight===1920", 6000));
+  await click('[data-card-style="jurnal"]');
+  check('ganti gaya kartu: tersimpan dan kartu dibuat ulang', await waitFor("localStorage.getItem('tesKepribadian.kartu')==='jurnal'&&document.getElementById('cardPrev').naturalHeight===1920", 6000));
   await click('[data-card-style="poster"]');
   check('download kartu PNG valid', pf && fs.readFileSync(pf).subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])), pf || 'tidak ada file');
   if (pf) fs.copyFileSync(pf, path.join(OUT, '04-kartu.png'));
