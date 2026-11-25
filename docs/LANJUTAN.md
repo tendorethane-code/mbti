@@ -9,19 +9,18 @@ Dokumen ini merangkum keadaan proyek dan keputusan yang sudah diambil bersama pe
 - Push hanya ke branch `claude/hopeful-dijkstra-5g5kvh`. **Jangan buat PR atau merge dulu**: pemilik ingin tahap pengecekan sendiri setelah semua beres.
 - Situs live (`main`, GitHub Pages) masih versi lama. Semua perubahan di bawah baru ada di branch ini.
 
-## Keadaan sekarang (semua tes lulus: 44 unit test, 100 cek E2E)
+## Keadaan sekarang (semua tes lulus: 44 unit test, 104 cek E2E)
 - 189 soal di 4 modul utama + Pendalaman adaptif (bank 22 soal, `PROBE_RULES` di `core.js`). Bahasa "kamu"/"saya", tanpa perkiraan waktu.
 - Soal sudah diaudit dan dicocokkan dengan IPIP-NEO-120 (lihat README, "Perubahan soal versi 3").
 - File jawaban v3 per id soal; v1/v2 dibaca lewat `legacy.js`.
 - Hasil: ringkasan, kekuatan, "yang perlu kamu jaga", temuan khusus (otomatis + catatan manual), gambaran keseharian dengan kutipan jawaban asli, tips untuk orang terdekat, riwayat, link hasil (mode lihat).
 - Palet warna per tipe (`TYPE_PAL`, `typePal()`), dipakai di hasil, kartu, dan PDF.
-- PDF disusun sebagai alur cerita (sampul + hook → Bab 1–5 → penutup → "Angka di balik hasilmu"). Markup ada di `renderRes` (`.story`, `.pcover`, hanya cetak).
-- Kartu PNG 1080×1920, 6 gaya: Poster (bawaan, disukai), Piringan, Peta (dinilai "lumayan bagus"), Editorial, Aura, Koleksi.
+- Halaman hasil web dan PDF memakai alur cerita yang sama: hook → Bab 1 satu kalimat + peta → Bab 2 kekuatan → Bab 3 tiga temuan paling khas (`storyFindings` di `core.js`), sisanya ringkas/dilipat → Bab 4 keseharian (3 poin terbuka) → Bab 5 yang perlu dijaga + orang terdekat → penutup → simpan & bagikan → "Angka di balik hasilmu". Versi cetak tetap punya markup sendiri (`.story`, `.pcover`).
+- Kartu PNG 1080×1920, 6 gaya: Poster (bawaan, disukai), Takaran (pengganti Piringan: huruf tipe terisi seperti gelas ukur), Peta (dinilai "lumayan bagus"), Editorial, Aura, Koleksi. Konsep Mozaik (treemap 16 tipe) dan Gelombang (189 jawaban sebagai garis) sempat dibuat sebagai pembanding, belum masuk web.
 
-## Pekerjaan berikutnya (diminta pemilik)
-1. **Terapkan alur cerita PDF ke halaman hasil web.** Sekarang web masih menumpuk: ringkasan → temuan → keseharian → tips → angka. Ikuti tempo PDF: hook di atas, satu kalimat + tiga kata + peta singkat, kekuatan dulu, 3 temuan paling khas yang besar, sisanya ringkas/dilipat, keseharian maks. 3 poin per bagian, "yang perlu kamu jaga" lalu bagian hangat untuk orang terdekat, penutup, lalu angka (boleh dilipat). Bagian lama yang sudah diceritakan ulang jangan dobel. Perhatikan tes E2E yang bergantung pada id `#ringkasan`, `#catatan`, `#keseharian`, `#tips`, `#akhir`, `.rhero`.
-2. **Ganti kartu Piringan** (ditolak: "kurang kreatif"). Sebelumnya juga ditolak: Konstelasi, Jurnal, Paspor. Pemilik ingin yang inovatif, eye catchy, elegan, tidak alay, warna dari palet tipe. Konsep yang disukai: Poster (gradien, peta 16 tipe, batang dari tengah) dan judul tipe bergradien. Pertimbangkan beberapa konsep dulu, tunjukkan pratinjau, baru pilih.
-3. Setelah itu: tahap pengecekan menyeluruh bersama pemilik, baru PR ke `main`.
+## Pekerjaan berikutnya
+1. Tunggu tanggapan pemilik soal alur cerita web dan kartu Takaran (alternatif: Mozaik, Gelombang). Yang ditolak sebelumnya: Konstelasi, Jurnal, Paspor, Piringan.
+2. Tahap pengecekan menyeluruh bersama pemilik, baru PR ke `main`.
 
 ## Data pribadi pemilik
 File jawaban pemilik (`jawaban-peta-kepribadian-gama-v3.json`, berisi jawaban lengkap, Pendalaman, ringkasan, dan 2 catatan manual) **tidak disimpan di repo** karena berisi data pribadi dan repo ini kemungkinan publik. Minta pemilik mengunggah file itu di sesi baru. Hasil terakhirnya: INFP-T (I 98 · N 75 · F 53 tipis · P 86 · T 85), urutan INFP 74,3 · INTP 66,8 · ISFP 65,1, Pendalaman lengkap (15 temuan otomatis).

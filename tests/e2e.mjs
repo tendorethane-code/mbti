@@ -182,8 +182,8 @@ try {
   const pf = await waitFile('.png');
   check('pilihan gaya kartu: 6 gaya tersedia, Poster bawaan', (await ev("document.querySelectorAll('[data-card-style]').length")) === 6 && (await ev("document.querySelector('[data-card-style=\"poster\"]').getAttribute('aria-pressed')")) === 'true');
   await ev("document.getElementById('cardPrev').src=''");
-  await click('[data-card-style="piringan"]');
-  check('ganti gaya kartu: tersimpan dan kartu dibuat ulang', await waitFor("localStorage.getItem('tesKepribadian.kartu')==='piringan'&&document.getElementById('cardPrev').naturalHeight===1920", 6000));
+  await click('[data-card-style="takaran"]');
+  check('ganti gaya kartu: tersimpan dan kartu dibuat ulang', await waitFor("localStorage.getItem('tesKepribadian.kartu')==='takaran'&&document.getElementById('cardPrev').naturalHeight===1920", 6000));
   await click('[data-card-style="poster"]');
   check('download kartu PNG valid', pf && fs.readFileSync(pf).subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])), pf || 'tidak ada file');
   if (pf) fs.copyFileSync(pf, path.join(OUT, '04-kartu.png'));
