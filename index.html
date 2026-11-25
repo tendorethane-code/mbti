@@ -156,6 +156,7 @@ footer{border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
 .sec li:first-child,.klist li:first-child{border-top:0}
 .sec li.sp{border-left:3px solid var(--acc);padding-left:10px}
 .basis{display:block;font-size:12.5px;color:var(--mute);margin-top:2px}
+.quote{display:block;font-size:14px;font-style:italic;color:var(--ink);opacity:.85;margin-top:4px;padding-left:10px;border-left:2px solid var(--line)}
 .ncards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:14px;margin-top:14px}
 .ncard{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--bg)}
 .ncard .tg{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--acc)}
@@ -191,7 +192,7 @@ footer{border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
 <div class="t">
 <p class="eyebrow">Tes 16 tipe · versi lengkap</p>
 <h1>Peta Kepribadian</h1>
-<p class="lead">4 huruf + identitas, 20 facet, Big Five 30 facet, dan 8 cognitive functions. <span id="totalQ">189</span> soal dalam 4 modul, sekitar 25 menit. Progres tersimpan otomatis di browser ini, jadi boleh dicicil.</p>
+<p class="lead">4 huruf + identitas, 20 facet, Big Five 30 facet, dan 8 cognitive functions. <span id="totalQ">189</span> soal dalam 4 modul, plus Pendalaman adaptif, sekitar 25 menit. Progres tersimpan otomatis di browser ini, jadi boleh dicicil.</p>
 </div>
 <div class="p">
 <div class="tt" id="ttHome" role="img" aria-label="Peta 16 tipe, diwarnai per family"></div>
@@ -243,26 +244,34 @@ footer{border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
 <footer class="band"><div class="wrap">Peta Kepribadian bukan tes MBTI® resmi dan belum divalidasi secara ilmiah. MBTI adalah merek dagang The Myers-Briggs Company. Jawabanmu hanya tersimpan di browser ini dan tidak dikirim ke server mana pun.</div></footer>
 
 <script src="data.js"></script>
+<script src="legacy.js"></script>
 <script src="core.js"></script>
 <script>
 {
 const KEY='tesKepribadian.v1';
 const $=id=>document.getElementById(id);
 const nm=nmf;
-const blank=()=>({v:DATA_V,name:'',ans:emptyAns(),summary:'',notes:[]});
+const blank=()=>({v:DATA_V,name:'',c:{},summary:'',notes:[]});
+// Modul 0-3 = modul utama, modul 4 = Pendalaman adaptif (soalnya dihitung ulang dari hasil dan jawaban).
+const DEEPI=MODS.length;
+const ansOf=D=>fromCanon(D.c);
+const itemsOf=i=>i<DEEPI?MODS[i].items:deepPlan(resultOf(S.c),S.c);
+const nameOf=i=>i<DEEPI?MODS[i].name:'Pendalaman';
+const shown=(it,c)=>{const v=c[it.id];return valid(v)?(it.k==='fc'&&it.fl?6-v:v):0};
+const mainDoneOf=D=>MAIN.every(m=>isDone(ansOf(D),m));
 let S=blank();
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');const c=s&&sanitizeImport({...s,app:APP_ID});if(c)S=c}catch(e){}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({v:DATA_V,name:S.name,ans:S.ans,summary:S.summary||'',notes:S.notes||[]}))}catch(e){}};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({v:DATA_V,name:S.name,c:S.c,summary:S.summary||'',notes:S.notes||[]}))}catch(e){}};
 save();
 let cur=0,qi=0,lock=false,resetArm=-1,view=null,histArm=-1;
 const HKEY='tesKepribadian.riwayat';
-const hLoad=()=>{try{const a=JSON.parse(localStorage.getItem(HKEY)||'[]');return Array.isArray(a)?a.filter(e=>e&&e.a&&e.t):[]}catch(e){return []}};
+const hLoad=()=>{try{const a=JSON.parse(localStorage.getItem(HKEY)||'[]');return Array.isArray(a)?a.filter(e=>e&&e.c&&e.t):[]}catch(e){return []}};
 const hSave=a=>{try{localStorage.setItem(HKEY,JSON.stringify(a))}catch(e){}};
 const hRecord=D=>hSave(histAdd(hLoad(),D));
 const fmtDate=t=>{const d=new Date(t);return isNaN(d)?'':d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'})+', '+d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})};
 const axShort=R=>['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax];return `${p>=50?POS[ax]:AX[ax][0]} ${Math.round(p>=50?p:100-p)}`}).join(' · ');
 function histTable(list){
-  const L=list.slice(-4).map(e=>{const d=histData(e);return d?{e,R:compute(d.ans)}:null}).filter(x=>x&&x.R.hasType);if(L.length<2)return '';
+  const L=list.slice(-4).map(e=>{const d=histData(e);return d?{e,R:resultOf(d.c)}:null}).filter(x=>x&&x.R.hasType);if(L.length<2)return '';
   const cell=(R,ax)=>{const p=R.ax[ax];return p==null?'–':`${p>=50?POS[ax]:AX[ax][0]} ${Math.round(p>=50?p:100-p)}%`};
   const a=L[L.length-2].R,b=L[L.length-1].R;
   const delta=ax=>{if(a.ax[ax]==null||b.ax[ax]==null)return '–';const d=b.ax[ax]-a.ax[ax];return Math.abs(d)<1?'tetap':`${Math.round(Math.abs(d))} poin ke ${d>0?POS[ax]:AX[ax][0]}`};
@@ -270,7 +279,7 @@ function histTable(list){
 }
 function renderHist(){
   const list=hLoad();if(!list.length){$('hist').innerHTML='';return}
-  const rows=list.map((e,i)=>{const d=histData(e),R=d&&compute(d.ans);return R&&R.hasType?`<div class="hrow"><div><b>${R.type}${R.id?'-'+R.id:''}${e.n?' · '+esc(e.n):''}</b><small>${esc(fmtDate(e.t))} · ${axShort(R)}</small></div><div class="rowb" style="margin:0"><button class="btn ghost" type="button" data-hv="${i}">Lihat</button><button class="btn ghost" type="button" data-hd="${i}">${histArm===i?'Ketuk lagi untuk hapus':'Hapus'}</button></div></div>`:''}).reverse().join('');
+  const rows=list.map((e,i)=>{const d=histData(e),R=d&&resultOf(d.c);return R&&R.hasType?`<div class="hrow"><div><b>${R.type}${R.id?'-'+R.id:''}${e.n?' · '+esc(e.n):''}</b><small>${esc(fmtDate(e.t))} · ${axShort(R)}</small></div><div class="rowb" style="margin:0"><button class="btn ghost" type="button" data-hv="${i}">Lihat</button><button class="btn ghost" type="button" data-hd="${i}">${histArm===i?'Ketuk lagi untuk hapus':'Hapus'}</button></div></div>`:''}).reverse().join('');
   $('hist').innerHTML=`<h3>Riwayat tes (${list.length})</h3><p class="mute" style="font-size:14px">Setiap hasil lengkap tersimpan otomatis di browser ini, jadi kamu bisa mengulang tes dan membandingkan hasilnya.</p>${histTable(list)}${rows}`;
 }
 $('hist').addEventListener('click',e=>{const v=e.target.closest('[data-hv]'),d=e.target.closest('[data-hd]');const list=hLoad();
@@ -300,26 +309,28 @@ function setTheme(t,fromUser){
   if(fromUser){try{localStorage.setItem('tesKepribadian.theme',t)}catch(e){}paintHome();if(!$('res').hidden)renderRes(true)}
 }
 setTheme(theme(),false);paintHome();
-document.addEventListener('click',e=>{const b=e.target.closest('[data-theme-set]');if(b)setTheme(b.dataset.themeSet,true)});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-theme-set]');if(b)setTheme(b.dataset.themeSet,true);const k=e.target.closest('[data-card-style]');if(k){try{localStorage.setItem('tesKepribadian.kartu',k.dataset.cardStyle)}catch(er){}document.querySelectorAll('[data-card-style]').forEach(z=>z.setAttribute('aria-pressed',String(z===k)));if(!$('cardPrev').hidden&&$('dlCard'))$('dlCard').click()}});
 window.addEventListener('beforeprint',()=>document.querySelectorAll('#res details').forEach(d=>d.open=true));
 
 function renderHome(){
   view=null;histArm=-1;renderHist();
   $('nama').value=S.name||'';
-  $('mods').innerHTML=MODS.map((m,i)=>{const c=answered(S.ans,m),n=m.items.length,ok=c===n;return `<div class="mod ${ok?'ok':''}"><span class="no">${ok?'✓':i+1}</span><div><b>${m.name}</b><small>${m.sub} · ${ok?'selesai':c?`${c}/${n} dijawab`:'belum dimulai'}</small><div class="mini"><i style="width:${c/n*100}%"></i></div></div><button class="btn ${ok?'ghost':''}" type="button" data-m="${i}">${ok?'Ulangi':c?'Lanjutkan':'Mulai'}</button></div>`}).join('');
-  $('goRes').disabled=!MAIN.some(m=>isDone(S.ans,m));
+  const A=ansOf(S),md=mainDoneOf(S),dp=md?itemsOf(DEEPI):[],dc=dp.filter(it=>valid(S.c[it.id])).length,dok=md&&dc===dp.length;
+  $('mods').innerHTML=MODS.map((m,i)=>{const c=answered(A,m),n=m.items.length,ok=c===n;return `<div class="mod ${ok?'ok':''}"><span class="no">${ok?'✓':i+1}</span><div><b>${m.name}</b><small>${m.sub} · ${ok?'selesai':c?`${c}/${n} dijawab`:'belum dimulai'}</small><div class="mini"><i style="width:${c/n*100}%"></i></div></div><button class="btn ${ok?'ghost':''}" type="button" data-m="${i}">${ok?'Ulangi':c?'Lanjutkan':'Mulai'}</button></div>`}).join('');
+  $('mods').innerHTML+=`<div class="mod ${dok?'ok':''}"><span class="no">${dok?'✓':'+'}</span><div><b>Pendalaman (opsional, adaptif)</b><small>${md?`${dp.length} soal yang dipilih dari pola hasilmu · ${dok?'selesai':dc?`${dc}/${dp.length} dijawab`:'belum dimulai'}`:'Terbuka setelah 4 modul utama selesai. Soalnya disesuaikan dengan pola hasilmu.'}</small><div class="mini"><i style="width:${md&&dp.length?dc/dp.length*100:0}%"></i></div></div><button class="btn ${dok?'ghost':''}" type="button" data-m="${DEEPI}" ${md?'':'disabled'}>${dok?'Ulangi':dc?'Lanjutkan':'Mulai'}</button></div>`;
+  $('goRes').disabled=!MAIN.some(m=>isDone(A,m));
   resetArm=-1;show('home');
 }
-$('mods').addEventListener('click',e=>{const b=e.target.closest('button[data-m]');if(!b)return;const i=+b.dataset.m,m=MODS[i];
-  if(isDone(S.ans,m)){if(resetArm!==i){resetArm=i;b.textContent='Ketuk lagi untuk mengulang';return}S.ans[m.id]=[];save()}
+$('mods').addEventListener('click',e=>{const b=e.target.closest('button[data-m]');if(!b)return;const i=+b.dataset.m,its=itemsOf(i);
+  if(its.length&&its.every(it=>valid(S.c[it.id]))){if(resetArm!==i){resetArm=i;b.textContent='Ketuk lagi untuk mengulang';return}(i<DEEPI?its:DEEP.map(d=>({id:d[0]}))).forEach(it=>delete S.c[it.id]);save()}
   start(i)});
 $('nama').addEventListener('input',e=>{S.name=safeName(e.target.value);save()});
 
-function start(i){cur=i;resetArm=-1;const m=MODS[i];qi=m.items.findIndex((_,k)=>!valid(S.ans[m.id][k]));if(qi<0)qi=0;renderQ();show('quiz')}
+function start(i){cur=i;resetArm=-1;const its=itemsOf(i);if(!its.length){renderHome();return}qi=its.findIndex(it=>!valid(S.c[it.id]));if(qi<0)qi=0;renderQ();show('quiz')}
 function renderQ(){
-  const m=MODS[cur],it=m.items[qi],v=S.ans[m.id][qi]||0;
-  $('qMod').textContent=m.name;$('qCount').textContent=`${qi+1} / ${m.items.length}`;
-  $('qProg').style.width=`${answered(S.ans,m)/m.items.length*100}%`;
+  const its=itemsOf(cur),it=its[qi],v=shown(it,S.c);
+  $('qMod').textContent=nameOf(cur);$('qCount').textContent=`${qi+1} / ${its.length}`;
+  $('qProg').style.width=`${its.filter(x=>valid(S.c[x.id])).length/its.length*100}%`;
   $('qText').textContent=it.q;
   if(it.k==='fc'){
     const sz=[46,36,28,36,46],cl=['','','m','r','r'],lb=['Sangat A','Agak A','Seimbang','Agak B','Sangat B'];
@@ -331,8 +342,9 @@ function renderQ(){
   $('qBack').disabled=qi===0;
 }
 function answer(v){
-  if(lock||$('quiz').hidden)return;const m=MODS[cur];S.ans[m.id][qi]=v;save();renderQ();lock=true;
-  setTimeout(()=>{lock=false;if($('quiz').hidden)return;const nx=m.items.findIndex((_,k)=>k>qi&&!valid(S.ans[m.id][k]));const first=m.items.findIndex((_,k)=>!valid(S.ans[m.id][k]));
+  if(lock||$('quiz').hidden)return;const it=itemsOf(cur)[qi];S.c[it.id]=it.k==='fc'&&it.fl?6-v:v;save();renderQ();lock=true;
+  setTimeout(()=>{lock=false;if($('quiz').hidden)return;const its=itemsOf(cur),id=it.id;const pos=its.findIndex(x=>x.id===id);
+    const nx=its.findIndex((x,k)=>k>pos&&!valid(S.c[x.id]));const first=its.findIndex(x=>!valid(S.c[x.id]));
     if(nx>=0){qi=nx;renderQ()}else if(first>=0){qi=first;renderQ()}else finish()},180);
 }
 $('qBody').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(b)answer(+b.dataset.v)});
@@ -341,14 +353,14 @@ $('qHome').addEventListener('click',renderHome);
 document.addEventListener('keydown',e=>{if($('quiz').hidden||e.target.tagName==='INPUT'||e.metaKey||e.ctrlKey||e.altKey)return;if(/^[1-5]$/.test(e.key))answer(+e.key);else if(e.key==='ArrowLeft'&&qi>0&&!lock){qi--;renderQ()}});
 
 function finish(){
-  const left=MAIN.filter(m=>!isDone(S.ans,m)),deep=MODS.find(m=>m.opt),deepLeft=!isDone(S.ans,deep);
-  $('doneTitle').textContent=`${MODS[cur].name} selesai`;
+  const A=ansOf(S),left=MAIN.filter(m=>!isDone(A,m)),dp=left.length?[]:itemsOf(DEEPI),deepLeft=dp.some(it=>!valid(S.c[it.id]));
+  $('doneTitle').textContent=`${nameOf(cur)} selesai`;
   let next=null;
   if(left.length){$('doneText').textContent=`Tinggal ${left.length} modul lagi: ${left.map(m=>m.name).join(', ')}. Hasil sementara sudah bisa dilihat, tapi baru lengkap setelah semua modul selesai.`;next=left[0];$('doneNext').textContent='Lanjut ke modul berikutnya'}
-  else if(deepLeft){$('doneText').textContent=`Semua modul utama selesai. Hasil lengkapmu sudah siap. Ada satu modul opsional, Pendalaman (${deep.items.length} soal, ±3 menit), untuk temuan yang lebih spesifik.`;next=deep;$('doneNext').textContent='Lanjut ke Pendalaman'}
+  else if(deepLeft){$('doneText').textContent=`Semua modul utama selesai. Hasil lengkapmu sudah siap. Ada satu modul opsional, Pendalaman: ${dp.length} soal yang dipilih dari pola hasilmu, untuk temuan yang lebih spesifik.`;next=DEEPI;$('doneNext').textContent='Lanjut ke Pendalaman'}
   else $('doneText').textContent='Semua modul selesai, termasuk Pendalaman. Hasil lengkapmu sudah siap.';
   if(!left.length)hRecord(S);
-  $('doneNext').hidden=!next;$('doneNext').onclick=()=>start(MODS.indexOf(next));
+  $('doneNext').hidden=next==null;$('doneNext').onclick=()=>start(typeof next==='number'?next:MODS.indexOf(next));
   show('done');
 }
 $('doneRes').addEventListener('click',()=>renderRes());
@@ -358,36 +370,35 @@ $('askReset').addEventListener('click',()=>{$('confirmReset').hidden=false});
 $('noReset').addEventListener('click',()=>{$('confirmReset').hidden=true});
 $('doReset').addEventListener('click',()=>{hRecord(S);const n=S.name;S=blank();S.name=n;save();$('confirmReset').hidden=true;renderHome();$('fileMsg').textContent='Jawaban aktif sudah dikosongkan. Hasil sebelumnya ada di riwayat.'});
 $('openFile').addEventListener('click',()=>$('fileIn').click());
-const loadMsg=d=>{const left=MAIN.reduce((s,m)=>s+m.items.length-answered(d.ans,m),0);
-  return d.migrated?`File jawaban versi lama berhasil dibuka. Sebagian soal Facet sudah diperbarui, jadi ada ${left} soal yang perlu kamu jawab lagi.`:'File jawaban berhasil dibuka.'};
+const loadMsg=d=>d.migrated?`File jawaban versi lama berhasil dibuka. Sebagian soal sudah diperbarui, jadi ada ${d.missing} soal yang perlu kamu jawab lagi.`:'File jawaban berhasil dibuka.';
 $('fileIn').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();
   r.onload=()=>{let d=null;try{d=sanitizeImport(JSON.parse(r.result))}catch(err){}
     if(!d){$('fileMsg').textContent='File ini bukan file jawaban Peta Kepribadian.';return}
-    const msg=loadMsg(d);S=d;save();if(!d.migrated&&MODS.some(m=>isDone(S.ans,m)))renderRes();else renderHome();$('fileMsg').textContent=msg};
+    const msg=loadMsg(d);S=d;save();if(!d.migrated&&MODS.some(m=>isDone(ansOf(S),m)))renderRes();else renderHome();$('fileMsg').textContent=msg};
   r.onerror=()=>{$('fileMsg').textContent='File tidak bisa dibaca.'};r.readAsText(f);e.target.value=''});
 
 // Link hasil (#h=...): ditampilkan tanpa mengubah jawaban yang tersimpan di browser ini.
 function openShared(){
   const m=location.hash.match(/^#h=([A-Za-z0-9_-]+)$/);if(!m)return false;
   const d=decodeShare(m[1]);
-  if(!d||!MODS.some(mm=>isDone(d.ans,mm))){history.replaceState(null,'',location.pathname+location.search);renderHome();$('fileMsg').textContent='Link hasil ini tidak valid atau tidak lengkap.';return true}
+  if(!d||!MODS.some(mm=>isDone(ansOf(d),mm))){history.replaceState(null,'',location.pathname+location.search);renderHome();$('fileMsg').textContent='Link hasil ini tidak valid atau tidak lengkap.';return true}
   view=d;viewKind='link';$('viewSave').textContent='Simpan hasil ini di browser ini';$('viewMine').textContent='Kerjakan tesmu sendiri';$('viewText').textContent=`Kamu sedang melihat hasil ${d.name||'seseorang'} yang dibagikan lewat link. Jawabanmu sendiri di browser ini tidak berubah.`;
   $('viewConfirm').hidden=true;renderRes();return true;
 }
 const clearHash=()=>history.replaceState(null,'',location.pathname+location.search);
 $('viewMine').addEventListener('click',()=>{clearHash();renderHome()});
-const keepShared=()=>{if(viewKind==='hist')hRecord(S);S={...view,ans:JSON.parse(JSON.stringify(view.ans))};save();view=null;clearHash();renderRes();$('copyMsg').textContent='Hasil ini sudah tersimpan di browser ini.'};
-$('viewSave').addEventListener('click',()=>{if(viewKind!=='hist'&&MODS.some(m=>answered(S.ans,m)>0))$('viewConfirm').hidden=false;else keepShared()});
+const keepShared=()=>{if(viewKind==='hist')hRecord(S);S={...view,c:{...view.c}};save();view=null;clearHash();renderRes();$('copyMsg').textContent='Hasil ini sudah tersimpan di browser ini.'};
+$('viewSave').addEventListener('click',()=>{if(viewKind!=='hist'&&Object.keys(S.c).length>0)$('viewConfirm').hidden=false;else keepShared()});
 $('viewSaveYes').addEventListener('click',keepShared);
 $('viewSaveNo').addEventListener('click',()=>{$('viewConfirm').hidden=true});
 window.addEventListener('hashchange',()=>{if(!openShared()&&view)renderHome()});
 
 function dl(blob,fname){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
-const li=x=>`<li${x.w>=3?' class="sp"':''}>${esc(x.t)}<span class="basis">Dasar: ${esc(x.b)}</span></li>`;
+const li=x=>`<li${x.w>=3?' class="sp"':''}>${esc(x.t)}${x.q?`<span class="quote">${esc(x.q)}</span>`:''}<span class="basis">Dasar: ${esc(x.b)}</span></li>`;
 
 function renderRes(keep){
-  const D=V(),R=compute(D.ans),name=safeName(D.name),I=insights(R,D.ans),notes=D.notes||[],own=D.summary||'',F=deepFindings(R,D.ans);
-  const done=MAIN.filter(m=>R.done[m.id]).length,deep=MODS.find(m=>m.opt),mainDone=done===MAIN.length;
+  const D=V(),R=resultOf(D.c),name=safeName(D.name),I=insights(R,D.c),notes=D.notes||[],own=D.summary||'',F=deepFindings(R,D.c);
+  const done=MAIN.filter(m=>R.done[m.id]).length,mainDone=done===MAIN.length,dp=mainDone?deepPlan(R,D.c):[],dAns=dp.filter(it=>valid(D.c[it.id])).length;
   if(!view)hRecord(D);
   let h='';
   if(R.hasType){
@@ -405,12 +416,12 @@ function renderRes(keep){
     <div class="grid2" style="gap:18px">${I.strengths.length?`<div><h3 style="margin-top:0">Kekuatan</h3><ul class="klist">${I.strengths.map(li).join('')}</ul></div>`:''}${I.watch.length?`<div><h3 style="margin-top:0">Perlu diperhatikan</h3><ul class="klist">${I.watch.map(li).join('')}</ul></div>`:''}</div></div></section>`;
   }
   const ncard=n=>`<div class="ncard">${n.tag?`<span class="tg">${esc(n.tag)}</span>`:''}${n.title?`<h3>${esc(n.title)}</h3>`:''}${n.text?`<p>${esc(n.text)}</p>`:''}${n.b?`<span class="basis">Dasar: ${esc(n.b)}</span>`:''}</div>`;
-  const cta=!view&&mainDone&&!R.done[deep.id];
+  const cta=!view&&mainDone&&dAns<dp.length;
   if(notes.length||F.length||cta){
     h+=`<section class="band" id="catatan"><div class="wrap"><h2>Temuan khusus</h2><p class="lead">${notes.length?'Catatan dari sesi analisis di luar tes, ditambah temuan otomatis dari jawabanmu.':'Pola yang muncul dari gabungan jawaban Pendalaman dan skor utama. Setiap temuan menyebutkan dasarnya.'}</p>
     ${notes.length?`${F.length?'<h3>Dari sesi analisis</h3>':''}<div class="ncards">${notes.map(ncard).join('')}</div>`:''}
     ${F.length?`${notes.length?'<h3>Dari modul Pendalaman dan pola skor</h3>':''}<div class="ncards">${F.map(ncard).join('')}</div>`:''}
-    ${cta?`<div class="cta noprint"><b>${answered(D.ans,deep)?'Lanjutkan':'Kerjakan'} modul Pendalaman</b><p class="mute" style="margin:4px 0 10px">${deep.items.length} soal, sekitar 3 menit. Pertanyaan lanjutan untuk memisahkan hal yang di tes utama bisa tercampur, misalnya introvert atau cemas, dan rutinitas karena rencana atau karena familiar.</p><button class="btn" type="button" id="goDeep">${answered(D.ans,deep)?'Lanjutkan':'Mulai'} Pendalaman</button></div>`:''}</div></section>`;
+    ${cta?`<div class="cta noprint"><b>${dAns?'Lanjutkan':'Kerjakan'} modul Pendalaman</b><p class="mute" style="margin:4px 0 10px">${dp.length} soal yang dipilih dari pola hasilmu${dAns?`, ${dAns} sudah dijawab`:''}. Soalnya menyesuaikan, dan sebagian jawaban memunculkan pertanyaan lanjutan. Tujuannya memisahkan hal yang di tes utama bisa tercampur.</p><button class="btn" type="button" id="goDeep">${dAns?'Lanjutkan':'Mulai'} Pendalaman</button></div>`:''}</div></section>`;
   }
   if(I.sections.length){
     h+=`<section class="band${notes.length?' pan':''}" id="keseharian"><div class="wrap"><h2>Gambaran dalam keseharian</h2><p class="lead">Disusun dari jawabanmu, dan setiap kalimat menyebutkan skor dasarnya. Kalimat bergaris oranye berasal dari gabungan beberapa skor.</p><div class="secs">${I.sections.map(s=>`<div class="sec"><h3>${s.title}</h3><ul>${s.items.map(li).join('')}</ul></div>`).join('')}</div></div></section>`;
@@ -458,34 +469,47 @@ function renderRes(keep){
   <li>Ringkasan dan gambaran keseharian disusun otomatis dari skor. Anggap sebagai bahan refleksi, bukan penilaian pasti.</li>
   <li>Soal-soal ini belum divalidasi secara ilmiah. Arahnya bisa dipercaya, angkanya kasar.</li>
   <li>MBTI dan cognitive functions lemah secara ilmiah. Big Five paling kuat. Pembanding gratis: IPIP-NEO-120.</li></ul></div>
-  <div class="noprint"><h2>Simpan &amp; bagikan hasil</h2><p>${view?'Hasil ini berasal dari link, dan belum tersimpan di browser ini.':'Hasil tersimpan otomatis di browser ini. Supaya aman, simpan juga ke HP atau laptop.'} Kartu PNG dan PDF mengikuti tema yang dipilih.</p><div class="seg" role="group" aria-label="Tema hasil"><span class="mute" style="align-self:center;font-size:13px;padding:0 6px 0 4px">Tema</span><button type="button" data-theme-set="dark" aria-pressed="${theme()==='dark'}">Gelap</button><button type="button" data-theme-set="light" aria-pressed="${theme()==='light'}">Terang</button></div><div class="rowb"><button class="btn" id="dlCard" type="button">Unduh kartu hasil (PNG)</button><button class="btn ghost" id="dlPdf" type="button">Simpan PDF lengkap</button><button class="btn ghost" id="shareLink" type="button">Salin link hasil</button><button class="btn ghost" id="dlJson" type="button">Unduh file jawaban</button><button class="btn ghost" id="copy" type="button">Salin ringkasan</button><button class="btn ghost" id="resHome" type="button">Ke beranda</button></div><p class="mute" id="copyMsg" role="status" style="margin-top:10px"></p><img id="cardPrev" alt="Kartu hasil" hidden><textarea id="copyBox" hidden readonly></textarea><p class="mute" style="font-size:14px">Link hasil memuat semua jawaban${notes.length||own?' dan catatan khusus':''}, jadi bagikan hanya ke orang yang kamu percaya. Orang yang membukanya hanya melihat hasilmu; jawaban mereka sendiri tidak berubah. File jawaban (.json) bisa dibuka lagi lewat tombol "Buka file jawaban" di beranda. Untuk PDF, pilih "Simpan sebagai PDF" di jendela cetak. Kalau latar gelapnya tidak ikut, aktifkan opsi "Background graphics" atau "Grafik latar".</p></div></div></section>`;
+  <div class="noprint"><h2>Simpan &amp; bagikan hasil</h2><p>${view?'Hasil ini berasal dari link, dan belum tersimpan di browser ini.':'Hasil tersimpan otomatis di browser ini. Supaya aman, simpan juga ke HP atau laptop.'} Kartu PNG dan PDF mengikuti tema yang dipilih.</p><div class="seg" role="group" aria-label="Tema hasil"><span class="mute" style="align-self:center;font-size:13px;padding:0 6px 0 4px">Tema</span><button type="button" data-theme-set="dark" aria-pressed="${theme()==='dark'}">Gelap</button><button type="button" data-theme-set="light" aria-pressed="${theme()==='light'}">Terang</button></div><div class="seg" role="group" aria-label="Gaya kartu" style="margin-top:10px"><span class="mute" style="align-self:center;font-size:13px;padding:0 6px 0 4px">Gaya kartu</span>${CARD_STYLES.map(([k,l])=>`<button type="button" data-card-style="${k}" aria-pressed="${cardStyle()===k}">${l}</button>`).join('')}</div><div class="rowb"><button class="btn" id="dlCard" type="button">Unduh kartu hasil (PNG)</button><button class="btn ghost" id="dlPdf" type="button">Simpan PDF lengkap</button><button class="btn ghost" id="shareLink" type="button">Salin link hasil</button><button class="btn ghost" id="dlJson" type="button">Unduh file jawaban</button><button class="btn ghost" id="copy" type="button">Salin ringkasan</button><button class="btn ghost" id="resHome" type="button">Ke beranda</button></div><p class="mute" id="copyMsg" role="status" style="margin-top:10px"></p><img id="cardPrev" alt="Kartu hasil" hidden><textarea id="copyBox" hidden readonly></textarea><p class="mute" style="font-size:14px">Link hasil memuat semua jawaban${notes.length||own?' dan catatan khusus':''}, jadi bagikan hanya ke orang yang kamu percaya. Orang yang membukanya hanya melihat hasilmu; jawaban mereka sendiri tidak berubah. File jawaban (.json) bisa dibuka lagi lewat tombol "Buka file jawaban" di beranda. Untuk PDF, pilih "Simpan sebagai PDF" di jendela cetak. Kalau latar gelapnya tidak ikut, aktifkan opsi "Background graphics" atau "Grafik latar".</p></div></div></section>`;
   const y=window.scrollY;$('res').innerHTML=h;show('res');if(keep)window.scrollTo(0,y);
   const txt=summaryText(R,name)+(own||I.summary?'\n\n'+(own||I.summary):''),slug=fileSlug(name);
   const copyText=async(t,ok)=>{try{await navigator.clipboard.writeText(t);$('copyMsg').textContent=ok}catch(e){$('copyBox').hidden=false;$('copyBox').value=t;$('copyBox').select();$('copyMsg').textContent='Salin manual dari kotak di bawah.'}};
   $('copy').addEventListener('click',()=>copyText(txt,'Ringkasan sudah disalin.'));
   $('shareLink').addEventListener('click',()=>copyText(location.origin+location.pathname+'#h='+encodeShare(D),'Link hasil sudah disalin. Siapa pun yang membukanya akan melihat hasil ini.'));
   $('resHome').addEventListener('click',()=>{if(view)clearHash();renderHome()});
-  if($('goDeep'))$('goDeep').addEventListener('click',()=>start(MODS.indexOf(deep)));
+  if($('goDeep'))$('goDeep').addEventListener('click',()=>start(DEEPI));
   $('dlPdf').addEventListener('click',()=>{try{window.print()}catch(e){$('copyMsg').textContent='Browser ini tidak bisa mencetak. Pakai kartu PNG atau screenshot.'}});
-  $('dlJson').addEventListener('click',()=>{dl(new Blob([JSON.stringify(exportData(name,D.ans,{summary:own,notes}))],{type:'application/json'}),`jawaban-peta-kepribadian${slug?'-'+slug:''}.json`);$('copyMsg').textContent='File jawaban diunduh.'});
+  $('dlJson').addEventListener('click',()=>{dl(new Blob([JSON.stringify(exportData(name,D.c,{summary:own,notes}))],{type:'application/json'}),`jawaban-peta-kepribadian${slug?'-'+slug:''}.json`);$('copyMsg').textContent='File jawaban diunduh.'});
   $('dlCard').addEventListener('click',async()=>{$('copyMsg').textContent='Sedang membuat kartu…';
     try{if(document.fonts&&document.fonts.ready)await document.fonts.ready;const c=drawCard(R,name);$('cardPrev').src=c.toDataURL('image/png');$('cardPrev').hidden=false;
       c.toBlob(b=>{if(b)dl(b,`peta-kepribadian${slug?'-'+slug:''}.png`)},'image/png');
       $('copyMsg').textContent='Kartu diunduh. Kalau di HP tidak terunduh, tekan lama gambar di bawah lalu pilih simpan.'}
     catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.'}});
 }
-function drawCard(R,name){
-  // Kartu ukuran story (9:16). Motif "peta": tabel 16 tipe dengan tipe utama menyala, warna mengikuti family.
+// ---------- Kartu PNG: beberapa gaya, semua ukuran story 1080x1920 ----------
+const CARD_STYLES=[['poster','Poster'],['editorial','Editorial'],['aura','Aura'],['koleksi','Koleksi']];
+const cardStyle=()=>{try{const v=localStorage.getItem('tesKepribadian.kartu');return CARD_STYLES.some(s=>s[0]===v)?v:'poster'}catch(e){return 'poster'}};
+function cardKit(R){
   const W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
   const dk=theme()==='dark',BG=dk?'#121019':'#ffffff',INK=dk?'#ecebf3':'#15151a',MUTE=dk?'#a9a6ba':'#5d5b6b',TRK=dk?'#2a2638':'#e9e7f3',LINE=dk?'#302c42':'#dcd9ea',IND=dk?'#8f86ff':'#3b2fc9';
   const FC={NT:dk?'#8f86ff':'#3b2fc9',NF:dk?'#ff7a5c':'#e8492c',SJ:dk?'#2bb3a3':'#0e8f80',SP:dk?'#f2b233':'#b97c00'};
   const fam=R.hasType?famOf(R.type):'NT',COL=FC[fam];
-  const F=(w,z)=>`${w} ${z}px Manrope, system-ui, sans-serif`;
+  const F=(w,z,fam2)=>`${w} ${z}px ${fam2||'Manrope'}, system-ui, sans-serif`;
   const rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`};
   const rr=(X,Y,w,h,r,col)=>{x.fillStyle=col;x.beginPath();if(x.roundRect)x.roundRect(X,Y,Math.max(w,0),h,r);else x.rect(X,Y,Math.max(w,0),h);x.fill()};
   const fit=(t,max)=>{while(x.measureText(t).width>max&&t.length>4)t=t.slice(0,-2)+'…';return t};
   const txt=(t,X,Y,font,col,al)=>{x.font=font;x.fillStyle=col;x.textAlign=al||'left';x.fillText(t,X,Y);x.textAlign='left'};
   const blob=(cx,cy,r,col,a)=>{const g=x.createRadialGradient(cx,cy,0,cx,cy,r);g.addColorStop(0,rgba(col,a));g.addColorStop(1,rgba(col,0));x.fillStyle=g;x.fillRect(cx-r,cy-r,2*r,2*r)};
+  const cap=t=>t.charAt(0).toUpperCase()+t.slice(1);
+  const weakOf=ax=>{const p=R.ax[ax],sr=R.src[ax],d=Math.abs(p-50),gap=sr&&sr.inti!=null&&sr.facet!=null?Math.abs(sr.inti-sr.facet):0;return d<10?'TIPIS':gap>=30?'KURANG STABIL':''};
+  return {W,H,c,x,dk,BG,INK,MUTE,TRK,LINE,IND,COL,fam,F,rgba,rr,fit,txt,blob,cap,weakOf};
+}
+const siteName=()=>location.host?(location.host+location.pathname).replace(/index\.html$/,''):'Peta Kepribadian';
+const today=()=>new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+const AXW=['EI','SN','TF','JP','AT'];
+function drawCard(R,name,style){const K=cardKit(R);({editorial:cardEditorial,aura:cardAura,koleksi:cardKoleksi}[style||cardStyle()]||cardPoster)(R,name,K);return K.c}
+function cardPoster(R,name,K){
+  // Kartu ukuran story (9:16). Motif "peta": tabel 16 tipe dengan tipe utama menyala, warna mengikuti family.
+  const {W,H,c,x,dk,BG,INK,MUTE,TRK,LINE,IND,COL,fam,F,rgba,rr,fit,txt,blob,cap,weakOf}=K;
   x.fillStyle=BG;x.fillRect(0,0,W,H);
   blob(930,250,720,COL,dk?.42:.22);blob(80,1760,520,IND,dk?.22:.10);
   // Judul
@@ -499,7 +523,7 @@ function drawCard(R,name){
     x.font=F(700,34);txt(fit(`${FAM[fam]}${R.strat?' · '+R.strat:''}`,936),72,470,F(700,34),COL);
     const word={EI:p=>p>=50?(p>=80?'sangat introvert':'introvert'):(p<=20?'sangat ekstrovert':'ekstrovert'),SN:p=>p>=50?'konseptual':'praktis',TF:p=>p>=50?'berpegang pada nilai':'logis',JP:p=>p>=50?'fleksibel':'terencana'};
     const tag=['EI','SN','TF','JP'].filter(ax=>Math.abs(R.ax[ax]-50)>=10).map(ax=>word[ax](R.ax[ax]));
-    x.font=F(600,30);if(tag.length)txt(fit(tag.join(' · '),936),72,522,F(600,30),MUTE);
+    x.font=F(600,30);if(tag.length)txt(fit(tag.map(cap).join(' · '),936),72,522,F(600,30),MUTE);
     // Peta 16 tipe
     const top=R.fits.slice(0,3).map(f=>f.t),cw=108,ch=84,gp=10,gx=72,gy=580;
     TABLE.forEach((t,i)=>{const cx=gx+(i%4)*(cw+gp),cy=gy+Math.floor(i/4)*(ch+gp),r=top.indexOf(t);
@@ -542,6 +566,99 @@ function drawCard(R,name){
   txt('Coba juga:',72,H-38,F(600,26),MUTE);x.font=F(600,26);const cw2=x.measureText('Coba juga: ').width;txt(fit(site,600),72+cw2,H-38,F(800,26),INK);
   txt(new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}),1008,H-38,F(600,24),MUTE,'right');
   return c;
+}
+function cardEditorial(R,name,K){
+  // Editorial: huruf besar per sumbu. Huruf solid = jelas, huruf garis luar = tipis / kurang stabil.
+  const {W,H,x,dk,BG,INK,MUTE,TRK,LINE,COL,fam,F,rgba,rr,fit,txt,cap,weakOf}=K;
+  x.fillStyle=dk?'#0f0d15':'#fbfaf7';x.fillRect(0,0,W,H);
+  if('letterSpacing' in x)x.letterSpacing='8px';txt('PETA KEPRIBADIAN',72,104,F(800,22),INK);if('letterSpacing' in x)x.letterSpacing='0px';
+  txt(today(),1008,104,F(600,22),MUTE,'right');rr(72,130,936,3,1,INK);
+  x.font=F(800,76);txt(fit(name||'Hasilku',936),72,250,F(800,76),INK);
+  if(!R.hasType){txt('Selesaikan modul Inti untuk melihat tipe',72,330,F(600,32),MUTE);return}
+  x.font=F(700,32);txt(fit(`${R.type}${R.id?'-'+R.id:''} · ${FAM[fam]}${R.strat?' · '+R.strat:''}`,936),72,312,F(700,32),COL);
+  let y=400;
+  AXW.filter(ax=>R.ax[ax]!=null).forEach((ax,i)=>{
+    const p=R.ax[ax],right=p>=50,L=right?AX[ax][1]:AX[ax][0],word=right?AX[ax][3]:AX[ax][2],pp=Math.round(right?p:100-p),wk=weakOf(ax),d=Math.abs(p-50);
+    rr(72,y,936,1.5,1,LINE);
+    x.font=F(800,200);x.textBaseline='alphabetic';
+    if(wk){x.strokeStyle=COL;x.lineWidth=5;x.strokeText(L,64,y+200)}else txt(L,64,y+200,F(800,200),i===4?COL:INK);
+    txt(word,340,y+92,F(800,50),INK);
+    txt(`${pp}%`,1008,y+92,F(800,50),wk?COL:INK,'right');
+    txt(wk?(wk==='TIPIS'?'Tipis, bisa berubah':'Kurang stabil antarmodul'):cap(d>=30?'sangat jelas':d>=15?'jelas':'condong'),340,y+136,F(600,28),wk?COL:MUTE);
+    rr(340,y+162,668,10,5,dk?'#24202f':'#ece9e2');rr(340,y+162,668*(pp-50)/50,10,5,wk?rgba(COL,.55):COL);
+    y+=220});
+  rr(72,y,936,1.5,1,LINE);y+=64;
+  txt('Paling cocok',72,y,F(700,26),MUTE);
+  R.fits.slice(0,3).forEach((f,i)=>txt(`${f.t} ${nmf(f.v)}`,72+i*312,y+56,F(800,i?34:40),i?INK:COL));
+  y+=116;if(R.fn){txt('Urutan fungsi',72,y,F(700,26),MUTE);txt(R.fn.map(f=>f.f).join('  ·  '),72,y+50,F(800,34),INK)}
+  rr(72,H-120,936,3,1,INK);txt('Coba juga:',72,H-60,F(600,26),MUTE);x.font=F(600,26);const cw=x.measureText('Coba juga: ').width;txt(fit(siteName(),600),72+cw,H-60,F(800,26),INK);
+}
+function cardAura(R,name,K){
+  // Aura: latar gradien penuh, lima cincin sumbu mengelilingi tipe. Cincin putus-putus = tipis / kurang stabil.
+  const {W,H,x,dk,COL,IND,fam,F,rgba,rr,fit,txt,blob,cap,weakOf}=K;
+  const base=dk?'#0d0b14':'#fff7f2',INK=dk?'#ffffff':'#1a1420',MUTE=dk?'rgba(255,255,255,.72)':'rgba(26,20,32,.66)';
+  x.fillStyle=base;x.fillRect(0,0,W,H);
+  blob(260,380,760,COL,dk?.75:.55);blob(900,980,720,IND,dk?.6:.35);blob(300,1600,700,COL,dk?.45:.3);blob(980,240,420,'#ffd36b',dk?.22:.25);
+  if('letterSpacing' in x)x.letterSpacing='8px';txt('PETA KEPRIBADIAN',540,120,F(800,24),INK,'center');if('letterSpacing' in x)x.letterSpacing='0px';
+  if(name){x.font=F(700,46);txt(fit(name,900),540,186,F(700,46),INK,'center')}
+  const cx=540,cy=760,rings=AXW.filter(ax=>R.hasType&&R.ax[ax]!=null);
+  // lingkaran kaca di tengah
+  x.fillStyle=dk?'rgba(255,255,255,.07)':'rgba(255,255,255,.55)';x.beginPath();x.arc(cx,cy,232,0,Math.PI*2);x.fill();
+  rings.forEach((ax,i)=>{const r=272+i*38,p=R.ax[ax],pp=(p>=50?p:100-p)/100,wk=weakOf(ax);
+    x.lineCap='round';x.strokeStyle=dk?'rgba(255,255,255,.12)':'rgba(26,20,32,.10)';x.lineWidth=18;x.setLineDash([]);x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.stroke();
+    x.strokeStyle=i%2?(dk?'#ffffff':'#1a1420'):COL;x.globalAlpha=i%2?.9:1;if(wk)x.setLineDash([14,16]);x.beginPath();x.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+pp*Math.PI*2);x.stroke();x.setLineDash([]);x.globalAlpha=1});
+  if(R.hasType){x.font=F(800,150);txt(R.type,cx,cy+30,F(800,150),INK,'center');if(R.id)txt('-'+R.id,cx,cy+110,F(800,64),COL,'center');
+    x.font=F(700,34);txt(fit(`${FAM[fam]}${R.strat?' · '+R.strat:''}`,900),540,1280,F(700,34),INK,'center')}
+  else txt('Hasil sementara',cx,cy+20,F(800,80),INK,'center');
+  // keterangan cincin, dari dalam ke luar
+  let y=1360;
+  rings.forEach((ax,i)=>{const p=R.ax[ax],right=p>=50,pp=Math.round(right?p:100-p),wk=weakOf(ax),col=i%2?(dk?'#ffffff':'#1a1420'):COL;
+    const yy=y+i*70;rr(150,yy-22,780,58,29,dk?'rgba(255,255,255,.08)':'rgba(255,255,255,.6)');
+    x.strokeStyle=col;x.lineWidth=8;x.lineCap='round';if(wk)x.setLineDash([6,8]);x.beginPath();x.moveTo(186,yy+9);x.lineTo(226,yy+9);x.stroke();x.setLineDash([]);
+    txt(right?AX[ax][3]:AX[ax][2],250,yy+20,F(800,30),INK);txt(wk?`${pp}% · ${wk==='TIPIS'?'tipis':'kurang stabil'}`:`${pp}%`,900,yy+20,F(700,28),wk?MUTE:INK,'right')});
+  y+=rings.length*70+24;
+  if(R.fn){txt('Fungsi teratas',540,y,F(700,26),MUTE,'center');txt(R.fn.slice(0,4).map(f=>f.f).join('  ›  '),540,y+52,F(800,40),INK,'center')}
+  x.font=F(600,26);const s1='Coba juga: ',s2=siteName(),w1=x.measureText(s1).width;x.font=F(800,26);const w2=x.measureText(s2).width,sx=540-(w1+w2)/2;
+  txt(s1,sx,H-64,F(600,26),MUTE);txt(s2,sx+w1,H-64,F(800,26),INK);
+}
+function cardKoleksi(R,name,K){
+  // Kartu koleksi: bingkai seperti kartu game, lambang bintang 8 fungsi dari skor, statistik sumbu.
+  const {W,H,x,dk,BG,INK,MUTE,TRK,LINE,COL,IND,fam,F,rgba,rr,fit,txt,blob,cap,weakOf}=K;
+  x.fillStyle=dk?'#0b0a10':'#efeef4';x.fillRect(0,0,W,H);
+  const fx=48,fy=48,fw=W-96,fh=H-96;
+  const g=x.createLinearGradient(0,fy,0,fy+fh);g.addColorStop(0,rgba(COL,dk?.95:.9));g.addColorStop(1,rgba(IND,dk?.9:.85));rr(fx,fy,fw,fh,44,g);
+  rr(fx+14,fy+14,fw-28,fh-28,34,dk?'#15121d':'#ffffff');
+  // kepala kartu
+  const no=R.hasType?TABLE.indexOf(R.type)+1:0;
+  rr(84,92,912,96,26,rgba(COL,.14));
+  x.font=F(800,40);txt(fit(name||'Peta Kepribadian',600),116,156,F(800,40),INK);
+  txt(no?`No. ${String(no).padStart(2,'0')}/16`:'',964,156,F(800,30),COL,'right');
+  // panel lambang
+  const px=84,py=212,pw=912,ph=640;
+  const pg=x.createLinearGradient(px,py,px+pw,py+ph);pg.addColorStop(0,rgba(COL,dk?.55:.35));pg.addColorStop(1,rgba(IND,dk?.45:.25));rr(px,py,pw,ph,28,pg);
+  x.save();x.beginPath();if(x.roundRect)x.roundRect(px,py,pw,ph,28);else x.rect(px,py,pw,ph);x.clip();
+  for(let i=0;i<14;i++){x.strokeStyle=dk?'rgba(255,255,255,.06)':'rgba(255,255,255,.35)';x.lineWidth=2;x.beginPath();x.arc(px+pw/2,py+ph/2,40+i*36,0,Math.PI*2);x.stroke()}
+  if(R.fn){const cx=px+pw/2,cy=py+ph/2,order=['Fi','Te','Ni','Se','Fe','Ti','Ne','Si'],gv=f=>R.fn.find(z=>z.f===f).g;
+    x.beginPath();order.forEach((f,i)=>{const a=-Math.PI/2+i*Math.PI/4,r=60+(gv(f)-1)/4*210,a2=a+Math.PI/8,r2=46;x.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);x.lineTo(cx+Math.cos(a2)*r2,cy+Math.sin(a2)*r2)});x.closePath();
+    x.fillStyle=dk?'rgba(255,255,255,.92)':'#ffffff';x.shadowColor=rgba(COL,.9);x.shadowBlur=40;x.fill();x.shadowBlur=0;x.strokeStyle=COL;x.lineWidth=4;x.stroke();
+    order.forEach((f,i)=>{const a=-Math.PI/2+i*Math.PI/4,r=60+(gv(f)-1)/4*210+34;txt(f,cx+Math.cos(a)*r,cy+Math.sin(a)*r+11,F(800,f===R.fn[0].f?34:26),f===R.fn[0].f?(dk?'#fff':'#1a1420'):(dk?'rgba(255,255,255,.8)':'rgba(26,20,32,.75)'),'center')})}
+  x.restore();
+  // nama tipe
+  let y=py+ph+120;
+  if(R.hasType){x.font=F(800,120);const tw=x.measureText(R.type).width;txt(R.type,96,y,F(800,120),INK);if(R.id)txt('-'+R.id,96+tw+6,y,F(800,70),COL);
+    x.font=F(700,32);txt(fit(`${FAM[fam]}${R.strat?' · '+R.strat:''}`,880),100,y+52,F(700,32),COL)}
+  else txt('Hasil sementara',96,y,F(800,80),INK);
+  // statistik
+  y+=110;rr(84,y-36,912,2,1,LINE);
+  AXW.filter(ax=>R.hasType&&R.ax[ax]!=null).forEach((ax,i)=>{const p=R.ax[ax],right=p>=50,pp=Math.round(right?p:100-p),wk=weakOf(ax),yy=y+18+i*72;
+    txt((right?AX[ax][3]:AX[ax][2]).toUpperCase(),100,yy,F(800,24),wk?COL:MUTE);
+    rr(420,yy-20,460,24,12,TRK);for(let k=0;k<10;k++){const on=(pp-50)/50*10>k+.01;if(on)rr(424+k*45.6,yy-16,40,16,8,wk?rgba(COL,.5):COL)}
+    txt(String(pp),980,yy,F(800,32),INK,'right')});
+  y+=18+5*72;
+  if(R.b5){rr(84,y-20,912,2,1,LINE);B5.forEach((d,i)=>{const cx=150+i*195,cy=y+64,v=R.b5[d[0]].dom;
+    x.beginPath();for(let k=0;k<6;k++){const a=Math.PI/6+k*Math.PI/3;x.lineTo(cx+Math.cos(a)*54,cy+Math.sin(a)*54)}x.closePath();x.fillStyle=rgba(COL,.12+(v-1)/4*.5);x.fill();x.strokeStyle=rgba(COL,.8);x.lineWidth=3;x.stroke();
+    txt(d[0],cx,cy-6,F(800,26),INK,'center');txt(nmf(v),cx,cy+26,F(700,22),INK,'center')})}
+  txt(siteName(),540,H-92,F(700,24),MUTE,'center');
 }
 
 if(!openShared())renderHome();

@@ -82,12 +82,14 @@ const setFile = async file => { const {root} = await cmd('DOM.getDocument', {dep
 
 // Fungsi di halaman: jawab soal yang lagi tampil supaya mengarah ke INFP-T.
 const ANSWER = `(()=>{const T='INFP',ID='T';const L={EI:T[0],SN:T[1],TF:T[2],JP:T[3],AT:ID};
-  const mod=MODS.find(m=>m.name===document.getElementById('qMod').textContent);const i=+document.getElementById('qCount').textContent.split('/')[0]-1;const it=mod.items[i];
+  const st=JSON.parse(localStorage.getItem('tesKepribadian.v1'));const mm=MODS.find(m=>m.name===document.getElementById('qMod').textContent);
+  const mod=mm||{id:'dalam',items:deepPlan(resultOf(st.c),st.c)};const i=+document.getElementById('qCount').textContent.split('/')[0]-1;const it=mod.items[i];
   const rank=f=>{const k=STACK[T].indexOf(f);return k<0?1:5-k};let w;
   if(mod.id==='inti')w=it.bl===L[it.ax]?5:1;else if(mod.id==='facet')w=RIGHT[it.ax]===L[it.ax]?5:1;
   else if(mod.id==='big5')w=it.d==='N'?(it.rev?1:5):(i%3?4:2);else if(it.k==='lk')w=rank(it.fn);else w=rank(it.fb)>rank(it.fa)?5:1;
   const v=it.fl?6-w:w;document.querySelector('#qBody [data-v="'+v+'"]').click();return mod.id+':'+i})()`;
 
+const C0 = loadCore();
 try {
   // A. Beranda di HP
   await viewport(390, 844, true);
@@ -135,7 +137,7 @@ try {
     } else break;
   }
   check('setelah 4 modul utama, ditawari modul Pendalaman', deepPrompt);
-  check('sisa 199 soal terjawab lewat klik (188 utama + 11 Pendalaman)', n === 199, `terjawab ${n}`);
+  check('sisa soal terjawab lewat klik (188 utama + minimal 5 Pendalaman)', n >= 193, `terjawab ${n}`);
   check('layar akhir: tombol lanjut hilang, semua selesai termasuk Pendalaman', (await text('#doneText')).includes('termasuk Pendalaman'));
   await click('#doneRes');
 
@@ -146,6 +148,7 @@ try {
   check('hasil: semua bagian tampil (12 section)', (await ev("document.querySelectorAll('#res section').length")) === 12, await ev("document.querySelectorAll('#res section').length"));
   check('hasil: ringkasan kepribadian dari skor', /^Kamu .*waktu sendiri/.test(await text('#sumText')), await text('#sumText'));
   check('hasil: gambaran keseharian 5 kelompok, tiap kalimat ada dasarnya', await ev("(()=>{const s=document.querySelectorAll('#keseharian .sec');const li=[...document.querySelectorAll('#keseharian li')];return s.length===5&&li.length>=10&&li.every(l=>/Dasar: /.test(l.textContent))})()"));
+  check('hasil: kalimat keseharian mengutip jawaban asli', await ev("document.querySelectorAll('#keseharian .quote').length>=5&&[...document.querySelectorAll('#keseharian .quote')].every(q=>/^Kamu (memilih|setuju|tidak setuju): “/.test(q.textContent))"));
   check('hasil: kekuatan, perlu diperhatikan, tips teman tampil', await ev("document.querySelectorAll('#ringkasan .klist li').length>=4&&document.querySelectorAll('#tips li').length>=3"));
   check('hasil: temuan khusus otomatis dari Pendalaman, lengkap dengan dasarnya', await ev("/Introvert murni/.test(document.getElementById('catatan').innerText)&&[...document.querySelectorAll('#catatan .ncard')].every(c=>/Dasar: /.test(c.textContent))"));
   check('hasil: ajakan Pendalaman tidak muncul kalau sudah dikerjakan', await ev("!document.getElementById('goDeep')"));
@@ -159,13 +162,18 @@ try {
   await click('#dlJson');
   const jf = await waitFile('.json');
   let jd = null; try { jd = JSON.parse(fs.readFileSync(jf, 'utf8')); } catch {}
-  check('download file jawaban (.json) versi 2', jd && jd.app === 'tes-kepribadian' && jd.v === 2 && jd.name === 'Tes QA' && jd.ans.inti.length === 44 && jd.ans.facet.length === 45 && jd.ans.fungsi.length === 40, jf || 'tidak ada file');
+  check('download file jawaban (.json) versi 3, per id soal', jd && jd.app === 'tes-kepribadian' && jd.v === 3 && jd.name === 'Tes QA' && Object.keys(jd.c).length >= 194 && C0.MODS.every(m => m.items.every(it => C0.valid(jd.c[it.id]))), jf || 'tidak ada file');
   check('nama file jawaban aman', jf && path.basename(jf) === 'jawaban-peta-kepribadian-tes-qa.json', jf);
   await click('#dlCard');
   check('kartu PNG tampil di halaman, ukuran story 1080x1920', await waitFor("(()=>{const i=document.getElementById('cardPrev');return !i.hidden&&i.naturalWidth===1080&&i.naturalHeight===1920})()", 8000));
   const px = `(()=>{const i=document.getElementById('cardPrev'),c=document.createElement('canvas');c.width=i.naturalWidth;c.height=i.naturalHeight;const x=c.getContext('2d');x.drawImage(i,0,0);return [...x.getImageData(30,700,1,1).data].slice(0,3).join(',')})()`;
   check('kartu PNG ikut tema gelap', (await ev(px)) === '18,16,25', await ev(px));
   const pf = await waitFile('.png');
+  check('pilihan gaya kartu: 4 gaya tersedia', (await ev("document.querySelectorAll('[data-card-style]').length")) === 4);
+  await ev("document.getElementById('cardPrev').src=''");
+  await click('[data-card-style="aura"]');
+  check('ganti gaya kartu: tersimpan dan kartu dibuat ulang', await waitFor("localStorage.getItem('tesKepribadian.kartu')==='aura'&&document.getElementById('cardPrev').naturalHeight===1920", 6000));
+  await click('[data-card-style="poster"]');
   check('download kartu PNG valid', pf && fs.readFileSync(pf).subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])), pf || 'tidak ada file');
   if (pf) fs.copyFileSync(pf, path.join(OUT, '04-kartu.png'));
   await click('#copy');
@@ -203,12 +211,12 @@ try {
   await click('#noReset');
   check('hapus: batal tidak menghapus apa-apa', (await ev("document.querySelectorAll('#mods .mod.ok').length")) === 5);
   await click('#askReset'); await click('#doReset');
-  check('hapus: semua modul kosong lagi', (await ev("[...document.querySelectorAll('#mods small')].every(s=>s.textContent.includes('belum dimulai'))")));
+  check('hapus: semua modul kosong lagi', (await ev("[...document.querySelectorAll('#mods small')].slice(0,4).every(s=>s.textContent.includes('belum dimulai'))&&/Terbuka setelah 4 modul utama/.test(document.querySelectorAll('#mods small')[4].textContent)")));
   check('hapus: "Lihat hasil" mati lagi', await ev("document.getElementById('goRes').disabled"));
   check('mulai tes baru: nama tetap, hasil lama ada di riwayat', (await ev("document.getElementById('nama').value")) === 'Tes QA' && (await ev("document.querySelectorAll('#hist .hrow').length")) === 1);
   await click('#hist [data-hv="0"]');
   check('riwayat: lihat hasil lama dalam mode lihat', await waitFor("!document.getElementById('res').hidden&&!document.getElementById('viewBar').hidden&&/hasil tes/.test(document.getElementById('viewText').textContent)&&document.querySelector('#res h1').textContent.includes('INFP-T')", 3000));
-  check('riwayat: jawaban aktif tetap kosong saat melihat riwayat', await ev("Object.values(JSON.parse(localStorage.getItem('tesKepribadian.v1')).ans).every(a=>a.every(v=>!v))"));
+  check('riwayat: jawaban aktif tetap kosong saat melihat riwayat', await ev("Object.keys(JSON.parse(localStorage.getItem('tesKepribadian.v1')).c).length===0"));
   await click('#viewMine');
   check('riwayat: kembali ke beranda tanpa mengubah apa pun', (await visible('home')) && (await ev("document.getElementById('goRes').disabled")));
   await click('#hist [data-hd="0"]');
@@ -227,13 +235,13 @@ try {
   // K. Hasil sebagian (cuma Big Five)
   const C = loadCore();
   const part = path.join(DL, 'sebagian.json');
-  fs.writeFileSync(part, JSON.stringify({app: 'tes-kepribadian', v: 2, name: '', ans: {big5: Array.from(answersFor(C, 'INTJ').big5)}}));
+  fs.writeFileSync(part, JSON.stringify(C.exportData('', C.canon({...C.emptyAns(), big5: answersFor(C, 'INTJ').big5}))));
   await setFile(part);
   check('hasil sebagian: judul "Hasil sementara" + Big Five', await waitFor("!document.getElementById('res').hidden&&document.querySelector('#res h1').textContent==='Hasil sementara'&&/Big Five/.test(document.getElementById('res').innerText)", 4000));
   // Kasus family beda: tipe dari fungsi ≠ family dari huruf
   const mixed = path.join(DL, 'campur.json');
   const mx = answersFor(C, 'INFP'); const tp = answersFor(C, 'INTP');
-  fs.writeFileSync(mixed, JSON.stringify({app: 'tes-kepribadian', v: 2, name: '', ans: {inti: Array.from(tp.inti), facet: Array.from(tp.facet), big5: Array.from(mx.big5), fungsi: Array.from(mx.fungsi)}}));
+  fs.writeFileSync(mixed, JSON.stringify(C.exportData('', C.canon({inti: tp.inti, facet: tp.facet, big5: mx.big5, fungsi: mx.fungsi}))));
   await click('#resHome'); await setFile(mixed);
   await waitFor("!document.getElementById('res').hidden", 4000);
   check('family beda: ada penjelasan kenapa', await ev("/peluang terbesar ada di/.test(document.getElementById('res').innerText)"));
@@ -245,14 +253,16 @@ try {
 
   // K2. File versi 1 (soal facet lama): beranda + pesan, facet perlu dijawab ulang
   const old = path.join(DL, 'lama.json'); const full = answersFor(C, 'INFP');
-  fs.writeFileSync(old, JSON.stringify({app: 'tes-kepribadian', v: 1, name: 'Lama', ans: {inti: Array.from(full.inti), facet: new Array(40).fill(3), big5: Array.from(full.big5), fungsi: Array.from(full.fungsi)}}));
+  const fc = C.canon(full), v2 = Object.fromEntries(Object.entries(C.LAYOUT_V2).map(([m, ids]) => [m, ids.map(raw => { const fl = raw[0] === '~', v = fc[fl ? raw.slice(1) : raw]; return C.valid(v) ? (fl ? 6 - v : v) : 0; })]));
+  const oldData = {app: 'tes-kepribadian', v: 1, name: 'Lama', ans: {inti: v2.inti, facet: new Array(40).fill(3), big5: v2.big5, fungsi: v2.fungsi}};
+  fs.writeFileSync(old, JSON.stringify(oldData)); const oldMissing = C.sanitizeImport(oldData).missing;
   await click('#resHome'); await setFile(old);
-  check('file versi 1: buka beranda dan beri tahu soal yang perlu dijawab', await waitFor("!document.getElementById('home').hidden&&/versi lama.*30 soal yang perlu kamu jawab lagi/.test(document.getElementById('fileMsg').textContent)", 4000), await text('#fileMsg'));
+  check(`file versi 1: buka beranda dan beri tahu ${oldMissing} soal yang perlu dijawab`, await waitFor(`!document.getElementById('home').hidden&&/versi lama.* ${oldMissing} soal yang perlu kamu jawab lagi/.test(document.getElementById('fileMsg').textContent)`, 4000), await text('#fileMsg'));
   check('file versi 1: modul Facet terisi sebagian (15/45)', (await text('#mods .mod:nth-child(2) small')).includes('15/45 dijawab'), await text('#mods .mod:nth-child(2) small'));
 
   // K3. Catatan khusus dari file, termasuk teks berbahaya yang harus tampil sebagai teks
   const withNotes = path.join(DL, 'catatan.json');
-  fs.writeFileSync(withNotes, JSON.stringify(C.exportData('Gama', full, {summary: 'Ringkasan khusus <b>tebal</b>', notes: [{tag: 'Pola 1', title: 'Judul catatan', text: '<img src=x onerror="window.__xss=1">isi'}]})));
+  fs.writeFileSync(withNotes, JSON.stringify(C.exportData('Gama', C.canon(full), {summary: 'Ringkasan khusus <b>tebal</b>', notes: [{tag: 'Pola 1', title: 'Judul catatan', text: '<img src=x onerror="window.__xss=1">isi'}]})));
   await setFile(withNotes);
   await waitFor("!document.getElementById('res').hidden", 4000);
   check('catatan khusus: bagian "Temuan khusus" tampil', await ev("!!document.getElementById('catatan')&&/Judul catatan/.test(document.getElementById('catatan').innerText)"));
@@ -264,7 +274,7 @@ try {
 
   // K4. Link hasil: dilihat tanpa menimpa jawaban sendiri
   if (jf) { await click('#resHome'); await setFile(jf); await waitFor("!document.getElementById('res').hidden", 4000); }
-  const other = C.sanitizeImport(C.exportData('Teman', answersFor(C, 'ESTJ', 'A'), {notes: [{title: 'Catatan teman', text: 'x'}]}));
+  const other = C.sanitizeImport(C.exportData('Teman', C.canon(answersFor(C, 'ESTJ', 'A')), {notes: [{title: 'Catatan teman', text: 'x'}]}));
   const goto = async url => { await cmd('Page.navigate', {url: 'about:blank'}); await sleep(100); const done = new Promise(r => listeners.push(function f(m) { if (m.sessionId === S && m.method === 'Page.loadEventFired') { listeners.splice(listeners.indexOf(f), 1); r(); } })); await cmd('Page.navigate', {url}); await done; await sleep(200); };
   await goto(BASE + '#h=' + C.encodeShare(other));
   check('link hasil: tampil mode lihat dengan banner', await waitFor("!document.getElementById('res').hidden&&!document.getElementById('viewBar').hidden&&/Teman/.test(document.getElementById('viewText').textContent)", 4000));

@@ -3,13 +3,13 @@ import assert from 'node:assert/strict';
 import {loadCore, answersFor} from './helpers.mjs';
 
 const C = loadCore();
+const DEEPN = C.DEEP.length;
 const finite = x => typeof x === 'number' && Number.isFinite(x);
 
 test('jumlah soal per modul sesuai rancangan', () => {
-  assert.deepEqual(Array.from(C.MODS, m => m.items.length), [44, 45, 60, 40, 11]);
-  assert.equal(C.TOTAL, 189, 'total hanya modul utama');
+  assert.deepEqual(Array.from(C.MODS, m => m.items.length), [44, 45, 60, 40]);
+  assert.equal(C.TOTAL, 189);
   assert.deepEqual(Array.from(C.MAIN, m => m.id), ['inti', 'facet', 'big5', 'fungsi']);
-  assert.ok(C.MODS[4].opt);
   const per = ax => C.CORE.filter(c => c[0] === ax).length;
   assert.deepEqual(['EI', 'SN', 'TF', 'JP', 'AT'].map(per), [8, 10, 10, 8, 8]);
 });
@@ -44,7 +44,7 @@ test('peta migrasi file lama: id yang dirujuk memang ada, panjang sesuai urutan 
 
 test('Big Five: 5 domain x 6 facet, tiap facet punya pernyataan positif dan terbalik', () => {
   assert.equal(C.B5.length, 5);
-  for (const d of C.B5) { assert.equal(d[2].length, 6, d[1]); for (const f of d[2]) assert.equal(f.length, 3); }
+  for (const d of C.B5) { assert.equal(d[2].length, 6, d[1]); for (const f of d[2]) { assert.equal(f.length, 5); assert.ok(f[3] !== f[4]); } }
 });
 
 test('cognitive functions: 3 pernyataan per fungsi, pasangan adu langsung valid', () => {
@@ -138,16 +138,17 @@ test('gaya jawab ekstrem terdeteksi', () => {
 
 test('impor file: valid, rusak, dan nilai aneh', () => {
   const ans = answersFor(C, 'INFP');
-  const ok = C.sanitizeImport(JSON.parse(JSON.stringify(C.exportData('Gama <b>', ans))));
-  assert.equal(ok.name, 'Gama b');
-  assert.equal(C.compute(ok.ans).type, 'INFP');
+  const ok = C.sanitizeImport(JSON.parse(JSON.stringify(C.exportData('Gama <b>', C.canon(ans)))));
+  assert.equal(ok.name, 'Gama b'); assert.equal(ok.v, 3); assert.equal(ok.migrated, false);
+  assert.equal(C.resultOf(ok.c).type, 'INFP');
   assert.equal(C.sanitizeImport(null), null);
-  assert.equal(C.sanitizeImport({app: 'lain', ans: {}}), null);
+  assert.equal(C.sanitizeImport({app: 'lain', c: {}}), null);
   assert.equal(C.sanitizeImport({app: 'tes-kepribadian'}), null);
-  const weird = C.sanitizeImport({app: 'tes-kepribadian', ans: {inti: [9, '3', -1, 2.5, null, 4], facet: 'x'}});
-  assert.deepEqual(Array.from(weird.ans.inti.slice(0, 6)), [0, 0, 0, 0, 0, 4]);
-  assert.equal(weird.ans.inti.length, 44);
-  assert.equal(weird.ans.facet.every(v => v === 0), true);
+  assert.equal(C.sanitizeImport({app: 'tes-kepribadian', v: 3}), null);
+  const weird = C.sanitizeImport({app: 'tes-kepribadian', v: 3, c: {c0: 9, c1: '3', c2: -1, c3: 2.5, c4: null, c5: 4, 'bukan-id': 5, '__proto__': 5}});
+  assert.deepEqual(JSON.parse(JSON.stringify(weird.c)), {c5: 4});
+  const oldWeird = C.sanitizeImport({app: 'tes-kepribadian', ans: {inti: [9, '3', -1, 2.5, null, 4], facet: 'x'}});
+  assert.equal(Object.keys(oldWeird.c).length, 1);
 });
 
 test('nama file aman', () => {
@@ -180,6 +181,11 @@ test('kompatibel browser HP lama: tanpa light-dark(), color-mix cuma di CSS deng
   }
 });
 
+// File versi 2: jawaban per posisi menurut LAYOUT_V2 (id lama yang sama dipakai untuk soal yang tidak berubah).
+function v2Ans(c) {
+  return Object.fromEntries(Object.entries(C.LAYOUT_V2).map(([m, ids]) => [m, ids.map(raw => { const fl = raw[0] === '~', id = fl ? raw.slice(1) : raw, v = c[id]; return C.valid(v) ? (fl ? 6 - v : v) : 0; })]));
+}
+
 // File versi 1: facet 40 soal dengan urutan lama (round-robin per sumbu, posisi ganjil ditukar A/B).
 function v1Facet(byId) {
   const axes = Object.keys(C.FACETS), out = new Array(40).fill(0);
@@ -192,18 +198,24 @@ function v1Facet(byId) {
 
 test('impor file versi 1: soal facet yang sama dipindah, yang diganti dikosongkan', () => {
   const full = answersFor(C, 'INFP');
-  const d = C.sanitizeImport({app: 'tes-kepribadian', v: 1, name: 'Lama', ans: {...full, facet: v1Facet({'sn-c1': 5, 'sn-t2': 2, 'ei-x5': 1, 'ei-g1': 4})}});
+  const d = C.sanitizeImport({app: 'tes-kepribadian', v: 1, name: 'Lama', ans: {...v2Ans(C.canon(full)), facet: v1Facet({'sn-c1': 5, 'sn-t2': 2, 'ei-x5': 1, 'ei-g1': 4})}});
   assert.equal(d.v, C.DATA_V);
   assert.equal(d.migrated, true);
-  const c = C.canon(d.ans);
+  const c = d.c;
   assert.equal(c['sn-c1'], 5); assert.equal(c['sn-t2'], 2); assert.equal(c['ei-x5'], 1); assert.equal(c['ei-g1'], 4);
   assert.equal(c['tf-l1'], undefined); assert.equal(c['jp-s1'], undefined); assert.equal(c['ei-x1'], undefined);
-  assert.deepEqual(Array.from(d.ans.inti), Array.from(full.inti));
-  assert.equal(C.answered(d.ans, C.MODS[1]), 5 + 10);
-  // file versi 2 dibaca apa adanya
-  const v2 = C.sanitizeImport(JSON.parse(JSON.stringify(C.exportData('Baru', full))));
-  assert.equal(v2.migrated, false);
-  assert.deepEqual(Array.from(v2.ans.facet), Array.from(full.facet));
+  const fc = C.canon(full);
+  for (const id of ['c0', 'c43', 'bN0p', 'n0', 'm15']) assert.equal(c[id], fc[id], id);
+  assert.equal(C.answered(C.fromCanon(c), C.MODS[1]), 5 + 10);
+});
+
+test('impor file versi 2: soal yang isinya berubah dikosongkan, sisanya utuh', () => {
+  const full = C.canon(answersFor(C, 'ENFJ', 'A'));
+  const d = C.sanitizeImport({app: 'tes-kepribadian', v: 2, name: 'Dua', ans: v2Ans(full)});
+  const changed = ['c-sn-gambar', 'c-sn-alat', 'c-tf-dana', 'tf-r3', 'ei-x6', 'bO2p2', 'bN2r2', 'n-ni-pola', 'n-ne-variasi'];
+  assert.equal(d.migrated, true); assert.equal(d.missing, changed.length);
+  for (const id of changed) assert.equal(d.c[id], undefined, id);
+  for (const [id, v] of Object.entries(full)) if (!changed.includes(id)) assert.equal(d.c[id], v, id);
 });
 
 test('canon dan fromCanon saling balik', () => {
@@ -211,11 +223,11 @@ test('canon dan fromCanon saling balik', () => {
   assert.deepEqual(JSON.parse(JSON.stringify(C.fromCanon(C.canon(full)))), JSON.parse(JSON.stringify(full)));
 });
 
-const textsOf = I => [I.summary, ...I.sections.flatMap(s => [s.title, ...s.items.flatMap(x => [x.t, x.b])]), ...[...I.strengths, ...I.watch, ...I.tips].flatMap(x => [x.t, x.b])];
+const textsOf = I => [I.summary, ...I.sections.flatMap(s => [s.title, ...s.items.flatMap(x => [x.t, x.b, ...(x.q ? [x.q] : [])])]), ...[...I.strengths, ...I.watch, ...I.tips].flatMap(x => [x.t, x.b])];
 
 test('ringkasan kepribadian: 16 tipe x 2 identitas, kalimat lengkap tanpa undefined/NaN', () => {
   for (const t of C.TABLE) for (const id of ['A', 'T']) for (const st of [1, 2]) {
-    const ans = answersFor(C, t, id, st), I = C.insights(C.compute(ans), ans);
+    const ans = answersFor(C, t, id, st), I = C.insights(C.compute(ans), C.canon(ans));
     assert.ok(I.summary.startsWith('Kamu '), t);
     for (const x of textsOf(I)) assert.ok(typeof x === 'string' && x.length > 0 && !/undefined|NaN|null/.test(x), `${t}-${id}: ${x}`);
     assert.ok(I.sections.every(s => s.items.length <= 6) && I.strengths.length <= 6 && I.watch.length <= 5 && I.tips.length <= 6);
@@ -224,7 +236,7 @@ test('ringkasan kepribadian: 16 tipe x 2 identitas, kalimat lengkap tanpa undefi
 
 test('ringkasan kepribadian: arah kalimat ikut skor', () => {
   const intro = answersFor(C, 'INFP'), extro = answersFor(C, 'ESTJ', 'A');
-  const a = C.insights(C.compute(intro), intro), b = C.insights(C.compute(extro), extro);
+  const a = C.insights(C.compute(intro), C.canon(intro)), b = C.insights(C.compute(extro), C.canon(extro));
   assert.match(a.summary, /waktu sendiri/); assert.match(b.summary, /interaksi dengan orang/);
   assert.match(a.summary, /fleksibel/); assert.match(b.summary, /rencana dan kepastian/);
   assert.match(b.summary, /tenang/);
@@ -234,20 +246,20 @@ test('ringkasan kepribadian: jawaban acak dan hasil sebagian tidak error', () =>
   let s = 7; const rnd = () => (s = s * 16807 % 2147483647) % 5 + 1;
   for (let k = 0; k < 200; k++) {
     const ans = Object.fromEntries(C.MODS.map(m => [m.id, m.items.map(rnd)]));
-    for (const x of textsOf(C.insights(C.compute(ans), ans))) assert.ok(!/undefined|NaN/.test(x), x);
+    for (const x of textsOf(C.insights(C.compute(ans), C.canon(ans)))) assert.ok(!/undefined|NaN/.test(x), x);
   }
   const full = answersFor(C, 'INTJ');
   for (const part of [{big5: full.big5}, {inti: full.inti}, {facet: full.facet}, {fungsi: full.fungsi}, {}]) {
-    const ans = {...C.emptyAns(), ...part}, I = C.insights(C.compute(ans), ans);
+    const ans = {...C.emptyAns(), ...part}, I = C.insights(C.compute(ans), C.canon(ans));
     for (const x of textsOf(I)) assert.ok(!/undefined|NaN/.test(x), x);
   }
 });
 
 test('ringkasan kepribadian: pola gabungan dari soal Expressive per emosi', () => {
   const ans = answersFor(C, 'INFP'), c = C.canon(ans);
-  Object.assign(c, {'ei-x1': 5, 'ei-x2': 5, 'ei-x4': 5, 'ei-x5': 1, 'ei-x3': 5});
-  const a2 = C.fromCanon(c), I = C.insights(C.compute(a2), a2);
-  assert.ok(I.special.some(x => /seperti kesal lebih mudah terlihat/.test(x.t)));
+  Object.assign(c, {'ei-x1': 5, 'ei-x2': 5, 'ei-x4': 5, 'ei-x6': 5, 'ei-x5': 1});
+  const I = C.insights(C.resultOf(c), c);
+  assert.ok(I.special.some(x => /Rasa kesal mudah terlihat/.test(x.t)));
   assert.ok(I.tips.some(x => /terlihat kesal/.test(x.t)));
 });
 
@@ -256,76 +268,115 @@ test('catatan khusus: dibersihkan dan dibatasi', () => {
   assert.equal(n.length, 12); assert.equal(n[0].tag.length, 40); assert.equal(n[0].text, 'xy');
   assert.deepEqual(Array.from(C.cleanNotes('bukan array')), []);
   assert.equal(C.esc('<img src=x onerror="a">&\''), '&lt;img src=x onerror=&quot;a&quot;&gt;&amp;&#39;');
-  const ex = C.exportData('A', answersFor(C, 'INFP'));
+  const ex = C.exportData('A', C.canon(answersFor(C, 'INFP')));
   assert.ok(!('notes' in ex) && !('summary' in ex));
 });
 
 test('link hasil: bolak-balik utuh, termasuk catatan dan huruf non-ASCII', () => {
   const ans = answersFor(C, 'ENTP', 'A', 1);
-  const d = C.sanitizeImport(JSON.parse(JSON.stringify(C.exportData('Gama ✨', ans, {summary: 'Ringkasan — é', notes: [{tag: 'T/F · −2', title: 'Judul', text: 'Isi'}]}))));
+  const d = C.sanitizeImport(JSON.parse(JSON.stringify(C.exportData('Gama ✨', C.canon(ans), {summary: 'Ringkasan — é', notes: [{tag: 'T/F · −2', title: 'Judul', text: 'Isi'}]}))));
   const back = C.decodeShare(C.encodeShare(d));
-  assert.deepEqual(JSON.parse(JSON.stringify(back.ans)), JSON.parse(JSON.stringify(d.ans)));
+  assert.deepEqual(JSON.parse(JSON.stringify(back.c)), JSON.parse(JSON.stringify(d.c)));
   assert.equal(back.name, d.name); assert.equal(back.summary, 'Ringkasan — é'); assert.equal(back.notes[0].tag, 'T/F · −2');
-  assert.equal(C.compute(back.ans).type, 'ENTP');
+  assert.equal(C.resultOf(back.c).type, 'ENTP');
+  // link versi 2 (jawaban per posisi) tetap terbaca
+  const v2 = {v: 2, n: 'Lama', a: Object.fromEntries(Object.entries(v2Ans(C.canon(ans))).map(([k, a]) => [k, a.join('')]))};
+  const old = C.decodeShare(Buffer.from(JSON.stringify(v2)).toString('base64url'));
+  assert.equal(old.name, 'Lama'); assert.equal(old.c.c0, C.canon(ans).c0); assert.equal(old.migrated, true);
   for (const bad of ['', 'abc', '!!!!!!!!!!', 'eyJ2IjoyfQ', 'A'.repeat(30000), null]) assert.equal(C.decodeShare(bad), null, String(bad).slice(0, 12));
 });
 
-test('modul Pendalaman: opsional, tidak mengubah skor tipe', () => {
-  const ans = answersFor(C, 'ISTJ', 'A');
-  const R1 = C.compute({...ans, dalam: []}), R2 = C.compute(ans);
-  assert.equal(R1.done.dalam, false); assert.equal(R2.done.dalam, true);
-  assert.deepEqual(JSON.parse(JSON.stringify(R1.ax)), JSON.parse(JSON.stringify(R2.ax)));
-  assert.equal(R1.type, R2.type);
+test('Pendalaman adaptif: kosong sebelum modul utama selesai, berbeda per profil', () => {
+  const part = C.canon({...C.emptyAns(), inti: answersFor(C, 'INFP').inti});
+  assert.equal(C.deepPlan(C.resultOf(part), part).length, 0);
+  const plans = {};
+  for (const t of C.TABLE) for (const id of ['A', 'T']) {
+    const c = C.canon(answersFor(C, t, id, 1 + (t.charCodeAt(1) % 2)));
+    const p = C.deepPlan(C.resultOf(c), c).map(x => x.id);
+    assert.ok(p.length >= 5 && p.length <= DEEPN, `${t}-${id}: ${p.length}`);
+    assert.equal(new Set(p).size, p.length);
+    plans[t + id] = p.join(',');
+  }
+  assert.ok(new Set(Object.values(plans)).size >= 10, 'soal Pendalaman harus berbeda-beda antarprofil');
 });
 
-const withDeep = (type, deep) => { const ans = answersFor(C, type); const c = C.canon(ans); for (const k of Object.keys(c)) if (k.startsWith('d-')) delete c[k]; Object.assign(c, deep); return C.fromCanon(c); };
-const titles = ans => C.deepFindings(C.compute(ans), ans).map(f => f.title);
+test('Pendalaman adaptif: soal lanjutan muncul dari jawaban, posisi A/B stabil', () => {
+  const c = C.canon(answersFor(C, 'INFP'));
+  const R = C.resultOf(c), before = C.deepPlan(R, c).map(x => x.id);
+  assert.ok(before.includes('d-dekat') && !before.includes('d-dekat-ulang'));
+  const after = C.deepPlan(R, {...c, 'd-dekat': 5});
+  assert.ok(after.some(x => x.id === 'd-dekat-ulang'));
+  const f1 = C.deepPlan(R, c).map(x => x.fl).join(), f2 = C.deepPlan(R, c).map(x => x.fl).join();
+  assert.equal(f1, f2);
+  for (const it of after) if (it.k === 'fc') { const d = C.DEEP.find(x => x[0] === it.id); assert.deepEqual(it.fl ? [it.b, it.a] : [it.a, it.b], [d[3], d[4]]); }
+  assert.equal(C.deepDone(R, c), false);
+  const all = {...c}; for (const it of C.deepPlan(R, c)) all[it.id] = 3;
+  let guard = 0; while (!C.deepDone(R, all) && guard++ < 5) for (const it of C.deepPlan(R, all)) if (!C.valid(all[it.id])) all[it.id] = 3;
+  assert.equal(C.deepDone(R, all), true);
+});
+
+test('Pendalaman: soal valid dan aman', () => {
+  assert.equal(new Set(C.DEEP.map(d => d[0])).size, C.DEEP.length);
+  for (const d of C.DEEP) { assert.ok(['fc', 'lk'].includes(d[1])); for (const t of d.slice(2)) assert.ok(t && !/[<>"`]/.test(t), t); }
+});
+
+const withDeep = (type, deep) => { const c = C.canon(answersFor(C, type)); return {...c, ...deep}; };
+const titles = c => C.deepFindings(C.resultOf(c), c).map(f => f.title);
 
 test('temuan khusus: introvert murni vs sebagian karena cemas', () => {
   assert.ok(titles(withDeep('INFP', {'d-energi': 1})).includes('Introvert murni'));
   assert.ok(titles(withDeep('INFP', {'d-energi': 5})).includes('Sebagian karena cemas, bukan hanya preferensi'));
   assert.ok(!titles(withDeep('ENFP', {'d-energi': 1})).includes('Introvert murni'), 'extravert tidak dapat temuan introvert');
+  assert.ok(titles(withDeep('ENFP', {'d-sendiri': 5})).includes('Energi dari orang lain'));
 });
 
-test('temuan khusus: filter orang tersayang vs kenalan', () => {
+test('temuan khusus: filter orang tersayang vs kenalan, dengan soal lanjutan', () => {
   assert.ok(titles(withDeep('INFP', {'d-dekat': 5, 'd-kenal': 1})).includes('Filternya: siapa orangnya bagimu'));
   assert.ok(titles(withDeep('INFP', {'d-dekat': 1, 'd-kenal': 1})).includes('Tegas kepada siapa pun'));
   assert.ok(!titles(withDeep('INFP', {'d-dekat': 5})).some(t => /Filternya/.test(t)), 'butuh dua jawaban');
+  const f = C.deepFindings(C.resultOf(withDeep('INFP', {})), withDeep('INFP', {'d-dekat': 5, 'd-kenal': 1, 'd-dekat-ulang': 1})).find(x => x.key === 'tfctx');
+  assert.match(f.text, /kesabaranmu ada batasnya/);
+});
+
+test('temuan khusus: S/N dua wilayah', () => {
+  assert.ok(titles(withDeep('INFP', {'d-kebiasaan': 1, 'd-pikiran': 5})).includes('N di pikiran, S di kebiasaan'));
+  assert.ok(titles(withDeep('ESTP', {'d-kebiasaan': 5, 'd-pikiran': 1})).includes('Praktis di pikiran, suka variasi di keseharian'));
 });
 
 test('temuan khusus: tidak muncul tanpa jawaban Pendalaman (kecuali pola skor murni)', () => {
-  for (const t of C.TABLE) for (const f of C.deepFindings(C.compute(withDeep(t, {})), withDeep(t, {}))) assert.equal(f.key, 'ide', `${t}: ${f.title}`);
+  for (const t of C.TABLE) for (const f of C.deepFindings(C.resultOf(withDeep(t, {})), withDeep(t, {}))) assert.equal(f.key, 'ide', `${t}: ${f.title}`);
 });
 
 test('temuan khusus: kalimat lengkap untuk semua kombinasi jawaban Pendalaman', () => {
   let s = 3; const rnd = () => (s = s * 16807 % 2147483647) % 5 + 1;
   const ids = C.DEEP.map(d => d[0]);
   for (const t of C.TABLE) for (let k = 0; k < 12; k++) {
-    const ans = withDeep(t, Object.fromEntries(ids.map(id => [id, rnd()])));
-    const F = C.deepFindings(C.compute(ans), ans);
+    const c = withDeep(t, Object.fromEntries(ids.map(id => [id, rnd()])));
+    const F = C.deepFindings(C.resultOf(c), c);
     for (const f of F) for (const v of [f.tag, f.title, f.text, f.b]) assert.ok(v && !/undefined|NaN/.test(v), `${t}: ${v}`);
     assert.equal(new Set(F.map(f => f.key)).size, F.length, 'satu temuan per kunci');
   }
 });
 
 test('temuan khusus menggantikan pola gabungan yang sama di gambaran keseharian', () => {
-  const ans = withDeep('INFP', {'d-rutin': 5});
-  const I = C.insights(C.compute(ans), ans);
+  const c = withDeep('INFP', {'d-rutin': 5});
+  const I = C.insights(C.resultOf(c), c);
   assert.ok(!I.special.some(x => /bukan karena suka jadwal/.test(x.t)));
 });
 
 test('riwayat: hanya hasil lengkap, jawaban utama sama memperbarui entri terakhir', () => {
   const a = answersFor(C, 'INFP'), b = answersFor(C, 'ESTJ', 'A');
-  let h = C.histAdd([], {name: 'X', ans: {...C.emptyAns(), inti: a.inti}});
+  const ca = C.canon(a), cb = C.canon(b);
+  let h = C.histAdd([], {name: 'X', c: C.canon({...C.emptyAns(), inti: a.inti})});
   assert.equal(h.length, 0, 'belum lengkap');
-  h = C.histAdd(h, {name: 'X', ans: {...a, dalam: []}}, '2026-01-01T00:00:00Z');
-  h = C.histAdd(h, {name: 'X', ans: a}, '2026-01-02T00:00:00Z');
-  assert.equal(h.length, 1); assert.equal(h[0].t, '2026-01-01T00:00:00Z'); assert.equal(h[0].a.dalam.length, 11);
-  h = C.histAdd(h, {name: 'X', ans: b, notes: [{title: 'n', text: 't'}]});
+  h = C.histAdd(h, {name: 'X', c: ca}, '2026-01-01T00:00:00Z');
+  h = C.histAdd(h, {name: 'X', c: {...ca, 'd-energi': 1}}, '2026-01-02T00:00:00Z');
+  assert.equal(h.length, 1); assert.equal(h[0].t, '2026-01-01T00:00:00Z'); assert.equal(h[0].c['d-energi'], 1);
+  h = C.histAdd(h, {name: 'X', c: cb, notes: [{title: 'n', text: 't'}]});
   assert.equal(h.length, 2);
   const d = C.histData(h[1]);
-  assert.equal(C.compute(d.ans).type, 'ESTJ'); assert.equal(d.notes[0].title, 'n');
+  assert.equal(C.resultOf(d.c).type, 'ESTJ'); assert.equal(d.notes[0].title, 'n');
   assert.equal(C.histData(null), null);
-  let many = []; for (let i = 0; i < 40; i++) many = C.histAdd(many, {name: '', ans: answersFor(C, C.TABLE[i % 16], i % 2 ? 'A' : 'T', 1 + (i % 2))});
+  let many = []; for (let i = 0; i < 40; i++) many = C.histAdd(many, {name: '', c: C.canon(answersFor(C, C.TABLE[i % 16], i % 2 ? 'A' : 'T', 1 + (i % 2)))});
   assert.ok(many.length <= 30);
 });

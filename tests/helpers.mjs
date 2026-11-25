@@ -7,9 +7,9 @@ export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 
 // Muat data.js + core.js persis seperti browser memuatnya (script biasa, satu scope global).
 export function loadCore() {
-  const src = ['data.js', 'core.js'].map(f => fs.readFileSync(path.join(ROOT, f), 'utf8')).join('\n;\n');
+  const src = ['data.js', 'legacy.js', 'core.js'].map(f => fs.readFileSync(path.join(ROOT, f), 'utf8')).join('\n;\n');
   const ctx = vm.createContext({console, TextEncoder, TextDecoder, btoa, atob, Uint8Array});
-  return vm.runInContext(src + '\n;({AX,CORE,FACETS,FITEMS,B5,FN1,FN2,POS,RIGHT,TABLE,STACK,FAM,FUNCS,MODS,MAIN,TOTAL,DATA_V,DEEP,deepFindings,packAns,unpackAns,histEntry,histData,histAdd,LEGACY_FACET_V1,compute,canon,fromCanon,migrateFacetV1,insights,encodeShare,decodeShare,esc,cleanNotes,sanitizeImport,exportData,safeName,fileSlug,summaryText,famOf,isDone,answered,emptyAns,valid})', ctx);
+  return vm.runInContext(src + '\n;({AX,CORE,FACETS,FITEMS,B5,FN1,FN2,POS,RIGHT,TABLE,STACK,FAM,FUNCS,MODS,MAIN,TOTAL,DATA_V,DEEP,deepFindings,deepPlan,deepDone,histEntry,histData,histAdd,resultOf,LAYOUT_V2,LEGACY_FACET_V1,compute,canon,fromCanon,insights,encodeShare,decodeShare,esc,cleanNotes,sanitizeImport,exportData,safeName,fileSlug,summaryText,famOf,isDone,answered,emptyAns,valid})', ctx);
 }
 
 // Jawaban buatan yang mengarah ke satu tipe, dengan nilai mentah sesuai posisi A/B yang tampil di layar.
