@@ -196,7 +196,8 @@ try {
 
   // F. Mode cetak (PDF)
   await cmd('Emulation.setEmulatedMedia', {media: 'print'});
-  check('cetak: latar ikut tema gelap', (await ev("getComputedStyle(document.body).backgroundColor")) === 'rgb(18, 16, 25)' && (await ev("document.getElementById('pageStyle').textContent")).includes('#121019'));
+  check('cetak: latar ikut tema gelap, diberi semburat warna tipe', await ev("(()=>{const m=getComputedStyle(document.body).backgroundColor.match(/\\d+/g).map(Number);const s=typeSurf('INFP',true).bg;return m.every(v=>v<40)&&getComputedStyle(document.body).backgroundColor===`rgb(${parseInt(s.slice(1,3),16)}, ${parseInt(s.slice(3,5),16)}, ${parseInt(s.slice(5,7),16)})`&&document.getElementById('pageStyle').textContent.includes(s)})()"));
+  check('cetak: sampul punya motif family', await ev("!!document.querySelector('#res .pcover .pc-motif.m-NF')"));
   check('cetak: tombol & footer disembunyikan, hasil tampil', await ev("getComputedStyle(document.querySelector('#res .noprint')).display==='none'&&getComputedStyle(document.querySelector('footer')).display==='none'&&getComputedStyle(document.getElementById('res')).display!=='none'"));
   await ev("window.dispatchEvent(new Event('beforeprint'))");
   check('cetak: tabel skor rinci ikut kebuka', await ev("[...document.querySelectorAll('#res details')].every(d=>d.open)"));
@@ -320,7 +321,7 @@ try {
   await click('#dlCard');
   check('kartu PNG ikut tema terang', await waitFor(`(${px})==='255,255,255'`, 6000));
   await cmd('Emulation.setEmulatedMedia', {media: 'print'});
-  check('cetak tema terang: latar putih', (await ev("getComputedStyle(document.body).backgroundColor")) === 'rgb(255, 255, 255)' && (await ev("document.getElementById('pageStyle').textContent")).includes('#ffffff'));
+  check('cetak tema terang: latar terang dengan semburat tipe', await ev("(()=>{const m=getComputedStyle(document.body).backgroundColor.match(/\\d+/g).map(Number);return m.every(v=>v>240)&&document.getElementById('pageStyle').textContent.includes(typeSurf(document.querySelector('#res .code').textContent.slice(0,4),false).bg)})()"));
   const pdf2 = await cmd('Page.printToPDF', {printBackground: true});
   fs.writeFileSync(path.join(OUT, '05b-hasil-terang.pdf'), Buffer.from(pdf2.data, 'base64'));
   await cmd('Emulation.setEmulatedMedia', {media: ''});

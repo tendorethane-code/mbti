@@ -359,6 +359,12 @@ body:before{content:"";position:fixed;inset:-20vh -20vw;z-index:-1;pointer-event
 .pcover:before{content:"";position:absolute;right:-40mm;top:-40mm;width:150mm;height:150mm;border-radius:50%;background:radial-gradient(closest-side,var(--fam),transparent);opacity:.35}
 .pcover:after{content:"";position:absolute;left:-50mm;bottom:-50mm;width:140mm;height:140mm;border-radius:50%;background:radial-gradient(closest-side,var(--fam2),transparent);opacity:.25}
 .pcover>*{position:relative;z-index:1}
+.pcover>.pc-motif{position:absolute;inset:0;z-index:0;opacity:.22;pointer-events:none;-webkit-mask-image:radial-gradient(circle at 88% 12%,#000 0,rgba(0,0,0,.45) 26%,transparent 54%);mask-image:radial-gradient(circle at 88% 12%,#000 0,rgba(0,0,0,.45) 26%,transparent 54%)}
+:root[data-theme=light] .pcover>.pc-motif{opacity:.15}
+.m-NT{background:linear-gradient(var(--fam) .3mm,transparent .3mm) 0 0/8mm 8mm,linear-gradient(90deg,var(--fam) .3mm,transparent .3mm) 0 0/8mm 8mm}
+.m-NF{background:repeating-radial-gradient(circle at 88% 14%,transparent 0 5.6mm,var(--fam) 5.6mm 5.9mm)}
+.m-SJ{background:repeating-linear-gradient(0deg,transparent 0 4.8mm,var(--fam) 4.8mm 5mm),repeating-linear-gradient(90deg,transparent 0 24.8mm,var(--fam) 24.8mm 25mm)}
+.m-SP{background:repeating-linear-gradient(-58deg,transparent 0 7mm,var(--fam) 7mm 7.5mm)}
 .pc-top{display:flex;justify-content:space-between;font-size:11px;font-weight:800;letter-spacing:.2em;color:var(--fam)}
 .pc-top span:last-child{letter-spacing:0;color:var(--mute);font-weight:600}
 .pc-name{font-size:28px;font-weight:700;margin-top:24mm}
@@ -624,7 +630,7 @@ function renderRes(keep){
     const axs=['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax],d=Math.abs(p-50);return {ax,d,pp:Math.round(p>=50?p:100-p),w:p>=50?AX[ax][3]:AX[ax][2]}}).sort((a,b)=>b.d-a.d);
     const tagW={EI:x=>x.w==='Introvert'?(x.pp>=80?'Sangat Introvert':'Introvert'):(x.pp>=80?'Sangat Ekstrovert':'Ekstrovert'),SN:x=>x.w==='Intuitive'?'Konseptual':'Praktis',TF:x=>x.w==='Feeling'?'Berpegang pada Nilai':'Logis',JP:x=>x.w==='Prospecting'?'Fleksibel':'Terencana'};
     const tagline=axs.filter(x=>x.ax!=='AT'&&x.d>=10).sort((a,b)=>'EISNTFJP'.indexOf(a.ax)-'EISNTFJP'.indexOf(b.ax)).map(x=>tagW[x.ax](x)).join(' · ');
-    h+=`<div class="pcover printonly"><div class="pc-top"><span>PETA KEPRIBADIAN</span><span>${esc(new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}))}</span></div>
+    h+=`<div class="pcover printonly"><div class="pc-motif m-${famOf(R.type)}" aria-hidden="true"></div><div class="pc-top"><span>PETA KEPRIBADIAN</span><span>${esc(new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}))}</span></div>
     <div class="pc-name">${name?esc(name):'Hasilku'}</div><img class="pc-type" id="pcType" alt="${R.type}${R.id?'-'+R.id:''}">
     <div class="pc-fam">${FAM[famOf(R.type)]}${R.strat?' · '+R.strat:''}</div>${tagline?`<div class="pc-tag">${tagline}</div>`:''}
     ${hook?`<div class="pc-hook"><span>Yang paling khas darimu</span>${hook.t?`<b>${esc(hook.t)}</b>`:''}<p>${esc(hook.x)}</p></div>`:''}
@@ -757,7 +763,11 @@ function renderRes(keep){
     x.font='800 330px Manrope, system-ui, sans-serif';const w1=x.measureText(R.type).width;x.font='800 170px Manrope, system-ui, sans-serif';const w2=R.id?x.measureText('-'+R.id).width+20:0;
     const g=x.createLinearGradient(0,0,w1+w2,200);g.addColorStop(0,pl.a);g.addColorStop(1,pl.b);x.fillStyle=g;
     x.font='800 330px Manrope, system-ui, sans-serif';x.fillText(R.type,0,320);if(R.id){x.font='800 170px Manrope, system-ui, sans-serif';x.fillText('-'+R.id,w1+20,320)}
-    $('pcType').src=c.toDataURL('image/png')};const later=fn=>'requestIdleCallback' in window?requestIdleCallback(fn,{timeout:1500}):setTimeout(fn,60);(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>later(draw))}{const pl=R.hasType?typePal(R.type,theme()==='dark'):{a:cssVar('--ind'),b:cssVar('--acc')};$('res').style.setProperty('--fam',pl.a);$('res').style.setProperty('--fam2',pl.b)}show('res');if(keep)window.scrollTo(0,y);
+    $('pcType').src=c.toDataURL('image/png')};const later=fn=>'requestIdleCallback' in window?requestIdleCallback(fn,{timeout:1500}):setTimeout(fn,60);(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>later(draw))}{const dk=theme()==='dark',pl=R.hasType?typePal(R.type,dk):{a:cssVar('--ind'),b:cssVar('--acc')},rs=$('res').style;rs.setProperty('--fam',pl.a);rs.setProperty('--fam2',pl.b);
+    // Semburat warna tipe: panel dan garis di web, seluruh halaman (termasuk latar) di PDF.
+    if(R.hasType){const sf=typeSurf(R.type,dk);rs.setProperty('--pan',sf.pan);rs.setProperty('--line',sf.line);rs.setProperty('--trk',sf.trk);
+      $('pageStyle').textContent=`@page{size:A4;margin:12mm;background:${sf.bg}}@media print{:root,:root[data-theme]{--bg:${sf.bg};--pan:${sf.pan};--line:${sf.line};--trk:${sf.trk}}}`}
+    else{['--pan','--line','--trk'].forEach(k=>rs.removeProperty(k));$('pageStyle').textContent=`@page{size:A4;margin:12mm;background:${PAGEBG[theme()]}}`}}show('res');if(keep)window.scrollTo(0,y);
   const txt=summaryText(R,name)+(own||I.summary?'\n\n'+(own||I.summary):''),slug=fileSlug(name);
   const copyText=async(t,ok)=>{try{await navigator.clipboard.writeText(t);$('copyMsg').textContent=ok}catch(e){$('copyBox').hidden=false;$('copyBox').value=t;$('copyBox').select();$('copyMsg').textContent='Salin manual dari kotak di bawah.'}};
   $('copy').addEventListener('click',()=>copyText(txt,'Ringkasan sudah disalin.'));

@@ -14,11 +14,22 @@ const hexRgb=h=>{const n=parseInt(h.slice(1),16);return [n>>16&255,n>>8&255,n&25
 const rgbHex=a=>'#'+a.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');
 const lum=h=>{const c=hexRgb(h).map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*c[0]+.7152*c[1]+.0722*c[2]};
 const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
-// Di tema terang, warna digelapkan bertahap sampai kontrasnya dengan latar putih cukup (minimal 3:1, untuk teks besar dan grafis).
+// Di tema terang, warna digelapkan sampai kontrasnya dengan latar putih cukup (minimal 3:1, untuk teks besar dan grafis).
+// Yang diturunkan hanya kecerahan (HSL), saturasinya dijaga supaya warnanya tidak kusam kecokelatan.
+const rgbHsl=([r,g,b])=>{r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2;let h=0,s=0;
+  if(mx!==mn){const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);h=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4;h/=6}return [h,s,l]};
+const hslRgb=([h,s,l])=>{if(!s)return [l*255,l*255,l*255];const q=l<.5?l*(1+s):l+s-l*s,p=2*l-q,f=t=>{t=(t+1)%1;return t<1/6?p+(q-p)*6*t:t<1/2?q:t<2/3?p+(q-p)*(2/3-t)*6:p};return [f(h+1/3)*255,f(h)*255,f(h-1/3)*255]};
+const mixHex=(a,b,t)=>{const A=hexRgb(a),B=hexRgb(b);return rgbHex(A.map((v,i)=>v+(B[i]-v)*t))};
 function typePal(type,dark){
   const p=TYPE_PAL[type]||TYPE_PAL.INFP;if(dark)return {a:p[0],b:p[1]};
-  const deep=h=>{let c=hexRgb(h);for(let i=0;i<20&&contrast(rgbHex(c),'#ffffff')<3.2;i++)c=c.map(v=>v*.9);return rgbHex(c)};
+  const deep=h=>{let [H,S,L]=rgbHsl(hexRgb(h));S=Math.min(1,S*1.08);for(let i=0;i<40&&contrast(rgbHex(hslRgb([H,S,L])),'#ffffff')<3.2;i++)L-=.012;return rgbHex(hslRgb([H,S,L]))};
   return {a:deep(p[0]),b:deep(p[1])};
+}
+// Latar, panel, garis, dan jalur batang yang diberi semburat warna tipe (dipakai di halaman hasil dan PDF).
+function typeSurf(type,dark){
+  const p=TYPE_PAL[type]||TYPE_PAL.INFP,a=p[0],b=p[1];
+  return dark?{bg:mixHex('#100e16',a,.045),pan:mixHex(mixHex('#191622',a,.10),b,.03),line:mixHex('#2c2838',a,.16),trk:mixHex('#262233',a,.12)}
+    :{bg:mixHex('#ffffff',a,.022),pan:mixHex(mixHex('#ffffff',a,.085),b,.03),line:mixHex('#dedbe6',a,.22),trk:mixHex('#ebe9f0',a,.18)};
 }
 const FUNCS=['Fi','Fe','Ti','Te','Ni','Ne','Si','Se'];
 const APP_ID='tes-kepribadian';
