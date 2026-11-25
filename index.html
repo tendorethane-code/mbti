@@ -233,7 +233,8 @@ body:before{content:"";position:fixed;inset:-20vh -20vw;z-index:-1;pointer-event
 .stylepick{display:flex;flex-wrap:wrap;gap:8px}
 .stylepick button{min-height:40px;padding:6px 14px;border-radius:999px;border:2px solid var(--line);background:var(--bg);color:var(--ink);font-weight:700;font-size:14px}
 .stylepick button[aria-pressed=true]{border-color:var(--ind);background:var(--ind);color:#fff}
-#res{--fam2:var(--ind)}
+#res{--acc:var(--fam,#e8492c);--ind:var(--fam2,#3b2fc9)}
+:root[data-theme=dark] #res .btn:not(.ghost),:root[data-theme=dark] #res .seg button[aria-pressed=true]{color:var(--bg)}
 #res>section.rhero:before{background:radial-gradient(closest-side,var(--fam,var(--acc)),transparent),radial-gradient(closest-side at 20% 80%,var(--fam2),transparent)}
 #res h2:before{background:linear-gradient(var(--fam,var(--acc)),var(--fam2))}
 .hook{margin:18px 0 4px;padding:14px 18px;border-radius:18px;background:var(--pan);border-left:5px solid var(--fam,var(--acc))}
@@ -502,7 +503,7 @@ function paintHome(){
 }
 const PAGEBG={dark:'#121019',light:'#ffffff'};
 const theme=()=>document.documentElement.dataset.theme==='light'?'light':'dark';
-let refreshCard=null;
+let refreshCard=null;const CARD_CACHE=new Map();
 function setTheme(t,fromUser){
   t=t==='light'?'light':'dark';document.documentElement.dataset.theme=t;
   $('pageStyle').textContent=`@page{size:A4;margin:12mm;background:${PAGEBG[t]}}`;
@@ -650,12 +651,13 @@ function renderRes(keep){
         <div class="s-rel">${I.rel.sure.length?`<span><b>Paling yakin</b>${I.rel.sure.join(', ')}</span>`:''}${I.rel.unsure.length?`<span><b>Masih bisa berubah</b>${I.rel.unsure.join(', ')}</span>`:''}</div></div>
       </div>`;
     }
-    const fx=Object.fromEntries(R.fits.map(f=>[f.t,f.v])),top=R.fits.slice(0,3).map(f=>f.t);
+    const fx=Object.fromEntries(R.fits.map(f=>[f.t,f.v])),top=R.fits.slice(0,3).map(f=>f.t),PL=typePal(R.type,theme()==='dark'),BGC=theme()==='dark'?'#121019':'#ffffff',INKC=theme()==='dark'?'#ecebf3':'#15151a';
+    const mixc=(a,p)=>{const A=rgb(a),B=rgb(BGC);return '#'+A.map((v,i)=>Math.round(v*p/100+B[i]*(1-p/100)).toString(16).padStart(2,'0')).join('')},cellBg=r=>mixc(r===1?PL.b:PL.a,[100,62,32][r]),cellInk=bg=>contrast('#ffffff',bg)>=contrast(INKC,bg)?'#ffffff':INKC;
     h+=`<section class="band rhero"><div class="wrap hero"><div><h1>${name?esc(name)+', p':'P'}aling cocok <span class="code">${R.type}${R.id?'-'+R.id:''}</span></h1><p class="lead htag">${FAM[famOf(R.type)]}${tagline?' · '+tagline:''}.${R.letters!==R.type?` Dari huruf saja hasilnya ${R.letters}, tapi urutan fungsi lebih cocok ke ${R.type}.`:''}</p>
     ${hook?`<div class="hook"><span>Yang paling khas darimu</span><b>${esc(hook.t||'')}</b><p>${esc(firstSentence(hook.x))}</p>${big.length?`<button type="button" class="jump noprint" data-jump="catatan">Baca selengkapnya</button>`:''}</div>`:''}
     <h3>Tiga tipe paling cocok</h3><div class="top3">${R.fits.slice(0,3).map((f,i)=>`<div class="fit"><b>${f.t}</b><div class="bar ${i?'':'hi'}"><i style="width:${f.v}%"></i></div><span class="v">${nm(f.v)}</span></div>`).join('')}</div>
     <div class="chips"><span class="chip">Family: ${FAM[famOf(R.type)]} (${famOf(R.type)})</span>${R.strat?`<span class="chip">Strategy: ${R.strat}</span>`:''}<span class="chip">${done}/${MAIN.length} modul utama selesai</span></div></div>
-    <div><div class="tt" id="ttRes" role="img" aria-label="Tabel 16 tipe, tiga yang paling cocok menyala">${TABLE.map(t=>{const r=top.indexOf(t);const st=r<0?'background:transparent;border-color:var(--line);color:var(--mute)':`background:${mix('--ind',[100,58,30][r])};color:${r<2?'#fff':'var(--ink)'}`;return `<div class="cell ${r===0?'me':''}" data-rank="${r+1}" style="${st}">${t}<small>${nm(fx[t])}</small></div>`}).join('')}</div><div class="axes"><span>Menyala = 3 tipe paling cocok</span><span>Lingkaran = hasil utama</span></div></div></div></section>`;
+    <div><div class="tt" id="ttRes" role="img" aria-label="Tabel 16 tipe, tiga yang paling cocok menyala">${TABLE.map(t=>{const r=top.indexOf(t);const st=r<0?'background:transparent;border-color:var(--line);color:var(--mute)':`background:${cellBg(r)};color:${cellInk(cellBg(r))}`;return `<div class="cell ${r===0?'me':''}" data-rank="${r+1}" style="${st}">${t}<small>${nm(fx[t])}</small></div>`}).join('')}</div><div class="axes"><span>Menyala = 3 tipe paling cocok</span><span>Lingkaran = hasil utama</span></div></div></div></section>`;
   }else{
     h+=`<section class="band"><div class="wrap"><h1>Hasil sementara</h1><p class="lead">Selesaikan modul Inti atau Facet supaya tipe 4 hurufmu terlihat.</p></div></section>`;
   }
@@ -693,7 +695,7 @@ function renderRes(keep){
   const shIc=d=>`<svg class="shic" viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg>`;
   h+=`<section class="band noprint chap c-share" id="akhir"><div class="wrap"><span class="ck">Simpan &amp; bagikan</span><h2 class="ctitle">Bawa hasilmu</h2>
   <div class="sh"><figure class="sh-prev"><img id="cardPrev" alt="Pratinjau kartu hasil"><figcaption>Pratinjau kartu, ukuran story 1080×1920</figcaption></figure>
-  <div class="sh-opt"><p class="sh-lab">Gaya kartu</p><div class="stylepick" role="group" aria-label="Gaya kartu">${CARD_STYLES.map(([k,l])=>`<button type="button" data-card-style="${k}" aria-pressed="${cardStyle()===k}"><canvas class="thumb" width="90" height="160" data-thumb="${k}" aria-hidden="true"></canvas><span>${l}</span></button>`).join('')}</div>
+  <div class="sh-opt"><p class="sh-lab">Gaya kartu</p><div class="stylepick" role="group" aria-label="Gaya kartu">${CARD_STYLES.map(([k,l])=>`<button type="button" data-card-style="${k}" aria-pressed="${cardStyle()===k}"><canvas class="thumb" width="180" height="320" data-thumb="${k}" aria-hidden="true"></canvas><span>${l}</span></button>`).join('')}</div>
   <div class="sh-row"><p class="sh-lab">Tema</p><div class="seg" role="group" aria-label="Tema hasil"><button type="button" data-theme-set="dark" aria-pressed="${theme()==='dark'}">Gelap</button><button type="button" data-theme-set="light" aria-pressed="${theme()==='light'}">Terang</button></div></div>
   <button class="btn sh-main" id="dlCard" type="button">Unduh kartu (PNG)</button>
   <p class="sh-lab">Cara lain menyimpan</p><div class="sh-acts">
@@ -714,7 +716,7 @@ function renderRes(keep){
     const notesAx={EI:'Sumber energi: dari waktu sendiri atau dari interaksi.',SN:'Cara menangkap informasi: konkret dan nyata, atau pola dan makna.',TF:'Dasar keputusan: logika yang konsisten, atau nilai dan dampaknya ke orang.',JP:'Gaya mengatur hidup: rencana dan kepastian, atau terbuka dan fleksibel.',AT:'Seberapa kuat reaksi terhadap stres, kritik, dan keraguan diri.'};
     const rows=['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax],s=R.src[ax];const inc=s.inti!=null&&s.facet!=null&&Math.abs(s.inti-s.facet)>=25;const big=p>=50?AX[ax][3]:AX[ax][2],pp=p>=50?p:100-p;return `<div class="drow"><span class="l">${AX[ax][2]}</span><div class="track"><div class="in"><span class="mid"></span>${Object.entries(s).map(([k,v])=>`<span class="dot" style="left:${v}%;background:${col[k]}"></span>`).join('')}<span class="dot fin" style="left:${p}%"></span></div></div><span class="r">${big} ${Math.round(pp)}%</span><p class="dnote">${notesAx[ax]} ${big} ${lab(p)}.${inc?' Jawaban modul Inti dan Facet di sumbu ini cukup berbeda, jadi hasilnya kurang stabil.':''}</p></div>`}).join('');
     h+=`<div class="pdivider" id="angka"><div class="wrap"><span>Bagian 2</span><b>Angka di balik hasilmu</b><p>Skor tiap sumbu, fungsi, tipe, facet, dan Big Five. Bagian ini menjelaskan dari mana semua temuan di atas berasal.</p></div></div>`;
-    h+=`<section class="band"><div class="wrap"><h2>Empat huruf + identitas</h2><p class="lead">Titik koral = hasil akhir. Titik kecil = tiap modul, supaya terlihat stabil atau tidak.</p><div class="dich">${rows}</div><div class="legend"><span style="--c:#3b2fc9">Modul Inti</span><span style="--c:#1f9bd1">Modul Facet</span><span style="--c:#c2409a">Big Five Neuroticism</span></div></div></section>`;
+    h+=`<section class="band"><div class="wrap"><h2>Empat huruf + identitas</h2><p class="lead">Titik besar = hasil akhir. Titik kecil = tiap modul, supaya terlihat stabil atau tidak.</p><div class="dich">${rows}</div><div class="legend"><span style="--c:#3b2fc9">Modul Inti</span><span style="--c:#1f9bd1">Modul Facet</span><span style="--c:#c2409a">Big Five Neuroticism</span></div></div></section>`;
   }
   if(R.fn){
     const theo=R.hasType?STACK[R.type]:null,ip=avg(R.fn.filter(x=>x.f.endsWith('i')).map(x=>x.g)),ep=avg(R.fn.filter(x=>x.f.endsWith('e')).map(x=>x.g));
@@ -755,7 +757,7 @@ function renderRes(keep){
     x.font='800 330px Manrope, system-ui, sans-serif';const w1=x.measureText(R.type).width;x.font='800 170px Manrope, system-ui, sans-serif';const w2=R.id?x.measureText('-'+R.id).width+20:0;
     const g=x.createLinearGradient(0,0,w1+w2,200);g.addColorStop(0,pl.a);g.addColorStop(1,pl.b);x.fillStyle=g;
     x.font='800 330px Manrope, system-ui, sans-serif';x.fillText(R.type,0,320);if(R.id){x.font='800 170px Manrope, system-ui, sans-serif';x.fillText('-'+R.id,w1+20,320)}
-    $('pcType').src=c.toDataURL('image/png')};draw();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(draw)}{const pl=R.hasType?typePal(R.type,theme()==='dark'):{a:cssVar('--ind'),b:cssVar('--acc')};$('res').style.setProperty('--fam',pl.a);$('res').style.setProperty('--fam2',pl.b)}show('res');if(keep)window.scrollTo(0,y);
+    $('pcType').src=c.toDataURL('image/png')};const later=fn=>'requestIdleCallback' in window?requestIdleCallback(fn,{timeout:1500}):setTimeout(fn,60);(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>later(draw))}{const pl=R.hasType?typePal(R.type,theme()==='dark'):{a:cssVar('--ind'),b:cssVar('--acc')};$('res').style.setProperty('--fam',pl.a);$('res').style.setProperty('--fam2',pl.b)}show('res');if(keep)window.scrollTo(0,y);
   const txt=summaryText(R,name)+(own||I.summary?'\n\n'+(own||I.summary):''),slug=fileSlug(name);
   const copyText=async(t,ok)=>{try{await navigator.clipboard.writeText(t);$('copyMsg').textContent=ok}catch(e){$('copyBox').hidden=false;$('copyBox').value=t;$('copyBox').select();$('copyMsg').textContent='Salin manual dari kotak di bawah.'}};
   $('copy').addEventListener('click',()=>copyText(txt,'Ringkasan sudah disalin.'));
@@ -766,19 +768,26 @@ function renderRes(keep){
   $('dlPdf').addEventListener('click',()=>{try{window.print()}catch(e){$('copyMsg').textContent='Browser ini tidak bisa mencetak. Pakai kartu PNG atau screenshot.'}});
   $('dlJson').addEventListener('click',()=>{dl(new Blob([JSON.stringify(exportData(name,D.c,{summary:own,notes}))],{type:'application/json'}),`jawaban-peta-kepribadian${slug?'-'+slug:''}.json`);$('copyMsg').textContent='File jawaban diunduh.'});
   const fontsOk=async()=>{if(document.fonts){try{await document.fonts.load('800 40px Manrope')}catch(er){}await document.fonts.ready}};
-  refreshCard=async()=>{try{await fontsOk();const c=drawCard(R,name);$('cardPrev').src=c.toDataURL('image/png');$('cardPrev').hidden=false;return c}catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.';return null}};
-  refreshCard().then(()=>{
-    // Contoh kecil tiap gaya, digambar bergantian supaya halaman tidak tersendat.
-    const th=[...document.querySelectorAll('#akhir canvas[data-thumb]')];const step=()=>{const t=th.shift();if(!t||!t.isConnected)return;try{const c=drawCard(R,name,t.dataset.thumb);t.getContext('2d').drawImage(c,0,0,t.width,t.height)}catch(e){}setTimeout(step,30)};setTimeout(step,60)});
-  $('dlCard').addEventListener('click',async()=>{$('copyMsg').textContent='Sedang membuat kartu…';const c=await refreshCard();if(!c)return;
+  // Kartu digambar bertahap saat bagian "Simpan & bagikan" mendekati layar (atau saat browser senggang), supaya halaman tidak tersendat.
+  const idle=fn=>'requestIdleCallback' in window?requestIdleCallback(fn,{timeout:1200}):setTimeout(fn,40);
+  const ckey=st=>[theme(),st,name,JSON.stringify(D.c)].join('|');
+  const cached=(st,sc)=>{const k=sc+'|'+ckey(st);let c=CARD_CACHE.get(k);if(!c){c=drawCard(R,name,st,sc);if(CARD_CACHE.size>40)CARD_CACHE.clear();CARD_CACHE.set(k,c)}return c};
+  refreshCard=async()=>{try{await fontsOk();const c=cached(cardStyle(),.5);$('cardPrev').src=c.toDataURL('image/png');$('cardPrev').hidden=false;return c}catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.';return null}};
+  {let go=false;const start=()=>{if(go||!$('akhir'))return;go=true;if(io)io.disconnect();
+      idle(()=>refreshCard().then(()=>{const th=[...document.querySelectorAll('#akhir canvas[data-thumb]')];
+        const step=()=>{const t=th.shift();if(!t||!t.isConnected)return;try{t.getContext('2d').drawImage(cached(t.dataset.thumb,1/6),0,0,t.width,t.height)}catch(e){}idle(step)};idle(step)}))};
+    const io='IntersectionObserver' in window?new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting))start()},{rootMargin:'700px 0px'}):null;
+    if(io)io.observe($('akhir'));setTimeout(()=>idle(start),2500)}
+  $('dlCard').addEventListener('click',async()=>{$('copyMsg').textContent='Sedang membuat kartu…';let c;try{await fontsOk();c=drawCard(R,name);$('cardPrev').src=c.toDataURL('image/png');$('cardPrev').hidden=false}catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.';return}
     c.toBlob(b=>{if(b)dl(b,`peta-kepribadian${slug?'-'+slug:''}.png`)},'image/png');
     $('copyMsg').textContent='Kartu diunduh. Kalau di HP tidak terunduh, tekan lama gambar pratinjau lalu pilih simpan.'});
 }
 // ---------- Kartu PNG: beberapa gaya, semua ukuran story 1080x1920 ----------
 const CARD_STYLES=[['poster','Poster'],['takaran','Takaran'],['mozaik','Mozaik'],['peta','Peta'],['editorial','Editorial'],['aura','Aura'],['koleksi','Koleksi']];
 const cardStyle=()=>{try{const v=localStorage.getItem('tesKepribadian.kartu');return CARD_STYLES.some(s=>s[0]===v)?v:'poster'}catch(e){return 'poster'}};
-function cardKit(R){
-  const W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+function cardKit(R,sc){
+  // sc < 1: digambar lebih kecil (pratinjau dan contoh), koordinat tetap 1080x1920.
+  const W=1080,H=1920,s=sc||1,c=document.createElement('canvas');c.width=Math.round(W*s);c.height=Math.round(H*s);const x=c.getContext('2d');if(s!==1)x.scale(s,s);
   const dk=theme()==='dark',BG=dk?'#121019':'#ffffff',INK=dk?'#ecebf3':'#15151a',MUTE=dk?'#a9a6ba':'#5d5b6b',TRK=dk?'#2a2638':'#e9e7f3',LINE=dk?'#302c42':'#dcd9ea';let IND=dk?'#8f86ff':'#3b2fc9';
   const FC={NT:dk?'#8f86ff':'#3b2fc9',NF:dk?'#ff7a5c':'#e8492c',SJ:dk?'#2bb3a3':'#0e8f80',SP:dk?'#f2b233':'#b97c00'};
   const fam=R.hasType?famOf(R.type):'NT',PAL=R.hasType?typePal(R.type,dk):{a:FC.NT,b:IND},COL=PAL.a;IND=PAL.b;
@@ -795,7 +804,7 @@ function cardKit(R){
 const siteName=()=>location.host?(location.host+location.pathname).replace(/index\.html$/,''):'Peta Kepribadian';
 const today=()=>new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
 const AXW=['EI','SN','TF','JP','AT'];
-function drawCard(R,name,style){const K=cardKit(R);({editorial:cardEditorial,aura:cardAura,koleksi:cardKoleksi,takaran:cardTakaran,mozaik:cardMozaik,peta:cardPeta}[style||cardStyle()]||cardPoster)(R,name,K);return K.c}
+function drawCard(R,name,style,sc){const K=cardKit(R,sc);({editorial:cardEditorial,aura:cardAura,koleksi:cardKoleksi,takaran:cardTakaran,mozaik:cardMozaik,peta:cardPeta}[style||cardStyle()]||cardPoster)(R,name,K);return K.c}
 function cardPoster(R,name,K){
   // Kartu ukuran story (9:16). Motif "peta": tabel 16 tipe dengan tipe utama menyala, warna mengikuti family.
   const {W,H,c,x,dk,BG,INK,MUTE,TRK,LINE,IND,COL,fam,F,rgba,rr,fit,txt,blob,cap,weakOf}=K;

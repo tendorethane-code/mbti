@@ -14,7 +14,7 @@ Live: https://tendorethane-code.github.io/mbti/
 ## Fitur
 - Tanpa perkiraan waktu. Progres tersimpan otomatis di browser (localStorage) setiap kali menjawab, jadi bisa dikerjakan sesantainya dan dilanjutkan kapan saja.
 - Tampilan: aksen warna mengikuti family hasil, layar soal dengan kartu yang tenang, kalimat penyemangat kecil, dan transisi halus (dimatikan kalau pengguna memilih kurangi gerakan).
-- **Palet per tipe**: 16 tipe punya 16 pasangan warna sendiri (`TYPE_PAL`), satu nuansa per family, dipakai di halaman hasil, kartu, dan PDF. Di tema terang warnanya digelapkan otomatis sampai kontrasnya cukup (diuji).
+- **Palet per tipe**: 16 tipe punya 16 pasangan warna sendiri (`TYPE_PAL`), satu nuansa per family. Di halaman hasil, `--acc` dan `--ind` diganti palet tipe, jadi semua elemen (judul, tabel 16 tipe, batang skor, titik, fungsi, tombol) ikut warna tipenya, begitu juga kartu dan PDF. Di tema terang warnanya digelapkan otomatis sampai kontrasnya cukup (diuji).
 - **Hasil disusun sebagai alur cerita**, di web maupun PDF: hook "Yang paling khas darimu" → Bab 1 "Kamu, dalam satu kalimat" (kalimat pembuka + peta singkat 5 sumbu) → Bab 2 kekuatan + kutipan jawaban sendiri → Bab 3 tiga temuan paling khas (besar), sisanya ringkas dan sebagian dilipat → Bab 4 keseharian (3 poin terbuka per bagian, sisanya dilipat) → Bab 5 yang perlu dijaga + untuk orang terdekat → penutup (satu kekuatan untuk dipegang, satu hal untuk dijaga) → simpan & bagikan → Bagian 2 "Angka di balik hasilmu". PDF memakai urutan yang sama, dengan sampul dan satu bab per halaman.
 - "Paling khas" dipilih oleh `storyFindings()`: temuan yang paling banyak memisahkan hal yang di tes utama tercampur (urutan `FIND_RANK`), diambil dari tiga wilayah berbeda (`FIND_AREA`). Kalimat yang sudah tampil di "Yang perlu kamu jaga" tidak diulang di keseharian.
 - Bingkai bahasa yang nyaman: "Yang perlu kamu jaga", bukan "kelemahan".
@@ -26,6 +26,7 @@ Live: https://tendorethane-code.github.io/mbti/
 - **Catatan khusus**: file jawaban boleh berisi `summary` dan `notes` (hasil sesi analisis di luar tes). Keduanya tampil di halaman hasil dan PDF, selalu sebagai teks biasa.
 - **Link hasil**: hasil bisa dibagikan lewat link (`#h=…`). Isinya dipadatkan di bagian `#` URL sehingga tidak pernah dikirim ke server. Orang yang membuka link hanya melihat hasil itu; jawaban di browser mereka tidak berubah kecuali mereka memilih "Simpan hasil ini di browser ini".
 - Tema gelap (bawaan) atau terang. Kartu PNG dan PDF mengikuti tema yang dipilih.
+- Ringan di HP: pratinjau dan contoh kartu digambar dalam resolusi kecil, satu per satu saat browser senggang atau saat bagian simpan mendekati layar, lalu disimpan sementara (ganti tema tidak menggambar ulang yang sudah ada). Kartu resolusi penuh baru dibuat saat diunduh.
 - Simpan hasil: kartu PNG (pratinjau langsung tampil, contoh kecil tiap gaya), PDF lengkap, file jawaban `.json`, salin link, salin ringkasan. Catatan soal link dan PDF dilipat supaya bagiannya ringkas.
 - PDF: tiap bagian di "Angka di balik hasilmu" tidak terbelah antarhalaman.
 - Semua berjalan di browser. Tidak ada jawaban yang dikirim ke server.
