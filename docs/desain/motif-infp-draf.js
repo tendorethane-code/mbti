@@ -1,5 +1,6 @@
 // Draf motif sampul INFP. draftInfp(varian, dark) -> canvas 1240x1767 (ukuran motif sampul PDF).
-// Varian: malam (A, dipakai sekarang), taman (B), tamanRimbun (B+), tamanRimbun2 (B++), bangau (C), kosmos (D), jendela (E), tamanKosmos (F = B + D).
+// Varian: malam (A, dipakai sekarang), taman (B), tamanRimbun (B+), tamanRimbun2 (B++), bangau (C), kosmos (D), jendela (E),
+// tamanKosmos (F = B + D, planet bercincin), lubangHitam (G), gerhana (H).
 // Butuh typePal() dari core.js. Lihat pratinjau-infp.html untuk melihat semuanya sekaligus.
 // Untuk memakai salah satu: salin isi varian ke fungsi drawInfp di index.html (helper-nya sama).
 function draftInfp(v,dark){
@@ -224,6 +225,91 @@ function draftInfp(v,dark){
       [.25,.5,.72,.95].forEach((a,i)=>{const an=Math.PI*a,X=px+Math.cos(an)*pr*2.25,Y=py+Math.sin(an)*pr*1.25;i%2?rose(X,Y,22):bloomFlower(X,Y,26)});
       [[W*.62,H*.22,50],[W*.97,H*.32,54],[W*.5,H*.06,38],[W*.72,H*.36,34]].forEach(([X,Y,r],i)=>i%2?rose(X,Y,r*.8):bloomFlower(X,Y,r));
       stars(130,W*.25,0,W*.75,H*.6);fireflies(55,W*.3,0,W*.7,H*.58)},
+    // G. Lubang Hitam: sulur B, nebula D, lubang hitam dengan piringan materi dan kelopak yang berpilin masuk.
+    lubangHitam(){
+      const bloom=(X,Y,r,col,n)=>{for(let k=0;k<(n||22);k++){x.fillStyle=rgba(col,.026);x.beginPath();const m=40,rr=r*(.7+rnd()*.35);for(let i=0;i<=m;i++){const an=i/m*Math.PI*2,d=rr*(1+(rnd()-.5)*.28);x.lineTo(X+Math.cos(an)*d,Y+Math.sin(an)*d)}x.fill()}};
+      [[W*.8,H*.13,380,A],[W*.58,H*.06,300,B],[W*.98,H*.36,340,B],[W*.68,H*.3,250,A],[W*.42,H*.02,200,B],[W*.92,H*.02,220,A]].forEach(([X,Y,r,col])=>bloom(X,Y,r,col));
+      mist([[W*.8,H*.13,520,A,.22],[W*.55,H*.32,380,B,.14]]);ripples(W*.8,H*.14,720,.18);
+      // galaksi spiral kecil
+      for(let arm=0;arm<3;arm++)for(let i=0;i<200;i++){const t=i/200*4,r=10*Math.exp(t*.7),an=t+arm*2.094+(rnd()-.5)*.35,X=W*.52+Math.cos(an)*r*1.1,Y=H*.15+Math.sin(an)*r*.5;x.fillStyle=rgba(rnd()<.5?A:LT,.25+rnd()*.55*(1-t/4.3));circ(X,Y,.8+rnd()*2,1)}
+      halo(rgba(LT,.8),W*.52,H*.15,44);
+      // sulur, daun dua warna, bunga berlapis, mawar, kuncup, debu bintang
+      const leaf2=(X,Y,an,s)=>{x.save();x.translate(X,Y);x.rotate(an);const g=x.createLinearGradient(0,0,s,0);g.addColorStop(0,rgba(B,.95));g.addColorStop(1,rgba(A,.85));x.fillStyle=g;x.beginPath();x.moveTo(0,0);x.quadraticCurveTo(s*.5,-s*.45,s,0);x.quadraticCurveTo(s*.5,s*.45,0,0);x.fill();x.strokeStyle=rgba(LT,.35);x.lineWidth=1;line(0,0,s*.85,0);x.restore()};
+      const bloomFlower=(X,Y,r)=>{halo(rgba(A,.7),X,Y,r*2);x.save();x.translate(X,Y);x.rotate(rnd()*Math.PI);
+        [[1,B,.75,6],[.68,A,.85,6]].forEach(([k,col,al,n],L)=>{for(let i=0;i<n;i++){x.rotate(Math.PI*2/n);const g=x.createLinearGradient(0,0,r*k,0);g.addColorStop(0,rgba(col,al));g.addColorStop(1,rgba(L?A:B,al*.75));x.fillStyle=g;x.beginPath();x.ellipse(r*k*.55,0,r*k*.55,r*k*.3,0,0,Math.PI*2);x.fill()}x.rotate(Math.PI/6)});
+        for(let i=0;i<7;i++){const an=i*Math.PI*2/7;x.fillStyle=rgba(LT,.9);circ(Math.cos(an)*r*.22,Math.sin(an)*r*.22,1.8,1)}x.fillStyle=rgba(LT,.95);circ(0,0,r*.12,1);x.restore()};
+      const rose=(X,Y,r)=>{halo(rgba(A,.6),X,Y,r*1.8);for(let t=0;t<11;t+=.35){const rr=r*(t/11),an=t*2.2;x.fillStyle=rgba(t%1.4<.7?A:B,.55+t*.03);x.beginPath();x.ellipse(X+Math.cos(an)*rr*.4,Y+Math.sin(an)*rr*.4,rr*.55+3,rr*.32+2,an,0,Math.PI*2);x.fill()}x.fillStyle=rgba(LT,.85);circ(X,Y,r*.08+1,1)};
+      const bud=(X,Y,an)=>{x.save();x.translate(X,Y);x.rotate(an);x.fillStyle=rgba(A,.85);x.beginPath();x.ellipse(8,0,9,5,0,0,Math.PI*2);x.fill();x.fillStyle=rgba(B,.8);x.beginPath();x.moveTo(0,0);x.lineTo(6,-5);x.lineTo(6,5);x.closePath();x.fill();x.restore()};
+      const vine=(X,Y,an,len,d)=>{x.strokeStyle=rgba(d%2?B:A,.9-d*.12);x.lineWidth=Math.max(2.2,8-d*1.8);x.beginPath();x.moveTo(X,Y);const curl=(rnd()-.5)*.05;
+        for(let i=0;i<len;i++){an+=Math.sin(i*.07+d)*.035+curl;X+=Math.cos(an)*9;Y+=Math.sin(an)*9;x.lineTo(X,Y);
+          if(i%6===0){x.stroke();leaf2(X,Y,an+(i%12?1.1:-1.1),24+rnd()*24-d*3);x.beginPath();x.moveTo(X,Y)}
+          if(i%4===0&&rnd()<.6){x.fillStyle=rgba(LT,.4+rnd()*.5);circ(X+(rnd()-.5)*24,Y+(rnd()-.5)*24,.8+rnd()*1.8,1)}
+          if(i%17===8&&rnd()<.6){x.stroke();bud(X,Y,an+(rnd()<.5?.9:-.9));x.beginPath();x.moveTo(X,Y)}
+          if(d<2&&i%36===18&&rnd()<.85){x.stroke();vine(X,Y,an+(rnd()<.5?.9:-.9),len*.5,d+1);x.beginPath();x.moveTo(X,Y)}}
+        x.stroke();let r=26-d*6;x.beginPath();for(let t=0;t<14;t+=.2)x.lineTo(X+Math.cos(an+t)*r*(1-t/16),Y+Math.sin(an+t)*r*(1-t/16));x.lineWidth=2;x.stroke();
+        rnd()<.55?bloomFlower(X,Y,42-d*8):rose(X,Y,34-d*7)};
+      vine(W*1.02,H*.5,-2.2,125,0);vine(W*.6,-10,1.9,100,0);vine(W*1.02,H*.06,2.6,90,0);vine(W*.86,H*.62,-2.6,72,1);vine(W*.4,-10,1.4,60,1);vine(W*.7,-10,2.45,95,0);
+      [[W*.62,H*.22,50],[W*.97,H*.32,54],[W*.5,H*.06,38],[W*.72,H*.36,34]].forEach(([X,Y,r],i)=>i%2?rose(X,Y,r*.8):bloomFlower(X,Y,r));
+      stars(130,W*.25,0,W*.75,H*.6);fireflies(55,W*.3,0,W*.7,H*.58);
+      // lubang hitam: piringan materi melengkung di belakang dan depan inti, cincin foton tipis, materi yang berpilin masuk
+      const px=W*.8,py=H*.14,pr=92,core=dark?'#060409':'#22162a';
+      halo(rgba(A,.5),px,py,pr*3.4);halo(rgba(B,.35),px,py,pr*2.2);
+      const disk=back=>{x.save();x.translate(px,py);x.rotate(-.18);
+        for(let i=0;i<26;i++){const k=1.3+i*.05,al=(1-i/26)*.85;const g=x.createLinearGradient(-pr*k*2.4,0,pr*k*2.4,0);g.addColorStop(0,rgba(dark?'#ffffff':A,al));g.addColorStop(.35,rgba(dark?'#fff1e6':A,al*.9));g.addColorStop(1,rgba(B,al*.45));
+          x.strokeStyle=g;x.lineWidth=3.2;x.beginPath();x.ellipse(0,0,pr*k*2.1,pr*k*.3,0,back?Math.PI:0,back?Math.PI*2:Math.PI);x.stroke()}
+        for(let i=0;i<700;i++){const an=back?Math.PI+rnd()*Math.PI:rnd()*Math.PI,k=1.3+rnd()*1.6;x.fillStyle=rgba(rnd()<.5?LT:A,.25+rnd()*.6*(1.6-(k-1.3))/1.6);circ(Math.cos(an)*pr*k*2.1,Math.sin(an)*pr*k*.3,.5+rnd()*1.4,1)}x.restore()};
+      disk(true);
+      // cahaya yang dibelokkan: lengkung terang di atas dan bawah inti
+      x.save();x.translate(px,py);x.rotate(-.18);[[1.32,4,.9],[1.42,2,.55],[1.55,1.4,.35]].forEach(([k,w,al])=>{const g=x.createLinearGradient(-pr*k,0,pr*k,0);g.addColorStop(0,rgba(B,al));g.addColorStop(.5,rgba(dark?'#ffffff':A,al));g.addColorStop(1,rgba(A,al));x.strokeStyle=g;x.lineWidth=w;x.beginPath();x.ellipse(0,0,pr*k,pr*k*.95,0,0,Math.PI*2);x.stroke()});x.restore();
+      // bayangan piringan yang terbelokkan cahaya: lengkung tebal di atas inti
+      x.save();x.translate(px,py);x.rotate(-.18);for(let i=0;i<14;i++){const k=1.08+i*.035,al=(1-i/14)*.8;const g=x.createLinearGradient(-pr*1.6,0,pr*1.6,0);g.addColorStop(0,rgba(dark?'#ffffff':A,al));g.addColorStop(1,rgba(B,al*.5));x.strokeStyle=g;x.lineWidth=2.6;x.beginPath();x.ellipse(0,pr*.05,pr*k*1.12,pr*k,0,Math.PI*1.02,Math.PI*1.98);x.stroke()}x.restore();
+      x.fillStyle=core;circ(px,py,pr,1);
+      const rim=x.createRadialGradient(px,py,pr*.86,px,py,pr*1.04);rim.addColorStop(0,'rgba(0,0,0,0)');rim.addColorStop(.8,rgba(dark?'#ffe6d6':A,.85));rim.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=rim;circ(px,py,pr*1.05,1);
+      disk(false);
+      // kelopak dan debu yang berpilin masuk
+      for(let i=0;i<70;i++){const t=i/70,an=t*Math.PI*5.5,r=pr*(4.2-t*2.6),X=px+Math.cos(an)*r,Y=py+Math.sin(an)*r*.45;x.save();x.translate(X,Y);x.rotate(an);x.fillStyle=rgba(i%2?A:B,.25+t*.6);x.beginPath();x.ellipse(0,0,7*(1-t*.5),3.5*(1-t*.5),0,0,Math.PI*2);x.fill();x.restore()}
+      x.strokeStyle=rgba(A,.35);x.lineWidth=2;x.beginPath();for(let t=0;t<=1;t+=.005){const an=t*Math.PI*5.5,r=pr*(4.2-t*2.6);x.lineTo(px+Math.cos(an)*r,py+Math.sin(an)*r*.45)}x.stroke();
+    },
+    // H. Gerhana: sulur B, nebula D, gerhana dengan korona, cincin berlian, dan lidah api kecil.
+    gerhana(){
+      const bloom=(X,Y,r,col,n)=>{for(let k=0;k<(n||22);k++){x.fillStyle=rgba(col,.026);x.beginPath();const m=40,rr=r*(.7+rnd()*.35);for(let i=0;i<=m;i++){const an=i/m*Math.PI*2,d=rr*(1+(rnd()-.5)*.28);x.lineTo(X+Math.cos(an)*d,Y+Math.sin(an)*d)}x.fill()}};
+      [[W*.8,H*.13,380,A],[W*.58,H*.06,300,B],[W*.98,H*.36,340,B],[W*.68,H*.3,250,A],[W*.42,H*.02,200,B],[W*.92,H*.02,220,A]].forEach(([X,Y,r,col])=>bloom(X,Y,r,col));
+      mist([[W*.8,H*.13,520,A,.22],[W*.55,H*.32,380,B,.14]]);ripples(W*.8,H*.14,720,.18);
+      // galaksi spiral kecil
+      for(let arm=0;arm<3;arm++)for(let i=0;i<200;i++){const t=i/200*4,r=10*Math.exp(t*.7),an=t+arm*2.094+(rnd()-.5)*.35,X=W*.52+Math.cos(an)*r*1.1,Y=H*.15+Math.sin(an)*r*.5;x.fillStyle=rgba(rnd()<.5?A:LT,.25+rnd()*.55*(1-t/4.3));circ(X,Y,.8+rnd()*2,1)}
+      halo(rgba(LT,.8),W*.52,H*.15,44);
+      // sulur, daun dua warna, bunga berlapis, mawar, kuncup, debu bintang
+      const leaf2=(X,Y,an,s)=>{x.save();x.translate(X,Y);x.rotate(an);const g=x.createLinearGradient(0,0,s,0);g.addColorStop(0,rgba(B,.95));g.addColorStop(1,rgba(A,.85));x.fillStyle=g;x.beginPath();x.moveTo(0,0);x.quadraticCurveTo(s*.5,-s*.45,s,0);x.quadraticCurveTo(s*.5,s*.45,0,0);x.fill();x.strokeStyle=rgba(LT,.35);x.lineWidth=1;line(0,0,s*.85,0);x.restore()};
+      const bloomFlower=(X,Y,r)=>{halo(rgba(A,.7),X,Y,r*2);x.save();x.translate(X,Y);x.rotate(rnd()*Math.PI);
+        [[1,B,.75,6],[.68,A,.85,6]].forEach(([k,col,al,n],L)=>{for(let i=0;i<n;i++){x.rotate(Math.PI*2/n);const g=x.createLinearGradient(0,0,r*k,0);g.addColorStop(0,rgba(col,al));g.addColorStop(1,rgba(L?A:B,al*.75));x.fillStyle=g;x.beginPath();x.ellipse(r*k*.55,0,r*k*.55,r*k*.3,0,0,Math.PI*2);x.fill()}x.rotate(Math.PI/6)});
+        for(let i=0;i<7;i++){const an=i*Math.PI*2/7;x.fillStyle=rgba(LT,.9);circ(Math.cos(an)*r*.22,Math.sin(an)*r*.22,1.8,1)}x.fillStyle=rgba(LT,.95);circ(0,0,r*.12,1);x.restore()};
+      const rose=(X,Y,r)=>{halo(rgba(A,.6),X,Y,r*1.8);for(let t=0;t<11;t+=.35){const rr=r*(t/11),an=t*2.2;x.fillStyle=rgba(t%1.4<.7?A:B,.55+t*.03);x.beginPath();x.ellipse(X+Math.cos(an)*rr*.4,Y+Math.sin(an)*rr*.4,rr*.55+3,rr*.32+2,an,0,Math.PI*2);x.fill()}x.fillStyle=rgba(LT,.85);circ(X,Y,r*.08+1,1)};
+      const bud=(X,Y,an)=>{x.save();x.translate(X,Y);x.rotate(an);x.fillStyle=rgba(A,.85);x.beginPath();x.ellipse(8,0,9,5,0,0,Math.PI*2);x.fill();x.fillStyle=rgba(B,.8);x.beginPath();x.moveTo(0,0);x.lineTo(6,-5);x.lineTo(6,5);x.closePath();x.fill();x.restore()};
+      const vine=(X,Y,an,len,d)=>{x.strokeStyle=rgba(d%2?B:A,.9-d*.12);x.lineWidth=Math.max(2.2,8-d*1.8);x.beginPath();x.moveTo(X,Y);const curl=(rnd()-.5)*.05;
+        for(let i=0;i<len;i++){an+=Math.sin(i*.07+d)*.035+curl;X+=Math.cos(an)*9;Y+=Math.sin(an)*9;x.lineTo(X,Y);
+          if(i%6===0){x.stroke();leaf2(X,Y,an+(i%12?1.1:-1.1),24+rnd()*24-d*3);x.beginPath();x.moveTo(X,Y)}
+          if(i%4===0&&rnd()<.6){x.fillStyle=rgba(LT,.4+rnd()*.5);circ(X+(rnd()-.5)*24,Y+(rnd()-.5)*24,.8+rnd()*1.8,1)}
+          if(i%17===8&&rnd()<.6){x.stroke();bud(X,Y,an+(rnd()<.5?.9:-.9));x.beginPath();x.moveTo(X,Y)}
+          if(d<2&&i%36===18&&rnd()<.85){x.stroke();vine(X,Y,an+(rnd()<.5?.9:-.9),len*.5,d+1);x.beginPath();x.moveTo(X,Y)}}
+        x.stroke();let r=26-d*6;x.beginPath();for(let t=0;t<14;t+=.2)x.lineTo(X+Math.cos(an+t)*r*(1-t/16),Y+Math.sin(an+t)*r*(1-t/16));x.lineWidth=2;x.stroke();
+        rnd()<.55?bloomFlower(X,Y,42-d*8):rose(X,Y,34-d*7)};
+      vine(W*1.02,H*.5,-2.2,125,0);vine(W*.6,-10,1.9,100,0);vine(W*1.02,H*.06,2.6,90,0);vine(W*.86,H*.62,-2.6,72,1);vine(W*.4,-10,1.4,60,1);vine(W*.7,-10,2.45,95,0);
+      [[W*.62,H*.22,50],[W*.97,H*.32,54],[W*.5,H*.06,38],[W*.72,H*.36,34]].forEach(([X,Y,r],i)=>i%2?rose(X,Y,r*.8):bloomFlower(X,Y,r));
+      stars(130,W*.25,0,W*.75,H*.6);fireflies(55,W*.3,0,W*.7,H*.58);
+      // gerhana: bulatan gelap menutup cahaya, korona sinar halus, cincin berlian, lidah api di tepi
+      const px=W*.8,py=H*.14,pr=104,moon=dark?'#08060c':'#24182c';
+      halo(rgba(A,.55),px,py,pr*3.6);halo(rgba(dark?'#fff1e6':A,.45),px,py,pr*1.9);
+      for(let i=0;i<260;i++){const an=rnd()*Math.PI*2,l=pr*(.35+Math.pow(rnd(),2.2)*2.4),w=.6+rnd()*1.6;const g=x.createLinearGradient(px+Math.cos(an)*pr,py+Math.sin(an)*pr,px+Math.cos(an)*(pr+l),py+Math.sin(an)*(pr+l));
+        g.addColorStop(0,rgba(rnd()<.5?(dark?'#ffffff':A):A,.6));g.addColorStop(1,rgba(B,0));x.strokeStyle=g;x.lineWidth=w;const bend=(rnd()-.5)*.25;x.beginPath();x.moveTo(px+Math.cos(an)*pr,py+Math.sin(an)*pr);x.quadraticCurveTo(px+Math.cos(an+bend)*(pr+l*.5),py+Math.sin(an+bend)*(pr+l*.5),px+Math.cos(an+bend*1.6)*(pr+l),py+Math.sin(an+bend*1.6)*(pr+l));x.stroke()}
+      const rim=x.createRadialGradient(px,py,pr*.94,px,py,pr*1.12);rim.addColorStop(0,'rgba(0,0,0,0)');rim.addColorStop(.35,rgba(dark?'#ffffff':A,.95));rim.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=rim;circ(px,py,pr*1.13,1);
+      // lidah api kecil merah muda
+      [[-2.3,16],[-1.9,10],[.6,13],[2.6,9]].forEach(([an,h])=>{const X=px+Math.cos(an)*pr,Y=py+Math.sin(an)*pr;x.save();x.translate(X,Y);x.rotate(an+Math.PI/2);x.strokeStyle=rgba(A,.9);x.lineWidth=3;x.beginPath();x.moveTo(-8,0);x.bezierCurveTo(-8,-h*1.6,8,-h*1.6,8,0);x.stroke();x.restore()});
+      x.fillStyle=moon;circ(px,py,pr,1);
+      const ms=x.createRadialGradient(px-pr*.3,py-pr*.3,pr*.1,px,py,pr);ms.addColorStop(0,'rgba(255,255,255,.05)');ms.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=ms;circ(px,py,pr,1);
+      // cincin berlian
+      {const an=-.75,X=px+Math.cos(an)*pr*1.02,Y=py+Math.sin(an)*pr*1.02;halo(rgba(dark?'#ffffff':A,1),X,Y,90);halo(rgba(dark?'#ffffff':A,1),X,Y,36);x.fillStyle=rgba(dark?'#ffffff':A,1);circ(X,Y,7,1);
+        x.strokeStyle=rgba(dark?'#ffffff':A,.75);x.lineWidth=1.6;line(X-120,Y,X+120,Y);line(X,Y-90,X,Y+90);x.lineWidth=1;line(X-60,Y-60,X+60,Y+60);line(X-60,Y+60,X+60,Y-60)}
+    },
   })[v]();
   for(let i=0;i<11000;i++){const X=rnd()*W,Y=rnd()*H*.8;x.fillStyle=rgba(rnd()<.5?A:(dark?'#ffffff':B),.05+rnd()*.12);x.fillRect(X,Y,2,2)}
   x.globalCompositeOperation='destination-in';const m=x.createRadialGradient(fx,fy,0,fx,fy,W*.98);m.addColorStop(0,'rgba(0,0,0,1)');m.addColorStop(.35,'rgba(0,0,0,.72)');m.addColorStop(.7,'rgba(0,0,0,.2)');m.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=m;x.fillRect(0,0,W,H);
