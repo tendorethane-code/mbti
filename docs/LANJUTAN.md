@@ -18,10 +18,11 @@ Dokumen ini merangkum keadaan proyek dan keputusan yang sudah diambil bersama pe
 - Performa: kartu digambar berskala (`drawCard(R,name,style,scale)`), malas (IntersectionObserver + idle), dan di-cache (`CARD_CACHE`). Uji dengan CPU 4x lebih lambat: tidak ada blok di atas ~130 ms.
 - Halaman hasil web dan PDF memakai alur cerita yang sama: hook → Bab 1 satu kalimat + peta → Bab 2 kekuatan → Bab 3 tiga temuan paling khas (`storyFindings` di `core.js`), sisanya ringkas/dilipat → Bab 4 keseharian (3 poin terbuka) → Bab 5 yang perlu dijaga + orang terdekat → penutup → simpan & bagikan → "Angka di balik hasilmu". Versi cetak tetap punya markup sendiri (`.story`, `.pcover`).
 - Kartu PNG 1080×1920, 7 gaya: Poster (bawaan, disukai), Takaran dan Mozaik (keduanya dicentang pemilik), Peta (dinilai "lumayan bagus"), Editorial, Aura, Koleksi. Konsep Gelombang (189 jawaban sebagai garis) sempat dibuat tapi tidak dipakai.
+- Tanggal di sampul PDF dipindah ke bawah (sebaris dengan "Paling cocok") supaya tidak tertimpa motif di pojok kanan atas.
 - Bagian simpan & bagikan: pratinjau kartu langsung tampil, contoh kecil tiap gaya (`canvas[data-thumb]`), satu tombol utama, 4 cara lain, catatan dilipat.
 
 ## Arsip desain
-Semua draf (motif INFP A–E dan B+, kartu yang ditolak, motif versi lama) ada di `docs/desain/` dengan halaman pratinjau. Pemilik ingin semua draf disimpan. Pemilik menyukai draf INFP B dan D; Draf terbaru: G (lubang hitam) dan H (gerhana), turunan F (sulur B + nebula D) setelah planet bercincin dinilai agak alay. Menunggu keputusan apakah salah satunya menggantikan A. Pemilik tidak suka elemen menjuntai (wisteria).
+Semua draf (motif INFP A–E dan B+, kartu yang ditolak, motif versi lama) ada di `docs/desain/` dengan halaman pratinjau. Pemilik ingin semua draf disimpan. Pemilik menyukai draf INFP B dan D; Draf terbaru: H+ (gerhana kreatif; pemilik suka H), sebelumnya G (lubang hitam) dan H (gerhana), turunan F (sulur B + nebula D) setelah planet bercincin dinilai agak alay. Menunggu keputusan apakah salah satunya menggantikan A. Pemilik tidak suka elemen menjuntai (wisteria).
 
 ## Pekerjaan berikutnya
 1. Tunggu tanggapan pemilik soal bagian simpan & bagikan yang baru dan kartu Mozaik. Yang ditolak sebelumnya: Konstelasi, Jurnal, Paspor, Piringan.

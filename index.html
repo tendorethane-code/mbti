@@ -364,7 +364,7 @@ body:before{content:"";position:fixed;inset:-20vh -20vw;z-index:-1;pointer-event
 .pcover>.pc-stamp{align-self:flex-end;margin-top:auto;margin-right:4mm;width:44mm;height:44mm;opacity:.95;z-index:2}
 .pcover>.pc-stamp+.pc-stats{margin-top:3mm}
 .pc-top{display:flex;justify-content:space-between;font-size:11px;font-weight:800;letter-spacing:.2em;color:var(--fam)}
-.pc-top span:last-child{letter-spacing:0;color:var(--mute);font-weight:600}
+.pc-top span+span{letter-spacing:0;color:var(--mute);font-weight:600}
 .pc-name{font-size:28px;font-weight:700;margin-top:24mm}
 .pc-type{display:block;width:150mm;height:auto;margin:2mm 0 0}
 
@@ -377,7 +377,7 @@ body:before{content:"";position:fixed;inset:-20vh -20vw;z-index:-1;pointer-event
 .pc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:auto}
 .pc-stats div{border:1px solid var(--line);border-radius:16px;padding:12px 14px;background:var(--bg)}
 .pc-stats b{display:block;font-size:40px;line-height:1;color:var(--fam)}.pc-stats span{font-size:13px;font-weight:700;color:var(--mute)}
-.pc-fit{font-size:13px;color:var(--mute)}.pc-fit b{color:var(--ink)}.pc-fit b.on{color:var(--fam)}
+.pc-fit{font-size:13px;color:var(--mute);display:flex;justify-content:space-between;gap:12px}.pc-date{white-space:nowrap}.pc-fit b{color:var(--ink)}.pc-fit b.on{color:var(--fam)}
 .pdivider{break-before:page;padding:30mm 12mm 6mm;border-top:0;border-bottom:2px solid var(--line);margin-bottom:6mm}
 .pdivider span{display:block;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--fam)}
 .pdivider b{display:block;font-size:34px;line-height:1.1;margin:6px 0 8px}
@@ -632,12 +632,12 @@ function renderRes(keep){
     const axs=['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax],d=Math.abs(p-50);return {ax,d,pp:Math.round(p>=50?p:100-p),w:p>=50?AX[ax][3]:AX[ax][2]}}).sort((a,b)=>b.d-a.d);
     const tagW={EI:x=>x.w==='Introvert'?(x.pp>=80?'Sangat Introvert':'Introvert'):(x.pp>=80?'Sangat Ekstrovert':'Ekstrovert'),SN:x=>x.w==='Intuitive'?'Konseptual':'Praktis',TF:x=>x.w==='Feeling'?'Berpegang pada Nilai':'Logis',JP:x=>x.w==='Prospecting'?'Fleksibel':'Terencana'};
     const tagline=axs.filter(x=>x.ax!=='AT'&&x.d>=10).sort((a,b)=>'EISNTFJP'.indexOf(a.ax)-'EISNTFJP'.indexOf(b.ax)).map(x=>tagW[x.ax](x)).join(' · ');
-    h+=`<div class="pcover printonly"><canvas class="pc-motif" id="pcMotif" width="1240" height="1767" aria-hidden="true"></canvas><div class="pc-top"><span>PETA KEPRIBADIAN</span><span>${esc(new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}))}</span></div>
+    h+=`<div class="pcover printonly"><canvas class="pc-motif" id="pcMotif" width="1240" height="1767" aria-hidden="true"></canvas><div class="pc-top"><span>PETA KEPRIBADIAN</span></div>
     <div class="pc-name">${name?esc(name):'Hasilku'}</div><canvas class="pc-type" id="pcType" width="1800" height="380" role="img" aria-label="${R.type}${R.id?'-'+R.id:''}"></canvas>
     <div class="pc-fam">${FAM[famOf(R.type)]}${R.strat?' · '+R.strat:''}</div>${tagline?`<div class="pc-tag">${tagline}</div>`:''}
     ${hook?`<div class="pc-hook"><span>Yang paling khas darimu</span>${hook.t?`<b>${esc(hook.t)}</b>`:''}<p>${esc(hook.x)}</p></div>`:''}
     <canvas class="pc-stamp" id="pcStamp" width="600" height="600" role="img" aria-label="Cap family ${FAM[famOf(R.type)]}"></canvas><div class="pc-stats">${axs.slice(0,3).map(x=>`<div><b>${x.pp}%</b><span>${x.w}</span></div>`).join('')}</div>
-    <div class="pc-fit">Paling cocok: ${R.fits.slice(0,3).map((f,i)=>`<b${i?'':' class="on"'}>${f.t}</b> ${nm(f.v)}`).join(' · ')}</div></div>`;
+    <div class="pc-fit"><span>Paling cocok: ${R.fits.slice(0,3).map((f,i)=>`<b${i?'':' class="on"'}>${f.t}</b> ${nm(f.v)}`).join(' · ')}</span><span class="pc-date">${esc(new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}))}</span></div></div>`;
     {
       const restP=rest.slice(0,10);
       h+=`<div class="story printonly">
