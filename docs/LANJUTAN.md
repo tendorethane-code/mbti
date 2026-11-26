@@ -20,6 +20,9 @@ Dokumen ini merangkum keadaan proyek dan keputusan yang sudah diambil bersama pe
 - Kartu PNG 1080×1920, 7 gaya: Poster (bawaan, disukai), Takaran dan Mozaik (keduanya dicentang pemilik), Peta (dinilai "lumayan bagus"), Editorial, Aura, Koleksi. Konsep Gelombang (189 jawaban sebagai garis) sempat dibuat tapi tidak dipakai.
 - Bagian simpan & bagikan: pratinjau kartu langsung tampil, contoh kecil tiap gaya (`canvas[data-thumb]`), satu tombol utama, 4 cara lain, catatan dilipat.
 
+## Arsip desain
+Semua draf (motif INFP A–E dan B+, kartu yang ditolak, motif versi lama) ada di `docs/desain/` dengan halaman pratinjau. Pemilik ingin semua draf disimpan. Pemilik menyukai draf INFP B dan D; B sudah diperkaya jadi B+ dan menunggu keputusan apakah menggantikan A.
+
 ## Pekerjaan berikutnya
 1. Tunggu tanggapan pemilik soal bagian simpan & bagikan yang baru dan kartu Mozaik. Yang ditolak sebelumnya: Konstelasi, Jurnal, Paspor, Piringan.
 2. Tahap pengecekan menyeluruh bersama pemilik, baru PR ke `main`.

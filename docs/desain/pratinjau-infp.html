@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Draf Motif INFP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#121019;--ink:#ecebf3;--mute:#a9a6ba;--pan:#1d1a2b}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#ffffff;--ink:#15151a;--mute:#5d5b6b;--pan:#f1efff}}
+:root[data-theme="light"]{--bg:#ffffff;--ink:#15151a;--mute:#5d5b6b;--pan:#f1efff}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif;padding:24px 16px}
+h1{margin:0 0 6px;font-size:26px}p{color:var(--mute);margin:0 0 18px;max-width:70ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:16px}
+figure{margin:0}figure div{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+canvas{width:100%;height:auto;border-radius:10px;display:block}
+.d{background:#100e16}.l{background:#fdfbf9}
+figcaption{font-weight:800;margin:8px 0 2px}figcaption small{display:block;font-weight:600;color:var(--mute)}
+</style>
+</head>
+<body>
+<h1>Draf motif sampul INFP</h1>
+<p>Semua draf motif INFP, kiri tema gelap dan kanan terang. A sedang dipakai di web. Kode ada di <code>motif-infp-draf.js</code>; untuk mengganti, salin isi varian ke <code>drawInfp</code> di <code>index.html</code>.</p>
+<div class="grid" id="g"></div>
+<script src="../../data.js"></script><script src="../../legacy.js"></script><script src="../../core.js"></script><script src="motif-infp-draf.js"></script>
+<script>
+const V=[['malam','A. Malam Danau','Dipakai sekarang'],['taman','B. Taman Rahasia','Sulur, daun, bunga'],['tamanRimbun','B+. Taman Rahasia, rimbun','B diperkaya: gerbang, wisteria, cat air'],['bangau','C. Burung Kertas','Bangau origami, jurnal'],['kosmos','D. Kosmos Cat Air','Nebula, galaksi, planet'],['jendela','E. Jendela Dunia Dalam','Pemandangan di dalam jendela bulat']];
+const g=document.getElementById('g');
+const go=()=>V.forEach(([v,t,s],i)=>setTimeout(()=>{const f=document.createElement('figure'),w=document.createElement('div');
+  [true,false].forEach(dk=>{const c=document.createElement('canvas');c.width=620;c.height=884;c.className=dk?'d':'l';c.getContext('2d').drawImage(draftInfp(v,dk),0,0,620,884);w.appendChild(c)});
+  f.appendChild(w);f.insertAdjacentHTML('beforeend',`<figcaption>${t}<small>${s}</small></figcaption>`);g.appendChild(f)},i*120));
+(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(go);
+</script>
+</body>
+</html>

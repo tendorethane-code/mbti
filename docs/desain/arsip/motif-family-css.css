@@ -1,0 +1,9 @@
+/* Motif sampul versi pertama: satu motif CSS per family (commit 165a213).
+   Dipasang sebagai <div class="pc-motif m-NT|NF|SJ|SP"> di dalam .pcover. */
+.pcover>.pc-motif{position:absolute;inset:0;z-index:0;opacity:.22;pointer-events:none;-webkit-mask-image:radial-gradient(circle at 88% 12%,#000 0,rgba(0,0,0,.45) 26%,transparent 54%);mask-image:radial-gradient(circle at 88% 12%,#000 0,rgba(0,0,0,.45) 26%,transparent 54%)}
+:root[data-theme=light] .pcover>.pc-motif{opacity:.15}
+.m-NT{background:linear-gradient(var(--fam) .3mm,transparent .3mm) 0 0/8mm 8mm,linear-gradient(90deg,var(--fam) .3mm,transparent .3mm) 0 0/8mm 8mm}
+.m-NF{background:repeating-radial-gradient(circle at 88% 14%,transparent 0 5.6mm,var(--fam) 5.6mm 5.9mm)}
+.m-SJ{background:repeating-linear-gradient(0deg,transparent 0 4.8mm,var(--fam) 4.8mm 5mm),repeating-linear-gradient(90deg,transparent 0 24.8mm,var(--fam) 24.8mm 25mm)}
+.m-SP{background:repeating-linear-gradient(-58deg,transparent 0 7mm,var(--fam) 7mm 7.5mm)}
+    h+=`<div class="pcover printonly"><div class="pc-motif m-${famOf(R.type)}" aria-hidden="true"></div><div class="pc-top"><span>PETA KEPRIBADIAN</span><span>${esc(new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}))}</span></div>
