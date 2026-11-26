@@ -304,6 +304,12 @@ try {
   await click('#viewSaveYes');
   check('link hasil: setelah disimpan jadi data browser ini', await waitFor("document.getElementById('viewBar').hidden&&JSON.parse(localStorage.getItem('tesKepribadian.v1')).name==='Teman'&&!location.hash", 3000));
   check('riwayat: hasil kedua memunculkan tabel perbandingan', await ev("!!document.getElementById('riwayat')&&/ESTJ-A/.test(document.getElementById('riwayat').innerText)&&/INFP-T/.test(document.getElementById('riwayat').innerText)&&/berubah/.test(document.getElementById('riwayat').innerText)"));
+  check('pintas: tombol Riwayat di kanan atas menampilkan jumlah tes', await ev("(()=>{const b=document.getElementById('topHist');return !b.hidden&&+document.getElementById('topHistN').textContent===JSON.parse(localStorage.getItem('tesKepribadian.riwayat')).length&&b.getBoundingClientRect().right>innerWidth/2})()"));
+  check('pintas: tombol Simpan & bagikan ada di atas halaman hasil', await ev("!!document.querySelector('#res .rhero .hshare [data-jump=akhir]')"));
+  await click('#topHist');
+  check('pintas: tombol Riwayat membuka beranda dan menggulir ke daftar riwayat', await waitFor("!document.getElementById('home').hidden&&Math.abs(document.getElementById('hist').getBoundingClientRect().top)<innerHeight", 3000));
+  await click('#goShare');
+  check('pintas: Simpan & bagikan di beranda langsung ke bagian simpan hasil', await waitFor("!document.getElementById('res').hidden&&Math.abs(document.getElementById('akhir').getBoundingClientRect().top)<120", 3000));
   await goto(BASE + '#h=rusak123456');
   check('link hasil rusak: pesan, tidak crash', await waitFor("!document.getElementById('home').hidden&&/tidak valid/.test(document.getElementById('fileMsg').textContent)", 3000));
   if (jf) { await setFile(jf); await waitFor("!document.getElementById('res').hidden", 4000); }
