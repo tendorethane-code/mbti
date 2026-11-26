@@ -566,6 +566,9 @@ const putCanvas=(el,src,sync)=>{if(!el||!src||!el.isConnected)return;el.onload=(
   if(sync||!src.toBlob){el.src=src.toDataURL('image/png');return}
   src.toBlob(b=>{if(!b||!el.isConnected)return;if(el._u)URL.revokeObjectURL(el._u);el._u=URL.createObjectURL(b);el.src=el._u},'image/png')};
 const canvasImg=(img,c)=>{if(!img||!c)return;const set=u=>{if(img._u)URL.revokeObjectURL(img._u);img._u=u;img.src=u};if(c.toBlob)c.toBlob(b=>{if(b&&img.isConnected)set(URL.createObjectURL(b))},'image/png');else img.src=c.toDataURL('image/png')};const CARD_CACHE=new Map();
+// Font dari Google bisa lambat atau menggantung di sinyal lemah. Kartu menunggu font paling lama sebentar, bukan selamanya.
+const fontsReady=(()=>{let p=null;return()=>p||(p=(async()=>{if(!document.fonts)return;try{await Promise.all(['800','700','400'].map(w=>document.fonts.load(w+' 40px Manrope')))}catch(e){}try{await document.fonts.ready}catch(e){}})())})();
+const fontsWithin=ms=>Promise.race([fontsReady().then(()=>true),new Promise(r=>setTimeout(()=>r(false),ms))]);
 function setTheme(t,fromUser){
   t=t==='light'?'light':'dark';document.documentElement.dataset.theme=t;
   $('pageStyle').textContent=`@page{size:A4;margin:12mm;background:${PAGEBG[t]}}`;
@@ -847,22 +850,25 @@ function renderRes(keep){
   $('res').querySelectorAll('[data-jump]').forEach(b=>b.addEventListener('click',()=>{const t=$(b.dataset.jump);if(t)t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}));
   $('dlPdf').addEventListener('click',()=>{try{window.print()}catch(e){$('copyMsg').textContent='Browser ini tidak bisa mencetak. Pakai kartu PNG atau screenshot.'}});
   $('dlJson').addEventListener('click',()=>{dl(new Blob([JSON.stringify(exportData(name,D.c,{summary:own,notes}))],{type:'application/json'}),`jawaban-peta-kepribadian${slug?'-'+slug:''}.json`);$('copyMsg').textContent='File jawaban diunduh.'});
-  const fontsOk=async()=>{if(document.fonts){try{await document.fonts.load('800 40px Manrope')}catch(er){}await document.fonts.ready}};
+  // Kalau font belum datang dalam batas waktu, kartu digambar dengan font cadangan dulu; begitu font datang, cache dibuang dan kartu digambar ulang.
+  const shareEl=$('akhir');let lateFix=false;
+  const fontsOk=async ms=>{if(lateFix&&!ms)return;const ok=await fontsWithin(ms||1500);if(!ok&&!lateFix){lateFix=true;fontsReady().then(()=>{if(!shareEl||!shareEl.isConnected)return;CARD_CACHE.clear();refreshCard().then(paintThumbs)})}};
   // Kartu digambar bertahap saat bagian "Simpan & bagikan" mendekati layar (atau saat browser senggang), supaya halaman tidak tersendat.
   // Saat popup simpan & bagikan terbuka, contoh kartu digambar cepat (pengguna sedang melihatnya); kalau belum, tunggu browser senggang.
   const idle=fn=>{const open=$('akhir')&&$('akhir').classList.contains('open');if(open)return setTimeout(fn,16);return 'requestIdleCallback' in window?requestIdleCallback(fn,{timeout:1200}):setTimeout(fn,40)};
   const ckey=st=>[theme(),st,name,JSON.stringify(D.c)].join('|');
   const cached=(st,sc)=>{const k=sc+'|'+ckey(st);let c=CARD_CACHE.get(k);if(!c){c=drawCard(R,name,st,sc);if(CARD_CACHE.size>40)CARD_CACHE.clear();CARD_CACHE.set(k,c)}return c};
   refreshCard=async()=>{try{await fontsOk();const c=cached(cardStyle(),.5);canvasImg($('cardPrev'),c);$('cardPrev').hidden=false;return c}catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.';return null}};
+  const paintThumbs=()=>{const th=[...document.querySelectorAll('#akhir canvas[data-thumb]')];
+    const step=()=>{const t=th.shift();if(!t||!t.isConnected)return;try{const x=t.getContext('2d');x.clearRect(0,0,t.width,t.height);x.drawImage(cached(t.dataset.thumb,1/6),0,0,t.width,t.height)}catch(e){}idle(step)};idle(step)};
   // Motif kartu digambar di jeda tersendiri dulu, baru kartunya, supaya tidak jadi satu blok berat.
   const warm=sc=>{if(R.hasType&&cardStyle()==='poster'){try{drawMotif(R.type,theme()==='dark',Math.min(1,sc*1.15)).getContext('2d').getImageData(0,0,1,1)}catch(e){}}};
   {let go=false;const start=()=>{if(go||!$('akhir'))return;go=true;if(io)io.disconnect();
-      idle(()=>{warm(.5);idle(()=>refreshCard().then(()=>{const th=[...document.querySelectorAll('#akhir canvas[data-thumb]')];
-        const step=()=>{const t=th.shift();if(!t||!t.isConnected)return;try{t.getContext('2d').drawImage(cached(t.dataset.thumb,1/6),0,0,t.width,t.height)}catch(e){}idle(step)};idle(step)}))})};
+      idle(()=>{warm(.5);idle(()=>refreshCard().then(paintThumbs))})};
     const io='IntersectionObserver' in window?new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting))start()},{rootMargin:'700px 0px'}):null;
     if(io)io.observe($('akhir'));startShare=start;setTimeout(()=>idle(start),2500)}
   {const dock=document.querySelector('#res .dock'),hs=document.querySelector('#res .hshare');if(dock&&hs&&'IntersectionObserver' in window){dock.classList.add('dock-off');new IntersectionObserver(es=>es.forEach(e=>dock.classList.toggle('dock-off',e.isIntersecting))).observe(hs)}}
-  $('dlCard').addEventListener('click',async()=>{$('copyMsg').textContent='Sedang membuat kartu…';let c;try{await fontsOk();c=drawCard(R,name);canvasImg($('cardPrev'),c);$('cardPrev').hidden=false}catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.';return}
+  $('dlCard').addEventListener('click',async()=>{$('copyMsg').textContent='Sedang membuat kartu…';let c;try{await fontsOk(3000);c=drawCard(R,name);canvasImg($('cardPrev'),c);$('cardPrev').hidden=false}catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.';return}
     c.toBlob(b=>{if(b)dl(b,`peta-kepribadian${slug?'-'+slug:''}.png`)},'image/png');
     $('copyMsg').textContent='Kartu diunduh. Kalau di HP tidak terunduh, tekan lama gambar pratinjau lalu pilih simpan.'});
 }
