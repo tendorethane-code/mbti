@@ -34,12 +34,27 @@ const findChrome = () => {
   for (const c of ['google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser']) { try { return execSync(`command -v ${c}`).toString().trim(); } catch {} }
   throw new Error('Chrome tidak ditemukan. Set CHROME_BIN.');
 };
-const prof = fs.mkdtempSync(path.join(os.tmpdir(), 'peta-prof-'));
-const chrome = spawn(findChrome(), ['--headless=new', '--no-sandbox', '--disable-gpu', '--no-first-run', '--remote-debugging-port=0', `--user-data-dir=${prof}`, 'about:blank'], {stdio: ['ignore', 'ignore', 'pipe']});
-const wsUrl = await new Promise((res, rej) => {
-  let buf = ''; const t = setTimeout(() => rej(new Error('Chrome tidak merespons')), 20000);
-  chrome.stderr.on('data', d => { buf += d; const m = buf.match(/DevTools listening on (ws:\/\/\S+)/); if (m) { clearTimeout(t); res(m[1]); } });
+// Chrome di mesin CI kadang lambat menyala (pernah > 20 dtk). Alamat DevTools dibaca dari stderr ATAU dari file
+// DevToolsActivePort di profil; tunggu sampai 60 dtk, dan kalau gagal, nyalakan ulang sekali dengan profil baru.
+// Kalau tetap gagal, tampilkan stderr Chrome supaya penyebabnya terlihat di log.
+let chrome;
+const launchChrome = () => new Promise((res, rej) => {
+  const prof = fs.mkdtempSync(path.join(os.tmpdir(), 'peta-prof-'));
+  chrome = spawn(findChrome(), ['--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage', '--no-first-run', '--no-default-browser-check', '--remote-debugging-port=0', `--user-data-dir=${prof}`, 'about:blank'], {stdio: ['ignore', 'ignore', 'pipe']});
+  let buf = '', done = false;
+  const finish = (err, url) => { if (done) return; done = true; clearTimeout(t); clearInterval(poll); err ? rej(Object.assign(err, {stderr: buf})) : res(url); };
+  const t = setTimeout(() => finish(new Error('Chrome tidak merespons dalam 60 detik')), 60000);
+  chrome.stderr.on('data', d => { buf += d; const m = buf.match(/DevTools listening on (ws:\/\/\S+)/); if (m) finish(null, m[1]); });
+  chrome.on('exit', code => finish(new Error(`Chrome berhenti (kode ${code})`)));
+  const poll = setInterval(() => { try { const [port, p2] = fs.readFileSync(path.join(prof, 'DevToolsActivePort'), 'utf8').split('\n'); if (port && p2) finish(null, `ws://127.0.0.1:${port.trim()}${p2.trim()}`); } catch {} }, 250);
 });
+let wsUrl;
+try { wsUrl = await launchChrome(); }
+catch (e1) {
+  console.log(`Chrome gagal menyala (${e1.message}), mencoba sekali lagi. stderr:\n${(e1.stderr || '').slice(-1500)}`);
+  try { chrome.kill('SIGKILL'); } catch {}
+  wsUrl = await launchChrome().catch(e2 => { console.log(`stderr percobaan kedua:\n${(e2.stderr || '').slice(-1500)}`); throw e2; });
+}
 
 // --- klien CDP minimal ---
 const ws = new WebSocket(wsUrl);
