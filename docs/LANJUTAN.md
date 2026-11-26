@@ -1,36 +1,56 @@
 # Catatan lanjutan (untuk sesi berikutnya)
 
-Dokumen ini merangkum keadaan proyek dan keputusan yang sudah diambil bersama pemilik proyek, supaya sesi baru bisa melanjutkan tanpa mengulang.
+Dokumen ini merangkum keadaan proyek dan keputusan yang sudah diambil bersama pemilik proyek, supaya sesi baru bisa melanjutkan tanpa mengulang. Baca seluruhnya sebelum mulai.
 
 ## Cara kerja dengan pemilik proyek
 - Bahasa santai, tapi jujur dan kritis. Pemilik ingin mitra yang menantang ide, bukan yang selalu setuju. Sebutkan asumsi, risiko, dan bias, termasuk ketika hasil tesnya sendiri yang dipertanyakan.
 - Sebelum menafsirkan jawaban yang ambigu, tetapkan aturan dulu dan umumkan, jangan mengubah aturan setelah melihat hasil.
-- Jangan mengisi jawaban yang tidak ada buktinya. Kalau jawaban lama diisi dari chat, sebutkan soal mana dan dari ucapan apa.
-- Push hanya ke branch `claude/hopeful-dijkstra-5g5kvh`. **Jangan buat PR atau merge dulu**: pemilik ingin tahap pengecekan sendiri setelah semua beres.
-- Situs live (`main`, GitHub Pages) masih versi lama. Semua perubahan di bawah baru ada di branch ini.
+- Jangan mengisi jawaban yang tidak ada buktinya.
+- **Jangan merge PR apa pun tanpa kata "merge" dari pemilik.** Push ke branch PR boleh. Pemilik mencoba perubahan di HP lewat link pratinjau (lihat "Pratinjau di HP").
+- Pemilik suka diberi contoh visual (screenshot/gambar) sebelum memutuskan, dan sering memberi masukan lewat screenshot yang dicoret.
+- Untuk desain: tunjukkan beberapa draf, simpan semua draf ke `docs/desain/` (pemilik ingin semuanya disimpan), baru pasang yang dipilih.
+- Situs live = `main` di GitHub Pages, masih versi lama sampai PR #1 di-merge.
 
-## Keadaan sekarang (semua tes lulus: 44 unit test, 105 cek E2E)
-- 189 soal di 4 modul utama + Pendalaman adaptif (bank 22 soal, `PROBE_RULES` di `core.js`). Bahasa "kamu"/"saya", tanpa perkiraan waktu.
-- Soal sudah diaudit dan dicocokkan dengan IPIP-NEO-120 (lihat README, "Perubahan soal versi 3").
-- File jawaban v3 per id soal; v1/v2 dibaca lewat `legacy.js`.
-- Hasil: ringkasan, kekuatan, "yang perlu kamu jaga", temuan khusus (otomatis + catatan manual), gambaran keseharian dengan kutipan jawaban asli, tips untuk orang terdekat, riwayat, link hasil (mode lihat).
-- Palet warna per tipe (`TYPE_PAL`, `typePal()`), dipakai di seluruh halaman hasil (`#res` mengganti `--acc`/`--ind`), kartu, dan PDF. Pemilik minta warna khas tiap tipe dipertahankan, dan PDF tiap tipe harus unik (pemilik suka tema PDF INFP). Ada `typeSurf()` (semburat latar/panel/garis), motif sampul khas per tipe (`drawMotif`, 16 motif dalam bahasa family-nya) dan cap family (`drawStamp`). Pemilik sangat suka variasinya; INFP minta motif paling spesial (nebula, riak, bulan sabit berhalo, bintang jatuh, rasi, kunang-kunang, kelopak). Pemilik ingin motif tetap ramai dan bercampur dengan judul (asal halus dan bertekstur), versi besar/megah ENTP, ISFJ, ESFJ, ENTJ dipertahankan, dan INFP harus selalu paling kaya. Kartu Poster memakai motif tipe sebagai latar. Sudah dicek render 16 tipe × 2 tema.
-- Performa: kartu digambar berskala (`drawCard(R,name,style,scale)`), malas (IntersectionObserver + idle), dan di-cache (`CARD_CACHE`). Uji dengan CPU 4x lebih lambat: tidak ada blok di atas ~130 ms.
-- Halaman hasil web dan PDF memakai alur cerita yang sama: hook → Bab 1 satu kalimat + peta → Bab 2 kekuatan → Bab 3 tiga temuan paling khas (`storyFindings` di `core.js`), sisanya ringkas/dilipat → Bab 4 keseharian (3 poin terbuka) → Bab 5 yang perlu dijaga + orang terdekat → penutup → simpan & bagikan → "Angka di balik hasilmu". Versi cetak tetap punya markup sendiri (`.story`, `.pcover`).
-- Kartu PNG 1080×1920, 7 gaya: Poster (bawaan, disukai), Takaran dan Mozaik (keduanya dicentang pemilik), Peta (dinilai "lumayan bagus"), Editorial, Aura, Koleksi. Konsep Gelombang (189 jawaban sebagai garis) sempat dibuat tapi tidak dipakai.
-- Tanggal di sampul PDF dipindah ke bawah (sebaris dengan "Paling cocok") supaya tidak tertimpa motif di pojok kanan atas.
-- Bagian simpan & bagikan: pratinjau kartu langsung tampil, contoh kecil tiap gaya (`canvas[data-thumb]`), satu tombol utama, 4 cara lain, catatan dilipat.
+## Status PR (per 26 Nov 2026)
+Semua CI hijau. Tidak ada yang di-merge. Pemilik masih ingin menambah perubahan sebelum merge.
 
-## Arsip desain
-Semua draf (motif INFP A–E dan B+, kartu yang ditolak, motif versi lama) ada di `docs/desain/` dengan halaman pratinjau. Pemilik ingin semua draf disimpan. Pemilik menyukai draf INFP B dan D; Motif INFP yang dipasang: H+ (gerhana kreatif, pilihan pemilik), dengan versi terang khusus (ruang terang di sekitar gerhana, motif INFP terang tampil penuh). Eksplorasi lanjutan: H++ (pusaran) dan H3 (pita sutra mengorbit, arah elegan yang disukai). Sebelumnya sebelumnya G (lubang hitam) dan H (gerhana), turunan F (sulur B + nebula D) setelah planet bercincin dinilai agak alay. Menunggu keputusan apakah salah satunya menggantikan A. Pemilik tidak suka elemen menjuntai (wisteria).
+| PR | Branch | Base | Isi |
+|---|---|---|---|
+| #1 | `claude/hopeful-dijkstra-5g5kvh` | `main` | Rilis besar v3 (semua isi di bawah "Keadaan sekarang"). Sudah lewat cek rilis lengkap (lihat CHANGELOG). Menunggu pemilik mencoba di HP lalu bilang "merge". |
+| #2 | `claude/pendalaman-fungsi` | branch #1 | 12 soal Pendalaman per fungsi (Fe, Ti, Te, Ni, Ne, Si, Se), maks. 16 soal per orang. |
+| #3 | `claude/kuis-seru` | branch #1 | Mengisi soal jadi seru: rasi bintang per modul, babak ~11 soal + kartu jeda fakta, pesan 25/50/75%, sapaan "selamat datang lagi". Semua hiasan netral terhadap isi jawaban. |
 
-## Pekerjaan berikutnya
-1. Tunggu tanggapan pemilik soal bagian simpan & bagikan yang baru dan kartu Mozaik. Yang ditolak sebelumnya: Konstelasi, Jurnal, Paspor, Piringan.
-2. Tahap pengecekan menyeluruh bersama pemilik, baru PR ke `main`.
+Urutan merge yang disepakati: #1 dulu (**squash merge**, lalu hapus branch-nya, karena riwayat branch memuat data pribadi yang sudah dihapus dari file), lalu ganti base #2 dan #3 ke `main` (di GitHub: Edit base), lalu merge sesuai pilihan pemilik. #2 dan #3 tidak saling bergantung. Kalau #2 dan #3 sama-sama menyentuh `CHANGELOG.md`/`README.md`, merge base ke branch-nya dan selesaikan konflik (jangan rebase/force-push).
+
+**Tambahan baru dari pemilik**: tanya dulu masuk ke PR mana. Aturan praktis: perbaikan untuk rilis utama ke #1; hal yang berkaitan dengan Pendalaman ke #2; layar soal ke #3; fitur baru yang besar ke branch/PR baru dari branch #1.
+
+## Pratinjau di HP
+Pemilik mencoba lewat raw.githack, dikunci ke commit supaya tidak kena cache:
+`https://raw.githack.com/tendorethane-code/mbti/<SHA commit>/index.html`
+Selalu berikan link dengan SHA terbaru setelah push. Data di raw.githack terpisah dari situs live (beda alamat), jadi uji upgrade data lama baru bisa setelah merge.
+
+## Keadaan sekarang (branch #1; tes: 46 unit, 121 E2E)
+- 189 soal di 4 modul utama + Pendalaman adaptif (`DEEP` di `data.js`, aturan `PROBE_RULES` di `core.js`). Bahasa "kamu"/"saya", tanpa perkiraan waktu. Soal sudah diaudit dan dicocokkan dengan IPIP-NEO-120.
+- File jawaban v3 per id soal; v1/v2 dibaca lewat `legacy.js`. Data browser versi lama dimigrasi otomatis, dan beranda memberi tahu berapa soal yang perlu dijawab lagi.
+- **Hasil web** (alur cerita, sama dengan PDF): hero (tipe bergradien, hook "yang paling khas", 3 tipe teratas, kotak **"Kenapa X, bukan Y?"** dari `typeWhy()` kalau huruf dan urutan fungsi menunjuk tipe berbeda atau selisih < 2 poin, tombol Simpan & bagikan) → Bab 1 satu kalimat + peta → Bab 2 kekuatan → Bab 3 tiga temuan paling khas (`storyFindings`) → Bab 4 keseharian → Bab 5 yang perlu dijaga + orang terdekat → penutup → "Angka di balik hasilmu" → "Seberapa bisa dipegang".
+- **Navigasi**: bilah atas satu baris (logo = ke beranda, tema ikon ☾/☀, tombol Riwayat berangka), sembunyi saat menggulir ke bawah. **Riwayat** dan **Simpan & bagikan** berupa popup (panel bawah di HP, jendela di desktop; `openSheet`/`closeSheets`, Esc, klik latar). Di hasil ada dok kaca kecil (Beranda, Ke atas, Bagikan) yang muncul hanya saat menggulir ke atas dan setelah tombol atas lewat.
+- **PDF**: sampul dengan motif khas tiap tipe (`drawMotif`) + cap family (`drawStamp`) + tanggal di bawah; latar bersemburat warna tipe (`typeSurf`); Bab 1 memuat kotak "Kenapa…"; bagian angka tidak terbelah. Gambar sampul dipasang sebagai `<img>` PNG, **bukan canvas** (Chrome HP mencetak canvas dengan latar putih). Motif sampul digambar saat browser senggang dan cadangan sinkron saat `beforeprint`.
+- **Motif**: 16 motif per tipe dalam bahasa family (NT kisi, NF riak, SJ garis rapi, SP diagonal). Pemilik ingin motif ramai dan bercampur dengan judul (halus, bertekstur), versi besar ENTP/ISFJ/ESFJ/ENTJ dipertahankan. **INFP harus selalu paling kaya**; yang dipasang: H+ (gerhana dengan korona yang tumbuh jadi taman, bunga tersembunyi, manik cahaya, kelopak cahaya), dengan versi terang khusus.
+- **Warna**: palet per tipe (`TYPE_PAL`, `typePal()`) dipakai di seluruh hasil, kartu, dan PDF.
+- **Kartu PNG** 1080×1920, 7 gaya: Poster (bawaan, dengan motif tipe), Takaran, Mozaik, Peta, Editorial, Aura, Koleksi. Ditolak: Konstelasi, Jurnal, Paspor, Piringan (arsip di `docs/desain/arsip/`).
+- **Performa**: kartu dan motif digambar berskala, bertahap (idle/IntersectionObserver), dan di-cache. Script memakai `?v=` (ganti angkanya setiap rilis; lihat README bagian Rilis).
+
+## Arsip desain (`docs/desain/`)
+13 draf motif INFP (A Malam Danau, B Taman, B+, B++, C Bangau, D Kosmos, E Jendela, F Taman Kosmos, G Lubang Hitam, H Gerhana, H+ dipakai, H++ Pusaran, H3 Pita Sutra) dengan `pratinjau-infp.html`, kartu yang ditolak, dan motif versi lama. Pemilik tidak suka elemen menjuntai (wisteria) dan planet bercincin ("agak alay"); suka sulur mengalir (B), kosmos cat air (D), gerhana (H+), dan pita tipis yang mengitari (H3).
+
+## Ide yang sudah dibahas tapi belum dikerjakan
+- Kartu lain diberi motif juga (sekarang hanya Poster). Saranku: jangan, supaya gaya lain tetap punya karakter sendiri.
+- Motif tipe lain dinaikkan setara kekayaannya dengan INFP (dengan INFP tetap paling kaya).
 
 ## Data pribadi pemilik
-File jawaban pemilik (berisi jawaban lengkap, Pendalaman, ringkasan, dan catatan manual) **tidak disimpan di repo** karena berisi data pribadi dan repo ini publik. Minta pemilik mengunggah file itu di sesi baru. Jangan menulis nama, skor, atau hasil tes pemilik di file mana pun di repo.
+File jawaban pemilik **tidak disimpan di repo** karena berisi data pribadi dan repo ini publik. Minta pemilik mengunggahnya di sesi baru kalau perlu membuat PDF/PNG untuknya. **Jangan menulis nama, skor, atau hasil tes pemilik (atau temannya) di file mana pun di repo**, termasuk gambar contoh: pakai data buatan bernama "Contoh".
 
 ## Cara membuat file untuk pemilik
-- PDF/PNG dibuat dari web sungguhan dengan Playwright: layani file repo di URL `https://tendorethane-code.github.io/mbti/` (route ke file lokal), buka file jawaban lewat `#fileIn`, unduh kartu lewat `#dlCard`/`#cardPrev`, cetak dengan `emulateMedia({media:'print'})` + `page.pdf({printBackground:true, preferCSSPageSize:true})`.
+- PDF/PNG dibuat dari web sungguhan dengan Playwright: layani file repo di URL `https://tendorethane-code.github.io/mbti/` (route ke file lokal), buka file jawaban lewat `#fileIn`, tunggu `#pcType`/`#pcStamp` punya `dataset.ok`, kirim `beforeprint`, tunggu `#pcMotif` `dataset.ok`, lalu `emulateMedia({media:'print'})` + `page.pdf({printBackground:true, preferCSSPageSize:true})`.
 - Semua gaya kartu bisa digambar langsung: `drawCard(resultOf(sanitizeImport(data).c), nama, gaya)`.
+- Data uji 16 tipe: `answersFor(C, tipe, 'A'|'T', kekuatan)` dari `tests/helpers.mjs`.
