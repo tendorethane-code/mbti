@@ -19,7 +19,7 @@ Semua CI hijau. Tidak ada yang di-merge. Pemilik masih ingin menambah perubahan 
 | #1 | `claude/hopeful-dijkstra-5g5kvh` | `main` | Rilis besar v3 (semua isi di bawah "Keadaan sekarang"). Sudah lewat cek rilis lengkap (lihat CHANGELOG). Menunggu pemilik mencoba di HP lalu bilang "merge". |
 | #2 | `claude/pendalaman-fungsi` | branch #1 | 12 soal Pendalaman per fungsi (Fe, Ti, Te, Ni, Ne, Si, Se), maks. 16 soal per orang. |
 | #3 | `claude/kuis-seru` | branch #1 | Mengisi soal jadi seru: rasi bintang per modul, babak ~11 soal + kartu jeda fakta, pesan 25/50/75%, sapaan "selamat datang lagi". Semua hiasan netral terhadap isi jawaban. |
-| (belum PR) | `claude/karakter` | branch #1 | Karakter per tipe. Baru draf di `docs/desain/pratinjau-karakter.html` (3 arah: A Roh Peta, B Chibi Mini, C Sahabat Hewan; Pemandu netral; animasi hasil terungkap). Menunggu pemilik memilih arah sebelum dibuat 16 tipe dan dipasang. |
+| (belum PR) | `claude/karakter` | branch #1 | Karakter per tipe. Pemilik memilih arah **A Roh Peta**. Draf 16 tipe + 7 opsi INFP di `docs/desain/pratinjau-roh.html` (`karakter-roh.js`). Menunggu: opsi INFP yang dipilih, masukan untuk 16 tipe, lalu dipasang ke web. Draf awal 3 arah tetap di `pratinjau-karakter.html`. |
 
 Urutan merge yang disepakati: #1 dulu (**squash merge**, lalu hapus branch-nya, karena riwayat branch memuat data pribadi yang sudah dihapus dari file), lalu ganti base #2 dan #3 ke `main` (di GitHub: Edit base), lalu merge sesuai pilihan pemilik. #2 dan #3 tidak saling bergantung. Kalau #2 dan #3 sama-sama menyentuh `CHANGELOG.md`/`README.md`, merge base ke branch-nya dan selesaikan konflik (jangan rebase/force-push).
 
