@@ -423,6 +423,25 @@ function storyFindings(F,notes){
 const lcFirst=t=>t?t[0].toLowerCase()+t.slice(1):'';
 // Penutup: satu kekuatan untuk dipegang, satu hal untuk dijaga (keduanya urutan teratas di insights).
 const closingLines=I=>({keep:I.strengths[0]?I.strengths[0].t:'',care:I.watch[0]?I.watch[0].t:''});
+// "Kenapa tipe ini?": dipakai saat huruf dan urutan fungsi menunjuk tipe berbeda, atau saat dua tipe teratas hampir seri.
+// Kecocokan akhir = 50% peluang huruf (d) + 50% kecocokan urutan fungsi (st), lihat compute().
+const TIE_GAP=2;
+function typeWhy(R){
+  if(!R||!R.hasType||!R.fits||R.fits.length<2)return null;
+  const a=R.fits[0],L=R.fits.find(f=>f.t===R.letters),diff=R.letters!==a.t,b=diff&&L?L:R.fits[1],gap=a.v-b.v,tie=gap<TIE_GAP;
+  if(!diff&&!tie)return null;
+  const fn=R.fn?R.fn.slice(0,4).map(x=>x.f):null,pct=ax=>Math.round(R.ax[ax]>=50?R.ax[ax]:100-R.ax[ax]);
+  const lines=[];
+  if(diff){
+    const ax=['EI','SN','TF','JP'].find((k,i)=>a.t[i]!==b.t[i]);
+    lines.push(`Dari 4 huruf saja hasilmu ${b.t}${ax?`: ${AX[ax][R.ax[ax]>=50?3:2]}-mu ${pct(ax)}%`:''}.`);
+    if(fn&&a.st!=null&&b.st!=null)lines.push(`Tapi urutan fungsimu (${fn.join(' › ')}) lebih mirip ${a.t} (${STACK[a.t].join('–')}) daripada ${b.t} (${STACK[b.t].join('–')}). Skor urutan fungsi: ${a.t} ${nmf(a.st)} vs ${b.t} ${nmf(b.st)}.`);
+    lines.push(`Kecocokan akhir menggabungkan keduanya 50:50, jadi ${a.t} ${nmf(a.v)} vs ${b.t} ${nmf(b.v)}.`);
+  }else lines.push(`Huruf dan urutan fungsimu sama-sama mengarah ke ${a.t}, tapi ${b.t} hampir sama dekatnya.`);
+  if(tie)lines.push(`Selisihnya hanya ${nmf(Math.max(gap,0))} poin, terlalu kecil untuk memastikan. Baca keduanya, lalu pilih yang terasa lebih pas.`);
+  if(diff)lines.push('Huruf diukur dari 89 soal (Inti dan Facet), urutan fungsi dari 40 soal dan dukungan risetnya lebih lemah. Kalau ragu, huruf lebih bisa dipegang.');
+  return {a:a.t,b:b.t,gap,tie,diff,title:tie?`${a.t} atau ${b.t}?`:`Kenapa ${a.t}, bukan ${b.t}?`,lines};
+}
 const histEntry=(D,date)=>{const e={t:date||new Date().toISOString(),n:D.name||'',c:cleanC(D.c)};if(D.summary)e.s=D.summary;if(D.notes&&D.notes.length)e.cn=D.notes;return e};
 const histData=e=>e&&typeof e==='object'&&e.c?sanitizeImport({app:APP_ID,v:DATA_V,name:e.n,c:e.c,summary:e.s,notes:e.cn}):null;
 const mainDone=c=>{const a=fromCanon(c);return MAIN.every(m=>isDone(a,m))};

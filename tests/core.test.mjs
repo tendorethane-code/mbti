@@ -405,3 +405,20 @@ test('Pendalaman: jawaban tengah juga menghasilkan temuan', () => {
   const f = C.deepFindings(C.resultOf(base), {...base, 'd-dekat': 5, 'd-kenal': 1, 'd-dekat-ulang': 5}).find(x => x.key === 'tfctx');
   assert.match(f.text, /sayang bukan berarti lemah/);
 });
+
+test('kenapa tipe ini: huruf dan fungsi beda tipe dijelaskan, tipe yang jelas tidak diberi kotak', () => {
+  const a = answersFor(C, 'ENFP', 'T', 1), b = answersFor(C, 'ENTP', 'T', 2); a.fungsi = b.fungsi;
+  const R = C.resultOf(C.canon(a)), W = C.typeWhy(R);
+  assert.equal(R.letters, 'ENFP'); assert.equal(R.type, 'ENTP');
+  assert.ok(W && W.diff && W.a === 'ENTP' && W.b === 'ENFP', JSON.stringify(W));
+  assert.match(W.lines.join(' '), /Dari 4 huruf saja hasilmu ENFP: Feeling-mu \d+%/);
+  assert.match(W.lines.join(' '), /urutan fungsimu .* lebih mirip ENTP/);
+  for (const t of C.TABLE) assert.equal(C.typeWhy(C.resultOf(C.canon(answersFor(C, t, 'A', 2)))), null, t);
+});
+test('kenapa tipe ini: dua tipe teratas hampir seri ditandai, tidak diklaim pasti', () => {
+  const R = C.resultOf(C.canon(answersFor(C, 'ENFP', 'T', 1)));
+  const fits = [{t: 'ENTP', d: 60, st: 74, v: 67.2}, {t: 'ENFP', d: 70, st: 64.2, v: 67.1}, ...R.fits.slice(2)];
+  const W = C.typeWhy({...R, type: 'ENTP', letters: 'ENFP', fits});
+  assert.ok(W.tie && W.title === 'ENTP atau ENFP?', JSON.stringify(W));
+  assert.match(W.lines.join(' '), /Selisihnya hanya 0,1 poin/);
+});

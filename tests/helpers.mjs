@@ -9,7 +9,7 @@ export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 export function loadCore() {
   const src = ['data.js', 'legacy.js', 'core.js'].map(f => fs.readFileSync(path.join(ROOT, f), 'utf8')).join('\n;\n');
   const ctx = vm.createContext({console, TextEncoder, TextDecoder, btoa, atob, Uint8Array});
-  return vm.runInContext(src + '\n;({AX,CORE,FACETS,FITEMS,B5,FN1,FN2,POS,RIGHT,TABLE,STACK,FAM,FUNCS,MODS,MAIN,TOTAL,DATA_V,DEEP,deepFindings,deepPlan,storyFindings,closingLines,FIND_RANK,FIND_AREA,deepDone,histEntry,histData,histAdd,resultOf,LAYOUT_V2,LEGACY_FACET_V1,compute,canon,fromCanon,insights,encodeShare,decodeShare,esc,cleanNotes,sanitizeImport,exportData,safeName,fileSlug,summaryText,famOf,isDone,answered,emptyAns,valid,titleCase,typePal,typeSurf,contrast,TYPE_PAL})', ctx);
+  return vm.runInContext(src + '\n;({AX,CORE,FACETS,FITEMS,B5,FN1,FN2,POS,RIGHT,TABLE,STACK,FAM,FUNCS,MODS,MAIN,TOTAL,DATA_V,DEEP,deepFindings,deepPlan,storyFindings,closingLines,typeWhy,FIND_RANK,FIND_AREA,deepDone,histEntry,histData,histAdd,resultOf,LAYOUT_V2,LEGACY_FACET_V1,compute,canon,fromCanon,insights,encodeShare,decodeShare,esc,cleanNotes,sanitizeImport,exportData,safeName,fileSlug,summaryText,famOf,isDone,answered,emptyAns,valid,titleCase,typePal,typeSurf,contrast,TYPE_PAL})', ctx);
 }
 
 // Jawaban buatan yang mengarah ke satu tipe, dengan nilai mentah sesuai posisi A/B yang tampil di layar.
