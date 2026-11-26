@@ -389,6 +389,18 @@ try {
   await click('.topbar [data-theme-set="dark"]');
   check('balik ke tema gelap dari tombol atas', (await ev("getComputedStyle(document.body).backgroundColor")) === 'rgb(18, 16, 25)');
 
+  // Font dari Google menggantung (sinyal lemah): kartu tetap muncul dengan font cadangan, tidak menunggu selamanya.
+  const fakeCss = Buffer.from('@font-face{font-family:Manrope;font-weight:400 800;src:url(https://fonts.gstatic.com/e2e-menggantung.woff2)}').toString('base64');
+  const hang = m => { if (m.sessionId === S && m.method === 'Fetch.requestPaused' && m.params.request.url.includes('fonts.googleapis.com')) cmd('Fetch.fulfillRequest', {requestId: m.params.requestId, responseCode: 200, responseHeaders: [{name: 'Content-Type', value: 'text/css'}], body: fakeCss}).catch(() => {}); };
+  listeners.push(hang);
+  await cmd('Network.enable'); await cmd('Network.setCacheDisabled', {cacheDisabled: true});
+  await cmd('Fetch.enable', {patterns: [{urlPattern: '*fonts.googleapis.com*'}, {urlPattern: '*fonts.gstatic.com*'}]});
+  // Event load bisa ikut tertahan font yang menggantung, jadi tunggu tombolnya saja.
+  await cmd('Page.navigate', {url: BASE}); await waitFor("!!document.getElementById('goRes')&&!document.getElementById('goRes').disabled&&typeof refreshCard!=='undefined'", 10000);
+  await click('#goRes'); await click('#res .hshare .btn');
+  check('font menggantung: pratinjau dan contoh kartu tetap muncul', await waitFor("document.fonts.status==='loading'&&document.getElementById('cardPrev').naturalHeight>=960&&[...document.querySelectorAll('#akhir canvas[data-thumb]')].every(c=>c.getContext('2d').getImageData(45,80,1,1).data[3]>0)", 8000));
+  listeners.splice(listeners.indexOf(hang), 1); await cmd('Fetch.disable'); await cmd('Network.setCacheDisabled', {cacheDisabled: false});
+
   check('nggak ada error JavaScript sama sekali', errors.length === 0, errors.join(' | '));
 } catch (e) {
   check('tes jalan sampai selesai', false, e.stack);
