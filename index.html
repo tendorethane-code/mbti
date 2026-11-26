@@ -849,7 +849,8 @@ function renderRes(keep){
   $('dlJson').addEventListener('click',()=>{dl(new Blob([JSON.stringify(exportData(name,D.c,{summary:own,notes}))],{type:'application/json'}),`jawaban-peta-kepribadian${slug?'-'+slug:''}.json`);$('copyMsg').textContent='File jawaban diunduh.'});
   const fontsOk=async()=>{if(document.fonts){try{await document.fonts.load('800 40px Manrope')}catch(er){}await document.fonts.ready}};
   // Kartu digambar bertahap saat bagian "Simpan & bagikan" mendekati layar (atau saat browser senggang), supaya halaman tidak tersendat.
-  const idle=fn=>'requestIdleCallback' in window?requestIdleCallback(fn,{timeout:1200}):setTimeout(fn,40);
+  // Saat popup simpan & bagikan terbuka, contoh kartu digambar cepat (pengguna sedang melihatnya); kalau belum, tunggu browser senggang.
+  const idle=fn=>{const open=$('akhir')&&$('akhir').classList.contains('open');if(open)return setTimeout(fn,16);return 'requestIdleCallback' in window?requestIdleCallback(fn,{timeout:1200}):setTimeout(fn,40)};
   const ckey=st=>[theme(),st,name,JSON.stringify(D.c)].join('|');
   const cached=(st,sc)=>{const k=sc+'|'+ckey(st);let c=CARD_CACHE.get(k);if(!c){c=drawCard(R,name,st,sc);if(CARD_CACHE.size>40)CARD_CACHE.clear();CARD_CACHE.set(k,c)}return c};
   refreshCard=async()=>{try{await fontsOk();const c=cached(cardStyle(),.5);canvasImg($('cardPrev'),c);$('cardPrev').hidden=false;return c}catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.';return null}};

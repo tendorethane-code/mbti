@@ -180,6 +180,7 @@ try {
   const px = `(()=>{const i=document.getElementById('cardPrev'),c=document.createElement('canvas');c.width=i.naturalWidth;c.height=i.naturalHeight;const x=c.getContext('2d');x.drawImage(i,0,0);return [...x.getImageData(30,700,1,1).data].slice(0,3).join(',')})()`;
   check('kartu PNG ikut tema gelap', (await ev(px)) === '18,16,25', await ev(px));
   const pf = await waitFile('.png');
+  await click('#res .hshare .btn');
   check('pratinjau kartu langsung tampil, contoh kecil tiap gaya tergambar', await waitFor("[...document.querySelectorAll('#akhir canvas[data-thumb]')].every(c=>{const d=c.getContext('2d').getImageData(45,80,1,1).data;return d[3]>0})", 8000));
   check('pilihan gaya kartu: 7 gaya tersedia, Poster bawaan', (await ev("document.querySelectorAll('[data-card-style]').length")) === 7 && (await ev("document.querySelector('[data-card-style=\"poster\"]').getAttribute('aria-pressed')")) === 'true');
   await ev("document.getElementById('cardPrev').src=''");
