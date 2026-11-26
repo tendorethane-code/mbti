@@ -10,7 +10,7 @@ Dokumen ini merangkum keadaan proyek dan keputusan yang sudah diambil bersama pe
 - Situs live (`main`, GitHub Pages) masih versi lama. Semua perubahan di bawah baru ada di branch ini.
 
 ## Keadaan sekarang (semua tes lulus: 44 unit test, 105 cek E2E)
-- 189 soal di 4 modul utama + Pendalaman adaptif (bank 22 soal, `PROBE_RULES` di `core.js`). Bahasa "kamu"/"saya", tanpa perkiraan waktu.
+- 189 soal di 4 modul utama + Pendalaman adaptif (bank 34 soal, maks. 16 per orang, `PROBE_RULES` di `core.js`). Bahasa "kamu"/"saya", tanpa perkiraan waktu.
 - Soal sudah diaudit dan dicocokkan dengan IPIP-NEO-120 (lihat README, "Perubahan soal versi 3").
 - File jawaban v3 per id soal; v1/v2 dibaca lewat `legacy.js`.
 - Hasil: ringkasan, kekuatan, "yang perlu kamu jaga", temuan khusus (otomatis + catatan manual), gambaran keseharian dengan kutipan jawaban asli, tips untuk orang terdekat, riwayat, link hasil (mode lihat).

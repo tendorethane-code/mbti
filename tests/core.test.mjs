@@ -422,3 +422,34 @@ test('kenapa tipe ini: dua tipe teratas hampir seri ditandai, tidak diklaim past
   assert.ok(W.tie && W.title === 'ENTP atau ENFP?', JSON.stringify(W));
   assert.match(W.lines.join(' '), /Selisihnya hanya 0,1 poin/);
 });
+
+test('Pendalaman per fungsi: tiap fungsi punya soal, INFJ dan ISFJ tidak lagi dapat soal yang sama', () => {
+  const plan = (t, i = 'A') => { const c = C.canon(answersFor(C, t, i, 2)); return C.deepPlan(C.resultOf(c), c).map(q => q.id); };
+  assert.ok(plan('INFJ').includes('d-ni-firasat') && !plan('INFJ').includes('d-si-pengalaman'));
+  assert.ok(plan('ISFJ').includes('d-si-pengalaman') && !plan('ISFJ').includes('d-ni-firasat'));
+  assert.notDeepEqual(plan('INFJ'), plan('ISFJ'));
+  for (const [t, id] of [['ENFJ', 'd-fe-suasana'], ['INTP', 'd-ti-paham'], ['ENTJ', 'd-te-atur'], ['ENTP', 'd-ne-ide'], ['ESTP', 'd-se-detail']]) assert.ok(plan(t).includes(id), `${t} harus dapat ${id}: ${plan(t)}`);
+});
+test('Pendalaman per fungsi: setiap jawaban (1, 3, 5) menghasilkan temuan bertanda fungsi', () => {
+  const base = C.canon(answersFor(C, 'ENFJ', 'A', 2)), R = C.resultOf(base);
+  const ids = C.DEEP.map(d => d[0]).filter(id => /^d-(fe|ti|te|ni|ne|si|se)-/.test(id));
+  assert.equal(ids.length, 12);
+  for (const id of ids) for (const v of [1, 3, 5]) {
+    if (id === 'd-se-detail' && v === 3) continue;
+    const before = C.deepFindings(R, base).length, F = C.deepFindings(R, {...base, [id]: v});
+    assert.ok(F.length > before, `${id}=${v} tanpa temuan`);
+    assert.match(F.find(f => !C.deepFindings(R, base).some(g => g.key === f.key && g.title === f.title)).b, /Fungsi (Fi|Fe|Ti|Te|Ni|Ne|Si|Se) \d,\d/);
+  }
+});
+test('Pendalaman: maksimal 16 soal, soal yang sudah dijawab tidak hilang', () => {
+  let seed = 7; const rnd = () => (seed = seed * 16807 % 2147483647) / 2147483647;
+  for (let k = 0; k < 300; k++) {
+    const lean = answersFor(C, C.TABLE[k % 16], k % 2 ? 'A' : 'T', 1), a = {};
+    for (const m of C.MODS) a[m.id] = lean[m.id].map(v => rnd() < .45 ? 1 + Math.floor(rnd() * 5) : v);
+    const c = C.canon(a), R = C.resultOf(c), p = C.deepPlan(R, c);
+    assert.ok(p.length >= 5 && p.length <= 18, `rencana ${p.length} soal`);
+    const answered = {...c}; p.forEach(q => answered[q.id] = 3);
+    const p2 = C.deepPlan(R, answered).map(q => q.id);
+    assert.ok(p.every(q => p2.includes(q.id) || !['d-dekat', 'd-kenal'].includes(q.id)), 'soal yang dijawab hilang dari rencana');
+  }
+});
