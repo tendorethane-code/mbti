@@ -89,9 +89,16 @@ h1{margin:0 0 6px;font-size:26px}h2{margin:34px 0 4px;font-size:20px}p{color:var
 </style>
 </head>
 <body>
-<h1>Roh Peta: 16 tipe</h1>
-<p>Arah A yang dipilih. Badan mengikuti family (Analyst kristal, Diplomat tetesan, Sentinel roti, Explorer api miring), tiap tipe punya aksesori, ekspresi, dan pose sendiri. <b>Ketuk karakter</b> untuk melihat reaksinya.</p>
+<h1>Roh Peta</h1>
+<p>Draf terbaru di atas: gabungan INFP (badan Kosmos + Gerhana) dan versi badan unik per tipe. Di bawahnya versi badan per family untuk dibandingkan. <b>Ketuk karakter</b> untuk melihat reaksinya.</p>
 <div class="themes"><button data-th="dark">Gelap</button><button data-th="light">Terang</button></div>
+<h2>Gabungan INFP: Kosmos + Gerhana</h2>
+<div class="row opsi" id="gab"></div>
+<h2>Badan unik per tipe</h2>
+<p>Setiap tipe punya bentuk badan sendiri, tidak mengikuti family. Aksesori tetap sama.</p>
+<div id="unik"></div>
+<h2>Badan per family (sebelumnya)</h2>
+<p>Badan mengikuti family (Analyst kristal, Diplomat tetesan, Sentinel roti, Explorer api miring).</p>
 <div id="all"></div>
 <h2>Opsi Roh INFP</h2>
 <p>Tujuh pilihan untuk INFP. Beberapa mengambil unsur desain yang sudah disukai: gerhana H+, sulur taman B, kosmos cat air D, burung kertas C.</p>
@@ -105,7 +112,9 @@ INFJ:'lentera, cahaya di ujung kepala, bulan sabit',INFP:'bunga, gerhana kecil',
 ISTJ:'kacamata kotak, dasi kupu-kupu, daftar centang',ISFJ:'syal rajut, teh hangat',ESTJ:'topi kapten, toa, peluit',ESFJ:'pita, celemek, kue mangkuk',
 ISTP:'bandana, kunci pas, roda gigi',ISFP:'baret, kuas, palet, kupu-kupu',ESTP:'kacamata hitam, lompat-lompat',ESFP:'mikrofon, mata bintang, not musik'};
 document.getElementById('all').innerHTML=FAMS.map(([f,ts])=>`<div class="fam">${f}</div><div class="row">${ts.split(' ').map(t=>`<div class="cell">${R.roh16(t)}<b>${t}</b><small>${NOTE[t]}</small></div>`).join('')}</div>`).join('');
-document.getElementById('opsi').innerHTML=Object.keys(R.INFP_OPSI).map(k=>`<div class="cell">${R.rohInfp(k)}<b>${R.INFP_OPSI[k].nama}</b><small>${R.INFP_OPSI[k].isi}</small></div>`).join('');
+document.getElementById('unik').innerHTML=FAMS.map(([f,ts])=>`<div class="fam">${f}</div><div class="row">${ts.split(' ').map(t=>`<div class="cell">${R.rohUnik(t)}<b>${t}</b><small>${R.UNIK[t].nama}</small></div>`).join('')}</div>`).join('');
+document.getElementById('gab').innerHTML=['kosmosGerhana','gerhanaDalam','kosmos','gerhana'].map(k=>`<div class="cell">${R.rohInfp(k)}<b>${R.INFP_OPSI[k].nama}</b><small>${R.INFP_OPSI[k].isi}</small></div>`).join('');
+document.getElementById('opsi').innerHTML=Object.keys(R.INFP_OPSI).filter(k=>!['kosmosGerhana','gerhanaDalam'].includes(k)).map(k=>`<div class="cell">${R.rohInfp(k)}<b>${R.INFP_OPSI[k].nama}</b><small>${R.INFP_OPSI[k].isi}</small></div>`).join('');
 const EMO=['💖','✨','⭐','💫','🎉'];
 const burstAt=(el,n=7)=>{for(let i=0;i<n;i++){const s=document.createElement('span');s.className='fx';s.textContent=EMO[i%EMO.length];const an=-Math.PI/2+(i-(n-1)/2)*.42;s.style.setProperty('--dx',Math.round(Math.cos(an)*70)+'px');s.style.setProperty('--dy',Math.round(Math.sin(an)*80-10)+'px');s.style.setProperty('--r',(i*37%60-30)+'deg');el.appendChild(s);setTimeout(()=>s.remove(),1100)}};
 document.addEventListener('click',e=>{const c=e.target.closest('.cell');if(!c)return;const s=c.querySelector('.chr');s.classList.remove('hop');void s.getBoundingClientRect();s.classList.add('hop');burstAt(c);setTimeout(()=>s.classList.remove('hop'),800)});

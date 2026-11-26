@@ -98,7 +98,7 @@
         sparkle(40, 64, 5, K.b, 'tw', .6) + `<path class="tw" style="animation-delay:.3s" d="M30 96l6-10 2 6 6-8" fill="none" stroke="${GOLD}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`}),
     INFJ: K => ({fc: {l: 'calm', mouth: 'smile'}, arms: 'hold',
       top: `${glow(K.id, 100, 36, 18, 'flick')}<circle cx="100" cy="37" r="6" fill="#fffbe6" stroke="${K.lb}" stroke-width="2"/>`,
-      front: `<path d="M95 104a8 8 0 1 0 10 0a6 6 0 1 1 -10 0Z" fill="${mixHex(K.b, '#fff', .3)}" opacity=".9"/>`,
+      faceAcc: `<path d="M95 104a8 8 0 1 0 10 0a6 6 0 1 1 -10 0Z" fill="${mixHex(K.b, '#fff', .3)}" opacity=".9"/>`,
       hold: `${glow(K.id, K.hold[0], K.hold[1] - 2, 28, 'flick')}<path d="M${K.hold[0] - 8} ${K.hold[1] - 16}Q${K.hold[0]} ${K.hold[1] - 26} ${K.hold[0] + 8} ${K.hold[1] - 16}" fill="none" stroke="${K.lb}" stroke-width="2.6"/><rect x="${K.hold[0] - 11}" y="${K.hold[1] - 16}" width="22" height="26" rx="7" fill="#fff4c2" stroke="${K.lb}" stroke-width="2.6"/><path d="M${K.hold[0]} ${K.hold[1] - 8}c3 4 3 8 0 10c-3-2-3-6 0-10z" fill="${GOLD}"/><path d="M${K.hold[0] - 11} ${K.hold[1] - 10}h22M${K.hold[0] - 11} ${K.hold[1] + 4}h22" stroke="${K.lb}" stroke-width="2"/>`,
       scene: sparkle(34, 70, 5, K.b, 'tw', .2) + sparkle(166, 62, 6, '#fff', 'tw', .9) + sparkle(152, 34, 3.5, K.b, 'tw', 1.4)}),
     INFP: K => ({fc: {mouth: 'smile'},
@@ -113,17 +113,17 @@
       top: `<path d="M100 42Q96 26 108 20Q118 16 116 26" fill="none" stroke="${K.line}" stroke-width="3" stroke-linecap="round"/>${star5(116, 24, 8, GOLD, GOLD_D, 'tw')}`,
       scene: ['#ff8a7a', GOLD, K.b, '#b9a2ff', '#fff'].map((c, i) => `<circle class="tw" style="animation-delay:${i * .35}s" cx="${[26, 178, 34, 170, 150][i]}" cy="${[110, 104, 160, 170, 40][i]}" r="${[4, 3.5, 3, 4, 3][i]}" fill="${c}"/>`).join('') + butterfly(36, 50, '#b9a2ff', '#7a68c4')}),
     ISTJ: K => ({fc: {mouth: 'smile'}, arms: 'hold', tuft: 'neat',
-      front: `<g fill="#fff" fill-opacity=".18" stroke="${INK}" stroke-width="3"><rect x="66" y="105" width="28" height="22" rx="5"/><rect x="106" y="105" width="28" height="22" rx="5"/></g><path d="M94 114h12" stroke="${INK}" stroke-width="3"/>` +
+      faceAcc: `<g fill="#fff" fill-opacity=".18" stroke="${INK}" stroke-width="3"><rect x="66" y="105" width="28" height="22" rx="5"/><rect x="106" y="105" width="28" height="22" rx="5"/></g><path d="M94 114h12" stroke="${INK}" stroke-width="3"/>` +
         `<path d="M100 150L86 142V158ZM100 150L114 142V158Z" fill="url(#h${K.id})" stroke="${K.lb}" stroke-width="2.4" stroke-linejoin="round"/><rect x="96" y="146" width="8" height="8" rx="2" fill="${K.b}" stroke="${K.lb}" stroke-width="2.2"/>`,
       hold: `<g transform="rotate(-6 ${K.hold[0]} ${K.hold[1]})"><rect x="${K.hold[0] - 22}" y="${K.hold[1] - 14}" width="44" height="32" rx="4" fill="#fffaf0" stroke="${K.lb}" stroke-width="2.6"/><rect x="${K.hold[0] - 8}" y="${K.hold[1] - 18}" width="16" height="7" rx="2" fill="${K.b}" stroke="${K.lb}" stroke-width="2"/>${[0, 1, 2].map(i => `<path d="M${K.hold[0] - 16} ${K.hold[1] - 4 + i * 9}l3 3 5-6" fill="none" stroke="${K.a}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M${K.hold[0] - 4} ${K.hold[1] - 3 + i * 9}h18" stroke="${K.lb}" stroke-width="2" opacity=".5" stroke-linecap="round"/>`).join('')}</g>`}),
     ISFJ: K => ({fc: {mouth: 'cat'},
-      front: `<path d="M46 150Q100 166 154 150L156 166Q100 182 44 166Z" fill="url(#h${K.id})" stroke="${K.lb}" stroke-width="3" stroke-linejoin="round"/><path d="M64 156l0 12M80 160l0 12M96 162l0 12M112 162l0 12M128 160l0 12M144 156l0 12" stroke="#fff" stroke-width="2" opacity=".35"/>` +
-        `<g class="wig" style="transform-origin:66px 166px"><path d="M58 164L52 196L70 194L74 166Z" fill="url(#h${K.id})" stroke="${K.lb}" stroke-width="3" stroke-linejoin="round"/></g>` +
-        `<ellipse cx="148" cy="186" rx="9" ry="13" fill="${K.a}" stroke="${K.line}" stroke-width="3" transform="rotate(-30 148 186)"/><path d="M134 168h30l-3 22a8 8 0 0 1-8 7h-8a8 8 0 0 1-8-7z" fill="#fffaf2" stroke="${K.line}" stroke-width="3" stroke-linejoin="round"/><path d="M164 174a7 7 0 0 1 0 12" fill="none" stroke="${K.line}" stroke-width="3"/>${heart(149, 181, 4.5, K.b)}` +
+      faceAcc: `<path d="M46 150Q100 166 154 150L156 166Q100 182 44 166Z" fill="url(#h${K.id})" stroke="${K.lb}" stroke-width="3" stroke-linejoin="round"/><path d="M64 156l0 12M80 160l0 12M96 162l0 12M112 162l0 12M128 160l0 12M144 156l0 12" stroke="#fff" stroke-width="2" opacity=".35"/>` +
+        `<g class="wig" style="transform-origin:66px 166px"><path d="M58 164L52 196L70 194L74 166Z" fill="url(#h${K.id})" stroke="${K.lb}" stroke-width="3" stroke-linejoin="round"/></g>`,
+      front: `<ellipse cx="148" cy="186" rx="9" ry="13" fill="${K.a}" stroke="${K.line}" stroke-width="3" transform="rotate(-30 148 186)"/><path d="M134 168h30l-3 22a8 8 0 0 1-8 7h-8a8 8 0 0 1-8-7z" fill="#fffaf2" stroke="${K.line}" stroke-width="3" stroke-linejoin="round"/><path d="M164 174a7 7 0 0 1 0 12" fill="none" stroke="${K.line}" stroke-width="3"/>${heart(149, 181, 4.5, K.b)}` +
         `<g class="steam" fill="none" stroke="${mixHex(K.b, INK, .1)}" stroke-width="3" stroke-linecap="round"><path d="M144 160q-5-6 0-12t0-12"/><path d="M154 160q-5-6 0-12t0-12" style="animation-delay:.7s"/></g>`, arms: 'lonly'}),
     ESTJ: K => ({fc: {brow: 'bold', mouth: 'grin'}, arms: 'wave', tuft: 'none',
       top: `<path d="M56 82Q56 54 100 54Q144 54 144 82Z" fill="${mixHex(K.a, INK, .45)}" stroke="${K.line}" stroke-width="3" stroke-linejoin="round"/><path d="M50 82H150Q152 92 140 92H60Q48 92 50 82Z" fill="${INK}"/><rect x="56" y="72" width="88" height="8" fill="${K.b}"/>${star5(100, 64, 7, GOLD, GOLD_D)}`,
-      front: `<path d="M72 138L100 158L128 138" fill="none" stroke="${K.b}" stroke-width="3"/><path d="M94 156h14a5 5 0 0 1 0 10h-14z" fill="#e6e9ef" stroke="${K.line}" stroke-width="2.4"/>`,
+      faceAcc: `<path d="M72 138L100 158L128 138" fill="none" stroke="${K.b}" stroke-width="3"/><path d="M94 156h14a5 5 0 0 1 0 10h-14z" fill="#e6e9ef" stroke="${K.line}" stroke-width="2.4"/>`,
       hand: `<g transform="translate(${K.hand[0]} ${K.hand[1] - 4}) rotate(-25)"><path d="M-4 -6L18 -16V16L-4 6Z" fill="url(#h${K.id})" stroke="${K.lb}" stroke-width="2.6" stroke-linejoin="round"/><ellipse cx="18" cy="0" rx="4.5" ry="16" fill="${mixHex(K.b, '#fff', .5)}" stroke="${K.lb}" stroke-width="2.4"/><rect x="-10" y="-6" width="8" height="12" rx="2" fill="${K.lb}"/></g><g class="tw" stroke="${K.b}" stroke-width="3" stroke-linecap="round" fill="none"><path d="M${K.hand[0] + 26} ${K.hand[1] - 30}q6 6 0 12M${K.hand[0] + 34} ${K.hand[1] - 36}q10 12 0 22"/></g>`}),
     ESFJ: K => ({fc: {l: 'happy', mouth: 'cat'}, arms: 'hold', tuft: 'none',
       top: `<g class="wig" style="transform-origin:100px 76px"><path d="M100 76L76 62Q70 76 76 90Z" fill="url(#h${K.id})" stroke="${K.lb}" stroke-width="2.6" stroke-linejoin="round"/><path d="M100 76L124 62Q130 76 124 90Z" fill="url(#h${K.id})" stroke="${K.lb}" stroke-width="2.6" stroke-linejoin="round"/><circle cx="100" cy="76" r="6" fill="${K.b}" stroke="${K.lb}" stroke-width="2.4"/></g>`,
@@ -131,7 +131,7 @@
       hold: `<path d="M${K.hold[0] - 14} ${K.hold[1] - 4}h28l-4 20h-20z" fill="url(#h${K.id})" stroke="${K.lb}" stroke-width="2.4" stroke-linejoin="round"/><path d="M${K.hold[0] - 8} ${K.hold[1] - 4}v20M${K.hold[0]} ${K.hold[1] - 4}v20M${K.hold[0] + 8} ${K.hold[1] - 4}v20" stroke="${K.lb}" stroke-width="1.6" opacity=".5"/><path d="M${K.hold[0] - 17} ${K.hold[1] - 3}Q${K.hold[0] - 20} ${K.hold[1] - 16} ${K.hold[0] - 8} ${K.hold[1] - 16}Q${K.hold[0] - 6} ${K.hold[1] - 26} ${K.hold[0] + 4} ${K.hold[1] - 22}Q${K.hold[0] + 18} ${K.hold[1] - 20} ${K.hold[0] + 17} ${K.hold[1] - 3}Z" fill="#fff0f4" stroke="${K.lb}" stroke-width="2.4" stroke-linejoin="round"/><circle cx="${K.hold[0] + 2}" cy="${K.hold[1] - 28}" r="5" fill="#ff4f6d" stroke="${INK}" stroke-width="2"/>`,
       scene: `<g class="rise">${heart(32, 96, 6, K.b)}</g><g class="rise" style="animation-delay:1s">${heart(168, 90, 5, K.a)}</g>${sparkle(160, 50, 5, '#fff', 'tw', .4)}`}),
     ISTP: K => ({fc: {l: 'calm', mouth: 'flat'}, arms: 'wave',
-      front: `<path d="M46 104Q100 86 158 96L160 110Q100 102 46 120Z" fill="url(#h${K.id})" stroke="${K.lb}" stroke-width="2.6" stroke-linejoin="round"/><g class="wig" style="transform-origin:156px 104px"><path d="M156 102L176 92L172 106ZM156 106L178 112L166 118Z" fill="url(#h${K.id})" stroke="${K.lb}" stroke-width="2.4" stroke-linejoin="round"/></g>`,
+      faceAcc: `<path d="M46 104Q100 86 158 96L160 110Q100 102 46 120Z" fill="url(#h${K.id})" stroke="${K.lb}" stroke-width="2.6" stroke-linejoin="round"/><g class="wig" style="transform-origin:156px 104px"><path d="M156 102L176 92L172 106ZM156 106L178 112L166 118Z" fill="url(#h${K.id})" stroke="${K.lb}" stroke-width="2.4" stroke-linejoin="round"/></g>`,
       hand: `<g transform="translate(${K.hand[0]} ${K.hand[1]}) rotate(25)"><path d="M-3 0V-30" stroke="#c9d1dc" stroke-width="7" stroke-linecap="round"/><path d="M-3 -30m-9 0a9 9 0 1 0 18 0l-5 -2v-6h-8v6z" fill="#c9d1dc" stroke="${K.line}" stroke-width="2.4" stroke-linejoin="round"/></g>`,
       scene: `<g transform="translate(34 70)">${gear(0, 0, 10, K.b, K.lb)}</g><g transform="translate(52 44)">${gear(0, 0, 6, '#c9d1dc', K.line)}</g>`}),
     ISFP: K => ({fc: {l: 'calm', mouth: 'smile', blush: .6}, arms: 'wave', tuft: 'none',
@@ -140,7 +140,7 @@
       hand: `<g transform="translate(${K.hand[0]} ${K.hand[1]}) rotate(30)"><path d="M0 4V-26" stroke="#8a5a3c" stroke-width="4" stroke-linecap="round"/><path d="M-4 -26h8l-1 -6h-6z" fill="#c9d1dc"/><path d="M-3 -32Q0 -46 3 -32Z" fill="${K.a}" stroke="${K.line}" stroke-width="1.6"/></g>`,
       scene: butterfly(36, 60, mixHex(K.b, '#fff', .2), K.lb) + `<circle class="tw" cx="170" cy="60" r="4" fill="${K.a}"/><circle class="tw" style="animation-delay:.6s" cx="160" cy="40" r="3" fill="#7fb7ff"/><circle class="tw" style="animation-delay:1.2s" cx="26" cy="110" r="3.5" fill="${GOLD}"/>`}),
     ESTP: K => ({fc: {l: 'open', rgt: 'happy', mouth: 'open'}, arms: 'wave',
-      front: `<g><rect x="64" y="96" width="30" height="16" rx="8" fill="${INK}"/><rect x="106" y="96" width="30" height="16" rx="8" fill="${INK}"/><path d="M94 102h12" stroke="${INK}" stroke-width="4"/><path d="M70 100l8 0" stroke="#fff" stroke-width="2.5" opacity=".6" stroke-linecap="round"/></g>`,
+      faceAcc: `<g><rect x="64" y="96" width="30" height="16" rx="8" fill="${INK}"/><rect x="106" y="96" width="30" height="16" rx="8" fill="${INK}"/><path d="M94 102h12" stroke="${INK}" stroke-width="4"/><path d="M70 100l8 0" stroke="#fff" stroke-width="2.5" opacity=".6" stroke-linecap="round"/></g>`,
       hand: `<path d="M${K.hand[0]} ${K.hand[1] - 14}l3-9 3 9 9 3-9 3-3 9-3-9-9-3z" fill="${GOLD}"/>`,
       scene: `<g class="speed" stroke="${K.b}" stroke-width="4" stroke-linecap="round" opacity=".7"><path d="M14 120h20M8 142h26M18 164h14"/></g>`}),
     ESFP: K => ({fc: {l: 'star', mouth: 'open'}, arms: 'wave',
@@ -152,14 +152,16 @@
 
   // ---------- Perakit ----------
   function build(t, spec, o = {}) {
-    const id = ++uid, F = fam(t), {a, b} = o.pal || pal(t), B = BASE[F];
+    const id = ++uid, F = fam(t), {a, b} = o.pal || pal(t), FB = BASE[F], B = o.base || FB;
     const line = mixHex(a, INK, .5), lb = mixHex(b, INK, .45);
-    const K = {id, a, b, line, lb, F, hand: HAND[F], hold: HOLD[F]};
+    const K = {id, a, b, line, lb, F, hand: B.hand || HAND[F], hold: B.hold || HOLD[F]};
+    const dT = [B.tip[0] - FB.tip[0], B.tip[1] - FB.tip[1]], dF = B.fy - FB.fy;
+    const mv = (s, dx, dy) => s && (dx || dy) ? `<g transform="translate(${dx} ${dy})">${s}</g>` : (s || '');
     const S = spec(K);
     const g = `url(#${S.bodyFill ? 'bf' + id : 'g' + id})`;
     const feetC = mixHex(a, INK, .25);
     const arm = (x, y, r) => `<ellipse cx="${x}" cy="${y}" rx="9" ry="14" fill="${a}" stroke="${line}" stroke-width="3" transform="rotate(${r} ${x} ${y})"/>`;
-    const A = B.arms, pose = S.arms || 'down';
+    const A = B.arms, pose = B.noArms ? 'none' : (S.arms || 'down');
     const sideArms = pose === 'down' ? arm(...A.l) + arm(...A.r)
       : pose === 'wave' ? arm(...A.l) + `<g class="wave" style="transform-origin:${A.wave[0] - 8}px ${A.wave[1] + 18}px">${arm(...A.wave)}${S.hand || ''}</g>`
       : pose === 'chin' ? arm(...A.l) : pose === 'lonly' ? arm(...A.l) : '';
@@ -170,16 +172,17 @@
     if (F === 'SP' && S.tuft !== 'none') tuft = `<g class="flame"><path d="M100 58C88 40 104 26 100 4C118 18 124 34 118 48C124 42 127 34 126 24C140 38 138 58 122 66Z" fill="url(#h${id})" stroke="${lb}" stroke-width="2.6" stroke-linejoin="round"/><path d="M106 56C102 46 110 38 108 26C116 36 118 46 114 56Z" fill="#fff6c4" opacity=".85"/></g>`;
     const [sx, sy, srx, sry] = B.shine;
     const body = (S.behind || '') +
-      `<ellipse cx="80" cy="${B.feet}" rx="14" ry="7.5" fill="${feetC}" stroke="${line}" stroke-width="3"/><ellipse cx="120" cy="${B.feet}" rx="14" ry="7.5" fill="${feetC}" stroke="${line}" stroke-width="3"/>` +
-      (F === 'SP' ? tuft : '') +
+      (B.feet ? `<ellipse cx="${B.feetX ? B.feetX[0] : 80}" cy="${B.feet}" rx="14" ry="7.5" fill="${feetC}" stroke="${line}" stroke-width="3"/><ellipse cx="${B.feetX ? B.feetX[1] : 120}" cy="${B.feet}" rx="14" ry="7.5" fill="${feetC}" stroke="${line}" stroke-width="3"/>` : '') + (B.under ? B.under(K) : '') +
+      (F === 'SP' ? mv(tuft, ...dT) : '') +
       `<path d="${B.shape()}" fill="${g}" stroke="${line}" stroke-width="3.5" stroke-linejoin="round"/>` + (S.inside ? `<g clip-path="url(#cl${id})">${S.inside}</g>` : '') +
-      (B.extra || '') + `<ellipse cx="${sx}" cy="${sy}" rx="${srx}" ry="${sry}" fill="#fff" opacity=".38" transform="rotate(-25 ${sx} ${sy})"/>` +
-      (F === 'SJ' ? tuft : '') + (S.top || '') + sideArms +
-      face({y: B.fy, lid: a, ...(S.fc || {})}) + (S.front || '') + (S.hold || '') + holdArms;
+      (B.extra ? (typeof B.extra === 'function' ? B.extra(K) : B.extra) : '') + `<ellipse cx="${sx}" cy="${sy}" rx="${srx}" ry="${sry}" fill="#fff" opacity=".38" transform="rotate(-25 ${sx} ${sy})"/>` +
+      (F === 'SJ' ? mv(tuft, ...dT) : '') + mv(S.top, ...dT) + sideArms +
+      face({y: B.fy, lid: a, ...(B.face || {}), ...(S.fc || {})}) + mv(S.faceAcc, 0, dF) + (S.front || '') + (S.hold || '') + holdArms;
     const extraDefs = (S.bodyFill ? `<defs>${S.bodyFill(`bf${id}`)}</defs>` : '') + (S.inside ? `<defs><clipPath id="cl${id}"><path d="${B.shape()}"/></clipPath></defs>` : '');
+    const shadowY = B.shadowY || 207;
     const inner = B.rot ? `<g transform="rotate(${B.rot} 100 200)">${body}</g>` : body;
     return `<svg class="chr f-${F} s-roh" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Karakter ${t}${o.label ? ' ' + o.label : ''}">` +
-      defs(id, a, b) + extraDefs + `<ellipse class="shadow" cx="100" cy="207" rx="46" ry="7" fill="#000" opacity=".2"/>${S.scene || ''}<g class="body">${inner}</g>${S.over || ''}</svg>`;
+      defs(id, a, b) + extraDefs + `<ellipse class="shadow" cx="100" cy="${shadowY}" rx="46" ry="7" fill="#000" opacity=".2"/>${S.scene || ''}<g class="body">${inner}</g>${S.over || ''}</svg>`;
   }
   const roh16 = t => build(t, SPEC[t]);
 
@@ -221,5 +224,71 @@
   };
   const rohInfp = v => build('INFP', INFP_OPSI[v].spec, {label: INFP_OPSI[v].nama});
 
-  G.KARAKTER_ROH = {roh16, rohInfp, INFP_OPSI, SPEC};
+
+  // ---------- Gabungan INFP: badan Kosmos (3) + Gerhana (2) ----------
+  const kos = INFP_OPSI.kosmos.spec, ger = INFP_OPSI.gerhana.spec;
+  INFP_OPSI.kosmosGerhana = {nama: '3+2. Kosmos Gerhana', isi: 'badan jeli kosmos dengan gerhana sebagai lingkaran cahaya di belakang kepala', spec: K => { const k = kos(K), g = ger(K); return {...k, behind: g.behind, top: g.top, scene: sparkle(30, 150, 5, K.b, 'tw', .2) + sparkle(172, 150, 4, '#fff', 'tw', .9)}; }};
+  INFP_OPSI.gerhanaDalam = {nama: '3+2. Gerhana di Dalam', isi: 'badan jeli kosmos; gerhana kecil bersinar di dalam badan, seperti hati yang menyala', spec: K => { const k = kos(K); return {...k,
+    inside: k.inside + `<circle cx="100" cy="176" r="26" fill="url(#glow${K.id})" class="flick"/>` + Array.from({length: 10}, (_, i) => { const an = i * Math.PI / 5; return `<path d="M${f1(100 + 15 * Math.cos(an))} ${f1(176 + 15 * Math.sin(an))}L${f1(100 + (i % 2 ? 20 : 24) * Math.cos(an))} ${f1(176 + (i % 2 ? 20 : 24) * Math.sin(an))}" stroke="#ffe7a8" stroke-width="1.8" stroke-linecap="round"/>`; }).join('') + `<circle cx="100" cy="176" r="12" fill="${INK}" stroke="#ffe7a8" stroke-width="2.4"/>${sparkle(110, 167, 4, '#fff')}`,
+    top: `<g class="wig" style="transform-origin:100px 44px">${flower(100, 38, 7, `url(#h${K.id})`, K.lb)}</g>`}; }};
+
+  // ---------- Versi badan unik per tipe (tidak mengikuti family) ----------
+  const circ = (cx, cy, r) => `M${cx - r} ${cy}A${r} ${r} 0 1 1 ${cx + r} ${cy}A${r} ${r} 0 1 1 ${cx - r} ${cy}Z`;
+  const scallop = (cx, cy, R, n, amp) => { let d = ''; for (let i = 0; i <= n; i++) { const an = -Math.PI / 2 + i * 2 * Math.PI / n, p = [f1(cx + R * Math.cos(an)), f1(cy + R * Math.sin(an))]; if (!i) d = `M${p[0]} ${p[1]}`; else { const m = an - Math.PI / n; d += `Q${f1(cx + (R + amp * 2) * Math.cos(m))} ${f1(cy + (R + amp * 2) * Math.sin(m))} ${p[0]} ${p[1]}`; } } return d + 'Z'; };
+  const starPts = (cx, cy, R, r) => Array.from({length: 10}, (_, i) => { const rr = i % 2 ? r : R, an = -Math.PI / 2 + i * Math.PI / 5; return [f1(cx + rr * Math.cos(an)), f1(cy + rr * Math.sin(an))]; });
+  const arms = (l, r, wave, hl, hr, chin) => ({l, r, wave, hl, hr, chin});
+  const UNIK = {
+    INTJ: {nama: 'menara kristal', shape: () => roundPoly([[100, 26], [138, 64], [140, 202], [60, 202], [62, 64]], 14), fy: 120, face: {gap: 17, r: 9}, tip: [100, 26],
+      arms: arms([58, 156, 15], [142, 156, -15], [148, 126, -35], [78, 176, -62], [122, 176, 62], [120, 160, -40]), hand: [154, 112], hold: [100, 178], shine: [80, 92, 7, 16], feet: 202,
+      extra: `<path d="M100 32V70M70 66L86 80M130 66L114 80" stroke="#fff" stroke-width="3" opacity=".35" stroke-linecap="round"/>`},
+    INTP: {nama: 'awan pikiran', shape: () => 'M58 202C40 202 32 186 40 172C26 162 30 138 50 136C46 112 72 98 90 110C98 90 132 92 138 114C158 108 174 130 164 148C178 160 172 188 152 194C146 202 138 202 128 202Z', fy: 150, face: {gap: 19}, tip: [114, 94],
+      arms: arms([40, 178, 25], [164, 178, -25], [166, 150, -35], [78, 188, -62], [122, 188, 62], [132, 182, -40]), hold: [100, 190], shine: [72, 140, 9, 14], feet: 202},
+    ENTJ: {nama: 'perisai bahu lebar', shape: () => roundPoly([[30, 70], [170, 70], [150, 202], [50, 202]], 26), fy: 118, face: {gap: 22}, tip: [100, 70],
+      arms: arms([40, 146, 20], [160, 146, -20], [170, 112, -35], [78, 180, -62], [122, 180, 62], [124, 150, -40]), hand: [176, 98], shine: [60, 94, 10, 16], feet: 202},
+    ENTP: {nama: 'bohlam', shape: () => 'M72 172C72 158 38 146 38 106C38 70 66 44 100 44C134 44 162 70 162 106C162 146 128 158 128 172Z', fy: 106, face: {gap: 21}, tip: [100, 44],
+      arms: arms([42, 132, 25], [158, 132, -25], [162, 104, -35], [78, 160, -62], [122, 160, 62], [124, 132, -40]), hand: [168, 90], shine: [66, 82, 11, 18], feet: 0,
+      extra: K => `<rect x="70" y="168" width="60" height="30" rx="9" fill="#cfd4de" stroke="${K.line}" stroke-width="3"/><path d="M72 178H128M72 188H128" stroke="${K.line}" stroke-width="2.2" opacity=".55"/><path d="M90 198H110L106 204H94Z" fill="${K.line}"/>`},
+    INFJ: {nama: 'bola kristal', shape: () => circ(100, 116, 64), fy: 116, face: {gap: 21}, tip: [100, 52],
+      arms: arms([38, 136, 25], [162, 136, -25], [164, 108, -35], [80, 164, -62], [120, 164, 62], [124, 140, -40]), shine: [66, 86, 12, 20], feet: 0,
+      under: K => `<path d="M62 168L138 168L152 202L48 202Z" fill="url(#h${K.id})" stroke="${K.lb}" stroke-width="3" stroke-linejoin="round"/><path d="M56 190H144" stroke="${K.lb}" stroke-width="2" opacity=".5"/>`},
+    INFP: {nama: 'tetesan kosmos + gerhana (gabungan 3+2)', ...BASE.NF},
+    ENFJ: {nama: 'matahari', shape: () => scallop(100, 128, 64, 14, 6), fy: 124, face: {gap: 21}, tip: [100, 58],
+      arms: arms([36, 150, 25], [164, 150, -25], [166, 120, -35], [78, 178, -62], [122, 178, 62], [124, 156, -40]), hold: [100, 180], shine: [66, 96, 10, 16], feet: 200},
+    ENFP: {nama: 'bintang', shape: () => roundPoly(starPts(100, 130, 82, 48), 16), fy: 128, face: {gap: 18}, tip: [100, 52], noArms: true,
+      arms: arms([0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]), shine: [80, 104, 8, 14], feet: 199, feetX: [54, 146]},
+    ISTJ: {nama: 'buku berdiri', shape: () => roundPoly([[56, 58], [144, 58], [144, 202], [56, 202]], 14), fy: 112, face: {gap: 19}, tip: [100, 58],
+      arms: arms([52, 158, 15], [148, 158, -15], [150, 130, -35], [78, 180, -62], [122, 180, 62], [124, 140, -40]), hold: [100, 184], shine: [82, 84, 7, 14], feet: 203,
+      extra: K => `<rect x="60" y="64" width="10" height="132" rx="4" fill="${K.b}" opacity=".55"/>`},
+    ISFJ: {nama: 'bakpao', shape: () => 'M38 168C38 120 66 90 100 90C134 90 162 120 162 168C162 192 136 203 100 203C64 203 38 192 38 168Z', fy: 140, face: {gap: 21}, tip: [100, 90],
+      arms: arms([40, 172, 20], [160, 172, -20], [164, 146, -35], [78, 186, -62], [122, 186, 62], [124, 168, -40]), shine: [66, 122, 10, 15], feet: 203,
+      extra: K => `<path d="M86 98Q100 84 114 98M93 94Q100 88 107 94" fill="none" stroke="${K.line}" stroke-width="2.4" stroke-linecap="round" opacity=".6"/>`},
+    ESTJ: {nama: 'balok kokoh', shape: () => roundPoly([[42, 70], [158, 70], [158, 202], [42, 202]], 22), fy: 116, face: {gap: 21}, tip: [100, 70],
+      arms: arms([38, 166, 15], [162, 166, -15], [166, 136, -35], [78, 182, -62], [122, 182, 62], [124, 150, -40]), hand: [172, 122], shine: [64, 98, 10, 16], feet: 203},
+    ESFJ: {nama: 'hati', shape: () => 'M100 200C58 174 28 146 28 110C28 82 50 64 74 64C88 64 96 72 100 82C104 72 112 64 126 64C150 64 172 82 172 110C172 146 142 174 100 200Z', fy: 118, face: {gap: 22}, tip: [100, 82],
+      arms: arms([34, 124, 25], [166, 124, -25], [168, 96, -35], [80, 172, -62], [120, 172, 62], [124, 140, -40]), hold: [100, 178], shine: [56, 90, 10, 14], feet: 199, feetX: [84, 116]},
+    ISTP: {nama: 'mur heksagon', shape: () => roundPoly([[70, 72], [130, 72], [164, 137], [130, 202], [70, 202], [36, 137]], 10), fy: 132, face: {gap: 20}, tip: [100, 72],
+      arms: arms([40, 162, 20], [160, 162, -20], [166, 124, -35], [78, 182, -62], [122, 182, 62], [124, 156, -40]), hand: [172, 110], shine: [64, 104, 9, 15], feet: 203,
+      extra: `<circle cx="100" cy="190" r="4" fill="#fff" opacity=".35"/>`},
+    ISFP: {nama: 'kuncup daun', shape: () => 'M124 30C122 52 162 92 160 146C160 184 132 202 100 202C66 202 40 184 40 146C40 98 84 58 124 30Z', fy: 142, face: {gap: 20}, tip: [122, 34],
+      arms: arms([42, 162, 30], [158, 164, -30], [164, 128, -40], [78, 182, -62], [122, 182, 62], [126, 170, -40]), hand: [170, 114], shine: [70, 118, 10, 18], feet: 200,
+      extra: `<path d="M122 36Q100 70 98 104" fill="none" stroke="#fff" stroke-width="2.6" opacity=".35" stroke-linecap="round"/>`},
+    ESTP: {nama: 'api (tetap)', ...BASE.SP},
+    ESFP: {nama: 'balon', shape: () => circ(100, 112, 66), fy: 112, face: {gap: 21}, tip: [100, 46],
+      arms: arms([38, 128, 25], [162, 128, -25], [166, 96, -35], [80, 160, -62], [120, 160, 62], [124, 130, -40]), hand: [172, 82], shine: [66, 80, 12, 20], feet: 0, shadowY: 214,
+      extra: K => `<path d="M100 178C92 190 110 198 100 214" fill="none" stroke="${K.line}" stroke-width="2.2"/><path d="M93 186L107 186L100 176Z" fill="${K.a}" stroke="${K.line}" stroke-width="2.4" stroke-linejoin="round"/>`}
+  };
+  // Penyesuaian aksesori untuk badan unik
+  const UNIK_SPEC = {
+    ENTP: K => ({...SPEC.ENTP(K), scene: sparkle(40, 64, 5, K.b, 'tw', .6) + sparkle(164, 48, 6, GOLD, 'tw', .2) + `<path class="tw" style="animation-delay:.3s" d="M30 96l6-10 2 6 6-8" fill="none" stroke="${GOLD}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`,
+      inside: `<circle class="flick" cx="100" cy="118" r="54" fill="url(#glow${K.id})" opacity=".8"/><path d="M84 168V146Q84 136 92 140Q100 128 108 140Q116 136 116 146V168" fill="none" stroke="#fff6c4" stroke-width="3" stroke-linecap="round" opacity=".9"/>`}),
+    INFJ: K => ({...SPEC.INFJ(K), arms: 'down', hold: '',
+      inside: `<circle class="flick" cx="100" cy="128" r="44" fill="url(#glow${K.id})" opacity=".5"/><path d="M52 150Q80 130 104 150T150 146" fill="none" stroke="#fff" stroke-width="2" opacity=".3"/>` + [[70, 82], [134, 96], [124, 162], [72, 164]].map(([x, y], i) => `<circle class="tw" style="animation-delay:${i * .4}s" cx="${x}" cy="${y}" r="1.8" fill="#fff"/>`).join('')}),
+    INFP: INFP_OPSI.kosmosGerhana.spec,
+    ENFJ: K => ({...SPEC.ENFJ(K), behind: `<circle class="flick" cx="100" cy="128" r="90" fill="url(#glow${K.id})" opacity=".6"/>`}),
+    ISFJ: K => { const s = SPEC.ISFJ(K); return {...s, faceAcc: `<g transform="translate(0 -14)">${s.faceAcc}</g>`}; },
+    ESFJ: K => ({...SPEC.ESFJ(K), front: ''})
+  };
+  const rohUnik = t => build(t, UNIK_SPEC[t] || SPEC[t], {base: UNIK[t] && UNIK[t].shape ? UNIK[t] : undefined});
+
+  G.KARAKTER_ROH = {roh16, rohInfp, rohUnik, UNIK, INFP_OPSI, SPEC};
 })(typeof window !== 'undefined' ? window : globalThis);

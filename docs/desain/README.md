@@ -51,6 +51,10 @@ Pemilik memilih arah A. `pratinjau-roh.html` menampilkan ke-16 tipe dan 7 opsi I
 | ESTJ | topi kapten, toa, peluit | ESTP | kacamata hitam, lompat-lompat |
 | ESFJ | pita, celemek, kue mangkuk | ESFP | mikrofon, mata bintang, not musik |
 
+Badan unik per tipe (`rohUnik(t)`, data bentuk di `UNIK`; gambar `gambar/roh-unik-*.jpg`): INTJ menara kristal, INTP awan pikiran, ENTJ perisai bahu lebar, ENTP bohlam, INFJ bola kristal, INFP tetesan kosmos + gerhana, ENFJ matahari, ENFP bintang, ISTJ buku berdiri, ISFJ bakpao, ESTJ balok kokoh, ESFJ hati, ISTP mur heksagon, ISFP kuncup daun, ESTP api, ESFP balon. Aksesori sama dengan versi family; aksesori kepala ikut ujung kepala (`tip`), aksesori wajah (`faceAcc`) ikut posisi wajah.
+
+Gabungan INFP permintaan pemilik (badan 3 + gerhana 2; gambar `gambar/roh-infp-gabungan-*.jpg`): `kosmosGerhana` (gerhana sebagai lingkaran cahaya di belakang kepala) dan `gerhanaDalam` (gerhana kecil menyala di dalam badan jeli).
+
 Opsi INFP (`rohInfp(kunci)`): `bunga` 1. Bunga & Gerhana Kecil, `gerhana` 2. Penjaga Gerhana (gerhana H+ sebagai lingkaran cahaya di belakang kepala), `kosmos` 3. Roh Kosmos (badan jeli berisi nebula, dari D), `taman` 4. Taman di Kepala (sulur B), `penulis` 5. Penulis Mimpi (jurnal, burung kertas C), `lentera` 6. Lentera Hati, `awan` 7. Kepala di Awan.
 
 ## Arsip (`arsip/`)
