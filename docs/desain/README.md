@@ -9,7 +9,7 @@ Buka `pratinjau-infp.html` lewat server lokal (misalnya `npx serve` di akar repo
 
 | Varian | Nama | Isi | Gambar |
 |---|---|---|---|
-| `malam` | A. Malam Danau | **dipakai sekarang**: nebula, aurora, riak, bulan sabit + pantulan, rasi, bintang jatuh, lentera, kupu-kupu | `gambar/infp-malam-*.jpg` |
+| `malam` | A. Malam Danau | dipakai sebelumnya: nebula, aurora, riak, bulan sabit + pantulan, rasi, bintang jatuh, lentera, kupu-kupu | `gambar/infp-malam-*.jpg` |
 | `taman` | B. Taman Rahasia | sulur, daun, bunga, kunang-kunang | `gambar/infp-taman-*.jpg` |
 | `tamanRimbun` | B+. Taman Rahasia, rimbun | B diperkaya: latar cat air, gerbang lengkung bercahaya, tirai wisteria, pakis, mawar spiral, bunga lonceng, beri, embun, kupu-kupu, kelopak berguguran | `gambar/infp-tamanRimbun-*.jpg` |
 | `tamanRimbun2` | B++. Taman Rahasia, rimbun (perbaikan) | B+ diperbaiki: wisteria berupa untaian kuntum yang mengerucut dari dahan berdaun, gerbang kotak diganti lengkung bunga (teralis, mawar, bunga kecil) dengan pemandangan kecil dan cahaya hangat di dalamnya | `gambar/infp-tamanRimbun2-*.jpg` |
@@ -19,7 +19,7 @@ Buka `pratinjau-infp.html` lewat server lokal (misalnya `npx serve` di akar repo
 | `tamanKosmos` | F. Taman Kosmos | gabungan bagian yang disukai dari B (sulur yang mengalir) dan D (nebula cat air, planet bercincin): planet berpita dan berbayang dengan cincin debu bintang, bulan kecil di orbit putus-putus, untaian bunga melingkari planet, galaksi spiral, debu bintang di sepanjang sulur, tanpa elemen menjuntai | `gambar/infp-tamanKosmos-*.jpg` |
 | `lubangHitam` | G. Lubang Hitam | seperti F, tapi planet diganti lubang hitam: inti gelap, piringan materi yang melintas di depan inti dan lebih terang di satu sisi, lengkung cahaya yang dibelokkan di atas inti, kelopak yang berpilin masuk | `gambar/infp-lubangHitam-*.jpg` |
 | `gerhana` | H. Gerhana | seperti F, tapi planet diganti gerhana: bulatan gelap, korona sinar halus, cincin berlian, lidah api kecil di tepi | `gambar/infp-gerhana-*.jpg` |
-| `gerhana2` | H+. Gerhana, lebih kreatif | H dengan simbol INFP "luar tenang, dalam penuh cahaya": sebagian sinar korona tumbuh jadi tangkai berdaun dengan bunga dan kuncup, bunga bergaris halus tersembunyi di dalam bulatan gelap, manik cahaya (Baily's beads) di dekat cincin berlian, kelopak cahaya yang berguguran ke arah judul. Versi terang masih lemah (cahaya tidak bisa bersinar di latar terang) | `gambar/infp-gerhana2-*.jpg` |
+| `gerhana2` | H+. Gerhana, lebih kreatif (**dipakai sekarang**, dengan penyesuaian tema terang) | H dengan simbol INFP "luar tenang, dalam penuh cahaya": sebagian sinar korona tumbuh jadi tangkai berdaun dengan bunga dan kuncup, bunga bergaris halus tersembunyi di dalam bulatan gelap, manik cahaya (Baily's beads) di dekat cincin berlian, kelopak cahaya yang berguguran ke arah judul. Versi terang masih lemah (cahaya tidak bisa bersinar di latar terang) | `gambar/infp-gerhana2-*.jpg` |
 | `gerhana3` | H++. Gerhana Pusaran | H+ ditambah mahkota daun yang memeluk gerhana (dengan celah di dekat cincin berlian) dan tiga lengan spiral seperti sapuan kuas, dengan daun, bunga, dan debu bintang di sepanjangnya | `gambar/infp-gerhana3-*.jpg` |
 | `gerhana4` | H3. Gerhana Pita Sutra | H+ ditambah tiga pita cahaya tipis seperti selendang sutra yang mengorbit gerhana dengan kemiringan hampir sejajar; lewat di belakang bulatan lalu di depannya (menipis saat menutupi gerhana), lebar berubah seperti kain terpilin, ada daun, dua kuntum bunga, mutiara cahaya, debu bintang | `gambar/infp-gerhana4-*.jpg` |
 

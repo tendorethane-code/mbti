@@ -1,6 +1,6 @@
 // Draf motif sampul INFP. draftInfp(varian, dark) -> canvas 1240x1767 (ukuran motif sampul PDF).
-// Varian: malam (A, dipakai sekarang), taman (B), tamanRimbun (B+), tamanRimbun2 (B++), bangau (C), kosmos (D), jendela (E),
-// tamanKosmos (F = B + D, planet bercincin), lubangHitam (G), gerhana (H), gerhana2 (H+, favorit pemilik), gerhana3 (H++, pusaran),
+// Varian: malam (A, dipakai sebelumnya), taman (B), tamanRimbun (B+), tamanRimbun2 (B++), bangau (C), kosmos (D), jendela (E),
+// tamanKosmos (F = B + D, planet bercincin), lubangHitam (G), gerhana (H), gerhana2 (H+, dipakai sekarang; versi di index.html punya penyesuaian tema terang), gerhana3 (H++, pusaran),
 // gerhana4 (H3, pita sutra yang mengorbit).
 // Butuh typePal() dari core.js. Lihat pratinjau-infp.html untuk melihat semuanya sekaligus.
 // Untuk memakai salah satu: salin isi varian ke fungsi drawInfp di index.html (helper-nya sama).
