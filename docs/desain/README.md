@@ -37,6 +37,22 @@ Buka `pratinjau-karakter.html` lewat server lokal (atau raw.githack) untuk melih
 
 Gerak per family: Diplomat melayang, Analyst memiringkan kepala, Sentinel bernapas tenang, Explorer melompat. Animasi hasil terungkap: `gambar/karakter-reveal.jpg`. Hindari kemiripan dengan ilustrasi 16Personalities (figur manusia low-poly).
 
+### Roh Peta 16 tipe (`karakter-roh.js`, dipilih)
+Pemilik memilih arah A. `pratinjau-roh.html` menampilkan ke-16 tipe dan 7 opsi INFP (gambar: `gambar/roh16-*.jpg`, `gambar/roh-infp-opsi-*.jpg`).
+
+| Tipe | Ciri | Tipe | Ciri |
+|---|---|---|---|
+| INTJ | mata tenang, bidak kuda, rasi | INFJ | lentera, cahaya di ujung kepala, bulan sabit |
+| INTP | roda gigi berputar, kubus, tanda tanya | INFP | bunga, gerhana kecil (lihat opsi) |
+| ENTJ | mahkota, jubah, bendera | ENFJ | lingkaran matahari, hati berdetak |
+| ENTP | bohlam ide, alis terangkat | ENFP | pelangi, mata bintang, kupu-kupu |
+| ISTJ | kacamata kotak, dasi kupu-kupu, daftar centang | ISTP | bandana, kunci pas, roda gigi |
+| ISFJ | syal rajut, teh hangat | ISFP | baret, kuas, palet, kupu-kupu |
+| ESTJ | topi kapten, toa, peluit | ESTP | kacamata hitam, lompat-lompat |
+| ESFJ | pita, celemek, kue mangkuk | ESFP | mikrofon, mata bintang, not musik |
+
+Opsi INFP (`rohInfp(kunci)`): `bunga` 1. Bunga & Gerhana Kecil, `gerhana` 2. Penjaga Gerhana (gerhana H+ sebagai lingkaran cahaya di belakang kepala), `kosmos` 3. Roh Kosmos (badan jeli berisi nebula, dari D), `taman` 4. Taman di Kepala (sulur B), `penulis` 5. Penulis Mimpi (jurnal, burung kertas C), `lentera` 6. Lentera Hati, `awan` 7. Kepala di Awan.
+
 ## Arsip (`arsip/`)
 | File | Isi | Asal |
 |---|---|---|

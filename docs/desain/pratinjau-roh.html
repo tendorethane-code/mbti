@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roh Peta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#121019;--ink:#ecebf3;--mute:#a9a6ba;--pan:#1c1928;--line:#2e2a3c;--acc:#b7a1e0}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#ffffff;--ink:#15151a;--mute:#5d5b6b;--pan:#f4f2fb;--line:#e2dfeb}}
+:root[data-theme="light"]{--bg:#ffffff;--ink:#15151a;--mute:#5d5b6b;--pan:#f4f2fb;--line:#e2dfeb}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif;padding:24px 16px 60px;max-width:1100px;margin:auto}
+h1{margin:0 0 6px;font-size:26px}h2{margin:34px 0 4px;font-size:20px}p{color:var(--mute);margin:0 0 14px;max-width:72ch;line-height:1.5}
+.row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:640px){.row{grid-template-columns:repeat(2,1fr)}}
+.cell{background:var(--pan);border:1px solid var(--line);border-radius:20px;padding:10px 8px 12px;text-align:center;position:relative;overflow:hidden;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.cell svg{width:100%;max-width:190px;height:auto;display:block;margin:auto;overflow:visible}
+.cell b{display:block;font-size:17px;letter-spacing:.04em}.cell small{color:var(--mute);font-weight:600;font-size:12px}
+.themes{display:flex;gap:6px;margin:10px 0 0}.themes button,.btn{font:inherit;font-weight:700;border-radius:999px;border:1px solid var(--line);background:var(--pan);color:var(--ink);padding:8px 14px;cursor:pointer}
+.btn.pri{background:var(--acc);color:#1b1526;border-color:transparent}
+.note{font-size:13px;color:var(--mute);margin-top:6px}
+
+/* ---------- Animasi karakter ---------- */
+.chr .body{transform-box:view-box;transform-origin:100px 205px}
+.chr .shadow{transform-box:fill-box;transform-origin:center}
+.chr .eye{transform-box:fill-box;transform-origin:center;animation:blink 4.6s infinite}
+.cell:nth-child(2n) .chr .eye{animation-delay:1.3s}.cell:nth-child(3n) .chr .eye{animation-delay:2.4s}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+/* kepribadian gerak per family */
+.f-NF .body{animation:nf 3.6s ease-in-out infinite}.f-NF .shadow{animation:sh 3.6s ease-in-out infinite}
+@keyframes nf{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-9px) rotate(1.5deg)}}
+.f-NT .body{animation:nt 3.2s ease-in-out infinite}
+@keyframes nt{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)}60%{transform:rotate(3deg)}}
+.f-SJ .body{animation:sj 3.4s ease-in-out infinite}
+@keyframes sj{0%,100%{transform:scale(1,1)}50%{transform:scale(1.03,.975)}}
+.f-SP .body{animation:sp 1.25s cubic-bezier(.3,0,.4,1) infinite}.f-SP .shadow{animation:sh 1.25s cubic-bezier(.3,0,.4,1) infinite}
+@keyframes sp{0%,100%{transform:translateY(0) scale(1.05,.95)}12%{transform:translateY(0) scale(1,1)}50%{transform:translateY(-14px) scale(.97,1.03)}88%{transform:translateY(0) scale(1,1)}}
+.f-guide .body{animation:nf 3s ease-in-out infinite}.f-guide .shadow{animation:sh 3s ease-in-out infinite}
+@keyframes sh{50%{transform:scale(.8);opacity:.12}}
+/* aksesori */
+.chr .wig{animation:wig 2.4s ease-in-out infinite;transform-box:view-box}
+@keyframes wig{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.chr .flop{animation:flop 3s ease-in-out infinite;transform-box:view-box}
+@keyframes flop{0%,70%,100%{transform:rotate(0)}80%{transform:rotate(16deg)}90%{transform:rotate(4deg)}}
+.chr .wave{animation:wave 1.6s ease-in-out infinite;transform-box:view-box}
+@keyframes wave{0%,100%{transform:rotate(0)}50%{transform:rotate(-16deg)}}
+.chr .tail{animation:wave 1.8s ease-in-out infinite;transform-box:view-box}
+.chr .float{animation:fl 2.8s ease-in-out infinite}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.chr .bounce{animation:bn .9s cubic-bezier(.3,0,.5,1) infinite}
+@keyframes bn{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.chr .tw{transform-box:fill-box;transform-origin:center;animation:tw 1.9s ease-in-out infinite}
+@keyframes tw{0%,100%{transform:scale(.55) rotate(0);opacity:.45}50%{transform:scale(1.1) rotate(45deg);opacity:1}}
+.chr .steam path{stroke-dasharray:30;animation:steam 2.2s linear infinite}
+@keyframes steam{0%{stroke-dashoffset:30;opacity:0;transform:translateY(4px)}30%{opacity:.9}100%{stroke-dashoffset:-30;opacity:0;transform:translateY(-8px)}}
+.chr .speed path{stroke-dasharray:28;animation:speed .9s linear infinite}
+.chr .speed path:nth-child(2){animation-delay:.3s}.chr .speed path:nth-child(3){animation-delay:.6s}
+@keyframes speed{0%{stroke-dashoffset:28;opacity:0}40%{opacity:1}100%{stroke-dashoffset:-28;opacity:0}}
+.chr .flame{transform-box:fill-box;transform-origin:bottom left;animation:flame .5s ease-in-out infinite alternate}
+@keyframes flame{to{transform:scale(1.08,.92) rotate(4deg)}}
+/* ketuk: lompat + hati */
+.chr.hop .body{animation:hop .75s cubic-bezier(.3,.1,.3,1)!important}
+@keyframes hop{0%{transform:scale(1,1)}15%{transform:scale(1.14,.84)}45%{transform:translateY(-38px) scale(.9,1.12) rotate(-6deg)}70%{transform:translateY(0) scale(1.1,.9)}85%{transform:scale(.97,1.03)}100%{transform:scale(1,1)}}
+.fx{position:absolute;pointer-events:none;font-size:18px;left:50%;top:40%;animation:fx 1s ease-out forwards}
+@keyframes fx{0%{transform:translate(-50%,0) scale(.4);opacity:0}20%{opacity:1}100%{transform:translate(calc(-50% + var(--dx)),var(--dy)) scale(1.1) rotate(var(--r));opacity:0}}
+
+.chr .spin{transform-box:fill-box;transform-origin:center;animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.chr .rise{animation:rise 3s ease-in infinite}
+@keyframes rise{0%{transform:translateY(8px);opacity:0}25%{opacity:1}100%{transform:translateY(-30px);opacity:0}}
+.chr .fall{animation:fall 3.6s linear infinite}
+@keyframes fall{0%{transform:translate(0,-10px) rotate(0);opacity:0}15%{opacity:1}100%{transform:translate(14px,120px) rotate(200deg);opacity:0}}
+.chr .drift{animation:drift 5s ease-in-out infinite}
+@keyframes drift{0%,100%{transform:translate(0,0)}25%{transform:translate(6px,-8px)}50%{transform:translate(-4px,-14px)}75%{transform:translate(-8px,-4px)}}
+.chr .flap{transform-box:fill-box;transform-origin:center;animation:flap .35s ease-in-out infinite alternate}
+@keyframes flap{to{transform:scaleX(.35)}}
+.chr .flagw{transform-box:view-box;animation:flagw 1.2s ease-in-out infinite alternate}
+@keyframes flagw{to{transform:skewY(-8deg) scaleX(.92)}}
+.chr .beat{transform-box:view-box;animation:beat 1.1s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.14)}30%{transform:scale(1)}45%{transform:scale(1.08)}}
+.chr .flick{animation:flick 2.4s ease-in-out infinite}
+@keyframes flick{0%,100%{opacity:.75}50%{opacity:1}}
+.chr .sway{transform-box:view-box;animation:wig 3.4s ease-in-out infinite}
+.fam{margin:22px 0 6px;font-weight:800;color:var(--mute);font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+.row.opsi{grid-template-columns:repeat(4,1fr)}
+@media(max-width:640px){.row.opsi{grid-template-columns:repeat(2,1fr)}}
+@media(prefers-reduced-motion:reduce){.chr *{animation:none!important}}
+</style>
+</head>
+<body>
+<h1>Roh Peta: 16 tipe</h1>
+<p>Arah A yang dipilih. Badan mengikuti family (Analyst kristal, Diplomat tetesan, Sentinel roti, Explorer api miring), tiap tipe punya aksesori, ekspresi, dan pose sendiri. <b>Ketuk karakter</b> untuk melihat reaksinya.</p>
+<div class="themes"><button data-th="dark">Gelap</button><button data-th="light">Terang</button></div>
+<div id="all"></div>
+<h2>Opsi Roh INFP</h2>
+<p>Tujuh pilihan untuk INFP. Beberapa mengambil unsur desain yang sudah disukai: gerhana H+, sulur taman B, kosmos cat air D, burung kertas C.</p>
+<div class="row opsi" id="opsi"></div>
+<script src="../../data.js"></script><script src="../../legacy.js"></script><script src="../../core.js"></script><script src="karakter-draf.js"></script><script src="karakter-roh.js"></script>
+<script>
+const R=KARAKTER_ROH;
+const FAMS=[['Analyst','INTJ INTP ENTJ ENTP'],['Diplomat','INFJ INFP ENFJ ENFP'],['Sentinel','ISTJ ISFJ ESTJ ESFJ'],['Explorer','ISTP ISFP ESTP ESFP']];
+const NOTE={INTJ:'tenang, bidak kuda, rasi',INTP:'roda gigi berputar, kubus, tanda tanya',ENTJ:'mahkota, jubah, bendera',ENTP:'bohlam ide, alis terangkat',
+INFJ:'lentera, cahaya di ujung kepala, bulan sabit',INFP:'bunga, gerhana kecil',ENFJ:'lingkaran matahari, hati berdetak',ENFP:'pelangi, mata bintang, kupu-kupu',
+ISTJ:'kacamata kotak, dasi kupu-kupu, daftar centang',ISFJ:'syal rajut, teh hangat',ESTJ:'topi kapten, toa, peluit',ESFJ:'pita, celemek, kue mangkuk',
+ISTP:'bandana, kunci pas, roda gigi',ISFP:'baret, kuas, palet, kupu-kupu',ESTP:'kacamata hitam, lompat-lompat',ESFP:'mikrofon, mata bintang, not musik'};
+document.getElementById('all').innerHTML=FAMS.map(([f,ts])=>`<div class="fam">${f}</div><div class="row">${ts.split(' ').map(t=>`<div class="cell">${R.roh16(t)}<b>${t}</b><small>${NOTE[t]}</small></div>`).join('')}</div>`).join('');
+document.getElementById('opsi').innerHTML=Object.keys(R.INFP_OPSI).map(k=>`<div class="cell">${R.rohInfp(k)}<b>${R.INFP_OPSI[k].nama}</b><small>${R.INFP_OPSI[k].isi}</small></div>`).join('');
+const EMO=['💖','✨','⭐','💫','🎉'];
+const burstAt=(el,n=7)=>{for(let i=0;i<n;i++){const s=document.createElement('span');s.className='fx';s.textContent=EMO[i%EMO.length];const an=-Math.PI/2+(i-(n-1)/2)*.42;s.style.setProperty('--dx',Math.round(Math.cos(an)*70)+'px');s.style.setProperty('--dy',Math.round(Math.sin(an)*80-10)+'px');s.style.setProperty('--r',(i*37%60-30)+'deg');el.appendChild(s);setTimeout(()=>s.remove(),1100)}};
+document.addEventListener('click',e=>{const c=e.target.closest('.cell');if(!c)return;const s=c.querySelector('.chr');s.classList.remove('hop');void s.getBoundingClientRect();s.classList.add('hop');burstAt(c);setTimeout(()=>s.classList.remove('hop'),800)});
+document.querySelectorAll('[data-th]').forEach(b=>b.onclick=()=>document.documentElement.dataset.theme=b.dataset.th);
+</script>
+</body>
+</html>

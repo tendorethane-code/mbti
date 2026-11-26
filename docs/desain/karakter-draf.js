@@ -224,5 +224,5 @@
       `<ellipse class="shadow" cx="100" cy="207" rx="40" ry="6" fill="#000" opacity=".18"/>${sparkle(34, 60, 6, b, 'tw')}${sparkle(170, 46, 4, '#fff', 'tw', .8)}<g class="body">${body}${face({y: 130, gap: 17, r: 8.5, mouth: 'smile'})}</g></svg>`;
   }
 
-  G.KARAKTER_DRAF = {roh, chibi, hewan, pemandu, fam};
+  G.KARAKTER_DRAF = {roh, chibi, hewan, pemandu, fam, _h: {roundPoly, sparkle, heart, defs, pal, INK}};
 })(typeof window !== 'undefined' ? window : globalThis);
