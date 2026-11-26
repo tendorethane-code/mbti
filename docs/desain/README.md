@@ -59,6 +59,17 @@ Gabungan INFP permintaan pemilik (badan 3 + gerhana 2; gambar `gambar/roh-infp-g
 
 Opsi INFP (`rohInfp(kunci)`): `bunga` 1. Bunga & Gerhana Kecil, `gerhana` 2. Penjaga Gerhana (gerhana H+ sebagai lingkaran cahaya di belakang kepala), `kosmos` 3. Roh Kosmos (badan jeli berisi nebula, dari D), `taman` 4. Taman di Kepala (sulur B), `penulis` 5. Penulis Mimpi (jurnal, burung kertas C), `lentera` 6. Lentera Hati, `awan` 7. Kepala di Awan.
 
+## Progres karakter saat mengisi soal (`pratinjau-progres.html`)
+Pemilik ingin karakter yang "terbentuk" selama mengisi soal lalu terungkap setelah selesai. Syaratnya netral: yang tumbuh sama untuk semua orang dan tidak bergantung pada jawaban, supaya tidak memengaruhi jawaban berikutnya. Tiga konsep (gambar `gambar/progres-konsep.jpg`, baris = 0, 50, 100, 170, 189 soal):
+- A. Telur Kosmos: bintang masuk ke telur tiap jawaban, cahaya naik, retak di akhir tiap modul, bergoyang lalu gemetar, menetas.
+- B. Awan Bintang: debu bintang makin banyak dan rapat, inti makin terang, meletup jadi karakter.
+- C. Botol Ramuan: cairan naik, satu lapis warna per modul (warna dari modul, bukan jawaban), sumbat meletup, karakter keluar dari asap.
+
+## Penempatan karakter di PDF dan kartu (mockup)
+Dibuat dari web sungguhan dengan data buatan "Contoh" (gambar `gambar/penempatan-*.jpg`):
+- Sampul PDF P1: karakter di kanan, sejajar judul. P2: karakter berdiri di atas baris angka, cap family mengecil di sampingnya. P3: karakter di tengah antara judul dan kotak "yang paling khas", cap family dihilangkan (pin di karakter sudah menandai family). Ketiganya muat satu halaman (265 mm).
+- Kartu K1: Poster dengan karakter kecil di kanan atas (sempit untuk judul tipe yang lebar seperti ENTP). K2: gaya kartu baru "Karakter" dengan karakter besar di tengah, nama tipe bergradien, family, dan tiga tipe paling cocok.
+
 ## Arsip (`arsip/`)
 | File | Isi | Asal |
 |---|---|---|
