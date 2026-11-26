@@ -25,6 +25,18 @@ Buka `pratinjau-infp.html` lewat server lokal (misalnya `npx serve` di akar repo
 
 Pemilik menyukai B dan D. B diperkaya jadi B+, lalu B+ dinilai "kureng" di bagian wisteria dan gerbang, jadi diperbaiki jadi B++. Elemen yang menjuntai (wisteria) akhirnya dinilai kurang bagus; yang disukai adalah sulur B asli dan planet bercincin D, lalu digabung jadi F. Planet bercincin F dinilai "agak alay", jadi dibuat G (lubang hitam) dan H (gerhana). Pemilik suka H, lalu dibuat H+ yang lebih kreatif; H+ dinilai "bagus banget, puas" dan menjadi favorit. H++ (pusaran) dibuat sebagai eksplorasi lanjutan; pemilik lebih suka versi awalnya yang tipis dan lembut mengitari gerhana, jadi dibuat H3 (pita sutra) yang elegan. Percobaan pantulan gerhana di air beriak dibuang karena terlihat seperti tangga. Catatan: wisteria memang selalu menjuntai; bunga rambat yang tidak menjuntai misalnya melati, morning glory, atau clematis. Untuk mengganti motif INFP: salin isi varian ke fungsi `drawInfp` di `index.html`. Helper-nya sama (`rgba`, `line`, `circ`, `star`, `glow`, `mist`); helper khusus draf (`ripples`, `stars`, `fireflies`, `leaf`, `flower`, `halo`) ikut disalin. Untuk cahaya, pakai `glow(..., cx, cy)` dengan titik pusat (sprite, ringan), bukan `shadowBlur` per titik.
 
+## Karakter per tipe (`karakter-draf.js`)
+Buka `pratinjau-karakter.html` lewat server lokal (atau raw.githack) untuk melihat animasinya: gerak diam per family, reaksi saat diketuk, demo Pemandu saat mengisi soal, dan animasi hasil terungkap. Semua karakter berupa SVG yang dibuat kode, dicontohkan untuk INFP, ENTP, ISFJ, ESTP.
+
+| Arah | Nama | Isi | Gambar |
+|---|---|---|---|
+| `roh` | A. Roh Peta | makhluk roh orisinal; badan mengikuti bahasa motif family (NT kristal, NF tetesan, SJ roti, SP api miring); aksesori per tipe | `gambar/karakter-draf-*.jpg` |
+| `chibi` | B. Chibi Mini | kepala besar bertudung gaya stiker; kulit krem pastel bersemburat warna tipe, rambut warna tipe (tidak menetapkan ras/gender) | sama |
+| `hewan` | C. Sahabat Hewan | INFP rusa kecil, ENTP rubah, ISFJ kelinci, ESTP anak harimau | sama |
+| `pemandu` | Pemandu | maskot bintang netral untuk menemani saat mengisi soal (tidak membocorkan tipe) | sama |
+
+Gerak per family: Diplomat melayang, Analyst memiringkan kepala, Sentinel bernapas tenang, Explorer melompat. Animasi hasil terungkap: `gambar/karakter-reveal.jpg`. Hindari kemiripan dengan ilustrasi 16Personalities (figur manusia low-poly).
+
 ## Arsip (`arsip/`)
 | File | Isi | Asal |
 |---|---|---|

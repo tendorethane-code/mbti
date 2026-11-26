@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Draf Karakter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#121019;--ink:#ecebf3;--mute:#a9a6ba;--pan:#1c1928;--line:#2e2a3c;--acc:#b7a1e0}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#ffffff;--ink:#15151a;--mute:#5d5b6b;--pan:#f4f2fb;--line:#e2dfeb}}
+:root[data-theme="light"]{--bg:#ffffff;--ink:#15151a;--mute:#5d5b6b;--pan:#f4f2fb;--line:#e2dfeb}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif;padding:24px 16px 60px;max-width:1100px;margin:auto}
+h1{margin:0 0 6px;font-size:26px}h2{margin:34px 0 4px;font-size:20px}p{color:var(--mute);margin:0 0 14px;max-width:72ch;line-height:1.5}
+.row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:640px){.row{grid-template-columns:repeat(2,1fr)}}
+.cell{background:var(--pan);border:1px solid var(--line);border-radius:20px;padding:10px 8px 12px;text-align:center;position:relative;overflow:hidden;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.cell svg{width:100%;max-width:190px;height:auto;display:block;margin:auto;overflow:visible}
+.cell b{display:block;font-size:17px;letter-spacing:.04em}.cell small{color:var(--mute);font-weight:600;font-size:12px}
+.themes{display:flex;gap:6px;margin:10px 0 0}.themes button,.btn{font:inherit;font-weight:700;border-radius:999px;border:1px solid var(--line);background:var(--pan);color:var(--ink);padding:8px 14px;cursor:pointer}
+.btn.pri{background:var(--acc);color:#1b1526;border-color:transparent}
+.note{font-size:13px;color:var(--mute);margin-top:6px}
+
+/* ---------- Animasi karakter ---------- */
+.chr .body{transform-box:view-box;transform-origin:100px 205px}
+.chr .shadow{transform-box:fill-box;transform-origin:center}
+.chr .eye{transform-box:fill-box;transform-origin:center;animation:blink 4.6s infinite}
+.cell:nth-child(2n) .chr .eye{animation-delay:1.3s}.cell:nth-child(3n) .chr .eye{animation-delay:2.4s}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+/* kepribadian gerak per family */
+.f-NF .body{animation:nf 3.6s ease-in-out infinite}.f-NF .shadow{animation:sh 3.6s ease-in-out infinite}
+@keyframes nf{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-9px) rotate(1.5deg)}}
+.f-NT .body{animation:nt 3.2s ease-in-out infinite}
+@keyframes nt{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)}60%{transform:rotate(3deg)}}
+.f-SJ .body{animation:sj 3.4s ease-in-out infinite}
+@keyframes sj{0%,100%{transform:scale(1,1)}50%{transform:scale(1.03,.975)}}
+.f-SP .body{animation:sp 1.25s cubic-bezier(.3,0,.4,1) infinite}.f-SP .shadow{animation:sh 1.25s cubic-bezier(.3,0,.4,1) infinite}
+@keyframes sp{0%,100%{transform:translateY(0) scale(1.05,.95)}12%{transform:translateY(0) scale(1,1)}50%{transform:translateY(-14px) scale(.97,1.03)}88%{transform:translateY(0) scale(1,1)}}
+.f-guide .body{animation:nf 3s ease-in-out infinite}.f-guide .shadow{animation:sh 3s ease-in-out infinite}
+@keyframes sh{50%{transform:scale(.8);opacity:.12}}
+/* aksesori */
+.chr .wig{animation:wig 2.4s ease-in-out infinite;transform-box:view-box}
+@keyframes wig{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.chr .flop{animation:flop 3s ease-in-out infinite;transform-box:view-box}
+@keyframes flop{0%,70%,100%{transform:rotate(0)}80%{transform:rotate(16deg)}90%{transform:rotate(4deg)}}
+.chr .wave{animation:wave 1.6s ease-in-out infinite;transform-box:view-box}
+@keyframes wave{0%,100%{transform:rotate(0)}50%{transform:rotate(-16deg)}}
+.chr .tail{animation:wave 1.8s ease-in-out infinite;transform-box:view-box}
+.chr .float{animation:fl 2.8s ease-in-out infinite}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.chr .bounce{animation:bn .9s cubic-bezier(.3,0,.5,1) infinite}
+@keyframes bn{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.chr .tw{transform-box:fill-box;transform-origin:center;animation:tw 1.9s ease-in-out infinite}
+@keyframes tw{0%,100%{transform:scale(.55) rotate(0);opacity:.45}50%{transform:scale(1.1) rotate(45deg);opacity:1}}
+.chr .steam path{stroke-dasharray:30;animation:steam 2.2s linear infinite}
+@keyframes steam{0%{stroke-dashoffset:30;opacity:0;transform:translateY(4px)}30%{opacity:.9}100%{stroke-dashoffset:-30;opacity:0;transform:translateY(-8px)}}
+.chr .speed path{stroke-dasharray:28;animation:speed .9s linear infinite}
+.chr .speed path:nth-child(2){animation-delay:.3s}.chr .speed path:nth-child(3){animation-delay:.6s}
+@keyframes speed{0%{stroke-dashoffset:28;opacity:0}40%{opacity:1}100%{stroke-dashoffset:-28;opacity:0}}
+.chr .flame{transform-box:fill-box;transform-origin:bottom left;animation:flame .5s ease-in-out infinite alternate}
+@keyframes flame{to{transform:scale(1.08,.92) rotate(4deg)}}
+/* ketuk: lompat + hati */
+.chr.hop .body{animation:hop .75s cubic-bezier(.3,.1,.3,1)!important}
+@keyframes hop{0%{transform:scale(1,1)}15%{transform:scale(1.14,.84)}45%{transform:translateY(-38px) scale(.9,1.12) rotate(-6deg)}70%{transform:translateY(0) scale(1.1,.9)}85%{transform:scale(.97,1.03)}100%{transform:scale(1,1)}}
+.fx{position:absolute;pointer-events:none;font-size:18px;left:50%;top:40%;animation:fx 1s ease-out forwards}
+@keyframes fx{0%{transform:translate(-50%,0) scale(.4);opacity:0}20%{opacity:1}100%{transform:translate(calc(-50% + var(--dx)),var(--dy)) scale(1.1) rotate(var(--r));opacity:0}}
+
+/* ---------- Demo mengisi soal ---------- */
+.quiz{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center;background:var(--pan);border:1px solid var(--line);border-radius:20px;padding:14px}
+@media(max-width:560px){.quiz{grid-template-columns:96px 1fr}}
+.quiz svg{width:100%;overflow:visible}
+.bubble{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:10px 12px;font-weight:700;min-height:44px;position:relative}
+.bubble.say{animation:say .4s cubic-bezier(.3,1.5,.5,1)}
+@keyframes say{from{transform:scale(.85);opacity:.3}}
+.opts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.opts button{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-weight:800;cursor:pointer;transition:transform .15s}
+.opts button:active{transform:scale(.88)}
+.combo{font-size:12px;color:var(--mute);margin-top:8px;font-weight:700}
+.combo i{font-style:normal;color:var(--acc)}
+.trail{position:fixed;pointer-events:none;width:10px;height:10px;border-radius:50%;background:#ffe08a;box-shadow:0 0 12px #ffe08a;z-index:9}
+
+/* ---------- Reveal hasil ---------- */
+.stage{position:relative;height:430px;background:radial-gradient(ellipse at 50% 40%,var(--pan),var(--bg) 70%);border:1px solid var(--line);border-radius:24px;overflow:hidden}
+.grid16{position:absolute;left:50%;top:44%;display:grid;grid-template-columns:repeat(4,34px);gap:8px;transform:translate(-50%,-50%)}
+.grid16 span{width:34px;height:34px;border-radius:10px;background:var(--line);transition:background .12s,transform .12s,box-shadow .12s;display:grid;place-items:center;font-size:9px;font-weight:800;color:var(--mute)}
+.grid16 span.hi{transform:scale(1.18);color:#1b1526}
+.grid16.fly span{transition:transform .55s cubic-bezier(.5,0,.8,.2),opacity .55s;opacity:0}
+.ring{position:absolute;left:50%;top:44%;width:30px;height:30px;margin:-15px;border-radius:50%;border:3px solid #fff;opacity:0}
+.ring.go{animation:ring .7s ease-out forwards}
+@keyframes ring{0%{transform:scale(.2);opacity:1}100%{transform:scale(12);opacity:0}}
+.hero{position:absolute;left:50%;top:44%;width:210px;transform:translate(-50%,-50%) scale(0)}
+.hero.go{animation:pop .8s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes pop{0%{transform:translate(-50%,-50%) scale(0) rotate(-14deg)}100%{transform:translate(-50%,-50%) scale(1) rotate(0)}}
+.hero svg{width:100%;overflow:visible}
+.ttl{position:absolute;left:0;right:0;bottom:26px;text-align:center}
+.ttl .t{font-size:44px;font-weight:800;letter-spacing:.06em;display:inline-flex;gap:2px}
+.ttl .t span{display:inline-block;opacity:0;transform:translateY(20px) scale(.5)}
+.ttl .t span.go{animation:let .5s cubic-bezier(.2,1.7,.4,1) forwards}
+@keyframes let{to{opacity:1;transform:none}}
+.ttl .f{font-weight:700;color:var(--mute);opacity:0;transition:opacity .5s}.ttl .f.go{opacity:1}
+.conf{position:absolute;left:50%;top:44%;width:9px;height:14px;border-radius:3px;pointer-events:none;animation:conf 1.6s cubic-bezier(.15,.6,.4,1) forwards}
+@keyframes conf{0%{transform:translate(-50%,-50%) rotate(0) scale(.4);opacity:1}70%{opacity:1}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(var(--r)) scale(1);opacity:0}}
+.ctrl{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+select{font:inherit;font-weight:700;border-radius:999px;border:1px solid var(--line);background:var(--pan);color:var(--ink);padding:8px 12px}
+
+@media(prefers-reduced-motion:reduce){.chr *{animation:none!important}}
+</style>
+</head>
+<body>
+<h1>Draf karakter per tipe</h1>
+<p>Tiga arah gaya, masing-masing dicontohkan dengan satu tipe per family: INFP (Diplomat), ENTP (Analyst), ISFJ (Sentinel), ESTP (Explorer). Warna mengikuti palet tipe yang sudah dipakai di hasil. Setiap family punya gaya gerak sendiri: Diplomat melayang, Analyst memiringkan kepala, Sentinel bernapas tenang, Explorer melompat-lompat. <b>Ketuk karakter</b> untuk melihat reaksinya.</p>
+<div class="themes"><button data-th="dark">Gelap</button><button data-th="light">Terang</button></div>
+
+<h2>A. Roh Peta</h2>
+<p>Makhluk roh kecil orisinal. Bentuk badan memakai bahasa motif family: Analyst kristal bersudut, Diplomat tetesan lembut, Sentinel roti kokoh, Explorer api yang miring ke depan. Tanpa gender dan warna kulit.</p>
+<div class="row" id="rA"></div>
+
+<h2>B. Chibi Mini</h2>
+<p>Kepala besar bertudung, gaya stiker. Kulit dibuat warna krem pastel yang diberi semburat warna tipe dan rambut ikut warna tipe, supaya tidak menetapkan ras atau gender.</p>
+<div class="row" id="rB"></div>
+
+<h2>C. Sahabat Hewan</h2>
+<p>Satu hewan per tipe (contoh: INFP rusa kecil, ENTP rubah, ISFJ kelinci, ESTP anak harimau). Paling cepat dikenali. Tapi pemetaan hewan ke tipe hanya kesan, bukan hasil penelitian, dan ada 16 hewan yang harus dipilih bersama.</p>
+<div class="row" id="rC"></div>
+
+<h2>Animasi saat mengisi soal</h2>
+<p>Selama tes yang menemani adalah <b>Pemandu</b>, maskot netral yang sama untuk semua orang. Karakter tipe belum muncul, supaya tidak memengaruhi jawaban. Reaksinya tidak bergantung pada pilihan jawaban: jawaban 1 dan 5 mendapat reaksi yang sama. Coba ketuk angka di bawah.</p>
+<div class="quiz"><div id="guide"></div><div><div class="bubble" id="bub">Halo! Aku temani sampai selesai. Pilih yang paling cocok, tidak ada jawaban salah.</div>
+<div class="opts" id="opts"></div><div class="combo" id="combo">Bintang terkumpul: <i id="cnt">0</i></div></div></div>
+
+<h2>Animasi hasil terungkap</h2>
+<p>Setelah semua modul selesai: peta 16 tipe berkedip mengacak, lalu berhenti di tipemu. Kotak-kotaknya tersedot ke tengah, ada kilatan cahaya, karakter melompat keluar dengan konfeti warna tipe, lalu huruf tipe muncul satu per satu.</p>
+<div class="ctrl"><select id="selS"><option value="roh">A. Roh Peta</option><option value="chibi">B. Chibi Mini</option><option value="hewan">C. Sahabat Hewan</option></select>
+<select id="selT"><option>INFP</option><option>ENTP</option><option>ISFJ</option><option>ESTP</option></select>
+<button class="btn pri" id="play">Putar animasi</button></div>
+<div class="stage" id="stage"><div class="grid16" id="g16"></div><div class="ring" id="ring"></div><div class="hero" id="hero"></div><div class="ttl"><div class="t" id="tt"></div><div class="f" id="tf"></div></div></div>
+<p class="note">Semua animasi memakai transform/opacity saja (ringan di HP) dan dimatikan kalau pengguna memilih "kurangi gerakan".</p>
+
+<script src="../../data.js"></script><script src="../../legacy.js"></script><script src="../../core.js"></script><script src="karakter-draf.js"></script>
+<script>
+const K=KARAKTER_DRAF,TYPES=['INFP','ENTP','ISFJ','ESTP'],FAMN={NF:'Diplomat',NT:'Analyst',SJ:'Sentinel',SP:'Explorer'};
+const NOTE={roh:{INFP:'bunga di ujung kepala, bulan gerhana kecil',ENTP:'badan kristal, bohlam ide',ISFJ:'syal rajut, teh hangat',ESTP:'kacamata hitam, lompat-lompat'},
+  chibi:{INFP:'tudung bertelinga daun, jurnal',ENTP:'kacamata las, tongkat kilau',ISFJ:'tudung berpompom, teh',ESTP:'topi, bola basket'},
+  hewan:{INFP:'rusa kecil bertanduk bunga',ENTP:'rubah dengan bohlam',ISFJ:'kelinci bersyal',ESTP:'anak harimau'}};
+const fill=(id,fn,st)=>{document.getElementById(id).innerHTML=TYPES.map(t=>`<div class="cell" data-t="${t}">${fn(t)}<b>${t}</b><small>${NOTE[st][t]}</small></div>`).join('')};
+fill('rA',K.roh,'roh');fill('rB',K.chibi,'chibi');fill('rC',K.hewan,'hewan');
+const EMO=['💖','✨','⭐','💫','🎉'];
+const burstAt=(el,n=7,set=EMO)=>{for(let i=0;i<n;i++){const s=document.createElement('span');s.className='fx';s.textContent=set[i%set.length];const an=-Math.PI/2+(i-(n-1)/2)*.42;s.style.setProperty('--dx',Math.round(Math.cos(an)*70)+'px');s.style.setProperty('--dy',Math.round(Math.sin(an)*80-10)+'px');s.style.setProperty('--r',(i*37%60-30)+'deg');el.appendChild(s);setTimeout(()=>s.remove(),1100)}};
+document.addEventListener('click',e=>{const c=e.target.closest('.cell');if(!c)return;const s=c.querySelector('.chr');s.classList.remove('hop');void s.getBoundingClientRect();s.classList.add('hop');burstAt(c);setTimeout(()=>s.classList.remove('hop'),800)});
+document.querySelectorAll('[data-th]').forEach(b=>b.onclick=()=>document.documentElement.dataset.theme=b.dataset.th);
+
+// Demo soal: reaksi netral
+document.getElementById('guide').innerHTML=K.pemandu();
+const LINES=['Sip, lanjut!','Mantap, satu bintang lagi ✨','Pelan-pelan saja.','Kamu sudah sejauh ini!','Wah, cepat juga 😄','Satu lagi menyala!','Rasinya mulai kelihatan…'];
+let n=0;const opts=document.getElementById('opts');
+opts.innerHTML=[1,2,3,4,5].map(v=>`<button type="button">${v}</button>`).join('');
+opts.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;n++;
+  const g=document.querySelector('#guide .chr');g.classList.remove('hop');void g.getBoundingClientRect();g.classList.add('hop');setTimeout(()=>g.classList.remove('hop'),800);
+  const bub=document.getElementById('bub');bub.textContent=n%5===0?`${n} soal! Pemandu menari 💃`:LINES[n%LINES.length];bub.classList.remove('say');void bub.offsetWidth;bub.classList.add('say');
+  // bintang terbang dari tombol ke penghitung
+  const a=b.getBoundingClientRect(),z=document.getElementById('cnt').getBoundingClientRect(),d=document.createElement('div');d.className='trail';d.style.left=a.left+a.width/2-5+'px';d.style.top=a.top+a.height/2-5+'px';document.body.appendChild(d);
+  d.animate([{transform:'translate(0,0) scale(1)'},{transform:`translate(${(z.left-a.left)/2}px,${z.top-a.top-60}px) scale(1.4)`,offset:.5},{transform:`translate(${z.left-a.left}px,${z.top-a.top}px) scale(.5)`}],{duration:650,easing:'cubic-bezier(.4,0,.6,1)'}).onfinish=()=>{d.remove();const c=document.getElementById('cnt');c.textContent=n;c.animate([{transform:'scale(1.8)'},{transform:'scale(1)'}],{duration:300})}
+  if(n%5===0)burstAt(document.querySelector('.quiz'),9)});
+
+// Reveal
+const ALL=['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP','ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'];
+const g16=document.getElementById('g16');g16.innerHTML=ALL.map(t=>`<span>${t}</span>`).join('');
+let busy=false;
+document.getElementById('play').onclick=()=>{if(busy)return;busy=true;const t=document.getElementById('selT').value,st=document.getElementById('selS').value,P=TYPE_PAL[t];
+  const cells=[...g16.children],hero=document.getElementById('hero'),ring=document.getElementById('ring'),tt=document.getElementById('tt'),tf=document.getElementById('tf'),stage=document.getElementById('stage');
+  g16.classList.remove('fly');cells.forEach(c=>{c.className='';c.style.cssText=''});hero.className='hero';hero.innerHTML='';tt.innerHTML='';tf.className='f';ring.className='ring';
+  const target=ALL.indexOf(t);let k=0,steps=14;
+  const tick=()=>{cells.forEach(c=>{c.classList.remove('hi');c.style.background='';c.style.boxShadow=''});const i=k<steps-1?(k*7+3)%16:target;const c=cells[i],pp=TYPE_PAL[ALL[i]];c.classList.add('hi');c.style.background=`linear-gradient(135deg,${pp[0]},${pp[1]})`;c.style.boxShadow=`0 0 18px ${pp[0]}`;
+    k++;if(k<steps)setTimeout(tick,60+k*k*1.6);else setTimeout(fly,550)};
+  const fly=()=>{const r=g16.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;cells.forEach((c,i)=>{if(i===target)return;const b=c.getBoundingClientRect();c.style.transform=`translate(${cx-b.left-17}px,${cy-b.top-17}px) scale(.2)`});g16.classList.add('fly');
+    setTimeout(()=>{ring.style.borderColor=P[0];ring.classList.add('go');hero.innerHTML=K[st](t);hero.classList.add('go');
+      for(let i=0;i<34;i++){const s=document.createElement('i');s.className='conf';const an=Math.random()*Math.PI*2,dist=120+Math.random()*130;s.style.background=[P[0],P[1],'#ffe08a','#fff'][i%4];s.style.setProperty('--dx',Math.round(Math.cos(an)*dist)+'px');s.style.setProperty('--dy',Math.round(Math.sin(an)*dist*.8+80)+'px');s.style.setProperty('--r',Math.round(Math.random()*720-360)+'deg');if(i%3===0)s.style.borderRadius='50%';stage.appendChild(s);setTimeout(()=>s.remove(),1700)}
+      tt.innerHTML=[...t].map((ch,i)=>`<span style="animation-delay:${.35+i*.12}s;background:linear-gradient(135deg,${P[0]},${P[1]});-webkit-background-clip:text;background-clip:text;color:transparent">${ch}</span>`).join('');tt.querySelectorAll('span').forEach(s=>s.classList.add('go'));
+      setTimeout(()=>{tf.textContent=FAMN[K.fam(t)];tf.classList.add('go');busy=false},950)},560)};
+  tick()};
+</script>
+</body>
+</html>
