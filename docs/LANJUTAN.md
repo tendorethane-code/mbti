@@ -29,7 +29,7 @@ Semua draf (motif INFP A–E dan B+, kartu yang ditolak, motif versi lama) ada d
 2. Tahap pengecekan menyeluruh bersama pemilik, baru PR ke `main`.
 
 ## Data pribadi pemilik
-File jawaban pemilik (`jawaban-peta-kepribadian-gama-v3.json`, berisi jawaban lengkap, Pendalaman, ringkasan, dan 2 catatan manual) **tidak disimpan di repo** karena berisi data pribadi dan repo ini kemungkinan publik. Minta pemilik mengunggah file itu di sesi baru. Hasil terakhirnya: INFP-T (I 98 · N 75 · F 53 tipis · P 86 · T 85), urutan INFP 74,3 · INTP 66,8 · ISFP 65,1, Pendalaman lengkap (15 temuan otomatis).
+File jawaban pemilik (berisi jawaban lengkap, Pendalaman, ringkasan, dan catatan manual) **tidak disimpan di repo** karena berisi data pribadi dan repo ini publik. Minta pemilik mengunggah file itu di sesi baru. Jangan menulis nama, skor, atau hasil tes pemilik di file mana pun di repo.
 
 ## Cara membuat file untuk pemilik
 - PDF/PNG dibuat dari web sungguhan dengan Playwright: layani file repo di URL `https://tendorethane-code.github.io/mbti/` (route ke file lokal), buka file jawaban lewat `#fileIn`, unduh kartu lewat `#dlCard`/`#cardPrev`, cetak dengan `emulateMedia({media:'print'})` + `page.pdf({printBackground:true, preferCSSPageSize:true})`.

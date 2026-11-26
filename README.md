@@ -62,6 +62,11 @@ Facet Expressive, Active, dan Enthusiastic, serta semua facet T/F dan J/P, digan
 - `tests/core.test.mjs`: unit test untuk integritas soal, bahasa, ke-16 tipe × A/T, jawaban acak, impor & migrasi file, ringkasan kepribadian, catatan, dan link hasil
 - `tests/e2e.mjs`: tes end-to-end di Chrome headless untuk semua alur, termasuk file versi lama, catatan khusus (dan teks berbahaya), serta mode lihat link
 
+## Rilis
+- Situs live = branch `main` di GitHub Pages. GitHub Pages meng-cache tiap file 10 menit, jadi setiap kali `data.js`, `legacy.js`, atau `core.js` berubah, **ganti angka `?v=` di tag `<script>` pada `index.html`** supaya pengunjung tidak mendapat campuran file lama dan baru.
+- Jalankan `npm test` sebelum merge. CI menjalankan tes yang sama untuk setiap pull request.
+- Kalau rilis bermasalah: revert commit merge di `main`, GitHub Pages memperbarui situs dalam beberapa menit.
+
 ## Menjalankan tes
 ```
 npm test            # butuh Node 22+ dan Chrome/Chromium

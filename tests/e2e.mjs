@@ -272,6 +272,9 @@ try {
   await click('#resHome'); await setFile(old);
   check(`file versi 1: buka beranda dan beri tahu ${oldMissing} soal yang perlu dijawab`, await waitFor(`!document.getElementById('home').hidden&&/versi lama.* ${oldMissing} soal yang perlu kamu jawab lagi/.test(document.getElementById('fileMsg').textContent)`, 4000), await text('#fileMsg'));
   check('file versi 1: modul Facet terisi sebagian (15/45)', (await text('#mods .mod:nth-child(2) small')).includes('15/45 dijawab'), await text('#mods .mod:nth-child(2) small'));
+  // K2b. Pengguna versi lama yang datanya tersimpan di browser (bukan lewat file): dimigrasi diam-diam, tapi diberi tahu.
+  await ev(`localStorage.setItem('tesKepribadian.v1',JSON.stringify(${JSON.stringify({name: 'Lama', ans: oldData.ans})}))`); await load();
+  check(`data browser versi lama: beranda memberi tahu ${oldMissing} soal yang perlu dijawab`, await waitFor(`!document.getElementById('home').hidden&&/diperbarui, jadi ${oldMissing} soal perlu kamu jawab lagi/.test(document.getElementById('fileMsg').textContent)`, 4000), await text('#fileMsg'));
 
   // K3. Catatan khusus dari file, termasuk teks berbahaya yang harus tampil sebagai teks
   const withNotes = path.join(DL, 'catatan.json');

@@ -450,9 +450,9 @@ body:before{content:"";position:fixed;inset:-20vh -20vw;z-index:-1;pointer-event
 
 <footer class="band"><div class="wrap">Peta Kepribadian bukan tes MBTI® resmi dan belum divalidasi secara ilmiah. MBTI adalah merek dagang The Myers-Briggs Company. Jawabanmu hanya tersimpan di browser ini dan tidak dikirim ke server mana pun.</div></footer>
 
-<script src="data.js"></script>
-<script src="legacy.js"></script>
-<script src="core.js"></script>
+<script src="data.js?v=2026-11-26"></script>
+<script src="legacy.js?v=2026-11-26"></script>
+<script src="core.js?v=2026-11-26"></script>
 <script>
 {
 const KEY='tesKepribadian.v1';
@@ -467,7 +467,8 @@ const nameOf=i=>i<DEEPI?MODS[i].name:'Pendalaman';
 const shown=(it,c)=>{const v=c[it.id];return valid(v)?(it.k==='fc'&&it.fl?6-v:v):0};
 const mainDoneOf=D=>MAIN.every(m=>isDone(ansOf(D),m));
 let S=blank();
-try{const s=JSON.parse(localStorage.getItem(KEY)||'null');const c=s&&sanitizeImport({...s,app:APP_ID});if(c)S=c}catch(e){}
+let startMsg='';
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null');const c=s&&sanitizeImport({...s,app:APP_ID});if(c){S=c;if(c.migrated&&c.missing)startMsg=`Selamat datang kembali. Tes ini sudah diperbarui, jadi ${c.missing} soal perlu kamu jawab lagi supaya hasilnya lengkap. Jawaban lain tetap tersimpan.`}}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({v:DATA_V,name:S.name,c:S.c,summary:S.summary||'',notes:S.notes||[]}))}catch(e){}};
 save();
 let cur=0,qi=0,lock=false,resetArm=-1,view=null,histArm=-1;
@@ -1129,6 +1130,8 @@ function cardMozaik(R,name,K){
   if(!R.fits||!R.hasType){txt('Hasil sementara',72,520,F(800,110),INK);txt('Selesaikan modul Inti untuk melihat tipe',72,580,F(600,32),MUTE);foot();return}
   const fits=R.fits,mn=Math.min(...fits.map(f=>f.v));
   const items=fits.map(f=>({t:f.t,v:f.v,a:Math.pow(f.v-mn+12,2)}));
+  // Ubin teratas minimal ~22% luas, supaya tetap terbaca walau semua skor hampir sama.
+  {const rest=items.slice(1).reduce((a,i)=>a+i.a,0);items[0].a=Math.max(items[0].a,rest*.28)}
   // Treemap squarified
   const box={x:64,y:230,w:952,h:1210},tot=items.reduce((a,i)=>a+i.a,0);items.forEach(i=>i.s=i.a*box.w*box.h/tot);
   const worst=(row,w)=>{const t=row.reduce((a,b)=>a+b.s,0),mx=Math.max(...row.map(r=>r.s)),mi=Math.min(...row.map(r=>r.s));return Math.max(w*w*mx/(t*t),t*t/(w*w*mi))};
@@ -1284,7 +1287,7 @@ function cardKoleksi(R,name,K){
   txt(siteName(),540,H-92,F(700,24),MUTE,'center');
 }
 
-if(!openShared())renderHome();
+if(!openShared()){renderHome();if(startMsg)$('fileMsg').textContent=startMsg}
 }
 </script>
 </body>
