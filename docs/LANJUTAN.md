@@ -22,7 +22,7 @@ Dokumen ini merangkum keadaan proyek dan keputusan yang sudah diambil bersama pe
 - Bagian simpan & bagikan: pratinjau kartu langsung tampil, contoh kecil tiap gaya (`canvas[data-thumb]`), satu tombol utama, 4 cara lain, catatan dilipat.
 
 ## Arsip desain
-Semua draf (motif INFP A–E dan B+, kartu yang ditolak, motif versi lama) ada di `docs/desain/` dengan halaman pratinjau. Pemilik ingin semua draf disimpan. Pemilik menyukai draf INFP B dan D; Draf terbaru: H+ (gerhana kreatif; pemilik suka H), sebelumnya G (lubang hitam) dan H (gerhana), turunan F (sulur B + nebula D) setelah planet bercincin dinilai agak alay. Menunggu keputusan apakah salah satunya menggantikan A. Pemilik tidak suka elemen menjuntai (wisteria).
+Semua draf (motif INFP A–E dan B+, kartu yang ditolak, motif versi lama) ada di `docs/desain/` dengan halaman pratinjau. Pemilik ingin semua draf disimpan. Pemilik menyukai draf INFP B dan D; Favorit pemilik: H+ (gerhana kreatif, "puas"). Eksplorasi lanjutan: H++ (pusaran). Sebelumnya sebelumnya G (lubang hitam) dan H (gerhana), turunan F (sulur B + nebula D) setelah planet bercincin dinilai agak alay. Menunggu keputusan apakah salah satunya menggantikan A. Pemilik tidak suka elemen menjuntai (wisteria).
 
 ## Pekerjaan berikutnya
 1. Tunggu tanggapan pemilik soal bagian simpan & bagikan yang baru dan kartu Mozaik. Yang ditolak sebelumnya: Konstelasi, Jurnal, Paspor, Piringan.
