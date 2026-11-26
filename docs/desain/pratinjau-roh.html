@@ -81,6 +81,9 @@ h1{margin:0 0 6px;font-size:26px}h2{margin:34px 0 4px;font-size:20px}p{color:var
 @keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.14)}30%{transform:scale(1)}45%{transform:scale(1.08)}}
 .chr .flick{animation:flick 2.4s ease-in-out infinite}
 @keyframes flick{0%,100%{opacity:.75}50%{opacity:1}}
+.chr .ring{transform-box:view-box;transform-origin:100px 70px;animation:ringb 3s ease-in-out infinite}
+@keyframes ringb{0%,80%,100%{transform:rotate(0)}84%{transform:rotate(-5deg)}88%{transform:rotate(5deg)}92%{transform:rotate(-4deg)}96%{transform:rotate(3deg)}}
+[aria-pressed=true]{background:var(--acc)!important;color:#1b1526!important}
 .chr .sway{transform-box:view-box;animation:wig 3.4s ease-in-out infinite}
 .fam{margin:22px 0 6px;font-weight:800;color:var(--mute);font-size:13px;letter-spacing:.12em;text-transform:uppercase}
 .row.opsi{grid-template-columns:repeat(4,1fr)}
@@ -94,8 +97,9 @@ h1{margin:0 0 6px;font-size:26px}h2{margin:34px 0 4px;font-size:20px}p{color:var
 <div class="themes"><button data-th="dark">Gelap</button><button data-th="light">Terang</button></div>
 <h2>Gabungan INFP: Kosmos + Gerhana</h2>
 <div class="row opsi" id="gab"></div>
-<h2>Badan unik per tipe</h2>
-<p>Setiap tipe punya bentuk badan sendiri, tidak mengikuti family. Aksesori tetap sama.</p>
+<h2>Jalan tengah: badan unik, family tetap terbaca</h2>
+<p>Setiap tipe punya bentuk sendiri. Family tetap terbaca lewat tiga hal: <b>tekstur halus</b> di dalam badan (bahasanya sama dengan motif PDF: Analyst kisi, Diplomat riak, Sentinel garis rapi, Explorer garis miring), <b>pin kecil</b> berlambang family, dan <b>gaya gerak</b> per family (Diplomat melayang, Analyst memiringkan kepala, Sentinel bernapas tenang, Explorer melompat). ENTJ, ISTJ, ESTJ diganti supaya tidak sama-sama kotak: roket, jam weker, lencana perisai.</p>
+<div class="themes" id="mk"><button data-mk="both" aria-pressed="true">Tekstur + pin</button><button data-mk="tex">Tekstur saja</button><button data-mk="pin">Pin saja</button><button data-mk="none">Tanpa penanda</button></div>
 <div id="unik"></div>
 <h2>Badan per family (sebelumnya)</h2>
 <p>Badan mengikuti family (Analyst kristal, Diplomat tetesan, Sentinel roti, Explorer api miring).</p>
@@ -112,7 +116,9 @@ INFJ:'lentera, cahaya di ujung kepala, bulan sabit',INFP:'bunga, gerhana kecil',
 ISTJ:'kacamata kotak, dasi kupu-kupu, daftar centang',ISFJ:'syal rajut, teh hangat',ESTJ:'topi kapten, toa, peluit',ESFJ:'pita, celemek, kue mangkuk',
 ISTP:'bandana, kunci pas, roda gigi',ISFP:'baret, kuas, palet, kupu-kupu',ESTP:'kacamata hitam, lompat-lompat',ESFP:'mikrofon, mata bintang, not musik'};
 document.getElementById('all').innerHTML=FAMS.map(([f,ts])=>`<div class="fam">${f}</div><div class="row">${ts.split(' ').map(t=>`<div class="cell">${R.roh16(t)}<b>${t}</b><small>${NOTE[t]}</small></div>`).join('')}</div>`).join('');
-document.getElementById('unik').innerHTML=FAMS.map(([f,ts])=>`<div class="fam">${f}</div><div class="row">${ts.split(' ').map(t=>`<div class="cell">${R.rohUnik(t)}<b>${t}</b><small>${R.UNIK[t].nama}</small></div>`).join('')}</div>`).join('');
+const drawUnik=m=>{const fm={tex:m==='both'||m==='tex',pin:m==='both'||m==='pin'};document.getElementById('unik').innerHTML=FAMS.map(([f,ts])=>`<div class="fam">${f}</div><div class="row">${ts.split(' ').map(t=>`<div class="cell">${R.rohUnik(t,fm)}<b>${t}</b><small>${R.UNIK[t].nama}</small></div>`).join('')}</div>`).join('');
+  document.querySelectorAll('[data-mk]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mk===m)))};
+drawUnik('both');document.getElementById('mk').addEventListener('click',e=>{const b=e.target.closest('[data-mk]');if(b)drawUnik(b.dataset.mk)});
 document.getElementById('gab').innerHTML=['kosmosGerhana','gerhanaDalam','kosmos','gerhana'].map(k=>`<div class="cell">${R.rohInfp(k)}<b>${R.INFP_OPSI[k].nama}</b><small>${R.INFP_OPSI[k].isi}</small></div>`).join('');
 document.getElementById('opsi').innerHTML=Object.keys(R.INFP_OPSI).filter(k=>!['kosmosGerhana','gerhanaDalam'].includes(k)).map(k=>`<div class="cell">${R.rohInfp(k)}<b>${R.INFP_OPSI[k].nama}</b><small>${R.INFP_OPSI[k].isi}</small></div>`).join('');
 const EMO=['💖','✨','⭐','💫','🎉'];
