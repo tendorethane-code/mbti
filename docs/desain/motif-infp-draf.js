@@ -1,5 +1,5 @@
 // Draf motif sampul INFP. draftInfp(varian, dark) -> canvas 1240x1767 (ukuran motif sampul PDF).
-// Varian: malam (A, dipakai sekarang), taman (B), tamanRimbun (B+), tamanRimbun2 (B++, perbaikan B+), bangau (C), kosmos (D), jendela (E).
+// Varian: malam (A, dipakai sekarang), taman (B), tamanRimbun (B+), tamanRimbun2 (B++), bangau (C), kosmos (D), jendela (E), tamanKosmos (F = B + D).
 // Butuh typePal() dari core.js. Lihat pratinjau-infp.html untuk melihat semuanya sekaligus.
 // Untuk memakai salah satu: salin isi varian ke fungsi drawInfp di index.html (helper-nya sama).
 function draftInfp(v,dark){
@@ -178,6 +178,52 @@ function draftInfp(v,dark){
       // kelopak berguguran
       for(let i=0;i<40;i++){const X=W*.3+rnd()*W*.7,Y=H*.04+rnd()*H*.58;x.save();x.translate(X,Y);x.rotate(rnd()*Math.PI*2);const s=.6+rnd()*.8;x.scale(s,s);x.fillStyle=rgba(rnd()<.5?A:B,.6);x.beginPath();x.moveTo(-14,0);x.quadraticCurveTo(0,-10,14,0);x.quadraticCurveTo(0,10,-14,0);x.fill();x.restore()}
       fireflies(60,W*.3,0,W*.7,H*.58);stars(40,W*.35,0,W*.65,H*.4)},
+    // F. Taman Kosmos: gabungan B (sulur yang mengalir) dan D (nebula cat air, planet bercincin).
+    // Planet bercincin sebagai pusat, untaian bunga melingkarinya, sulur mengalir ke arah judul, debu bintang di sepanjang sulur.
+    tamanKosmos(){
+      const bloom=(X,Y,r,col,n)=>{for(let k=0;k<(n||22);k++){x.fillStyle=rgba(col,.026);x.beginPath();const m=40,rr=r*(.7+rnd()*.35);for(let i=0;i<=m;i++){const an=i/m*Math.PI*2,d=rr*(1+(rnd()-.5)*.28);x.lineTo(X+Math.cos(an)*d,Y+Math.sin(an)*d)}x.fill()}};
+      [[W*.8,H*.13,380,A],[W*.58,H*.06,300,B],[W*.98,H*.36,340,B],[W*.68,H*.3,250,A],[W*.42,H*.02,200,B],[W*.92,H*.02,220,A]].forEach(([X,Y,r,col])=>bloom(X,Y,r,col));
+      mist([[W*.8,H*.13,520,A,.22],[W*.55,H*.32,380,B,.14]]);ripples(W*.8,H*.13,720,.22);
+      // galaksi spiral kecil
+      for(let arm=0;arm<3;arm++)for(let i=0;i<200;i++){const t=i/200*4,r=10*Math.exp(t*.7),an=t+arm*2.094+(rnd()-.5)*.35,X=W*.52+Math.cos(an)*r*1.1,Y=H*.15+Math.sin(an)*r*.5;x.fillStyle=rgba(rnd()<.5?A:LT,.25+rnd()*.55*(1-t/4.3));circ(X,Y,.8+rnd()*2,1)}
+      halo(rgba(LT,.8),W*.52,H*.15,44);
+      // sulur, daun dua warna, bunga berlapis, mawar, kuncup, debu bintang
+      const leaf2=(X,Y,an,s)=>{x.save();x.translate(X,Y);x.rotate(an);const g=x.createLinearGradient(0,0,s,0);g.addColorStop(0,rgba(B,.95));g.addColorStop(1,rgba(A,.85));x.fillStyle=g;x.beginPath();x.moveTo(0,0);x.quadraticCurveTo(s*.5,-s*.45,s,0);x.quadraticCurveTo(s*.5,s*.45,0,0);x.fill();x.strokeStyle=rgba(LT,.35);x.lineWidth=1;line(0,0,s*.85,0);x.restore()};
+      const bloomFlower=(X,Y,r)=>{halo(rgba(A,.7),X,Y,r*2);x.save();x.translate(X,Y);x.rotate(rnd()*Math.PI);
+        [[1,B,.75,6],[.68,A,.85,6]].forEach(([k,col,al,n],L)=>{for(let i=0;i<n;i++){x.rotate(Math.PI*2/n);const g=x.createLinearGradient(0,0,r*k,0);g.addColorStop(0,rgba(col,al));g.addColorStop(1,rgba(L?A:B,al*.75));x.fillStyle=g;x.beginPath();x.ellipse(r*k*.55,0,r*k*.55,r*k*.3,0,0,Math.PI*2);x.fill()}x.rotate(Math.PI/6)});
+        for(let i=0;i<7;i++){const an=i*Math.PI*2/7;x.fillStyle=rgba(LT,.9);circ(Math.cos(an)*r*.22,Math.sin(an)*r*.22,1.8,1)}x.fillStyle=rgba(LT,.95);circ(0,0,r*.12,1);x.restore()};
+      const rose=(X,Y,r)=>{halo(rgba(A,.6),X,Y,r*1.8);for(let t=0;t<11;t+=.35){const rr=r*(t/11),an=t*2.2;x.fillStyle=rgba(t%1.4<.7?A:B,.55+t*.03);x.beginPath();x.ellipse(X+Math.cos(an)*rr*.4,Y+Math.sin(an)*rr*.4,rr*.55+3,rr*.32+2,an,0,Math.PI*2);x.fill()}x.fillStyle=rgba(LT,.85);circ(X,Y,r*.08+1,1)};
+      const bud=(X,Y,an)=>{x.save();x.translate(X,Y);x.rotate(an);x.fillStyle=rgba(A,.85);x.beginPath();x.ellipse(8,0,9,5,0,0,Math.PI*2);x.fill();x.fillStyle=rgba(B,.8);x.beginPath();x.moveTo(0,0);x.lineTo(6,-5);x.lineTo(6,5);x.closePath();x.fill();x.restore()};
+      const vine=(X,Y,an,len,d)=>{x.strokeStyle=rgba(d%2?B:A,.9-d*.12);x.lineWidth=Math.max(2.2,8-d*1.8);x.beginPath();x.moveTo(X,Y);const curl=(rnd()-.5)*.05;
+        for(let i=0;i<len;i++){an+=Math.sin(i*.07+d)*.035+curl;X+=Math.cos(an)*9;Y+=Math.sin(an)*9;x.lineTo(X,Y);
+          if(i%6===0){x.stroke();leaf2(X,Y,an+(i%12?1.1:-1.1),24+rnd()*24-d*3);x.beginPath();x.moveTo(X,Y)}
+          if(i%4===0&&rnd()<.6){x.fillStyle=rgba(LT,.4+rnd()*.5);circ(X+(rnd()-.5)*24,Y+(rnd()-.5)*24,.8+rnd()*1.8,1)}
+          if(i%17===8&&rnd()<.6){x.stroke();bud(X,Y,an+(rnd()<.5?.9:-.9));x.beginPath();x.moveTo(X,Y)}
+          if(d<2&&i%36===18&&rnd()<.85){x.stroke();vine(X,Y,an+(rnd()<.5?.9:-.9),len*.5,d+1);x.beginPath();x.moveTo(X,Y)}}
+        x.stroke();let r=26-d*6;x.beginPath();for(let t=0;t<14;t+=.2)x.lineTo(X+Math.cos(an+t)*r*(1-t/16),Y+Math.sin(an+t)*r*(1-t/16));x.lineWidth=2;x.stroke();
+        rnd()<.55?bloomFlower(X,Y,42-d*8):rose(X,Y,34-d*7)};
+      vine(W*1.02,H*.5,-2.2,125,0);vine(W*.6,-10,1.9,100,0);vine(W*1.02,H*.06,2.6,90,0);vine(W*.86,H*.62,-2.6,72,1);vine(W*.4,-10,1.4,60,1);vine(W*.7,-10,2.45,95,0);
+      // planet bercincin
+      const px=W*.8,py=H*.13,pr=118,tilt=-.32;
+      halo(rgba(A,.55),px,py,pr*2.8);
+      const ring=back=>{x.save();x.translate(px,py);x.rotate(tilt);
+        [[1.55,8,B,.55],[1.72,5,A,.75],[1.86,3,LT,.45],[2.02,10,B,.35],[2.18,3,A,.55]].forEach(([k,w,col,al])=>{x.strokeStyle=rgba(col,al);x.lineWidth=w;x.beginPath();x.ellipse(0,0,pr*k,pr*k*.26,0,back?Math.PI:0,back?Math.PI*2:Math.PI);x.stroke()});
+        for(let i=0;i<520;i++){const an=back?Math.PI+rnd()*Math.PI:rnd()*Math.PI,k=1.5+rnd()*.75;x.fillStyle=rgba(rnd()<.5?LT:A,.3+rnd()*.6);circ(Math.cos(an)*pr*k,Math.sin(an)*pr*k*.26+(rnd()-.5)*4,.6+rnd()*1.6,1)}x.restore()};
+      ring(true);
+      x.save();x.beginPath();x.arc(px,py,pr,0,Math.PI*2);x.clip();
+      const pb=x.createRadialGradient(px-pr*.4,py-pr*.45,pr*.1,px,py,pr*1.1);pb.addColorStop(0,rgba(dark?'#ffe9e0':'#ffffff',.95));pb.addColorStop(.35,rgba(A,.95));pb.addColorStop(1,rgba(B,.95));x.fillStyle=pb;x.fillRect(px-pr,py-pr,pr*2,pr*2);
+      x.translate(px,py);x.rotate(tilt);for(let i=-5;i<=5;i++){x.fillStyle=rgba(i%2?B:'#ffffff',i%2?.22:.12);x.beginPath();for(let X=-pr;X<=pr;X+=6)x.lineTo(X,i*20+Math.sin(X/30+i)*5);for(let X=pr;X>=-pr;X-=6)x.lineTo(X,i*20+9+Math.sin(X/26+i)*4);x.fill()}
+      x.setTransform(1,0,0,1,0,0);const sh=x.createRadialGradient(px+pr*.55,py+pr*.5,pr*.2,px+pr*.4,py+pr*.4,pr*1.3);sh.addColorStop(0,'rgba(20,10,30,.55)');sh.addColorStop(1,'rgba(20,10,30,0)');x.fillStyle=sh;x.fillRect(px-pr,py-pr,pr*2,pr*2);x.restore();
+      ring(false);
+      // bulan kecil di orbit putus-putus
+      x.strokeStyle=rgba(LT,.4);x.lineWidth=1.5;x.setLineDash([4,9]);x.beginPath();x.ellipse(px,py,pr*2.7,pr*1.1,-.5,0,Math.PI*2);x.stroke();x.setLineDash([]);
+      {const an=2.5,mx=px+Math.cos(an)*pr*2.7*Math.cos(-.5)-Math.sin(an)*pr*1.1*Math.sin(-.5),my=py+Math.cos(an)*pr*2.7*Math.sin(-.5)+Math.sin(an)*pr*1.1*Math.cos(-.5);halo(rgba(LT,.7),mx,my,46);const mg=x.createRadialGradient(mx-8,my-8,2,mx,my,22);mg.addColorStop(0,rgba(dark?'#ffffff':LT,.95));mg.addColorStop(1,rgba(B,.9));x.fillStyle=mg;circ(mx,my,20,1)}
+      // untaian bunga yang melingkari planet
+      for(let a=Math.PI*.15;a<Math.PI*1.05;a+=.09){const X=px+Math.cos(a)*pr*2.25,Y=py+Math.sin(a)*pr*1.25;leaf2(X,Y,a+Math.PI/2+(rnd()-.5)*1.2,18+rnd()*12);leaf2(X,Y,a-Math.PI/2+(rnd()-.5)*1.2,16+rnd()*10)}
+      x.strokeStyle=rgba(A,.7);x.lineWidth=3;x.beginPath();x.ellipse(px,py,pr*2.25,pr*1.25,0,Math.PI*.15,Math.PI*1.05);x.stroke();
+      [.25,.5,.72,.95].forEach((a,i)=>{const an=Math.PI*a,X=px+Math.cos(an)*pr*2.25,Y=py+Math.sin(an)*pr*1.25;i%2?rose(X,Y,22):bloomFlower(X,Y,26)});
+      [[W*.62,H*.22,50],[W*.97,H*.32,54],[W*.5,H*.06,38],[W*.72,H*.36,34]].forEach(([X,Y,r],i)=>i%2?rose(X,Y,r*.8):bloomFlower(X,Y,r));
+      stars(130,W*.25,0,W*.75,H*.6);fireflies(55,W*.3,0,W*.7,H*.58)},
   })[v]();
   for(let i=0;i<11000;i++){const X=rnd()*W,Y=rnd()*H*.8;x.fillStyle=rgba(rnd()<.5?A:(dark?'#ffffff':B),.05+rnd()*.12);x.fillRect(X,Y,2,2)}
   x.globalCompositeOperation='destination-in';const m=x.createRadialGradient(fx,fy,0,fx,fy,W*.98);m.addColorStop(0,'rgba(0,0,0,1)');m.addColorStop(.35,'rgba(0,0,0,.72)');m.addColorStop(.7,'rgba(0,0,0,.2)');m.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=m;x.fillRect(0,0,W,H);
