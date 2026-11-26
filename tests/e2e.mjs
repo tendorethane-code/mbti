@@ -161,7 +161,7 @@ try {
   check('hasil: warna halaman mengikuti palet tipe (INFP)', (await ev("document.getElementById('res').style.getPropertyValue('--fam')")) === C0.typePal('INFP', true).a);
   check('hasil: hook "Yang paling khas darimu" tampil', await ev("!!document.querySelector('#res .hook b')&&document.querySelector('#res .hook b').textContent.length>3"));
   check('cetak: alur cerita PDF (5 bab + penutup) hanya untuk PDF', await ev("(()=>{const st=document.querySelector('#res .story');return !!st&&getComputedStyle(st).display==='none'&&st.querySelectorAll('.spage').length>=6&&/Yang membuatmu kuat/.test(st.textContent)})()"));
-  check('cetak: judul tipe bergradien di sampul digambar ke kanvas', await waitFor("(()=>{const i=document.getElementById('pcType');return !!i&&i.dataset.ok==='1'})()", 4000));
+  check('cetak: judul tipe bergradien di sampul berupa gambar PNG (transparan, aman dicetak di HP)', await waitFor("(()=>{const i=document.getElementById('pcType');return !!i&&i.tagName==='IMG'&&i.dataset.ok==='1'&&i.naturalWidth===1800})()", 4000));
   check('cetak: sampul dengan tipe dan hook, hanya untuk PDF', await ev("(()=>{const c=document.querySelector('#res .pcover');return !!c&&getComputedStyle(c).display==='none'&&/INFP/.test(c.textContent)&&/Yang paling khas darimu/.test(c.textContent)})()"));
   check('hasil: belum ada perbandingan riwayat (baru 1 tes)', await ev("!document.getElementById('riwayat')"));
   check('hasil: nggak ada NaN/undefined/null', await ev("!/NaN|undefined|null|Infinity/.test(document.getElementById('res').innerText)"));
@@ -199,7 +199,7 @@ try {
   check('cetak: latar ikut tema gelap, diberi semburat warna tipe', await ev("(()=>{const m=getComputedStyle(document.body).backgroundColor.match(/\\d+/g).map(Number);const s=typeSurf('INFP',true).bg;return m.every(v=>v<40)&&getComputedStyle(document.body).backgroundColor===`rgb(${parseInt(s.slice(1,3),16)}, ${parseInt(s.slice(3,5),16)}, ${parseInt(s.slice(5,7),16)})`&&document.getElementById('pageStyle').textContent.includes(s)})()"));
   check('cetak: tombol & footer disembunyikan, hasil tampil', await ev("getComputedStyle(document.querySelector('#res .noprint')).display==='none'&&getComputedStyle(document.querySelector('footer')).display==='none'&&getComputedStyle(document.getElementById('res')).display!=='none'"));
   await ev("window.dispatchEvent(new Event('beforeprint'))");
-  check('cetak: saat akan mencetak, sampul punya motif khas tipe dan cap family', await waitFor("(()=>{const m=document.getElementById('pcMotif'),s=document.getElementById('pcStamp');return !!m&&m.dataset.ok==='1'&&!!s&&s.dataset.ok==='1'&&/Diplomat/.test(s.getAttribute('aria-label'))})()", 5000));
+  check('cetak: saat akan mencetak, sampul punya motif khas tipe dan cap family', await waitFor("(()=>{const m=document.getElementById('pcMotif'),s=document.getElementById('pcStamp');return !!m&&m.tagName==='IMG'&&m.dataset.ok==='1'&&m.naturalWidth===1240&&!!s&&s.tagName==='IMG'&&s.dataset.ok==='1'&&/Diplomat/.test(s.alt)})()", 5000));
   check('cetak: tabel skor rinci ikut kebuka', await ev("[...document.querySelectorAll('#res details')].every(d=>d.open)"));
   const pdf = await cmd('Page.printToPDF', {printBackground: true});
   fs.writeFileSync(path.join(OUT, '05-hasil.pdf'), Buffer.from(pdf.data, 'base64'));
@@ -283,7 +283,7 @@ try {
   await waitFor("!document.getElementById('res').hidden", 4000);
   check('catatan khusus: bagian "Temuan khusus" tampil', await ev("!!document.getElementById('catatan')&&/Judul catatan/.test(document.getElementById('catatan').innerText)"));
   check('catatan khusus: ringkasan dari file dipakai, ringkasan otomatis tetap ada', (await text('#sumText')).startsWith('Ringkasan khusus <b>tebal</b>') && /Ringkasan otomatis/.test(await text('#ringkasan')));
-  check('catatan khusus: HTML tidak dijalankan', await ev("!document.querySelector('#res img:not(#cardPrev)')&&!document.querySelector('#sumText b')&&!window.__xss"));
+  check('catatan khusus: HTML tidak dijalankan', await ev("!document.querySelector('#res img:not(#cardPrev):not(#pcType):not(#pcMotif):not(#pcStamp)')&&!document.querySelector('#sumText b')&&!window.__xss"));
   await click('#dlJson');
   const nf = await waitFile('jawaban-peta-kepribadian-gama.json');
   check('catatan khusus ikut tersimpan di file jawaban', nf && JSON.parse(fs.readFileSync(nf, 'utf8')).notes?.[0]?.title === 'Judul catatan');

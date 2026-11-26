@@ -22,6 +22,7 @@ Perubahan sejak versi live (`main` 244590f).
 ### Teknis
 - Script memakai penanda versi (`?v=`) supaya cache GitHub Pages tidak mencampur file lama dan baru.
 - Gambar kartu dan motif digambar bertahap dan di-cache supaya ringan di HP.
+- Gambar sampul PDF (judul, motif, cap) dipasang sebagai PNG transparan, bukan canvas: Chrome di HP mencetak canvas dengan latar putih.
 - Tes: 44 unit, 107 cek E2E.
 
 ### Catatan untuk rollback

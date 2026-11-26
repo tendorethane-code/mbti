@@ -512,7 +512,11 @@ const theme=()=>document.documentElement.dataset.theme==='light'?'light':'dark';
 let refreshCard=null,paintCover=null;
 // Kanvas -> gambar lewat toBlob: penyandian PNG berjalan di luar jalur utama, jadi layar tidak membeku.
 // Gambar sampul PDF langsung ke <canvas> di halaman: tanpa penyandian PNG sama sekali.
-const putCanvas=(el,src)=>{if(!el||!src||!el.isConnected)return;const q=el.getContext('2d');q.clearRect(0,0,el.width,el.height);q.drawImage(src,0,0,el.width,el.height);el.dataset.ok='1'};
+// Gambar sampul PDF dipasang sebagai <img> PNG transparan, bukan <canvas>: Chrome di HP mencetak canvas tanpa transparansi (latar jadi putih).
+// Penyandian PNG lewat toBlob berjalan di luar jalur utama. sync=true dipakai saat akan mencetak, supaya gambar pasti ada.
+const putCanvas=(el,src,sync)=>{if(!el||!src||!el.isConnected)return;el.onload=()=>{el.dataset.ok='1'};
+  if(sync||!src.toBlob){el.src=src.toDataURL('image/png');return}
+  src.toBlob(b=>{if(!b||!el.isConnected)return;if(el._u)URL.revokeObjectURL(el._u);el._u=URL.createObjectURL(b);el.src=el._u},'image/png')};
 const canvasImg=(img,c)=>{if(!img||!c)return;const set=u=>{if(img._u)URL.revokeObjectURL(img._u);img._u=u;img.src=u};if(c.toBlob)c.toBlob(b=>{if(b&&img.isConnected)set(URL.createObjectURL(b))},'image/png');else img.src=c.toDataURL('image/png')};const CARD_CACHE=new Map();
 function setTheme(t,fromUser){
   t=t==='light'?'light':'dark';document.documentElement.dataset.theme=t;
@@ -523,7 +527,7 @@ function setTheme(t,fromUser){
 }
 setTheme(theme(),false);paintHome();
 document.addEventListener('click',e=>{const b=e.target.closest('[data-theme-set]');if(b)setTheme(b.dataset.themeSet,true);const k=e.target.closest('[data-card-style]');if(k){try{localStorage.setItem('tesKepribadian.kartu',k.dataset.cardStyle)}catch(er){}document.querySelectorAll('[data-card-style]').forEach(z=>z.setAttribute('aria-pressed',String(z===k)));if(refreshCard&&$('cardPrev'))refreshCard()}});
-window.addEventListener('beforeprint',()=>{document.querySelectorAll('#res details').forEach(d=>d.open=true);if(paintCover)paintCover()});
+window.addEventListener('beforeprint',()=>{document.querySelectorAll('#res details').forEach(d=>d.open=true);if(paintCover)paintCover(true)});
 
 function renderHome(){
   view=null;histArm=-1;renderHist();
@@ -634,11 +638,11 @@ function renderRes(keep){
     const axs=['EI','SN','TF','JP','AT'].filter(ax=>R.ax[ax]!=null).map(ax=>{const p=R.ax[ax],d=Math.abs(p-50);return {ax,d,pp:Math.round(p>=50?p:100-p),w:p>=50?AX[ax][3]:AX[ax][2]}}).sort((a,b)=>b.d-a.d);
     const tagW={EI:x=>x.w==='Introvert'?(x.pp>=80?'Sangat Introvert':'Introvert'):(x.pp>=80?'Sangat Ekstrovert':'Ekstrovert'),SN:x=>x.w==='Intuitive'?'Konseptual':'Praktis',TF:x=>x.w==='Feeling'?'Berpegang pada Nilai':'Logis',JP:x=>x.w==='Prospecting'?'Fleksibel':'Terencana'};
     const tagline=axs.filter(x=>x.ax!=='AT'&&x.d>=10).sort((a,b)=>'EISNTFJP'.indexOf(a.ax)-'EISNTFJP'.indexOf(b.ax)).map(x=>tagW[x.ax](x)).join(' · ');
-    h+=`<div class="pcover printonly"><canvas class="pc-motif m-${R.type}" id="pcMotif" width="1240" height="1767" aria-hidden="true"></canvas><div class="pc-top"><span>PETA KEPRIBADIAN</span></div>
-    <div class="pc-name">${name?esc(name):'Hasilku'}</div><canvas class="pc-type" id="pcType" width="1800" height="380" role="img" aria-label="${R.type}${R.id?'-'+R.id:''}"></canvas>
+    h+=`<div class="pcover printonly"><img class="pc-motif m-${R.type}" id="pcMotif" alt=""><div class="pc-top"><span>PETA KEPRIBADIAN</span></div>
+    <div class="pc-name">${name?esc(name):'Hasilku'}</div><img class="pc-type" id="pcType" alt="${R.type}${R.id?'-'+R.id:''}">
     <div class="pc-fam">${FAM[famOf(R.type)]}${R.strat?' · '+R.strat:''}</div>${tagline?`<div class="pc-tag">${tagline}</div>`:''}
     ${hook?`<div class="pc-hook"><span>Yang paling khas darimu</span>${hook.t?`<b>${esc(hook.t)}</b>`:''}<p>${esc(hook.x)}</p></div>`:''}
-    <canvas class="pc-stamp" id="pcStamp" width="600" height="600" role="img" aria-label="Cap family ${FAM[famOf(R.type)]}"></canvas><div class="pc-stats">${axs.slice(0,3).map(x=>`<div><b>${x.pp}%</b><span>${x.w}</span></div>`).join('')}</div>
+    <img class="pc-stamp" id="pcStamp" alt="Cap family ${FAM[famOf(R.type)]}"><div class="pc-stats">${axs.slice(0,3).map(x=>`<div><b>${x.pp}%</b><span>${x.w}</span></div>`).join('')}</div>
     <div class="pc-fit"><span>Paling cocok: ${R.fits.slice(0,3).map((f,i)=>`<b${i?'':' class="on"'}>${f.t}</b> ${nm(f.v)}`).join(' · ')}</span><span class="pc-date">${esc(new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}))}</span></div></div>`;
     {
       const restP=rest.slice(0,10);
@@ -769,7 +773,9 @@ function renderRes(keep){
     x.font='800 330px Manrope, system-ui, sans-serif';x.fillText(R.type,0,320);if(R.id){x.font='800 170px Manrope, system-ui, sans-serif';x.fillText('-'+R.id,w1+20,320)}
     putCanvas($('pcType'),c);const dk2=theme()==='dark';later(()=>{try{putCanvas($('pcStamp'),drawStamp(R.type,dk2))}catch(e){}})};
     // Motif sampul hanya dipakai di PDF, jadi baru digambar saat akan mencetak (tidak membebani halaman).
-    paintCover=()=>{const el=$('pcMotif');if(el&&!el.dataset.ok){try{putCanvas(el,drawMotif(R.type,theme()==='dark'))}catch(e){}}};const later=fn=>'requestIdleCallback' in window?requestIdleCallback(fn,{timeout:1500}):setTimeout(fn,60);(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>later(draw))}{const dk=theme()==='dark',pl=R.hasType?typePal(R.type,dk):{a:cssVar('--ind'),b:cssVar('--acc')},rs=$('res').style;rs.setProperty('--fam',pl.a);rs.setProperty('--fam2',pl.b);
+    paintCover=sync=>{const el=$('pcMotif');if(el&&!el.dataset.ok&&!(el.src&&!sync)){try{putCanvas(el,drawMotif(R.type,theme()==='dark'),sync)}catch(e){}}};
+    // Motif sampul disiapkan saat browser senggang beberapa detik setelah hasil tampil, jadi siap sebelum tombol PDF ditekan.
+    setTimeout(()=>later(()=>{if(paintCover)paintCover(false)}),3500);const later=fn=>'requestIdleCallback' in window?requestIdleCallback(fn,{timeout:1500}):setTimeout(fn,60);(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>later(draw))}{const dk=theme()==='dark',pl=R.hasType?typePal(R.type,dk):{a:cssVar('--ind'),b:cssVar('--acc')},rs=$('res').style;rs.setProperty('--fam',pl.a);rs.setProperty('--fam2',pl.b);
     // Semburat warna tipe: panel dan garis di web, seluruh halaman (termasuk latar) di PDF.
     if(R.hasType){const sf=typeSurf(R.type,dk);rs.setProperty('--pan',sf.pan);rs.setProperty('--line',sf.line);rs.setProperty('--trk',sf.trk);
       $('pageStyle').textContent=`@page{size:A4;margin:12mm;background:${sf.bg}}@media print{:root,:root[data-theme]{--bg:${sf.bg};--pan:${sf.pan};--line:${sf.line};--trk:${sf.trk}}}`}
