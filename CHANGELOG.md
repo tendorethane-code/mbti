@@ -14,7 +14,8 @@ Perubahan sejak versi live (`main` 244590f).
 - Ringkasan, kekuatan, yang perlu dijaga, keseharian (mengutip jawaban asli), tips untuk orang terdekat, temuan khusus.
 - Riwayat tes di browser (maks. 30) dengan tabel perbandingan, dan link hasil (`#h=`) dengan mode lihat.
 - Warna khas per tipe di seluruh halaman hasil, kartu, dan PDF.
-- Pintasan: tombol **Riwayat** (dengan jumlah tes) di kanan atas, dan tombol **Simpan & bagikan** di beranda serta di bagian atas hasil yang langsung menuju bagian simpan.
+- Pintasan: **Riwayat** dibuka sebagai popup dari tombol di kanan atas (tidak lagi di bawah beranda). **Simpan & bagikan** dibuka sebagai popup (panel bawah di HP, jendela di desktop) dari tombol di atas hasil, tombol Bagikan yang mengambang, atau langsung dari beranda.
+- Bilah atas satu baris yang sembunyi saat menggulir ke bawah dan muncul lagi saat menggulir ke atas; tombol Bagikan mengambang ikut aturan yang sama.
 
 ### Kartu dan PDF
 - Kartu PNG 1080×1920, 7 gaya: Poster (bawaan, dengan motif tipe), Takaran, Mozaik, Peta, Editorial, Aura, Koleksi. Pratinjau langsung dan contoh kecil tiap gaya.
@@ -24,7 +25,7 @@ Perubahan sejak versi live (`main` 244590f).
 - Script memakai penanda versi (`?v=`) supaya cache GitHub Pages tidak mencampur file lama dan baru.
 - Gambar kartu dan motif digambar bertahap dan di-cache supaya ringan di HP.
 - Gambar sampul PDF (judul, motif, cap) dipasang sebagai PNG transparan, bukan canvas: Chrome di HP mencetak canvas dengan latar putih.
-- Tes: 44 unit, 111 cek E2E.
+- Tes: 44 unit, 117 cek E2E.
 
 ### Catatan untuk rollback
 Versi lama tidak bisa membaca data browser format baru. Kalau situs dikembalikan ke versi lama, jawaban aktif pengguna yang sudah memakai versi baru akan tertimpa begitu mereka menjawab soal. Riwayat tidak terpengaruh. Utamakan perbaikan maju daripada revert.

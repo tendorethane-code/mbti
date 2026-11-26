@@ -305,11 +305,25 @@ try {
   check('link hasil: setelah disimpan jadi data browser ini', await waitFor("document.getElementById('viewBar').hidden&&JSON.parse(localStorage.getItem('tesKepribadian.v1')).name==='Teman'&&!location.hash", 3000));
   check('riwayat: hasil kedua memunculkan tabel perbandingan', await ev("!!document.getElementById('riwayat')&&/ESTJ-A/.test(document.getElementById('riwayat').innerText)&&/INFP-T/.test(document.getElementById('riwayat').innerText)&&/berubah/.test(document.getElementById('riwayat').innerText)"));
   check('pintas: tombol Riwayat di kanan atas menampilkan jumlah tes', await ev("(()=>{const b=document.getElementById('topHist');return !b.hidden&&+document.getElementById('topHistN').textContent===JSON.parse(localStorage.getItem('tesKepribadian.riwayat')).length&&b.getBoundingClientRect().right>innerWidth/2})()"));
-  check('pintas: tombol Simpan & bagikan ada di atas halaman hasil', await ev("!!document.querySelector('#res .rhero .hshare [data-jump=akhir]')"));
+  check('riwayat tidak lagi ditaruh di bawah beranda', await ev("!document.querySelector('#home #hist')"));
   await click('#topHist');
-  check('pintas: tombol Riwayat membuka beranda dan menggulir ke daftar riwayat', await waitFor("!document.getElementById('home').hidden&&Math.abs(document.getElementById('hist').getBoundingClientRect().top)<innerHeight", 3000));
+  check('pintas: tombol Riwayat membuka popup riwayat', await waitFor("document.getElementById('histSheet').classList.contains('open')&&!document.getElementById('sheetBd').hidden&&document.querySelectorAll('#hist .hrow').length>=1", 3000));
+  await ev("document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))");
+  check('popup tertutup dengan Esc', await waitFor("!document.querySelector('.sheet.open')&&document.getElementById('sheetBd').hidden", 2000));
+  await click('#goRes');
+  check('hasil: tombol Bagikan mengambang tidak dobel selama tombol atas terlihat', await waitFor("document.querySelector('#res .fab').classList.contains('fab-off')", 2000));
+  await ev("window.scrollTo(0,2500)"); await sleep(200); await ev("window.scrollBy(0,-120)"); await sleep(400);
+  check('hasil: tombol Bagikan mengambang muncul setelah tombol atas lewat dan saat menggulir ke atas', await ev("(()=>{const f=document.querySelector('#res .fab');const r=f.getBoundingClientRect();return getComputedStyle(f).position==='fixed'&&!f.classList.contains('fab-off')&&!document.body.classList.contains('sc-down')&&r.bottom<=innerHeight&&r.top>0})()"));
+  await ev("window.scrollTo(0,0)"); await sleep(200);
+  check('hasil: tombol Simpan & bagikan ada di atas halaman hasil', await ev("!!document.querySelector('#res .rhero .hshare [data-sheet=akhir]')"));
+  await click('#res .fab');
+  check('Bagikan membuka popup simpan & bagikan', await waitFor("document.getElementById('akhir').classList.contains('open')&&getComputedStyle(document.getElementById('akhir')).position==='fixed'", 3000));
+  await click('#sheetBd');
+  check('popup tertutup saat latar diklik', await waitFor("!document.getElementById('akhir').classList.contains('open')", 2000));
+  await click('#resHome');
   await click('#goShare');
-  check('pintas: Simpan & bagikan di beranda langsung ke bagian simpan hasil', await waitFor("!document.getElementById('res').hidden&&Math.abs(document.getElementById('akhir').getBoundingClientRect().top)<120", 3000));
+  check('pintas: Simpan & bagikan di beranda membuka hasil dengan popup bagikan', await waitFor("!document.getElementById('res').hidden&&document.getElementById('akhir').classList.contains('open')", 3000));
+  await click('#akhir .sheet-x');
   await goto(BASE + '#h=rusak123456');
   check('link hasil rusak: pesan, tidak crash', await waitFor("!document.getElementById('home').hidden&&/tidak valid/.test(document.getElementById('fileMsg').textContent)", 3000));
   if (jf) { await setFile(jf); await waitFor("!document.getElementById('res').hidden", 4000); }

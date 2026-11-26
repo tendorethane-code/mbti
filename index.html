@@ -182,7 +182,7 @@ footer{border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
 :root[data-theme=dark]{--sj:#2bb3a3;--sp:#f2b233;--glow:rgba(143,134,255,.16);--glow2:rgba(255,122,92,.10);--shadow:0 10px 30px rgba(0,0,0,.35);--card:#17141f}
 body:before{content:"";position:fixed;inset:-20vh -20vw;z-index:-1;pointer-events:none;background:radial-gradient(40vw 40vw at 85% 8%,var(--glow),transparent 70%),radial-gradient(45vw 45vw at 5% 95%,var(--glow2),transparent 70%)}
 .topbar{position:sticky;top:0;z-index:5;background:var(--bg);background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
-.brand{display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:10px;white-space:nowrap}
 .brand:before{content:"";width:22px;height:22px;border-radius:7px;background:conic-gradient(from 200deg,var(--ind),var(--acc),var(--ind))}
 .btn{border-radius:14px;transition:transform .15s ease,box-shadow .15s ease,background .15s}
 .btn:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 6px 18px var(--glow)}
@@ -321,8 +321,26 @@ body:before{content:"";position:fixed;inset:-20vh -20vw;z-index:-1;pointer-event
 .histbtn b{min-width:22px;padding:1px 7px;border-radius:999px;background:var(--ind);color:#fff;font-size:12px;text-align:center}
 .hshare{margin-top:14px}.hshare .btn{background:linear-gradient(100deg,var(--fam,var(--ind)),var(--fam2,var(--acc)));color:var(--bg)}
 :root:not([data-theme=dark]) .hshare .btn{color:#fff}
-@media(max-width:600px){.tbr{width:100%;justify-content:space-between}}
-@media(max-width:380px){.topbar .seg>.mute{display:none}.histbtn{padding:4px 10px 4px 8px}}
+
+.sheet:not(.open){display:none}
+.sheet.open{position:fixed;left:0;right:0;bottom:0;z-index:31;max-height:88vh;overflow:auto;overscroll-behavior:contain;background:var(--bg);border-radius:24px 24px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.35);padding:12px max(5vw,16px) 28px;animation:sheetUp .25s ease-out}
+.sheet.open:before{content:"";display:block;width:44px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 8px}
+@keyframes sheetUp{from{transform:translateY(40px);opacity:0}}
+@media(min-width:900px){.sheet.open{left:50%;right:auto;bottom:auto;top:5vh;width:min(1040px,92vw);transform:translateX(-50%);border-radius:24px;animation:none}.sheet.open:before{display:none}}
+.sheet-bd{position:fixed;inset:0;z-index:30;background:rgba(8,6,14,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}.sheet-bd[hidden]{display:none}
+body.noscroll{overflow:hidden}
+.sheet-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}.sheet-h h2{margin:0}
+.sheet-x{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--pan);color:var(--ink);font-size:26px;line-height:1;cursor:pointer}
+#res .c-share.sheet .ctitle{margin-bottom:0}.c-share.sheet .sh{margin-top:14px}.c-share.sheet .sh-prev{position:static}
+.fab{position:fixed;right:max(4vw,16px);bottom:max(4vh,18px);z-index:20;display:inline-flex;align-items:center;gap:8px;min-height:52px;padding:10px 18px 10px 14px;border:0;border-radius:999px;background:linear-gradient(100deg,var(--fam,var(--ind)),var(--fam2,var(--acc)));color:var(--bg);font:inherit;font-weight:800;font-size:15px;box-shadow:0 8px 24px rgba(0,0,0,.35);cursor:pointer}
+:root:not([data-theme=dark]) .fab{color:#fff}
+.fab{transition:transform .25s ease,opacity .25s}.fab.fab-off,body.sc-down .fab{transform:translateY(160%);opacity:0;pointer-events:none}
+.fab svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.topbar{transition:transform .25s ease}.topbar.tb-hide{transform:translateY(-110%)}
+.seg .ti{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:none}
+@media(max-width:600px){.brand{font-size:15px}.topbar{flex-wrap:nowrap;padding-block:8px}.tbr{width:auto;justify-content:flex-end}.topbar .seg>.mute{display:none}.seg .tl{display:none}.seg .ti{display:block}.seg button{padding:4px 10px}.histbtn span{display:none}.histbtn{padding:4px 10px}}
+@media(max-width:380px){.brand .bt{display:none}}
+@media(prefers-reduced-motion:reduce){.topbar,.sheet.open{transition:none;animation:none}}
 .printonly{display:none}
 @media(max-width:820px){.home{grid-template-columns:minmax(0,1fr);grid-template-areas:"t" "p" "f"}.home .p{margin:8px 0 4px}.hero,.grid2{grid-template-columns:minmax(0,1fr)}.all{grid-template-columns:minmax(0,1fr)}.fam{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.pair{grid-template-columns:minmax(0,1fr)}.drow{grid-template-columns:4.6em minmax(0,1fr) 4.8em;gap:8px}.drow .l,.drow .r{font-size:13px}.dnote{grid-column:1/4;margin:0}.facet{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.facet .div{grid-column:1/3;grid-row:2}.facet .b{text-align:right}.mod{grid-template-columns:2.4em minmax(0,1fr)}.mod .btn{grid-column:1/3}}
@@ -397,8 +415,10 @@ body:before{content:"";position:fixed;inset:-20vh -20vw;z-index:-1;pointer-event
 <script>try{var t=localStorage.getItem("tesKepribadian.theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body>
-<header class="topbar noprint"><span class="brand">Peta Kepribadian</span><div class="tbr"><div class="seg" role="group" aria-label="Tema"><span class="mute" style="align-self:center;font-size:13px;padding:0 6px 0 4px">Tema</span><button type="button" data-theme-set="dark" aria-pressed="true">Gelap</button><button type="button" data-theme-set="light" aria-pressed="false">Terang</button></div><button type="button" class="histbtn" id="topHist" hidden aria-label="Riwayat tes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2"/></svg><span>Riwayat</span><b id="topHistN">0</b></button></div></header>
+<header class="topbar noprint"><span class="brand"><span class="bt">Peta Kepribadian</span></span><div class="tbr"><div class="seg" role="group" aria-label="Tema"><span class="mute" style="align-self:center;font-size:13px;padding:0 6px 0 4px">Tema</span><button type="button" data-theme-set="dark" aria-pressed="true" aria-label="Tema gelap"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><span class="tl">Gelap</span></button><button type="button" data-theme-set="light" aria-pressed="false" aria-label="Tema terang"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="tl">Terang</span></button></div><button type="button" class="histbtn" id="topHist" hidden aria-label="Riwayat tes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2"/></svg><span>Riwayat</span><b id="topHistN">0</b></button></div></header>
 
+<div class="sheet-bd noprint" id="sheetBd" hidden></div>
+<section class="sheet noprint" id="histSheet" role="dialog" aria-modal="true" aria-labelledby="histTitle"><div class="wrap"><div class="sheet-h"><h2 id="histTitle">Riwayat tes</h2><button type="button" class="sheet-x" data-close aria-label="Tutup">&times;</button></div><div id="hist" class="hist"></div></div></section>
 <main id="home" class="band"><div class="wrap home">
 <div class="t">
 <p class="eyebrow"><span class="pill">Tes kepribadian · gratis · tanpa daftar</span></p>
@@ -424,7 +444,6 @@ body:before{content:"";position:fixed;inset:-20vh -20vw;z-index:-1;pointer-event
 <p class="mute" id="fileMsg" role="status" style="margin-top:8px"></p>
 <div class="note" id="confirmReset" hidden>Jawaban yang sedang aktif akan dikosongkan. Hasil yang sudah lengkap tetap tersimpan di riwayat. Lanjutkan?
 <div class="rowb" style="margin-top:10px"><button class="btn warn" id="doReset" type="button">Kosongkan dan mulai baru</button><button class="btn ghost" id="noReset" type="button">Batal</button></div></div>
-<div id="hist" class="hist"></div>
 <div class="tips"><h3>Supaya hasilnya akurat</h3>
 <ul>
 <li>Jawab berdasarkan kebiasaanmu 2–3 tahun terakhir, bukan hanya minggu ini.</li>
@@ -495,18 +514,18 @@ function histTable(list){
   return `<div class="scroll"><table><thead><tr><th>Sumbu</th>${L.map(x=>`<th class="n">${esc(fmtDate(x.e.t).split(',')[0])}</th>`).join('')}<th class="n">Perubahan terakhir</th></tr></thead><tbody>${['EI','SN','TF','JP','AT'].map(ax=>`<tr><td>${AX[ax][2]} / ${AX[ax][3]}</td>${L.map(x=>`<td class="n">${cell(x.R,ax)}</td>`).join('')}<td class="n">${delta(ax)}</td></tr>`).join('')}<tr><td>Tipe</td>${L.map(x=>`<td class="n"><b>${x.R.type}${x.R.id?'-'+x.R.id:''}</b></td>`).join('')}<td class="n">${a.type===b.type&&a.id===b.id?'sama':'berubah'}</td></tr></tbody></table></div>`;
 }
 function renderHist(){
-  updHistBtn();const list=hLoad();if(!list.length){$('hist').innerHTML='';return}
+  updHistBtn();const list=hLoad();if(!list.length){$('hist').innerHTML='<p class="mute">Belum ada riwayat. Hasil yang lengkap akan tersimpan di sini otomatis.</p>';return}
   const rows=list.map((e,i)=>{const d=histData(e),R=d&&resultOf(d.c);return R&&R.hasType?`<div class="hrow"><div><b>${R.type}${R.id?'-'+R.id:''}${e.n?' · '+esc(e.n):''}</b><small>${esc(fmtDate(e.t))} · ${axShort(R)}</small></div><div class="rowb" style="margin:0"><button class="btn ghost" type="button" data-hv="${i}">Lihat</button><button class="btn ghost" type="button" data-hd="${i}">${histArm===i?'Ketuk lagi untuk hapus':'Hapus'}</button></div></div>`:''}).reverse().join('');
-  $('hist').innerHTML=`<h3>Riwayat tes (${list.length})</h3><p class="mute" style="font-size:14px">Setiap hasil lengkap tersimpan otomatis di browser ini, jadi kamu bisa mengulang tes dan membandingkan hasilnya.</p>${histTable(list)}${rows}`;
+  $('hist').innerHTML=`<p class="mute" style="font-size:14px;margin-top:0">Setiap hasil lengkap tersimpan otomatis di browser ini, jadi kamu bisa mengulang tes dan membandingkan hasilnya.</p>${histTable(list)}${rows}`;
 }
 $('hist').addEventListener('click',e=>{const v=e.target.closest('[data-hv]'),d=e.target.closest('[data-hd]');const list=hLoad();
-  if(v){const x=list[+v.dataset.hv],dd=histData(x);if(!dd)return;view=dd;viewKind='hist';$('viewText').textContent=`Kamu sedang melihat hasil tes ${fmtDate(x.t)}. Jawabanmu yang aktif tidak berubah.`;$('viewSave').textContent='Pakai jawaban ini lagi';$('viewMine').textContent='Kembali ke beranda';$('viewConfirm').hidden=true;renderRes();return}
+  if(v){const x=list[+v.dataset.hv],dd=histData(x);if(!dd)return;view=dd;viewKind='hist';$('viewText').textContent=`Kamu sedang melihat hasil tes ${fmtDate(x.t)}. Jawabanmu yang aktif tidak berubah.`;$('viewSave').textContent='Pakai jawaban ini lagi';$('viewMine').textContent='Kembali ke beranda';$('viewConfirm').hidden=true;closeSheets();renderRes();return}
   if(d){const i=+d.dataset.hd;if(histArm!==i){histArm=i;renderHist();return}list.splice(i,1);hSave(list);histArm=-1;renderHist()}});
 let viewKind='';
 const V=()=>view||S;
 
 $('totalQ').textContent=TOTAL;
-const show=id=>{['home','quiz','done','res'].forEach(x=>$(x).hidden=x!==id);$('viewBar').hidden=!(view&&id==='res');window.scrollTo(0,0)};
+const show=id=>{if(id!=='res')closeSheets();['home','quiz','done','res'].forEach(x=>$(x).hidden=x!==id);$('viewBar').hidden=!(view&&id==='res');window.scrollTo(0,0)};
 const cssVar=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const rgb=h=>{h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');const n=parseInt(h,16);return [n>>16&255,n>>8&255,n&255]};
 const mix=(a,p)=>{const A=rgb(cssVar(a)),B=rgb(cssVar('--bg'));return `rgb(${A.map((v,i)=>Math.round(v*p/100+B[i]*(1-p/100))).join(',')})`};
@@ -518,7 +537,18 @@ function paintHome(){
 }
 const PAGEBG={dark:'#121019',light:'#ffffff'};
 const theme=()=>document.documentElement.dataset.theme==='light'?'light':'dark';
-let refreshCard=null,paintCover=null;
+let refreshCard=null,paintCover=null,startShare=null,lastFocus=null;
+// Panel bawah (bottom sheet) untuk Bagikan dan Riwayat: latar redup, tombol tutup, Esc, fokus kembali ke tombol asal.
+const openSheet=id=>{const sh=$(id);if(!sh)return;document.querySelectorAll('.sheet.open').forEach(x=>{if(x!==sh)x.classList.remove('open')});
+  if(!sh.classList.contains('open'))lastFocus=document.activeElement;sh.classList.add('open');$('sheetBd').hidden=false;document.body.classList.add('noscroll');
+  const x=sh.querySelector('.sheet-x');if(x)x.focus({preventScroll:true});if(id==='akhir'&&startShare)startShare()};
+const closeSheets=()=>{const was=document.querySelector('.sheet.open');document.querySelectorAll('.sheet.open').forEach(x=>x.classList.remove('open'));$('sheetBd').hidden=true;document.body.classList.remove('noscroll');
+  if(was&&lastFocus&&lastFocus.isConnected)lastFocus.focus({preventScroll:true})};
+document.addEventListener('click',e=>{const o=e.target.closest('[data-sheet]');if(o){openSheet(o.dataset.sheet);return}if(e.target.closest('[data-close]')||e.target.id==='sheetBd')closeSheets()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.querySelector('.sheet.open'))closeSheets()});
+// Bilah atas: sembunyi saat menggulir ke bawah, muncul lagi saat menggulir ke atas.
+// Tombol Bagikan yang mengambang ikut aturan yang sama, supaya tidak menutupi teks saat membaca.
+{let ly=0;addEventListener('scroll',()=>{const y=scrollY,tb=document.querySelector('.topbar');if(!tb)return;if(y>ly+6&&y>90){tb.classList.add('tb-hide');document.body.classList.add('sc-down')}else if(y<ly-6||y<90){tb.classList.remove('tb-hide');document.body.classList.remove('sc-down')}ly=y},{passive:true})}
 // Kanvas -> gambar lewat toBlob: penyandian PNG berjalan di luar jalur utama, jadi layar tidak membeku.
 // Gambar sampul PDF langsung ke <canvas> di halaman: tanpa penyandian PNG sama sekali.
 // Gambar sampul PDF dipasang sebagai <img> PNG transparan, bukan <canvas>: Chrome di HP mencetak canvas tanpa transparansi (latar jadi putih).
@@ -596,11 +626,10 @@ $('doneRes').addEventListener('click',()=>renderRes());
 $('doneHome').addEventListener('click',renderHome);
 $('goRes').addEventListener('click',()=>renderRes());
 // Pintas ke bagian simpan & bagikan, dari beranda dan dari bagian atas hasil.
-const toShare=()=>{const a=$('akhir');if(a)a.scrollIntoView()};
-$('goShare').addEventListener('click',()=>{renderRes();toShare()});
+$('goShare').addEventListener('click',()=>{renderRes();openSheet('akhir')});
 // Riwayat di kanan atas: kembali ke beranda dan menggulir ke daftar riwayat.
 const updHistBtn=()=>{const n=hLoad().length;$('topHist').hidden=!n;$('topHistN').textContent=n};
-$('topHist').addEventListener('click',()=>{if(view)clearHash();if($('home').hidden)renderHome();const h=$('hist');if(h)h.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})});
+$('topHist').addEventListener('click',()=>{renderHist();openSheet('histSheet')});
 $('askReset').addEventListener('click',()=>{$('confirmReset').hidden=false});
 $('noReset').addEventListener('click',()=>{$('confirmReset').hidden=true});
 $('doReset').addEventListener('click',()=>{hRecord(S);const n=S.name;S=blank();S.name=n;save();$('confirmReset').hidden=true;renderHome();$('fileMsg').textContent='Jawaban aktif sudah dikosongkan. Hasil sebelumnya ada di riwayat.'});
@@ -685,7 +714,7 @@ function renderRes(keep){
     h+=`<section class="band rhero"><div class="wrap hero"><div><h1>${name?esc(name)+', p':'P'}aling cocok <span class="code">${R.type}${R.id?'-'+R.id:''}</span></h1><p class="lead htag">${FAM[famOf(R.type)]}${tagline?' · '+tagline:''}.${R.letters!==R.type?` Dari huruf saja hasilnya ${R.letters}, tapi urutan fungsi lebih cocok ke ${R.type}.`:''}</p>
     ${hook?`<div class="hook"><span>Yang paling khas darimu</span><b>${esc(hook.t||'')}</b><p>${esc(firstSentence(hook.x))}</p>${big.length?`<button type="button" class="jump noprint" data-jump="catatan">Baca selengkapnya</button>`:''}</div>`:''}
     <h3>Tiga tipe paling cocok</h3><div class="top3">${R.fits.slice(0,3).map((f,i)=>`<div class="fit"><b>${f.t}</b><div class="bar ${i?'':'hi'}"><i style="width:${f.v}%"></i></div><span class="v">${nm(f.v)}</span></div>`).join('')}</div>
-    <div class="rowb noprint hshare"><button type="button" class="btn" data-jump="akhir">Simpan &amp; bagikan</button></div>
+    <div class="rowb noprint hshare"><button type="button" class="btn" data-sheet="akhir">Simpan &amp; bagikan</button></div>
     <div class="chips"><span class="chip">Family: ${FAM[famOf(R.type)]} (${famOf(R.type)})</span>${R.strat?`<span class="chip">Strategy: ${R.strat}</span>`:''}<span class="chip">${done}/${MAIN.length} modul utama selesai</span></div></div>
     <div><div class="tt" id="ttRes" role="img" aria-label="Tabel 16 tipe, tiga yang paling cocok menyala">${TABLE.map(t=>{const r=top.indexOf(t);const st=r<0?'background:transparent;border-color:var(--line);color:var(--mute)':`background:${cellBg(r)};color:${cellInk(cellBg(r))}`;return `<div class="cell ${r===0?'me':''}" data-rank="${r+1}" style="${st}">${t}<small>${nm(fx[t])}</small></div>`}).join('')}</div><div class="axes"><span>Menyala = 3 tipe paling cocok</span><span>Lingkaran = hasil utama</span></div></div></div></section>`;
   }else{
@@ -723,7 +752,8 @@ function renderRes(keep){
   }
   const missing=MAIN.filter(m=>!R.done[m.id]),rel=I.rel,hl=view?[]:hLoad(),ht=hl.length>=2?histTable(hl):'';
   const shIc=d=>`<svg class="shic" viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg>`;
-  h+=`<section class="band noprint chap c-share" id="akhir"><div class="wrap"><span class="ck">Simpan &amp; bagikan</span><h2 class="ctitle">Bawa hasilmu</h2>
+  h+=`<button type="button" class="fab noprint" data-sheet="akhir" aria-label="Simpan dan bagikan hasil"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg><span>Bagikan</span></button>
+  <section class="band noprint chap c-share sheet" id="akhir" role="dialog" aria-modal="true" aria-labelledby="akhirTitle"><div class="wrap"><div class="sheet-h"><div><span class="ck">Simpan &amp; bagikan</span><h2 class="ctitle" id="akhirTitle">Bawa hasilmu</h2></div><button type="button" class="sheet-x" data-close aria-label="Tutup">&times;</button></div>
   <div class="sh"><figure class="sh-prev"><img id="cardPrev" alt="Pratinjau kartu hasil"><figcaption>Pratinjau kartu, ukuran story 1080×1920</figcaption></figure>
   <div class="sh-opt"><p class="sh-lab">Gaya kartu</p><div class="stylepick" role="group" aria-label="Gaya kartu">${CARD_STYLES.map(([k,l])=>`<button type="button" data-card-style="${k}" aria-pressed="${cardStyle()===k}"><canvas class="thumb" width="180" height="320" data-thumb="${k}" aria-hidden="true"></canvas><span>${l}</span></button>`).join('')}</div>
   <div class="sh-row"><p class="sh-lab">Tema</p><div class="seg" role="group" aria-label="Tema hasil"><button type="button" data-theme-set="dark" aria-pressed="${theme()==='dark'}">Gelap</button><button type="button" data-theme-set="light" aria-pressed="${theme()==='light'}">Terang</button></div></div>
@@ -781,7 +811,7 @@ function renderRes(keep){
   <li>Ringkasan dan gambaran keseharian disusun otomatis dari skor. Anggap sebagai bahan refleksi, bukan penilaian pasti.</li>
   <li>Soal-soal ini belum divalidasi secara ilmiah. Arahnya bisa dipercaya, angkanya kasar.</li>
   <li>MBTI dan cognitive functions lemah secara ilmiah. Big Five paling kuat. Pembanding gratis: IPIP-NEO-120.</li></ul></div></section>`;
-  const y=window.scrollY;$('res').innerHTML=h;
+  const y=window.scrollY,shareOpen=!!($('akhir')&&$('akhir').classList.contains('open'));$('res').innerHTML=h;if(shareOpen){$('akhir').classList.add('open')}
   // Judul tipe bergradien di sampul PDF digambar sebagai gambar, karena teks bergradien tidak tercetak benar di PDF.
   if($('pcType')&&R.hasType){const pl=typePal(R.type,theme()==='dark'),draw=()=>{const c=document.createElement('canvas'),x=c.getContext('2d');c.width=1800;c.height=380;
     x.font='800 330px Manrope, system-ui, sans-serif';const w1=x.measureText(R.type).width;x.font='800 170px Manrope, system-ui, sans-serif';const w2=R.id?x.measureText('-'+R.id).width+20:0;
@@ -817,7 +847,8 @@ function renderRes(keep){
       idle(()=>{warm(.5);idle(()=>refreshCard().then(()=>{const th=[...document.querySelectorAll('#akhir canvas[data-thumb]')];
         const step=()=>{const t=th.shift();if(!t||!t.isConnected)return;try{t.getContext('2d').drawImage(cached(t.dataset.thumb,1/6),0,0,t.width,t.height)}catch(e){}idle(step)};idle(step)}))})};
     const io='IntersectionObserver' in window?new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting))start()},{rootMargin:'700px 0px'}):null;
-    if(io)io.observe($('akhir'));setTimeout(()=>idle(start),2500)}
+    if(io)io.observe($('akhir'));startShare=start;setTimeout(()=>idle(start),2500)}
+  {const fab=document.querySelector('#res .fab'),hs=document.querySelector('#res .hshare');if(fab&&hs&&'IntersectionObserver' in window){fab.classList.add('fab-off');new IntersectionObserver(es=>es.forEach(e=>fab.classList.toggle('fab-off',e.isIntersecting))).observe(hs)}}
   $('dlCard').addEventListener('click',async()=>{$('copyMsg').textContent='Sedang membuat kartu…';let c;try{await fontsOk();c=drawCard(R,name);canvasImg($('cardPrev'),c);$('cardPrev').hidden=false}catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.';return}
     c.toBlob(b=>{if(b)dl(b,`peta-kepribadian${slug?'-'+slug:''}.png`)},'image/png');
     $('copyMsg').textContent='Kartu diunduh. Kalau di HP tidak terunduh, tekan lama gambar pratinjau lalu pilih simpan.'});
