@@ -34,7 +34,8 @@ Perubahan sejak versi live (`main` 244590f).
 - Kartu tidak lagi menunggu font dari Google tanpa batas: kalau font lambat, kartu digambar dengan font cadangan dulu lalu digambar ulang begitu font datang.
 - Unduh kartu cukup sekali mengubah kartu ke PNG (sebelumnya dua kali), pratinjau tidak lagi tertimpa gaya lama kalau gaya diganti saat unduhan berjalan, dan motif sampul PDF tidak digambar di latar selama popup simpan & bagikan terbuka. Ganti gaya kartu di HP lambat jadi jauh lebih cepat.
 - Layar soal: tombol **Kembali** dan **Lanjut** (dan panah kiri/kanan), dua kolom sama lebar di semua ukuran layar dan ukuran huruf. Lanjut untuk meninjau jawaban maju-mundur tanpa memilih ulang; soal yang belum dijawab tidak bisa dilewati.
-- Tes: 46 unit, 128 cek E2E.
+- Tombol beranda tersusun 2×2 sama lebar, tombol layar selesai modul rapi, dan riwayat di HP menumpuk info di atas tombol (sebelumnya teks terjepit satu kata per baris di HP dengan huruf besar).
+- Tes: 46 unit, 130 cek E2E.
 
 ### Catatan untuk rollback
 Versi lama tidak bisa membaca data browser format baru. Kalau situs dikembalikan ke versi lama, jawaban aktif pengguna yang sudah memakai versi baru akan tertimpa begitu mereka menjawab soal. Riwayat tidak terpengaruh. Utamakan perbaikan maju daripada revert.
