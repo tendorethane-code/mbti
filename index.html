@@ -498,7 +498,7 @@ body.ung-open>:not(#ungkap){visibility:hidden}body.ung-open>:not(#ungkap) *{anim
 .ung-st .u-vig{position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(70% 55% at 50% 42%,transparent 30%,rgba(4,3,10,.92) 100%)}
 .ung-st .u-core{position:absolute;left:50%;top:42%;width:60%;aspect-ratio:1;margin:-30% 0 0 -30%;border-radius:50%;opacity:0;pointer-events:none;background:radial-gradient(closest-side,#fff 0%,#ffe9b0 35%,rgba(255,200,120,0) 100%)}
 .ung-st .u-flash{position:absolute;inset:0;opacity:0;pointer-events:none;background:radial-gradient(60% 45% at 50% 38%,#fff 0%,#fff3d0 40%,rgba(255,240,200,0) 100%)}
-.ung-st .u-ring{position:absolute;aspect-ratio:1;border-radius:50%;opacity:0;pointer-events:none;background:radial-gradient(closest-side,transparent 72%,rgba(255,215,122,.45) 82%,#fff0c4 88%,rgba(255,215,122,.4) 93%,transparent)}
+.ung-st .u-ring{position:absolute;aspect-ratio:1;border-radius:50%;border:3px solid #ffe2a0;box-shadow:0 0 24px #ffd77a,inset 0 0 18px #ffd77a;opacity:0;pointer-events:none}
 .ung-st .u-egg{position:absolute;left:50%;top:42%;width:50%;transform:translate(-50%,-50%)}
 .ung-st .u-tile{position:absolute;left:0;top:0;display:grid;place-items:center;border-radius:22%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);font-weight:800;letter-spacing:.02em;color:#d9d4ee;opacity:0;will-change:transform,opacity}
 .ung-st .u-gl,.ung-st .u-wr{position:absolute;border-radius:24%;opacity:0;transition:opacity .07s}
@@ -508,9 +508,9 @@ body.ung-open>:not(#ungkap){visibility:hidden}body.ung-open>:not(#ungkap) *{anim
 .ung-st .u-tile.out{color:#6f6a86;border-color:rgba(255,255,255,.06)}
 .ung-st .u-tile.win{background:linear-gradient(135deg,var(--p0),var(--p1));color:#14101f;border-color:transparent}
 .ung-st .u-fx{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.ung-st .u-fx i{position:absolute;left:0;top:0;width:9px;height:9px;margin:-2px 0 0 -2px;border-radius:50%;background:radial-gradient(circle,#fff6d8 0 30%,rgba(255,215,122,.55) 45%,transparent 70%)}
+.ung-st .u-fx i{position:absolute;left:0;top:0;width:5px;height:5px;border-radius:50%;background:#ffe9b0;box-shadow:0 0 6px #ffd77a}
 .ung-st .u-fx b{position:absolute;left:0;top:0;width:7px;height:11px;border-radius:2px}
-.ung-st .u-fx u{position:absolute;left:0;top:0;border-radius:6px;background:rgba(255,190,175,.16);border:1px solid rgba(255,150,130,.75)}
+.ung-st .u-fx u{position:absolute;left:0;top:0;border-radius:6px;background:rgba(255,255,255,.13);border:1px solid rgba(255,150,130,.7);box-shadow:0 0 8px rgba(255,120,100,.5)}
 .ung-st .u-scan{position:absolute;left:0;right:0;top:0;opacity:0;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(255,224,150,.10) 35%,rgba(255,236,190,.42) 50%,rgba(255,224,150,.10) 65%,transparent)}
 .ung-st .u-cnt{position:absolute;left:0;right:0;top:75%;text-align:center;opacity:0;pointer-events:none}
 .ung-st .u-cnt b{display:block;font-size:46px;font-size:clamp(32px,12.5cqw,46px);line-height:1;font-weight:800;color:#fff;text-shadow:0 0 18px rgba(255,214,120,.65)}
@@ -1003,7 +1003,7 @@ function ungkap(t,fits,onEnd){
     [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([sx,sy])=>{const f=document.createElement('u');f.style.width=f.style.height=h+'px';fx.appendChild(f);
       const x0=c.x+sx*h/2-h/2,y0=c.y+sy*h/2-h/2,dx=sx*(28+Math.random()*40),dy=sy*(18+Math.random()*26)+70;
       f.animate([{transform:`translate(${x0}px,${y0}px)`,opacity:1},{transform:`translate(${x0+dx}px,${y0+dy}px) rotate(${sx*(100+Math.random()*140)}deg) scale(.55)`,opacity:0}],{duration:700,easing:'cubic-bezier(.2,.6,.5,1)',fill:'both'}).onfinish=()=>f.remove()});
-    dust(c.x,c.y,4,c.x,c.y+50,750);ring(c.x,c.y,ts*.95,420);tick();shake(3);q('.u-vig').animate([{opacity:.4},{opacity:0}],{duration:320})};
+    dust(c.x,c.y,6,c.x,c.y+50,750);ring(c.x,c.y,ts*.95,420);tick();shake(3);q('.u-vig').animate([{opacity:.4},{opacity:0}],{duration:320})};
   const scan=d=>{sfx.cue('scan');const s=q('.u-scan'),hh=ts*1.4,g0=gridPos(0).y-ts*.6-hh/2,g1=gridPos(15).y+ts*.6-hh/2;s.style.height=hh+'px';
     [0,1,2,3].forEach(r=>setTimeout(()=>{if(!ok())return;T.filter((x,i)=>((i/4)|0)===r&&x.p.o>0).forEach(x=>{x.el.classList.add('lit');setTimeout(()=>x.el.classList.remove('lit'),150)})},d*(.18+r*.19)));
     return s.animate([{transform:`translateY(${g0}px)`,opacity:0},{opacity:1,offset:.12},{opacity:1,offset:.88},{transform:`translateY(${g1}px)`,opacity:0}],{duration:d,easing:'ease-in-out'}).finished.catch(()=>{})};
@@ -1047,14 +1047,14 @@ function ungkap(t,fits,onEnd){
   go(win,{x:cx(),y:H*.38,s:1.75},420);win.el.classList.add('win');chr();
   await sleep(380);if(!ok())return;cap('');
   sfx.cue('converge');
-  for(let k=0;k<4;k++)setTimeout(()=>{if(!ok())return;for(let i=0;i<6;i++){const a=Math.random()*6.28,r=W*.55;dust(cx()+Math.cos(a)*r,H*.38+Math.sin(a)*r,1,cx(),H*.38,620)}},k*90);
+  for(let k=0;k<4;k++)setTimeout(()=>{if(!ok())return;for(let i=0;i<10;i++){const a=Math.random()*6.28,r=W*.55;dust(cx()+Math.cos(a)*r,H*.38+Math.sin(a)*r,1,cx(),H*.38,620)}},k*90);
   go(win,{s:.15,r:540,o:0},640,{ease:'cubic-bezier(.6,0,.9,.4)',delay:120});
   await sleep(720);if(!ok())return;
   sfx.cue('reveal');fade(q('.u-flash'),0,1,120).onfinish=()=>{if(ok())fade(q('.u-flash'),1,0,520)};
   shake(8);ring(cx(),H*.38,W*.55,800);setTimeout(()=>ok()&&ring(cx(),H*.38,W*.35,700),140);
   fade(q('.u-vig'),.9,.35,700);fade(q('.u-rays'),0,1,900);
   q('.u-chr').animate([{transform:'translate(-50%,-50%) scale(0) rotate(-14deg)',opacity:1},{transform:'translate(-50%,-50%) scale(1.14) rotate(3deg)',opacity:1,offset:.65},{transform:'translate(-50%,-50%) scale(1)',opacity:1}],{duration:760,fill:'both',easing:'cubic-bezier(.2,.9,.3,1)'});
-  confetti(cx(),H*.38,10);
+  confetti(cx(),H*.38,15);
   await sleep(820);if(!ok())return;
   // 6. Huruf megah satu per satu, lalu kilau emas, lalu family dan kecocokan
   const Ls=[...st.querySelectorAll('.u-L')];
