@@ -8,6 +8,8 @@
 - Rekaman diunduh begitu telur tampil. Kalau gagal dimuat, musik tetap disintesis langsung (penuh atau ringan sesuai perangkat) seperti sebelumnya.
 - **Efek suara selalu kualitas penuh**, dan **efek visual tidak lagi ikut turun** karena pengaturan suara; mode visual ringan hanya aktif kalau gambar benar-benar tersendat (seperti rilis kedua).
 - **Ketukan telur lebih ringan**, tampilan sama: mesin suara (termasuk perhitungan gema) disiapkan saat senggang begitu telur tampil, bukan saat ketukan pertama (dulu macet ~370 ms di HP yang diperlambat 6×, sekarang tidak ada tugas panjang); tiap ketukan hanya menambah retakan pada telur yang sama, tidak menggambar ulang seluruh telur; animasi karakter yang masih tersembunyi di dalam telur ditahan sampai menetas.
+- **Guncangan telur lebih mulus di HP** (diukur di HP pemilik: kode ketukan 0 ms, yang lambat menggambarnya): telur tetap di lapisan grafisnya sendiri selama menunggu ketukan, jadi tidak digambar ulang tiap guncangan; bintang percikan digambar sebagai SVG (bentuk sama) alih-alih clip-path yang mahal untuk chip grafis.
+- Mode developer: diagnostik ketukan telur (respons, frame setelah ketukan, rincian frame panjang, peralihan ketukan ke-5).
 - Perbaikan galat: permintaan melanjutkan suara yang tertunda tidak lagi menjadi galat saat momen ditutup.
 - **Mode developer**: pilihan "Musik: Rekaman (otomatis) / Sintesis penuh / Sintesis ringan" untuk membandingkan; diagnostik menyebut sumber musik.
 
