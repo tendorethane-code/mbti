@@ -228,6 +228,13 @@ try {
   await click('[data-card-style="takaran"]');
   // Kalau gagal, catat keadaannya supaya akar masalah di CI bisa dilacak (cek ini pernah gagal sesekali hanya di CI).
   const styleOk = await waitFor("localStorage.getItem('tesKepribadian.kartu')==='takaran'&&document.getElementById('cardPrev').naturalHeight>=960", 6000);
+  // Ganti gaya saat kartu sebelumnya masih diubah ke PNG (unduhan): pratinjau harus tetap gaya terakhir, tidak tertimpa hasil lama.
+  {const before = styleOk;
+   await click('#dlCard'); await click('[data-card-style="mozaik"]');
+   const got = await waitFor("localStorage.getItem('tesKepribadian.kartu')==='mozaik'&&document.getElementById('cardPrev').naturalWidth===540", 6000);
+   await sleep(2500);
+   check('ganti gaya saat kartu sedang diunduh: pratinjau tetap gaya terakhir', before && got && (await ev("document.getElementById('cardPrev').naturalWidth")) === 540, String(await ev("document.getElementById('cardPrev').naturalWidth")));
+   await click('[data-card-style="takaran"]'); await waitFor("document.getElementById('cardPrev').naturalHeight>=960", 6000);}
   check('ganti gaya kartu: tersimpan dan kartu dibuat ulang', styleOk, styleOk ? '' : await ev("(()=>{const i=document.getElementById('cardPrev');return JSON.stringify({kartu:localStorage.getItem('tesKepribadian.kartu'),src:(i.getAttribute('src')||'').slice(0,30),complete:i.complete,w:i.naturalWidth,h:i.naturalHeight,hidden:i.hidden,connected:i.isConnected,msg:document.getElementById('copyMsg').textContent,fonts:document.fonts&&document.fonts.status,akhirOpen:document.getElementById('akhir').classList.contains('open')})})()"));
   await click('[data-card-style="poster"]');
   check('download kartu PNG valid', pf && fs.readFileSync(pf).subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])), pf || 'tidak ada file');
