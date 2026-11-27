@@ -25,6 +25,60 @@ Buka `pratinjau-infp.html` lewat server lokal (misalnya `npx serve` di akar repo
 
 Pemilik menyukai B dan D. B diperkaya jadi B+, lalu B+ dinilai "kureng" di bagian wisteria dan gerbang, jadi diperbaiki jadi B++. Elemen yang menjuntai (wisteria) akhirnya dinilai kurang bagus; yang disukai adalah sulur B asli dan planet bercincin D, lalu digabung jadi F. Planet bercincin F dinilai "agak alay", jadi dibuat G (lubang hitam) dan H (gerhana). Pemilik suka H, lalu dibuat H+ yang lebih kreatif; H+ dinilai "bagus banget, puas" dan menjadi favorit. H++ (pusaran) dibuat sebagai eksplorasi lanjutan; pemilik lebih suka versi awalnya yang tipis dan lembut mengitari gerhana, jadi dibuat H3 (pita sutra) yang elegan. Percobaan pantulan gerhana di air beriak dibuang karena terlihat seperti tangga. Catatan: wisteria memang selalu menjuntai; bunga rambat yang tidak menjuntai misalnya melati, morning glory, atau clematis. Untuk mengganti motif INFP: salin isi varian ke fungsi `drawInfp` di `index.html`. Helper-nya sama (`rgba`, `line`, `circ`, `star`, `glow`, `mist`); helper khusus draf (`ripples`, `stars`, `fireflies`, `leaf`, `flower`, `halo`) ikut disalin. Untuk cahaya, pakai `glow(..., cx, cy)` dengan titik pusat (sprite, ringan), bukan `shadowBlur` per titik.
 
+## Karakter per tipe (`karakter-draf.js`)
+Buka `pratinjau-karakter.html` lewat server lokal (atau raw.githack) untuk melihat animasinya: gerak diam per family, reaksi saat diketuk, demo Pemandu saat mengisi soal, dan animasi hasil terungkap. Semua karakter berupa SVG yang dibuat kode, dicontohkan untuk INFP, ENTP, ISFJ, ESTP.
+
+| Arah | Nama | Isi | Gambar |
+|---|---|---|---|
+| `roh` | A. Roh Peta | makhluk roh orisinal; badan mengikuti bahasa motif family (NT kristal, NF tetesan, SJ roti, SP api miring); aksesori per tipe | `gambar/karakter-draf-*.jpg` |
+| `chibi` | B. Chibi Mini | kepala besar bertudung gaya stiker; kulit krem pastel bersemburat warna tipe, rambut warna tipe (tidak menetapkan ras/gender) | sama |
+| `hewan` | C. Sahabat Hewan | INFP rusa kecil, ENTP rubah, ISFJ kelinci, ESTP anak harimau | sama |
+| `pemandu` | Pemandu | maskot bintang netral untuk menemani saat mengisi soal (tidak membocorkan tipe) | sama |
+
+Gerak per family: Diplomat melayang, Analyst memiringkan kepala, Sentinel bernapas tenang, Explorer melompat. Animasi hasil terungkap: `gambar/karakter-reveal.jpg`. Hindari kemiripan dengan ilustrasi 16Personalities (figur manusia low-poly).
+
+### Roh Peta 16 tipe (`karakter-roh.js`, dipilih)
+Pemilik memilih arah A. `pratinjau-roh.html` menampilkan ke-16 tipe dan 7 opsi INFP (gambar: `gambar/roh16-*.jpg`, `gambar/roh-infp-opsi-*.jpg`).
+
+| Tipe | Ciri | Tipe | Ciri |
+|---|---|---|---|
+| INTJ | mata tenang, bidak kuda, rasi | INFJ | lentera, cahaya di ujung kepala, bulan sabit |
+| INTP | roda gigi berputar, kubus, tanda tanya | INFP | bunga, gerhana kecil (lihat opsi) |
+| ENTJ | mahkota, jubah, bendera | ENFJ | lingkaran matahari, hati berdetak |
+| ENTP | bohlam ide, alis terangkat | ENFP | pelangi, mata bintang, kupu-kupu |
+| ISTJ | kacamata kotak, dasi kupu-kupu, daftar centang | ISTP | bandana, kunci pas, roda gigi |
+| ISFJ | syal rajut, teh hangat | ISFP | baret, kuas, palet, kupu-kupu |
+| ESTJ | topi kapten, toa, peluit | ESTP | kacamata hitam, lompat-lompat |
+| ESFJ | pita, celemek, kue mangkuk | ESFP | mikrofon, mata bintang, not musik |
+
+Badan unik per tipe (`rohUnik(t)`, data bentuk di `UNIK`; gambar `gambar/roh-unik-*.jpg`): INTJ menara kristal, INTP awan pikiran, ENTJ perisai bahu lebar, ENTP bohlam, INFJ bola kristal, INFP tetesan kosmos + gerhana, ENFJ matahari, ENFP bintang, ISTJ buku berdiri, ISFJ bakpao, ESTJ balok kokoh, ESFJ hati, ISTP mur heksagon, ISFP kuncup daun, ESTP api, ESFP balon. Aksesori sama dengan versi family; aksesori kepala ikut ujung kepala (`tip`), aksesori wajah (`faceAcc`) ikut posisi wajah.
+
+Jalan tengah (gambar `gambar/roh-tengah-*.jpg`): badan unik, family tetap terbaca lewat tekstur halus di dalam badan (`famTex`: NT kisi, NF riak, SJ garis rapi, SP diagonal, sama dengan bahasa motif PDF), pin berlambang family (`famPin`), dan gaya gerak per family. Panggil `rohUnik(t, {tex: true, pin: true})`. ENTJ, ISTJ, ESTJ diganti jadi roket, jam weker, lencana perisai supaya tidak sama-sama kotak; bentuk lama (perisai bahu lebar, buku berdiri, balok kokoh) disimpan di `UNIK_LAMA`.
+
+Gabungan INFP permintaan pemilik (badan 3 + gerhana 2; gambar `gambar/roh-infp-gabungan-*.jpg`): `kosmosGerhana` (gerhana sebagai lingkaran cahaya di belakang kepala) dan `gerhanaDalam` (gerhana kecil menyala di dalam badan jeli).
+
+Opsi INFP (`rohInfp(kunci)`): `bunga` 1. Bunga & Gerhana Kecil, `gerhana` 2. Penjaga Gerhana (gerhana H+ sebagai lingkaran cahaya di belakang kepala), `kosmos` 3. Roh Kosmos (badan jeli berisi nebula, dari D), `taman` 4. Taman di Kepala (sulur B), `penulis` 5. Penulis Mimpi (jurnal, burung kertas C), `lentera` 6. Lentera Hati, `awan` 7. Kepala di Awan.
+
+## Progres karakter saat mengisi soal (`pratinjau-progres.html`)
+Pemilik ingin karakter yang "terbentuk" selama mengisi soal lalu terungkap setelah selesai. Syaratnya netral: yang tumbuh sama untuk semua orang dan tidak bergantung pada jawaban, supaya tidak memengaruhi jawaban berikutnya. Tiga konsep (gambar `gambar/progres-konsep.jpg`, baris = 0, 50, 100, 170, 189 soal):
+- A. Telur Kosmos: bintang masuk ke telur tiap jawaban, cahaya naik, retak di akhir tiap modul, bergoyang lalu gemetar, menetas.
+- B. Awan Bintang: debu bintang makin banyak dan rapat, inti makin terang, meletup jadi karakter.
+- C. Botol Ramuan: cairan naik, satu lapis warna per modul (warna dari modul, bukan jawaban), sumbat meletup, karakter keluar dari asap.
+
+Gabungan telur + awan bintang (permintaan pemilik; gambar `gambar/progres-telur-awan.jpg`, baris = 0, 60, 120, 150, 189 soal):
+- E1. Telur Nebula: kulit telur dari awan nebula yang berputar, bintang bertambah tiap jawaban, pinggiran debu bintang makin padat, retakan cahaya tiap modul, sepasang mata netral mengintip di 75%.
+- E2. Telur Rasi: garis telur digambar titik demi titik seperti rasi, bintang besar menyala tiap modul, kabut nebula makin tebal.
+- E3. Telur Awan + Bulan: telur dari gumpalan awan dengan galaksi berputar, satu bulan mengorbit per modul (4 bulan).
+
+## Penempatan karakter di PDF dan kartu (mockup)
+Dibuat dari web sungguhan dengan data buatan "Contoh" (gambar `gambar/penempatan-*.jpg`):
+- Sampul PDF P1: karakter di kanan, sejajar judul. P2: karakter berdiri di atas baris angka, cap family mengecil di sampingnya. P3: karakter di tengah antara judul dan kotak "yang paling khas", cap family dihilangkan (pin di karakter sudah menandai family). Ketiganya muat satu halaman (265 mm).
+- Sampul P4 (pemilik): karakter di kiri bawah di atas baris angka, cap family tetap di kanan bawah (`gambar/penempatan-sampul-kiri-bawah.jpg`).
+- Kartu K1: Poster dengan karakter kecil di kanan atas (ditolak pemilik: menutupi) (sempit untuk judul tipe yang lebar seperti ENTP). K2: gaya kartu baru "Karakter" dengan karakter besar di tengah, nama tipe bergradien, family, dan tiga tipe paling cocok. K2 + balon kata "INI AKU: …" berisi dua ciri pertama; Poster + maskot mini di bilah bawah di samping tanggal (`gambar/penempatan-kartu-2.jpg`).
+
+## Uji coba tekstur (tidak dipasang)
+Permintaan pemilik "iseng, coba kasih tekstur lebih". Dibandingkan tiga versi di hasil web, kartu Karakter, sampul dan halaman PDF (gambar `gambar/uji-tex-*.jpg`, kolom kiri ke kanan): V0 sekarang (polos dengan semburat warna tipe), V1 butiran halus (noise, overlay di gelap, multiply di terang), V2 butiran + pola family samar (riak NF, kisi NT, garis SJ, diagonal SP). Dibuat dengan menempelkan CSS/canvas saat mengambil gambar; kode web tidak diubah.
+
 ## Arsip (`arsip/`)
 | File | Isi | Asal |
 |---|---|---|

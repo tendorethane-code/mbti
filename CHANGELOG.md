@@ -1,5 +1,13 @@
 # Catatan rilis
 
+## Berikutnya: karakter per tipe
+- **Roh Peta**: satu karakter orisinal per tipe, berupa SVG. Bentuk badannya unik per tipe (mis. ENTP bohlam, ENFP bintang, ISTJ jam weker, ESFP balon). INFP memakai badan jeli kosmos dengan gerhana sebagai lingkaran cahaya. Family tetap terbaca lewat tekstur halus di dalam badan, pin berlambang family, dan gaya gerak (Diplomat melayang, Analyst memiringkan kepala, Sentinel bernapas tenang, Explorer melompat).
+- **Telur Nebula** selama mengisi soal: telur mini di kepala kartu soal dan di beranda. Bintang di dalamnya bertambah tiap jawaban, retak di akhir tiap modul, ada mata yang mengintip di 75%. Setelah 4 modul utama selesai, telur **tidak langsung menetas**: ketuk telurnya, tiap ketukan membuatnya bergetar dan retak bertambah, dan ketukan kelima membuatnya pecah (juga bisa dengan Enter/Spasi). Telur ini **netral**: hanya bergantung pada jumlah soal terjawab dan modul selesai, bukan isi jawaban. Karakter tipe tidak pernah muncul selama tes.
+- **Hasil**: karakter di bagian atas (bisa diketuk, ada tombol putar ulang menetas); sebelum lengkap, tampil telur dengan progres modul. Karakter mini di riwayat.
+- **Kartu**: gaya baru **Karakter** (jadi bawaan) dengan balon kata "INI AKU: …"; Poster mendapat maskot mini di bilah bawah.
+- **PDF**: karakter di kiri bawah sampul (cap family tetap di kanan); karakter melambai di halaman penutup.
+- Semua animasi memakai transform/opacity dan mati kalau pengguna memilih "kurangi gerakan".
+
 ## Berikutnya: mengisi soal jadi lebih seru
 - **Rasi bintang**: setiap modul punya rasi sendiri (Kompas, Mozaik, Lima Arah, Delapan Cahaya, Lentera). Setiap jawaban menyalakan satu bintang, bintang yang berurutan tersambung garis, dan bintang berikutnya berkedip. Di layar selesai, rasinya tergambar utuh dengan percikan cahaya dan jumlah rasi yang sudah terkumpul.
 - **Babak pendek**: tiap modul dibagi jadi babak berisi ~11 soal. Di awal babak baru muncul kartu jeda berisi satu fakta tentang kepribadian dan pilihan "istirahat dulu".

@@ -159,24 +159,40 @@ try {
   check('tombol modul berubah jadi "Lanjutkan"', (await text('#mods button[data-m="0"]')) === 'Lanjutkan');
   check('beranda: sapaan lanjutkan dengan sisa soal dan rasi kecil di kartu modul', await ev("(()=>{const w=document.getElementById('welcome');return !w.hidden&&/Tinggal 43 soal di Inti/.test(w.textContent)&&!!w.querySelector('.rasi')&&!!document.querySelector('#mods .mod .rasi-mini .rasi')})()"), await text('#welcome'));
 
+  check('beranda: telur misterius muncul setelah menjawab, belum ada karakter', await ev("(()=>{const b=document.getElementById('eggBox');return !b.hidden&&!!b.querySelector('svg.egg')&&!b.querySelector('.chr')&&/Telur misterius/.test(b.textContent)})()"));
+
   // C. Kerjain semua modul
   await click('#mods button[data-m="0"]');
-  let n = 0, guard = 0, deepPrompt = false, rasiDone = false, sawBreak = false, sawMile = false;
+  let n = 0, guard = 0, deepPrompt = false, rasiDone = false, sawBreak = false, sawMile = false, sawQEgg = false, charInQuiz = false, sawCrack = false, sawHatch = false;
   while (guard++ < 400) {
     if (await visible('quiz')) {
       const before = await text('#qCount');
       if (!sawBreak && await ev("!document.getElementById('qBreak').hidden&&/Babak \\d selesai/.test(document.getElementById('qBreak').textContent)&&!!document.getElementById('qRest')")) sawBreak = true;
       if (!sawMile && /Setengah jalan/.test(await text('#qCheer'))) sawMile = true;
+      if (!sawQEgg && await ev("/Inti|Facet|Big Five|Cognitive/.test(document.getElementById('qMod').textContent)&&!!document.querySelector('#qEgg svg.egg')")) sawQEgg = true;
+      if (await ev("!!document.querySelector('#quiz .chr')")) charInQuiz = true;
       await ev(ANSWER); n++;
       await waitFor(`document.getElementById('quiz').hidden||document.getElementById('qCount').textContent!==${JSON.stringify(before)}`, 3000);
     } else if (await visible('done')) {
       if ((await text('#doneText')).includes('Semua modul utama selesai') && (await text('#doneNext')) === 'Lanjut ke Pendalaman') deepPrompt = true;
+      if (!sawCrack && await ev("!!document.querySelector('#doneIc .doneegg svg.egg')&&/Retakan baru/.test(document.getElementById('doneIc').textContent)")) sawCrack = true;
+      if (!sawHatch && (await text('#doneTitle')) === 'Telurmu siap menetas!') {
+        // Belum menetas sebelum diketuk; tiap ketukan menambah retakan; ketukan ke-5 menetas.
+        const notYet = await ev("!!document.querySelector('#doneIc .hatch.tap')&&!document.querySelector('#doneIc .hatch.open')&&/Ketuk telurnya/.test(document.getElementById('doneIc').textContent)");
+        const cracks = [];
+        for (let i = 0; i < 5; i++) { cracks.push(await ev("(document.querySelector('#doneIc .hatch .egg')||{outerHTML:''}).outerHTML.split('stroke=\"#fff6d6\" stroke-width=\"2\"').length-1")); await ev("document.querySelector('#doneIc .hatch').click()"); await sleep(120); }
+        sawHatch = notYet && cracks.every((c, i) => !i || c > cracks[i - 1]) && await waitFor("!!document.querySelector('#doneIc .hatch.open .hc svg.chr')&&document.getElementById('doneTitle').textContent==='Telurmu menetas!'&&/Kenalan dengan karaktermu: INFP/.test(document.getElementById('doneText').textContent)", 4000);
+      }
       if (!rasiDone) rasiDone = /Rasi \S+.* terkumpul · \d dari \d rasi/.test(await text('#doneRasiCap')) && (await ev("document.querySelectorAll('#doneRasi .st.on').length>0"));
       if (await ev("!document.getElementById('doneNext').hidden")) await click('#doneNext');
       else break;
     } else break;
   }
   check('setelah 4 modul utama, ditawari modul Pendalaman', deepPrompt);
+  check('layar soal: telur mini ikut tumbuh', sawQEgg);
+  check('layar soal: karakter tipe tidak pernah muncul selama tes (netral)', !charInQuiz);
+  check('modul selesai: telur mendapat retakan baru', sawCrack);
+  check('modul utama terakhir: telur menetas setelah diketuk 5 kali (retak tiap ketukan) jadi karakter INFP', sawHatch);
   check('babak baru dibuka dengan kartu jeda berisi fakta dan pilihan istirahat', sawBreak);
   check('tonggak setengah jalan dirayakan', sawMile);
   check('modul selesai: rasi utuh dan jumlah rasi terkumpul', rasiDone);
@@ -187,6 +203,13 @@ try {
   // D. Halaman hasil
   const h1 = await text('#res h1');
   check('hasil: tipe INFP-T dengan nama', h1.includes('INFP-T') && h1.includes('Tes QA'), h1);
+  check('hasil: karakter INFP tampil di bawah judul (HP)', await ev("(()=>{const c=document.querySelector('#res .hchar.m[data-hchar=\"INFP\"]');return !!c&&getComputedStyle(c).display!=='none'&&!!c.querySelector('svg.chr')&&c.getBoundingClientRect().height>100})()"));
+  await ev("document.querySelector('#res .hchar.m').click()");
+  check('hasil: ketuk karakter membuatnya melompat', await ev("!!document.querySelector('#res .hchar.m .chr.hop')"));
+  await ev("document.querySelector('#res .hchar-cap.m [data-hatch]').click()");
+  const replayWait = await ev("!!document.querySelector('#res .hchar.m .hatch.tap')&&!document.querySelector('#res .hchar.m .hatch.open')");
+  for (let i = 0; i < 5; i++) { await ev("document.querySelector('#res .hchar.m .hatch').click()"); await sleep(80); }
+  check('hasil: putar ulang menetas (menunggu diketuk)', replayWait && await waitFor("!!document.querySelector('#res .hchar.m .hatch.open .hc svg.chr')", 3000));
   check('hasil: 3 sel nyala berurutan, 13 redup', await ev("(()=>{const r=[...document.querySelectorAll('#ttRes .cell')].map(c=>c.dataset.rank);return r.filter(x=>x==='0').length===13&&['1','2','3'].every(k=>r.filter(x=>x===k).length===1)&&document.querySelector('#ttRes .cell[data-rank=\"1\"]').textContent.startsWith('INFP')})()"));
   check('hasil: semua bagian tampil (15 section: hero, 5 bab, penutup, simpan, 6 bagian angka, seberapa bisa dipegang)', (await ev("document.querySelectorAll('#res section').length")) === 15, await ev("document.querySelectorAll('#res section').length"));
   check('hasil: ringkasan kepribadian dari skor', /^Kamu .*waktu sendiri/.test(await text('#sumText')), await text('#sumText'));
@@ -220,11 +243,14 @@ try {
   await click('#dlCard');
   check('kartu PNG tampil di halaman, ukuran story 1080x1920', await waitFor("(()=>{const i=document.getElementById('cardPrev');return !i.hidden&&i.naturalWidth===1080&&i.naturalHeight===1920})()", 8000));
   const px = `(()=>{const i=document.getElementById('cardPrev'),c=document.createElement('canvas');c.width=i.naturalWidth;c.height=i.naturalHeight;const x=c.getContext('2d');x.drawImage(i,0,0);return [...x.getImageData(30,700,1,1).data].slice(0,3).join(',')})()`;
-  check('kartu PNG ikut tema gelap', (await ev(px)) === '18,16,25', await ev(px));
+  // Gaya bawaan (Karakter): latar bawah kartu = warna permukaan gelap tipe INFP, persis.
+  const pxK = px.replace('getImageData(30,700,1,1)', 'getImageData(30,1760,1,1)');
+  const surfDark = await ev("(()=>{const h=typeSurf('INFP',true).bg;return [1,3,5].map(i=>parseInt(h.slice(i,i+2),16)).join(',')})()");
+  check('kartu PNG ikut tema gelap', (await ev(pxK)) === surfDark, `${await ev(pxK)} vs ${surfDark}`);
   const pf = await waitFile('.png');
   await click('#res .hshare .btn');
   check('pratinjau kartu langsung tampil, contoh kecil tiap gaya tergambar', await waitFor("[...document.querySelectorAll('#akhir canvas[data-thumb]')].every(c=>{const d=c.getContext('2d').getImageData(45,80,1,1).data;return d[3]>0})", 8000));
-  check('pilihan gaya kartu: 7 gaya tersedia, Poster bawaan', (await ev("document.querySelectorAll('[data-card-style]').length")) === 7 && (await ev("document.querySelector('[data-card-style=\"poster\"]').getAttribute('aria-pressed')")) === 'true');
+  check('pilihan gaya kartu: 8 gaya tersedia, Karakter bawaan', (await ev("document.querySelectorAll('[data-card-style]').length")) === 8 && (await ev("document.querySelector('[data-card-style=\"karakter\"]').getAttribute('aria-pressed')")) === 'true');
   await ev("document.getElementById('cardPrev').src=''");
   await click('[data-card-style="takaran"]');
   // Kalau gagal, catat keadaannya supaya akar masalah di CI bisa dilacak (cek ini pernah gagal sesekali hanya di CI).
@@ -256,6 +282,7 @@ try {
   check('cetak: latar ikut tema gelap, diberi semburat warna tipe', await ev("(()=>{const m=getComputedStyle(document.body).backgroundColor.match(/\\d+/g).map(Number);const s=typeSurf('INFP',true).bg;return m.every(v=>v<40)&&getComputedStyle(document.body).backgroundColor===`rgb(${parseInt(s.slice(1,3),16)}, ${parseInt(s.slice(3,5),16)}, ${parseInt(s.slice(5,7),16)})`&&document.getElementById('pageStyle').textContent.includes(s)})()"));
   check('cetak: tombol & footer disembunyikan, hasil tampil', await ev("getComputedStyle(document.querySelector('#res .noprint')).display==='none'&&getComputedStyle(document.querySelector('footer')).display==='none'&&getComputedStyle(document.getElementById('res')).display!=='none'"));
   await ev("window.dispatchEvent(new Event('beforeprint'))");
+  check('cetak: karakter di kiri bawah sampul (di bawah kotak teks, kiri cap family) dan melambai di penutup', await waitFor("(()=>{const c=document.getElementById('pcChar'),w=document.querySelector('.s-wave');const hk=document.querySelector('.pc-hook'),st=document.getElementById('pcStamp').getBoundingClientRect(),cr=c&&c.getBoundingClientRect();return !!c&&c.src.startsWith('data:image/svg+xml')&&c.naturalWidth>0&&!!w&&w.naturalWidth>0&&getComputedStyle(c).display!=='none'&&(!hk||cr.top>=hk.getBoundingClientRect().bottom-1)&&cr.right<st.left})()", 4000));
   check('cetak: saat akan mencetak, sampul punya motif khas tipe dan cap family', await waitFor("(()=>{const m=document.getElementById('pcMotif'),s=document.getElementById('pcStamp');return !!m&&m.tagName==='IMG'&&m.dataset.ok==='1'&&m.naturalWidth===1240&&!!s&&s.tagName==='IMG'&&s.dataset.ok==='1'&&/Diplomat/.test(s.alt)})()", 5000));
   check('cetak: tabel skor rinci ikut kebuka', await ev("[...document.querySelectorAll('#res details')].every(d=>d.open)"));
   const pdf = await cmd('Page.printToPDF', {printBackground: true});
@@ -267,6 +294,7 @@ try {
   await load();
   check('muat ulang: 5 modul tetap selesai', (await ev("document.querySelectorAll('#mods .mod.ok').length")) === 5);
   check('riwayat: 1 hasil tersimpan otomatis', (await ev("document.querySelectorAll('#hist .hrow').length")) === 1);
+  check('riwayat: tiap hasil punya karakter mini', await ev("!!document.querySelector('#hist .hrow .hmini svg.chr')"));
   check('muat ulang: nama tetap', (await ev("document.getElementById('nama').value")) === 'Tes QA');
   check('"Lihat hasil" aktif', await ev("!document.getElementById('goRes').disabled"));
 
@@ -341,7 +369,7 @@ try {
   await waitFor("!document.getElementById('res').hidden", 4000);
   check('catatan khusus: bagian "Temuan khusus" tampil', await ev("!!document.getElementById('catatan')&&/Judul catatan/.test(document.getElementById('catatan').innerText)"));
   check('catatan khusus: ringkasan dari file dipakai, ringkasan otomatis tetap ada', (await text('#sumText')).startsWith('Ringkasan khusus <b>tebal</b>') && /Ringkasan otomatis/.test(await text('#ringkasan')));
-  check('catatan khusus: HTML tidak dijalankan', await ev("!document.querySelector('#res img:not(#cardPrev):not(#pcType):not(#pcMotif):not(#pcStamp)')&&!document.querySelector('#sumText b')&&!window.__xss"));
+  check('catatan khusus: HTML tidak dijalankan', await ev("!document.querySelector('#res img:not(#cardPrev):not(#pcType):not(#pcMotif):not(#pcStamp):not(#pcChar):not(.s-wave)')&&!document.querySelector('#sumText b')&&!window.__xss"));
   await click('#dlJson');
   const nf = await waitFile('jawaban-peta-kepribadian-contoh.json');
   check('catatan khusus ikut tersimpan di file jawaban', nf && JSON.parse(fs.readFileSync(nf, 'utf8')).notes?.[0]?.title === 'Judul catatan');
