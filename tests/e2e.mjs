@@ -131,9 +131,14 @@ try {
   check('HP: nggak ada scroll ke samping (soal)', await noOverflow());
   await cmd('Input.dispatchKeyEvent', {type: 'keyDown', key: '4', text: '4', code: 'Digit4'});
   check('tombol keyboard 4 menjawab dan lanjut', await waitFor("document.getElementById('qCount').textContent==='2 / 44'"));
+  check('rasi: satu bintang menyala per jawaban, bintang berikutnya ditandai', await ev("document.querySelectorAll('#qRasi .st').length===44&&document.querySelectorAll('#qRasi .st.on').length===1&&!!document.querySelector('#qRasi .cur')"));
+  check('babak: soal dibagi jadi babak pendek', /^Babak 1 dari 4 · Rasi Kompas/.test(await text('#qBabak')), await text('#qBabak'));
+  const pos1 = await ev("[...document.querySelectorAll('#qRasi .st')].map(c=>c.getAttribute('cx')+','+c.getAttribute('cy')).join('|')");
   await cmd('Input.dispatchKeyEvent', {type: 'keyDown', key: 'ArrowLeft', code: 'ArrowLeft'});
   check('panah kiri balik ke soal sebelumnya', await waitFor("document.getElementById('qCount').textContent==='1 / 44'"));
   check('jawaban sebelumnya ditandai', await ev(`document.querySelector('#qBody [data-v="4"]').getAttribute('aria-pressed')==='true'`));
+  await click('#qBody [data-v="1"]'); await waitFor("document.getElementById('qCount').textContent==='2 / 44'"); await click('#qBack'); await waitFor("document.getElementById('qCount').textContent==='1 / 44'");
+  check('rasi netral: posisi bintang sama walau jawabannya diganti (4 → 1)', (await ev("[...document.querySelectorAll('#qRasi .st')].map(c=>c.getAttribute('cx')+','+c.getAttribute('cy')).join('|')")) === pos1);
   check('tombol "Sebelumnya" mati di soal pertama', await ev("document.getElementById('qBack').disabled"));
   // Berikutnya: maju ke soal yang sudah dijawab tanpa memilih ulang; soal yang belum dijawab tidak bisa dilewati.
   check('tombol "Berikutnya" aktif di soal yang sudah dijawab', !(await ev("document.getElementById('qNext').disabled")));
@@ -152,22 +157,29 @@ try {
   await click('#qHome');
   check('progres kesimpan: 1/44 dijawab', (await text('#mods .mod small')).includes('1/44 dijawab'));
   check('tombol modul berubah jadi "Lanjutkan"', (await text('#mods button[data-m="0"]')) === 'Lanjutkan');
+  check('beranda: sapaan lanjutkan dengan sisa soal dan rasi kecil di kartu modul', await ev("(()=>{const w=document.getElementById('welcome');return !w.hidden&&/Tinggal 43 soal di Inti/.test(w.textContent)&&!!w.querySelector('.rasi')&&!!document.querySelector('#mods .mod .rasi-mini .rasi')})()"), await text('#welcome'));
 
   // C. Kerjain semua modul
   await click('#mods button[data-m="0"]');
-  let n = 0, guard = 0, deepPrompt = false;
+  let n = 0, guard = 0, deepPrompt = false, rasiDone = false, sawBreak = false, sawMile = false;
   while (guard++ < 400) {
     if (await visible('quiz')) {
       const before = await text('#qCount');
+      if (!sawBreak && await ev("!document.getElementById('qBreak').hidden&&/Babak \\d selesai/.test(document.getElementById('qBreak').textContent)&&!!document.getElementById('qRest')")) sawBreak = true;
+      if (!sawMile && /Setengah jalan/.test(await text('#qCheer'))) sawMile = true;
       await ev(ANSWER); n++;
       await waitFor(`document.getElementById('quiz').hidden||document.getElementById('qCount').textContent!==${JSON.stringify(before)}`, 3000);
     } else if (await visible('done')) {
       if ((await text('#doneText')).includes('Semua modul utama selesai') && (await text('#doneNext')) === 'Lanjut ke Pendalaman') deepPrompt = true;
+      if (!rasiDone) rasiDone = /Rasi \S+.* terkumpul · \d dari \d rasi/.test(await text('#doneRasiCap')) && (await ev("document.querySelectorAll('#doneRasi .st.on').length>0"));
       if (await ev("!document.getElementById('doneNext').hidden")) await click('#doneNext');
       else break;
     } else break;
   }
   check('setelah 4 modul utama, ditawari modul Pendalaman', deepPrompt);
+  check('babak baru dibuka dengan kartu jeda berisi fakta dan pilihan istirahat', sawBreak);
+  check('tonggak setengah jalan dirayakan', sawMile);
+  check('modul selesai: rasi utuh dan jumlah rasi terkumpul', rasiDone);
   check('sisa soal terjawab lewat klik (188 utama + minimal 5 Pendalaman)', n >= 193, `terjawab ${n}`);
   check('layar akhir: tombol lanjut hilang, semua selesai termasuk Pendalaman', (await text('#doneText')).includes('termasuk Pendalaman'));
   await click('#doneRes');

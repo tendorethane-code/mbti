@@ -229,7 +229,7 @@ body:before{content:"";position:fixed;inset:-20vh -20vw;z-index:-1;pointer-event
 .scl span:first-child{text-align:left}.scl span:last-child{text-align:right}
 .scl span.on{color:var(--ink);font-weight:800}
 .enter{animation:enter .28s ease-out both}
-@keyframes enter{from{opacity:0;transform:translateY(6px)}}
+@keyframes enter{from{opacity:0;transform:translateX(14px)}}
 @media(prefers-reduced-motion:reduce){.enter{animation:none}.btn,.dotb,.tt .cell{transition:none}}
 .done{text-align:center}.done .rowb{justify-content:center}.done .lead{margin-inline:auto}
 .doneic{color:var(--acc);display:flex;justify-content:center;margin-bottom:6px}
@@ -356,6 +356,37 @@ body.noscroll{overflow:hidden}
 @media(prefers-reduced-motion:reduce){.topbar,.sheet.open{transition:none;animation:none}}
 .why{margin:16px 0 4px;padding:14px 16px;border-radius:16px;border:1px dashed var(--fam,var(--ind));background:var(--pan)}
 .why b{display:block;font-size:16px;margin-bottom:4px}.why p{margin:4px 0 0;font-size:14px;color:var(--mute);max-width:none}.why p:first-of-type{color:var(--ink)}
+.rasi-w{position:relative;margin:8px 0 0}
+.rasi{display:block;width:100%;height:auto;overflow:visible}
+.rasi .ln line{stroke:var(--acc);stroke-opacity:.6;stroke-width:1.1;stroke-linecap:round}
+.rasi .st{fill:var(--mute);opacity:.35;transform-box:fill-box;transform-origin:center}
+.rasi .st.on{fill:var(--ink);opacity:1;filter:drop-shadow(0 0 2.5px var(--acc))}
+.rasi .st.pop{animation:starpop .6s ease-out}
+.rasi .cur{fill:none;stroke:var(--acc);stroke-width:1.2;transform-box:fill-box;transform-origin:center;animation:twinkle 1.6s ease-in-out infinite}
+@keyframes starpop{0%{transform:scale(3);opacity:.4}60%{transform:scale(.8)}100%{transform:scale(1)}}
+@keyframes twinkle{50%{opacity:.35;transform:scale(1.35)}}
+.burst{position:absolute;width:0;height:0;pointer-events:none}
+.burst span{position:absolute;left:-2px;top:-2px;width:4px;height:4px;border-radius:50%;background:var(--acc);box-shadow:0 0 6px var(--acc);animation:fly .8s ease-out forwards}
+.burst span:nth-child(3n){background:var(--ind);box-shadow:0 0 6px var(--ind)}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy));opacity:0}}
+.qbabak{margin:4px 0 0;font-size:12.5px;font-weight:700;letter-spacing:.04em;color:var(--mute)}
+.qbreak{margin:10px 0 2px;padding:10px 14px;border-radius:16px;background:var(--pan);border:1px solid var(--line);animation:enter .35s ease-out both}
+.qbreak b{display:block;font-size:14px;color:var(--acc)}.qbreak p{margin:3px 0 0;font-size:13px;line-height:1.45;color:var(--ink);max-width:none}
+.linkb{padding:0;min-height:36px;border:0;background:none;color:var(--mute);font:inherit;font-size:13.5px;font-weight:700;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.cheer.mile{font-size:15px;animation:enter .4s ease-out both}
+.qcard[data-dir=back] .enter{animation-name:enterBack}
+@keyframes enterBack{from{opacity:0;transform:translateX(-14px)}}
+.dotb.on,.opt.on{animation:pick .3s ease-out}
+@keyframes pick{45%{transform:scale(1.16)}}
+.rasi-done{max-width:420px;margin:0 auto 4px}.rasi-cap{margin:0 0 10px;font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--acc)}
+.rasi.draw .ln line{stroke-dasharray:60;stroke-dashoffset:60;animation:draw .9s ease-out forwards}
+.rasi.draw .st.on{animation:starpop .7s ease-out both}
+@keyframes draw{to{stroke-dashoffset:0}}
+.rasi-mini{max-width:200px;margin-top:6px;opacity:.9}
+.welcome{display:grid;grid-template-columns:minmax(0,120px) minmax(0,1fr) auto;gap:12px;align-items:center;margin-top:18px;padding:12px 14px;border-radius:18px;background:var(--pan);border:1px solid var(--line)}
+.welcome[hidden]{display:none}.welcome p{margin:0;font-size:14.5px;max-width:none}
+@media(max-width:600px){#qRasi .rasi{max-height:58px}.qbreak .linkb{min-height:32px}.welcome{grid-template-columns:minmax(0,1fr) auto}.welcome>div:first-child{grid-column:1/-1}}
+@media(prefers-reduced-motion:reduce){.rasi .st.pop,.rasi .cur,.rasi.draw .ln line,.rasi.draw .st.on,.qbreak,.cheer.mile,.dotb.on,.opt.on{animation:none}.rasi.draw .ln line{stroke-dashoffset:0}}
 .printonly{display:none}
 @media(max-width:820px){.home{grid-template-columns:minmax(0,1fr);grid-template-areas:"t" "p" "f"}.home .p{margin:8px 0 4px}.hero,.grid2{grid-template-columns:minmax(0,1fr)}.all{grid-template-columns:minmax(0,1fr)}.fam{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.pair{grid-template-columns:minmax(0,1fr)}.drow{grid-template-columns:4.6em minmax(0,1fr) 4.8em;gap:8px}.drow .l,.drow .r{font-size:13px}.dnote{grid-column:1/4;margin:0}.facet{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.facet .div{grid-column:1/3;grid-row:2}.facet .b{text-align:right}.mod{grid-template-columns:2.4em minmax(0,1fr)}.mod .btn{grid-column:1/3}}
@@ -450,6 +481,7 @@ body.noscroll{overflow:hidden}
 <div class="f">
 <label for="nama">Nama (untuk judul hasil, opsional)</label>
 <input type="text" id="nama" maxlength="30" autocomplete="off" placeholder="Namamu">
+<div class="welcome" id="welcome" hidden></div>
 <div class="mods" id="mods"></div>
 <div class="rowb acts">
 <button class="btn" id="goRes" type="button">Lihat hasil</button>
@@ -476,7 +508,10 @@ body.noscroll{overflow:hidden}
 <main id="quiz" class="band" hidden><div class="qwrap qcard">
 <div class="qtop"><b id="qMod"></b><span class="mute" id="qCount"></span></div>
 <div class="prog"><i id="qProg"></i></div>
-<p class="cheer" id="qCheer"></p>
+<div class="rasi-w" id="qRasi" aria-hidden="true"></div>
+<p class="qbabak" id="qBabak"></p>
+<div class="qbreak" id="qBreak" hidden></div>
+<p class="cheer" id="qCheer" aria-live="polite"></p>
 <p class="qtext" id="qText"></p>
 <div id="qBody"></div>
 <div class="qnav"><button class="btn ghost" id="qBack" type="button" aria-label="Soal sebelumnya">‹ Kembali</button><button class="btn ghost" id="qNext" type="button" aria-label="Soal berikutnya">Lanjut ›</button></div><div class="qsave"><button class="btn ghost" id="qHome" type="button">Simpan, lanjut nanti</button></div>
@@ -484,6 +519,8 @@ body.noscroll{overflow:hidden}
 </div></main>
 
 <main id="done" class="band" hidden><div class="qwrap qcard done">
+<div class="rasi-w rasi-done" id="doneRasi" aria-hidden="true"></div>
+<p class="rasi-cap" id="doneRasiCap"></p>
 <div class="doneic" aria-hidden="true"><svg viewBox="0 0 48 48" width="56" height="56"><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="3" opacity=".25"/><path d="M14 25l7 7 14-15" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
 <h1 id="doneTitle">Modul selesai</h1>
 <p class="lead" id="doneText"></p>
@@ -597,20 +634,62 @@ function renderHome(){
   view=null;histArm=-1;renderHist();
   $('nama').value=S.name||'';
   const A=ansOf(S),md=mainDoneOf(S),dp=md?itemsOf(DEEPI):[],dc=dp.filter(it=>valid(S.c[it.id])).length,dok=md&&dc===dp.length;
-  $('mods').innerHTML=MODS.map((m,i)=>{const c=answered(A,m),n=m.items.length,ok=c===n;return `<div class="mod ${ok?'ok':''}"><span class="no">${ok?'✓':i+1}</span><div><b>${m.name}</b><small>${m.sub} · ${ok?'selesai':c?`${c}/${n} dijawab`:'belum dimulai'}</small><div class="mini"><i style="width:${c/n*100}%"></i></div></div><button class="btn ${ok?'ghost':''}" type="button" data-m="${i}">${ok?'Ulangi':c?'Lanjutkan':'Mulai'}</button></div>`}).join('');
+  $('mods').innerHTML=MODS.map((m,i)=>{const c=answered(A,m),n=m.items.length,ok=c===n;return `<div class="mod ${ok?'ok':''}"><span class="no">${ok?'✓':i+1}</span><div><b>${m.name}</b><small>${m.sub} · ${ok?'selesai':c?`${c}/${n} dijawab`:'belum dimulai'}</small><div class="mini"><i style="width:${c/n*100}%"></i></div>${c?`<div class="rasi-mini" aria-hidden="true">${rasiSVG(i)}</div>`:''}</div><button class="btn ${ok?'ghost':''}" type="button" data-m="${i}">${ok?'Ulangi':c?'Lanjutkan':'Mulai'}</button></div>`}).join('');
   $('mods').innerHTML+=`<div class="mod ${dok?'ok':''}"><span class="no">${dok?'✓':'+'}</span><div><b>Pendalaman (opsional, adaptif)</b><small>${md?`${dp.length} soal yang dipilih dari pola hasilmu · ${dok?'selesai':dc?`${dc}/${dp.length} dijawab`:'belum dimulai'}`:'Terbuka setelah 4 modul utama selesai. Soalnya disesuaikan dengan pola hasilmu.'}</small><div class="mini"><i style="width:${md&&dp.length?dc/dp.length*100:0}%"></i></div></div><button class="btn ${dok?'ghost':''}" type="button" data-m="${DEEPI}" ${md?'':'disabled'}>${dok?'Ulangi':dc?'Lanjutkan':'Mulai'}</button></div>`;
   $('goRes').disabled=$('goShare').disabled=!MAIN.some(m=>isDone(A,m));
+  {const any=Object.keys(S.c).some(k=>valid(S.c[k])),order=MAIN.map((m,i)=>i).concat(md&&!dok?[DEEPI]:[]),nx=order.find(i=>{const t=itemsOf(i);return t.length&&!t.every(x=>valid(S.c[x.id]))});
+    const w=$('welcome');if(any&&nx!=null){let first=false;try{first=!sessionStorage.getItem('pk.sapa');sessionStorage.setItem('pk.sapa','1')}catch(e){}
+      const t=itemsOf(nx),left=t.filter(x=>!valid(S.c[x.id])).length;w.innerHTML=`<div>${rasiSVG(nx)}</div><p><b>${first?'Selamat datang lagi':'Lanjutkan tes'}${S.name?', '+esc(S.name):''}.</b> Tinggal ${left} soal di ${nameOf(nx)}.</p><button class="btn" type="button" data-m="${nx}">Lanjutkan</button>`;w.hidden=false}else w.hidden=true}
   resetArm=-1;show('home');
 }
+$('welcome').addEventListener('click',e=>{const b=e.target.closest('button[data-m]');if(b)start(+b.dataset.m)});
 $('mods').addEventListener('click',e=>{const b=e.target.closest('button[data-m]');if(!b)return;const i=+b.dataset.m,its=itemsOf(i);
   if(its.length&&its.every(it=>valid(S.c[it.id]))){if(resetArm!==i){resetArm=i;b.textContent='Ketuk lagi untuk mengulang';return}(i<DEEPI?its:DEEP.map(d=>({id:d[0]}))).forEach(it=>delete S.c[it.id]);save()}
   start(i)});
 $('nama').addEventListener('input',e=>{S.name=safeName(e.target.value);save()});
 
-function start(i){cur=i;resetArm=-1;const its=itemsOf(i);if(!its.length){renderHome();return}qi=its.findIndex(it=>!valid(S.c[it.id]));if(qi<0)qi=0;renderQ();show('quiz')}
+
+// ---------- Supaya mengisi soal terasa ringan: rasi bintang, babak, perayaan kecil ----------
+// Semua hiasan di sini NETRAL: posisi bintang, pesan, dan fakta tidak bergantung pada isi jawaban, supaya tidak memengaruhi jawaban berikutnya.
+const RASI_NAMA={inti:'Rasi Kompas',facet:'Rasi Mozaik',big5:'Rasi Lima Arah',fungsi:'Rasi Delapan Cahaya',dalam:'Rasi Lentera'};
+const modKey=i=>i===DEEPI?'dalam':MODS[i].id;
+const rasiPts=(key,n)=>{let sd=[...key].reduce((s2,ch)=>s2*31+ch.charCodeAt(0),17)%2147483647||1;const r=()=>(sd=sd*16807%2147483647)/2147483647;
+  const pts=[];let y=40;for(let k=0;k<n;k++){const x=8+(k+.5)/n*284+(r()-.5)*(284/n)*.9;y=Math.max(10,Math.min(70,y+(r()-.5)*30));pts.push([x,y])}return pts};
+const rasiSVG=(i,o)=>{o=o||{};const its=itemsOf(i),n=its.length;if(!n)return '';const P=rasiPts(modKey(i),n),on=its.map(it=>valid(S.c[it.id])),f=v=>v.toFixed(1);
+  const lines=P.slice(1).map((p,k)=>on[k]&&on[k+1]?`<line x1="${f(P[k][0])}" y1="${f(P[k][1])}" x2="${f(p[0])}" y2="${f(p[1])}"/>`:'').join('');
+  const stars=P.map((p,k)=>`<circle class="st${on[k]?' on':''}${k===o.fresh?' pop':''}" cx="${f(p[0])}" cy="${f(p[1])}" r="${on[k]?2.3:1.4}"/>`).join('');
+  const cur=o.cur!=null&&P[o.cur]?`<circle class="cur" cx="${f(P[o.cur][0])}" cy="${f(P[o.cur][1])}" r="5"/>`:'';
+  return `<svg class="rasi ${o.cls||''}" viewBox="0 0 300 80" role="img" aria-label="${RASI_NAMA[modKey(i)]}: ${on.filter(Boolean).length} dari ${n} bintang menyala"><g class="ln">${lines}</g>${stars}${cur}</svg>`};
+const burst=(wrap,i,k,big)=>{if(!wrap||matchMedia('(prefers-reduced-motion: reduce)').matches)return;const P=rasiPts(modKey(i),itemsOf(i).length)[k];if(!P)return;
+  const b=document.createElement('div');b.className='burst';b.style.left=(P[0]/300*100)+'%';b.style.top=(P[1]/80*100)+'%';
+  const m=big?16:7;for(let j=0;j<m;j++){const sp=document.createElement('span'),a=j/m*Math.PI*2+Math.random()*.5,d=(big?26:14)+Math.random()*(big?24:10);sp.style.setProperty('--dx',Math.cos(a)*d+'px');sp.style.setProperty('--dy',Math.sin(a)*d+'px');b.appendChild(sp)}
+  wrap.appendChild(b);setTimeout(()=>b.remove(),900)};
+const babakSize=n=>Math.ceil(n/Math.max(1,Math.round(n/11)));
+const FAKTA=['Big Five adalah model kepribadian dengan dukungan riset paling kuat. Kelima sifatnya ditemukan di banyak bahasa dan budaya.',
+  'Introvert tidak sama dengan pemalu. Pemalu berkaitan dengan rasa cemas, introvert berkaitan dengan dari mana energimu terisi.',
+  'Kepribadian cukup stabil, tapi tetap berubah pelan. Rata-rata orang menjadi lebih tenang dan lebih teratur seiring bertambahnya usia.',
+  'Carl Jung menulis Psychological Types pada 1921. Buku itulah dasar gagasan "fungsi kognitif" yang dipakai di modul Cognitive functions.',
+  'Indikator tipe yang terkenal dikembangkan Katharine Cook Briggs dan putrinya, Isabel Briggs Myers, sejak 1940-an.',
+  'Jawaban "seimbang" juga informasi. Tidak semua orang condong jelas ke satu sisi, dan itu bukan kekurangan.',
+  'Orang cenderung menilai dirinya lebih baik daripada kenyataan. Jawaban paling berguna adalah kebiasaanmu, bukan harapanmu.',
+  'Kalau kamu ragu di antara dua pilihan, ikuti kesan pertama. Berpikir terlalu lama sering malah menjauhkan dari jawaban yang jujur.',
+  'Hipotesis leksikal: sifat yang penting bagi manusia akhirnya punya kata sendiri dalam bahasa. Dari situlah Big Five ditemukan.',
+  'Saat tes diulang, huruf yang skornya dekat 50% wajar berubah. Itu sebabnya hasil di sini menandai sumbu yang tipis.',
+  'Tidak ada tipe yang lebih baik dari tipe lain. Setiap pola punya kekuatan dan hal yang perlu dijaga.',
+  'Suasana hati hari ini bisa sedikit memengaruhi jawaban. Bayangkan dirimu dalam 2–3 tahun terakhir, bukan hanya minggu ini.'];
+const CHEER_MILE={25:'Seperempat jalan. Rasimu mulai terbentuk.',50:'Setengah jalan! Separuh bintangnya sudah menyala.',75:'Tiga perempat. Rasinya hampir utuh.'};
+const CHEER_SOFT=['Jawabanmu tersimpan.','Pelan-pelan saja.','Ikuti kesan pertamamu.','Bagus, lanjut.','Tidak ada jawaban yang salah.'];
+// Setelah menjawab, kembali ke atas kartu soal kalau halaman sempat tergulir (di HP tombol 4-5 bisa di bawah layar).
+const toQTop=()=>{if(window.scrollY>4)window.scrollTo({top:0,behavior:'auto'})};
+let qFresh=null,qMile=null,qMsg='',qDir='next',qBreakOff=-1,answeredCount=0;
+function start(i){qDir='next';qBreakOff=-1;qMsg='';cur=i;resetArm=-1;const its=itemsOf(i);if(!its.length){renderHome();return}qi=its.findIndex(it=>!valid(S.c[it.id]));if(qi<0)qi=0;renderQ();show('quiz')}
 function renderQ(){
   const its=itemsOf(cur),it=its[qi],v=shown(it,S.c);
   $('qMod').textContent=nameOf(cur);$('qCount').textContent=`${qi+1} / ${its.length}`;
+  {const w=$('qRasi');let h=w.querySelector('.rs');if(!h){h=document.createElement('div');h.className='rs';w.appendChild(h)}h.innerHTML=rasiSVG(cur,{cur:qi,fresh:qFresh});if(qFresh!=null)burst(w,cur,qFresh,!!qMile)}
+  {const sz=babakSize(its.length),b=Math.floor(qi/sz);$('qBabak').textContent=`Babak ${b+1} dari ${Math.ceil(its.length/sz)} · ${RASI_NAMA[modKey(cur)]}`;
+    const prevDone=b>0&&its.slice((b-1)*sz,b*sz).every(x=>valid(S.c[x.id])),showBreak=qDir==='next'&&qi===b*sz&&b>0&&prevDone&&!valid(S.c[it.id])&&qBreakOff!==qi;
+    const bk=$('qBreak');bk.hidden=!showBreak;if(showBreak){const fk=FAKTA[(cur*5+b*3)%FAKTA.length];bk.innerHTML=`<b>Babak ${b} selesai ✦</b><p>${fk}</p><button type="button" class="linkb" id="qRest">Istirahat dulu, jawabanmu tersimpan</button>`;$('qRest').onclick=renderHome}}
   $('qProg').style.width=`${its.filter(x=>valid(S.c[x.id])).length/its.length*100}%`;
   $('qText').textContent=it.q;
   if(it.k==='fc'){
@@ -621,7 +700,10 @@ function renderQ(){
     $('qBody').innerHTML=`<div class="lk">${lb.map((l,i)=>`<button type="button" class="opt ${v===i+1?'on':''}" data-v="${i+1}" aria-pressed="${v===i+1}"><span>${i+1}</span>${l}</button>`).join('')}</div>`;
   }
   const done=its.filter(x=>valid(S.c[x.id])).length,frac=done/its.length;
-  $('qCheer').textContent=qi===0&&!done?(cur===DEEPI?'Soal-soal ini dipilih dari pola jawabanmu.':'Santai saja. Tidak ada jawaban benar atau salah.'):frac>=.9?'Sedikit lagi, hampir selesai.':frac>=.5&&frac<.6?'Sudah setengah jalan.':'';
+  const left=its.length-done;
+  $('qCheer').textContent=qMsg?qMsg:qMile?CHEER_MILE[qMile]:qi===0&&!done?(cur===DEEPI?'Soal-soal ini dipilih dari pola jawabanmu.':'Santai saja. Tidak ada jawaban benar atau salah.'):left===5?'Tinggal 5 lagi!':left===1?'Satu lagi, yang terakhir.':(qFresh!=null&&answeredCount%9===0)?CHEER_SOFT[(answeredCount/9)%CHEER_SOFT.length]:'';
+  if(qMile){qMsg=CHEER_MILE[qMile];$('qCheer').classList.add('mile')}else if(!qMsg)$('qCheer').classList.remove('mile');qFresh=null;qMile=null;
+  $('quiz').querySelector('.qcard').dataset.dir=qDir;
   ['qText','qBody'].forEach(id=>{const e=$(id);e.classList.remove('enter');void e.offsetWidth;e.classList.add('enter')});
   $('qBack').disabled=qi===0;
   // Berikutnya: untuk meninjau jawaban tanpa memilih ulang. Soal yang belum dijawab tidak bisa dilewati.
@@ -629,24 +711,30 @@ function renderQ(){
 }
 function goNext(){
   if(lock||$('quiz').hidden)return;const its=itemsOf(cur);if(!valid(S.c[its[qi].id]))return;
-  if(qi<its.length-1){qi++;renderQ();return}
+  qDir='next';if(qi<its.length-1){qi++;renderQ();return}
   const first=its.findIndex(x=>!valid(S.c[x.id]));if(first>=0){qi=first;renderQ()}else finish();
 }
 function answer(v){
-  if(lock||$('quiz').hidden)return;const it=itemsOf(cur)[qi];S.c[it.id]=it.k==='fc'&&it.fl?6-v:v;save();renderQ();lock=true;
+  if(lock||$('quiz').hidden)return;const its0=itemsOf(cur),it=its0[qi],was=valid(S.c[it.id]),before=its0.filter(x=>valid(S.c[x.id])).length;S.c[it.id]=it.k==='fc'&&it.fl?6-v:v;save();
+  qMsg='';
+  if(!was){answeredCount++;qFresh=qi;const n=its0.length;for(const m of [25,50,75])if(before/n<m/100&&(before+1)/n>=m/100)qMile=m}
+  qDir='next';renderQ();lock=true;
   setTimeout(()=>{lock=false;if($('quiz').hidden)return;const its=itemsOf(cur),id=it.id;const pos=its.findIndex(x=>x.id===id);
     const nx=its.findIndex((x,k)=>k>pos&&!valid(S.c[x.id]));const first=its.findIndex(x=>!valid(S.c[x.id]));
-    if(nx>=0){qi=nx;renderQ()}else if(first>=0){qi=first;renderQ()}else finish()},180);
+    if(nx>=0){qi=nx;renderQ();toQTop()}else if(first>=0){qi=first;renderQ();toQTop()}else finish()},180);
 }
 $('qBody').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(b)answer(+b.dataset.v)});
-$('qBack').addEventListener('click',()=>{if(qi>0&&!lock){qi--;renderQ()}});
-$('qNext').addEventListener('click',goNext);
+$('qBack').addEventListener('click',()=>{if(qi>0&&!lock){qi--;qDir='back';renderQ();toQTop()}});
+$('qNext').addEventListener('click',()=>{goNext();toQTop()});
 $('qHome').addEventListener('click',renderHome);
-document.addEventListener('keydown',e=>{if($('quiz').hidden||e.target.tagName==='INPUT'||e.metaKey||e.ctrlKey||e.altKey)return;if(/^[1-5]$/.test(e.key))answer(+e.key);else if(e.key==='ArrowLeft'&&qi>0&&!lock){qi--;renderQ()}else if(e.key==='ArrowRight')goNext()});
+document.addEventListener('keydown',e=>{if($('quiz').hidden||e.target.tagName==='INPUT'||e.metaKey||e.ctrlKey||e.altKey)return;if(/^[1-5]$/.test(e.key))answer(+e.key);else if(e.key==='ArrowLeft'&&qi>0&&!lock){qi--;qDir='back';renderQ()}else if(e.key==='ArrowRight')goNext()});
 
 function finish(){
   const A=ansOf(S),left=MAIN.filter(m=>!isDone(A,m)),dp=left.length?[]:itemsOf(DEEPI),deepLeft=dp.some(it=>!valid(S.c[it.id]));
   $('doneTitle').textContent=`${nameOf(cur)} selesai`;
+  {const all=MAIN.map((m,i)=>i).concat(itemsOf(DEEPI).length?[DEEPI]:[]),got=all.filter(i=>{const t=itemsOf(i);return t.length&&t.every(x=>valid(S.c[x.id]))}).length;
+    $('doneRasi').innerHTML=rasiSVG(cur,{cls:'draw'});$('doneRasiCap').textContent=`${RASI_NAMA[modKey(cur)]} terkumpul · ${got} dari ${all.length} rasi`;
+    setTimeout(()=>{const P=rasiPts(modKey(cur),itemsOf(cur).length);burst($('doneRasi'),cur,P.length-1,true)},900)}
   let next=null;
   if(left.length){$('doneText').textContent=`Tinggal ${left.length} modul lagi: ${left.map(m=>m.name).join(', ')}. Hasil sementara sudah bisa dilihat, tapi baru lengkap setelah semua modul selesai.`;next=left[0];$('doneNext').textContent='Lanjut ke modul berikutnya'}
   else if(deepLeft){$('doneText').textContent=`Semua modul utama selesai. Hasil lengkapmu sudah siap. Ada satu modul opsional, Pendalaman: ${dp.length} soal yang dipilih dari pola hasilmu, untuk temuan yang lebih spesifik.`;next=DEEPI;$('doneNext').textContent='Lanjut ke Pendalaman'}
