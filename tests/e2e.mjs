@@ -319,14 +319,14 @@ try {
 
   // K3. Catatan khusus dari file, termasuk teks berbahaya yang harus tampil sebagai teks
   const withNotes = path.join(DL, 'catatan.json');
-  fs.writeFileSync(withNotes, JSON.stringify(C.exportData('Gama', C.canon(full), {summary: 'Ringkasan khusus <b>tebal</b>', notes: [{tag: 'Pola 1', title: 'Judul catatan', text: '<img src=x onerror="window.__xss=1">isi'}]})));
+  fs.writeFileSync(withNotes, JSON.stringify(C.exportData('Contoh', C.canon(full), {summary: 'Ringkasan khusus <b>tebal</b>', notes: [{tag: 'Pola 1', title: 'Judul catatan', text: '<img src=x onerror="window.__xss=1">isi'}]})));
   await setFile(withNotes);
   await waitFor("!document.getElementById('res').hidden", 4000);
   check('catatan khusus: bagian "Temuan khusus" tampil', await ev("!!document.getElementById('catatan')&&/Judul catatan/.test(document.getElementById('catatan').innerText)"));
   check('catatan khusus: ringkasan dari file dipakai, ringkasan otomatis tetap ada', (await text('#sumText')).startsWith('Ringkasan khusus <b>tebal</b>') && /Ringkasan otomatis/.test(await text('#ringkasan')));
   check('catatan khusus: HTML tidak dijalankan', await ev("!document.querySelector('#res img:not(#cardPrev):not(#pcType):not(#pcMotif):not(#pcStamp)')&&!document.querySelector('#sumText b')&&!window.__xss"));
   await click('#dlJson');
-  const nf = await waitFile('jawaban-peta-kepribadian-gama.json');
+  const nf = await waitFile('jawaban-peta-kepribadian-contoh.json');
   check('catatan khusus ikut tersimpan di file jawaban', nf && JSON.parse(fs.readFileSync(nf, 'utf8')).notes?.[0]?.title === 'Judul catatan');
 
   // K4. Link hasil: dilihat tanpa menimpa jawaban sendiri
