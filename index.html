@@ -495,10 +495,12 @@ body.noscroll{overflow:hidden}
 .pcover>.pc-motif{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
 :root[data-theme=light] .pcover>.pc-motif{opacity:.75}
 :root[data-theme=light] .pcover>.pc-motif.m-INFP{opacity:1}
-.pcover>.pc-char{position:absolute;z-index:2;left:12mm;bottom:38mm;width:56mm;height:auto}
 .s-bye{display:flex;align-items:center;gap:6mm;margin-top:10mm;break-inside:avoid}.s-wave{width:42mm;height:auto;flex:none}.s-bubble{position:relative;margin:0;padding:4mm 6mm;border-radius:6mm;border:1.5px solid var(--line);background:var(--pan);font-weight:800;font-size:15px}.s-bubble:before{content:"";position:absolute;left:-3mm;top:50%;width:5mm;height:5mm;background:inherit;border-left:1.5px solid var(--line);border-bottom:1.5px solid var(--line);transform:translateY(-50%) rotate(45deg)}
-.pcover>.pc-stamp{align-self:flex-end;margin-top:auto;margin-right:4mm;width:44mm;height:44mm;opacity:.95;z-index:2}
-.pcover>.pc-stamp+.pc-stats{margin-top:3mm}
+/* Karakter (kiri) dan cap family (kanan) dalam satu baris yang ikut alur halaman: selalu di bawah kotak "yang paling khas", sepanjang apa pun teksnya. */
+.pcover>.pc-row{display:flex;justify-content:space-between;align-items:flex-end;gap:6mm;margin-top:auto;z-index:2}
+.pc-row .pc-char{width:42mm;height:auto;margin:0 0 -2mm 4mm}
+.pc-row .pc-stamp{width:44mm;height:44mm;margin-right:4mm;opacity:.95}
+.pcover>.pc-row+.pc-stats{margin-top:3mm}
 .pc-top{display:flex;justify-content:space-between;font-size:11px;font-weight:800;letter-spacing:.2em;color:var(--fam)}
 .pc-top span+span{letter-spacing:0;color:var(--mute);font-weight:600}
 .pc-name{font-size:28px;font-weight:700;margin-top:24mm}
@@ -891,8 +893,7 @@ function renderRes(keep){
     <div class="pc-name">${name?esc(name):'Hasilku'}</div><img class="pc-type" id="pcType" alt="${R.type}${R.id?'-'+R.id:''}">
     <div class="pc-fam">${FAM[famOf(R.type)]}${R.strat?' · '+R.strat:''}</div>${WHY?`<div class="pc-tie">${WHY.tie?`Hampir seri dengan ${WHY.b}`:`Dari huruf saja: ${WHY.b}`} · penjelasan di halaman 2</div>`:''}${tagline?`<div class="pc-tag">${tagline}</div>`:''}
     ${hook?`<div class="pc-hook"><span>Yang paling khas darimu</span>${hook.t?`<b>${esc(hook.t)}</b>`:''}<p>${esc(hook.x)}</p></div>`:''}
-    <img class="pc-char" id="pcChar" alt="${mainDone?'Karakter '+R.type:'Telur yang belum menetas'}" src="data:image/svg+xml;charset=utf-8,${encodeURIComponent(mainDone?KARAKTER.svg(R.type):KARAKTER.egg(eggProg(D).p,eggProg(D).k))}">
-    <img class="pc-stamp" id="pcStamp" alt="Cap family ${FAM[famOf(R.type)]}"><div class="pc-stats">${axs.slice(0,3).map(x=>`<div><b>${x.pp}%</b><span>${x.w}</span></div>`).join('')}</div>
+    <div class="pc-row"><img class="pc-char" id="pcChar" alt="${mainDone?'Karakter '+R.type:'Telur yang belum menetas'}" src="data:image/svg+xml;charset=utf-8,${encodeURIComponent(mainDone?KARAKTER.svg(R.type):KARAKTER.egg(eggProg(D).p,eggProg(D).k))}"><img class="pc-stamp" id="pcStamp" alt="Cap family ${FAM[famOf(R.type)]}"></div><div class="pc-stats">${axs.slice(0,3).map(x=>`<div><b>${x.pp}%</b><span>${x.w}</span></div>`).join('')}</div>
     <div class="pc-fit"><span>Paling cocok: ${R.fits.slice(0,3).map((f,i)=>`<b${i?'':' class="on"'}>${f.t}</b> ${nm(f.v)}`).join(' · ')}</span><span class="pc-date">${esc(new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}))}</span></div></div>`;
     {
       const restP=rest.slice(0,10);
