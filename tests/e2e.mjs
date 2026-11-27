@@ -119,6 +119,7 @@ try {
   check('HP: peta tipe kelihatan di layar pertama', await ev("document.getElementById('ttHome').getBoundingClientRect().top<innerHeight*0.75"));
   check('peta beranda: 16 sel, 4 family', await ev("document.querySelectorAll('#ttHome .cell').length===16&&new Set([...document.querySelectorAll('#ttHome small')].map(s=>s.textContent)).size===4"));
   check('HP: nggak ada scroll ke samping (beranda)', await noOverflow());
+  check('HP: tombol beranda rapi 2×2 sama lebar (Lihat hasil + Simpan, Buka file + Mulai baru)', await ev("(()=>{const b=['goRes','goShare','openFile','askReset'].map(i=>document.getElementById(i).getBoundingClientRect());return Math.abs(b[0].top-b[1].top)<2&&Math.abs(b[2].top-b[3].top)<2&&b[2].top>b[0].top&&Math.abs(b[0].width-b[1].width)<2&&Math.abs(b[0].width-b[2].width)<2})()"));
   check('"Lihat hasil" mati sebelum ada modul selesai', await ev("document.getElementById('goRes').disabled"));
   await shot('01-beranda-hp');
   await ev(`(()=>{const i=document.getElementById('nama');i.value='Tes QA';i.dispatchEvent(new Event('input'));})()`);
@@ -380,6 +381,7 @@ try {
   check('riwayat tidak lagi ditaruh di bawah beranda', await ev("!document.querySelector('#home #hist')"));
   await click('#topHist');
   check('pintas: tombol Riwayat membuka popup riwayat', await waitFor("document.getElementById('histSheet').classList.contains('open')&&!document.getElementById('sheetBd').hidden&&document.querySelectorAll('#hist .hrow').length>=1", 3000));
+  check('riwayat di HP: info selebar baris, tombol di bawahnya', await ev("(()=>{if(innerWidth>600)return true;const r=document.querySelector('#hist .hrow'),i=r.firstElementChild.getBoundingClientRect(),w=r.getBoundingClientRect().width,bt=r.querySelector('.btn').getBoundingClientRect();return i.width>=w*.95&&bt.top>=i.bottom-1})()"));
   await ev("document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))");
   check('popup tertutup dengan Esc', await waitFor("!document.querySelector('.sheet.open')&&document.getElementById('sheetBd').hidden", 2000));
   await click('#goRes');
