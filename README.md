@@ -60,12 +60,13 @@ Facet Expressive, Active, dan Enthusiastic, serta semua facet T/F dan J/P, digan
 - `legacy.js`: urutan soal versi lama, untuk membaca file dan link lama
 - `core.js`: logika skor, migrasi file lama, ringkasan kepribadian, link hasil (tanpa DOM, bisa dites di Node)
 - `karakter.js`: karakter per tipe (Roh Peta, SVG) dan Telur Nebula yang terbentuk selama mengisi soal; draf dan semua opsinya di `docs/desain/`
+- `penjelasan.js`: penjelasan istilah di halaman hasil (8 cognitive functions, facet Step II, Big Five dan facet-nya)
 - `index.html`: tampilan
 - `tests/core.test.mjs`: unit test untuk integritas soal, bahasa, ke-16 tipe × A/T, jawaban acak, impor & migrasi file, ringkasan kepribadian, catatan, dan link hasil
 - `tests/e2e.mjs`: tes end-to-end di Chrome headless untuk semua alur, termasuk file versi lama, catatan khusus (dan teks berbahaya), serta mode lihat link
 
 ## Rilis
-- Situs live = branch `main` di GitHub Pages. GitHub Pages meng-cache tiap file 10 menit, jadi setiap kali `data.js`, `legacy.js`, `core.js`, atau `karakter.js` berubah, **ganti angka `?v=` di tag `<script>` pada `index.html`** supaya pengunjung tidak mendapat campuran file lama dan baru.
+- Situs live = branch `main` di GitHub Pages. GitHub Pages meng-cache tiap file 10 menit, jadi setiap kali `data.js`, `legacy.js`, `core.js`, `karakter.js`, atau `penjelasan.js` berubah, **ganti angka `?v=` di tag `<script>` pada `index.html`** supaya pengunjung tidak mendapat campuran file lama dan baru.
 - Jalankan `npm test` sebelum merge. CI menjalankan tes yang sama untuk setiap pull request.
 - Kalau rilis bermasalah: revert commit merge di `main`, GitHub Pages memperbarui situs dalam beberapa menit.
 

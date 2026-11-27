@@ -423,6 +423,37 @@ test('kenapa tipe ini: dua tipe teratas hampir seri ditandai, tidak diklaim past
   assert.match(W.lines.join(' '), /Selisihnya hanya 0,1 poin/);
 });
 
+test('karakter: 16 tipe (biasa dan melambai) dan telur menghasilkan SVG yang valid', async () => {
+  const fs = await import('node:fs');
+  const vm = await import('node:vm');
+  const src = ['data.js', 'legacy.js', 'core.js', 'karakter.js'].map(f => fs.readFileSync(new URL('../' + f, import.meta.url), 'utf8')).join('\n;\n');
+  const ctx = vm.createContext({});
+  const K = vm.runInContext(src + '\n;KARAKTER', ctx);
+  const types = Object.keys(vm.runInContext('TYPE_PAL', ctx));
+  assert.equal(types.length, 16);
+  const famOf = t => t[1] === 'N' ? (t[2] === 'T' ? 'NT' : 'NF') : (t[3] === 'J' ? 'SJ' : 'SP');
+  for (const t of types) for (const o of [{}, {wave: true}]) {
+    const s = K.svg(t, o);
+    assert.ok(s.startsWith('<svg class="chr f-' + famOf(t)) && s.endsWith('</svg>'), t);
+    assert.ok(!/NaN|undefined|\[object/.test(s), t + JSON.stringify(o));
+    const ids = [...s.matchAll(/ id="([^"]+)"/g)].map(m => m[1]);
+    assert.equal(new Set(ids).size, ids.length, 'id unik dalam satu SVG: ' + t);
+    for (const m of s.matchAll(/url\(#([^)]+)\)/g)) assert.ok(ids.includes(m[1]), 'rujukan ' + m[1] + ' ada di ' + t);
+    assert.equal((s.match(/<svg/g) || []).length, (s.match(/<\/svg>/g) || []).length);
+  }
+  // Telur: aman di luar batas, retakan sesuai modul, mata mengintip hanya di 75–99%.
+  for (const [p, k] of [[-1, -2], [0, 0], [.3, 1], [.8, 3], [1, 4], [2, 9], [NaN, 2]]) { const e = K.egg(p, k); assert.ok(e.startsWith('<svg class="egg"') && !/NaN|undefined/.test(e), p + ',' + k); }
+  const cracks = e => (e.match(/stroke="#fff6d6" stroke-width="2"/g) || []).length;
+  assert.deepEqual([0, 1, 2, 3, 4].map(k => cracks(K.egg(.5, k))), [0, 1, 2, 3, 4]);
+  assert.ok(K.egg(.8, 3).includes('eg-peek') && !K.egg(.5, 2).includes('eg-peek') && !K.egg(1, 4).includes('eg-peek'));
+  // Netral: telur hanya bergantung pada progres, bukan tipe (fungsi tidak menerima tipe sama sekali).
+  assert.ok(/^function eggSVG\(p, k, o\)/.test(K.egg.toString()), 'telur hanya menerima progres, modul, dan pilihan ketukan (tanpa tipe)');
+  // Ketukan menetas: retakan bertambah sampai 5, mata mengintip bisa dipaksa.
+  assert.deepEqual([0, 1, 3, 5, 9].map(n => cracks(K.egg(1, 4, {extra: n}))), [4, 5, 7, 9, 9]);
+  assert.ok(K.egg(1, 4, {peek: true}).includes('eg-peek') && !K.egg(.8, 3, {peek: false}).includes('eg-peek'));
+  assert.equal(K.egg(.42, 2).replace(/eg\d+/g, ''), K.egg(.42, 2).replace(/eg\d+/g, ''));
+});
+
 test('Pendalaman per fungsi: tiap fungsi punya soal, INFJ dan ISFJ tidak lagi dapat soal yang sama', () => {
   const plan = (t, i = 'A') => { const c = C.canon(answersFor(C, t, i, 2)); return C.deepPlan(C.resultOf(c), c).map(q => q.id); };
   assert.ok(plan('INFJ').includes('d-ni-firasat') && !plan('INFJ').includes('d-si-pengalaman'));
@@ -453,33 +484,20 @@ test('Pendalaman: maksimal 16 soal, soal yang sudah dijawab tidak hilang', () =>
     assert.ok(p.every(q => p2.includes(q.id) || !['d-dekat', 'd-kenal'].includes(q.id)), 'soal yang dijawab hilang dari rencana');
   }
 });
-test('karakter: 16 tipe (biasa dan melambai) dan telur menghasilkan SVG yang valid', async () => {
+
+test('penjelasan: semua fungsi, facet Step II, dan Big Five punya penjelasan lengkap dengan bahasa rapi', async () => {
   const fs = await import('node:fs');
   const vm = await import('node:vm');
-  const src = ['data.js', 'legacy.js', 'core.js', 'karakter.js'].map(f => fs.readFileSync(new URL('../' + f, import.meta.url), 'utf8')).join('\n;\n');
-  const ctx = vm.createContext({});
-  const K = vm.runInContext(src + '\n;KARAKTER', ctx);
-  const types = Object.keys(vm.runInContext('TYPE_PAL', ctx));
-  assert.equal(types.length, 16);
-  const famOf = t => t[1] === 'N' ? (t[2] === 'T' ? 'NT' : 'NF') : (t[3] === 'J' ? 'SJ' : 'SP');
-  for (const t of types) for (const o of [{}, {wave: true}]) {
-    const s = K.svg(t, o);
-    assert.ok(s.startsWith('<svg class="chr f-' + famOf(t)) && s.endsWith('</svg>'), t);
-    assert.ok(!/NaN|undefined|\[object/.test(s), t + JSON.stringify(o));
-    const ids = [...s.matchAll(/ id="([^"]+)"/g)].map(m => m[1]);
-    assert.equal(new Set(ids).size, ids.length, 'id unik dalam satu SVG: ' + t);
-    for (const m of s.matchAll(/url\(#([^)]+)\)/g)) assert.ok(ids.includes(m[1]), 'rujukan ' + m[1] + ' ada di ' + t);
-    assert.equal((s.match(/<svg/g) || []).length, (s.match(/<\/svg>/g) || []).length);
-  }
-  // Telur: aman di luar batas, retakan sesuai modul, mata mengintip hanya di 75–99%.
-  for (const [p, k] of [[-1, -2], [0, 0], [.3, 1], [.8, 3], [1, 4], [2, 9], [NaN, 2]]) { const e = K.egg(p, k); assert.ok(e.startsWith('<svg class="egg"') && !/NaN|undefined/.test(e), p + ',' + k); }
-  const cracks = e => (e.match(/stroke="#fff6d6" stroke-width="2"/g) || []).length;
-  assert.deepEqual([0, 1, 2, 3, 4].map(k => cracks(K.egg(.5, k))), [0, 1, 2, 3, 4]);
-  assert.ok(K.egg(.8, 3).includes('eg-peek') && !K.egg(.5, 2).includes('eg-peek') && !K.egg(1, 4).includes('eg-peek'));
-  // Netral: telur hanya bergantung pada progres, bukan tipe (fungsi tidak menerima tipe sama sekali).
-  assert.ok(/^function eggSVG\(p, k, o\)/.test(K.egg.toString()), 'telur hanya menerima progres, modul, dan pilihan ketukan (tanpa tipe)');
-  // Ketukan menetas: retakan bertambah sampai 5, mata mengintip bisa dipaksa.
-  assert.deepEqual([0, 1, 3, 5, 9].map(n => cracks(K.egg(1, 4, {extra: n}))), [4, 5, 7, 9, 9]);
-  assert.ok(K.egg(1, 4, {peek: true}).includes('eg-peek') && !K.egg(.8, 3, {peek: false}).includes('eg-peek'));
-  assert.equal(K.egg(.42, 2).replace(/eg\d+/g, ''), K.egg(.42, 2).replace(/eg\d+/g, ''));
+  const src = ['data.js', 'penjelasan.js'].map(f => fs.readFileSync(new URL('../' + f, import.meta.url), 'utf8')).join('\n;\n');
+  const P = vm.runInContext(src + '\n;({FN_INFO,POS_INFO,IE_INFO,FACET_INFO,B5_INFO,B5F_INFO,lvlB5,FACETS,B5,IKON,ikon})', vm.createContext({}));
+  const all = [];
+  for (const f of C.FUNCS) { const x = P.FN_INFO[f]; assert.ok(x, f); for (const k of ['lengkap', 'arti', 'contoh', 'kuat', 'lemah']) { assert.ok(x[k] && x[k].length >= 5, f + '.' + k); all.push(x[k]); } }
+  // Ikon buatan sendiri (SVG), bukan emoji
+  for (const k of [...C.FUNCS, 'N', 'O', 'C', 'A', 'E']) { assert.ok(/^<svg class="ik" viewBox="0 0 24 24"[^>]*>.*<path/.test(P.ikon(k)), 'ikon ' + k); assert.ok(!/\p{Extended_Pictographic}/u.test(P.IKON[k]), 'tanpa emoji ' + k); }
+  assert.equal(P.ikon('X'), '');
+  assert.equal(P.POS_INFO.length, 4); P.POS_INFO.forEach(p => all.push(p.arti));
+  for (const ax of ['EI', 'SN', 'TF', 'JP']) { assert.equal(P.FACET_INFO[ax].length, P.FACETS[ax].length, ax); P.FACET_INFO[ax].forEach((pr, i) => { assert.equal(pr.length, 2, ax + i); pr.forEach(t => { assert.ok(t.length > 10, ax + i); assert.ok(!/\.$/.test(t), 'tanpa titik di akhir (ditambah di tampilan): ' + t); all.push(t); }); }); }
+  for (const d of P.B5) { const I = P.B5_INFO[d[0]]; assert.ok(I && I.arti && I.tinggi && I.rendah, d[0]); assert.equal(P.B5F_INFO[d[0]].length, d[2].length, d[0]); P.B5F_INFO[d[0]].forEach(t => { assert.ok(!/\.$/.test(t), t); all.push(t); }); all.push(I.arti, I.tinggi, I.rendah); }
+  assert.deepEqual([1, 2.4, 3, 3.6, 5].map(P.lvlB5), ['rendah', 'rendah', 'sedang', 'tinggi', 'tinggi']);
+  for (const t of all) { assert.ok(!/\b(lu|gw|gue|nggak|ngga|udah|bikin|banget)\b/i.test(t), t); assert.ok(!/[<>]/.test(t), 'aman untuk HTML: ' + t); }
 });
