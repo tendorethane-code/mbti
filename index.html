@@ -84,8 +84,10 @@ input[type=text]{font:inherit;font-size:16px;width:100%;max-width:340px;min-heig
 .opt span{width:1.8em;height:1.8em;border-radius:50%;background:var(--pan);display:flex;align-items:center;justify-content:center;font-size:14px;flex:none}
 .opt.on{border-color:var(--ind);background:var(--pan);background:color-mix(in srgb,var(--ind) 10%,var(--bg))}
 .opt.on span{background:var(--ind);color:#fff}
-.qnav{display:flex;justify-content:space-between;gap:10px;margin-top:26px;flex-wrap:wrap}
-.qsave{display:flex;justify-content:center;margin-top:10px}
+/* Dua kolom sama lebar di semua ukuran layar dan ukuran huruf; kalau sempit, teks di dalam tombol yang turun baris, bukan tombolnya. */
+.qnav{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-top:26px}
+.qnav .btn,.qsave .btn{min-width:0;width:100%;padding:10px 8px;line-height:1.25}
+.qsave{display:grid;margin-top:10px}
 .hint{font-size:13px;color:var(--mute);text-align:center;margin-top:14px}
 .fit{display:grid;grid-template-columns:4.2em minmax(0,1fr) 3.2em;gap:12px;align-items:center}
 .fit b{font-size:20px}
@@ -470,7 +472,7 @@ body.noscroll{overflow:hidden}
 <p class="cheer" id="qCheer"></p>
 <p class="qtext" id="qText"></p>
 <div id="qBody"></div>
-<div class="qnav"><button class="btn ghost" id="qBack" type="button">‹ Sebelumnya</button><button class="btn ghost" id="qNext" type="button">Berikutnya ›</button></div><div class="qsave"><button class="btn ghost" id="qHome" type="button">Simpan, lanjut nanti</button></div>
+<div class="qnav"><button class="btn ghost" id="qBack" type="button" aria-label="Soal sebelumnya">‹ Kembali</button><button class="btn ghost" id="qNext" type="button" aria-label="Soal berikutnya">Lanjut ›</button></div><div class="qsave"><button class="btn ghost" id="qHome" type="button">Simpan, lanjut nanti</button></div>
 <p class="hint">Jawabanmu tersimpan setiap kali kamu memilih. Di laptop, bisa memakai tombol 1–5 dan panah kiri/kanan.</p>
 </div></main>
 
