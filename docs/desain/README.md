@@ -98,6 +98,12 @@ Alur setelah ketukan ke-5 (sekitar 17–18 detik, ketuk panggung untuk melewati,
 
 Panggung selalu gelap (seperti layar bioskop) di tema terang maupun gelap. Semua gerak memakai transform/opacity lewat Web Animations API. Gambar: `gambar/terungkap-1-telur-sampai-tinggal2.jpg`, `gambar/terungkap-2-duel-sampai-huruf.jpg`, `gambar/terungkap-3-ketat.jpg`, penyaringan versi 2: `gambar/terungkap-4-eliminasi.jpg` (gambar 1 masih versi 1).
 
+## Musik momen terungkap dan musik soal (`musik-terungkap-draf.js`)
+Semua musik disintesis di browser dengan Web Audio (tanpa file musik, tanpa lisensi), mengikuti tiap kejadian animasi.
+- Momen terungkap, tujuh draf: Film, Ceria, Lembut, Orkestra F# (gaya dari lagu referensi pertama pemilik), Orkestra D minor (referensi kedua), **Ballad D minor (dipilih, gaya `manis`)**, Ballad D mayor "naik terus". Draf yang tidak dipakai diarsipkan utuh di `musik-terungkap-draf.js`. Lagu referensi hanya dianalisis (nada dasar, akor, tekstur, dinamika); melodinya tidak disalin dan filenya tidak disimpan di repo.
+- Efek suara (retak, pecah, dentuman, dentang huruf) disukai pemilik dan dipertahankan; dicampur di jalur sendiri.
+- Musik saat mengisi soal: tombol musik di layar soal, bawaan mati. Draf Tenang, Hangat, Ringan, Orkestra (permintaan pemilik). Harus netral (tidak bergantung jawaban, tidak terlalu sedih/riang) dan tidak mengganggu membaca.
+
 ## Arsip (`arsip/`)
 | File | Isi | Asal |
 |---|---|---|
