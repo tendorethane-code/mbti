@@ -868,7 +868,7 @@ const playHatch=(wrap,t,done,fits)=>{if(!wrap)return;let n=0;document.body.class
 // Mulai hanya dari ketukan (izin putar audio browser). Bisa dimatikan, pilihan disimpan. Berhenti saat ditutup atau tab disembunyikan.
 const SFX_KEY='tesKepribadian.suara';
 const sfx=(()=>{
-  let ac=null,out=null,rev=null,nb=null,bed=null,pad=null,on=true;
+  let ac=null,out=null,rev=null,nb=null,on=true;
   try{on=localStorage.getItem(SFX_KEY)!=='0'}catch(e){}
   const N={D1:36.71,D2:73.42,A2:110,D3:146.83,Eb3:155.56,F3:174.61,Fs3:185,Ab3:207.65,A3:220,D4:293.66,Fs4:369.99,A4:440,D5:587.33,F5:698.46,Fs5:739.99,A5:880,Cs6:1108.73,D6:1174.66,E6:1318.51,A6:1760};
   const init=()=>{
@@ -899,43 +899,85 @@ const sfx=(()=>{
   const cymbal=(t,dur,v=.3,swell=false)=>{const g=ac.createGain();g.connect(out);const s=ac.createGain();s.gain.value=.5;g.connect(s);s.connect(rev);
     if(swell){g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+dur);g.gain.linearRampToValueAtTime(0,t+dur+.03)}else{g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+dur)}
     noise(t,dur+.05,filt('highpass',5200,0,g))};
-  // akor "brass" megah: dua saw berselisih nada per not, filter membuka lalu menutup
-  const brass=(t,notes,dur,v=.12)=>{const g=ac.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.06);g.gain.setValueAtTime(v,t+dur*.35);g.gain.exponentialRampToValueAtTime(.0001,t+dur);g.connect(out);const s=ac.createGain();s.gain.value=.6;g.connect(s);s.connect(rev);
-    const lp=filt('lowpass',500,1.2,g);lp.frequency.setValueAtTime(500,t);lp.frequency.exponentialRampToValueAtTime(3200,t+.12);lp.frequency.exponentialRampToValueAtTime(1100,t+dur*.6);
-    notes.forEach(f=>{osc('sawtooth',f,t,t+dur,lp);osc('sawtooth',f*1.006,t,t+dur,lp)})};
-  // lapisan panjang (drone/pad) yang bisa dihentikan
-  const layer=(t,notes,cut,v,att)=>{const g=ac.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+att);g.connect(out);const s=ac.createGain();s.gain.value=.5;g.connect(s);s.connect(rev);
-    const lp=filt('lowpass',cut,.7,g),os=[];notes.forEach(f=>{os.push(osc('sawtooth',f,t,t+60,lp),osc('sawtooth',f*1.005,t,t+60,lp))});return {g,lp,os}};
-  const end=(L,t,rel=.4)=>{if(!L)return;L.g.gain.cancelScheduledValues(t);L.g.gain.setValueAtTime(L.g.gain.value,t);L.g.gain.linearRampToValueAtTime(0,t+rel);L.os.forEach(o=>{try{o.stop(t+rel+.05)}catch(e){}})};
+  // --- musik latar: sekuenser bertempo, lapisan berubah per tahap, drop lagu tema saat karakter keluar ---
+  // Gaya A "Trailer" (taiko, string spiccato, brass, horn) atau B "Arcade" (four-on-the-floor, bas memompa, arpeggio, supersaw).
+  const hz=m=>440*Math.pow(2,(m-69)/12);
+  const MINOR=[[38,[62,65,69]],[34,[58,62,65]],[36,[60,64,67]],[33,[57,61,64]]];   // Dm Bb C A
+  const MAJOR=[[38,[62,66,69]],[33,[61,64,69]],[35,[59,62,66]],[31,[59,62,67]]];   // D A Bm G (dua akor per bar)
+  const HOOK1=[[0,74,2],[2,78,2],[4,81,3],[7,78,1],[8,81,2],[10,83,2],[12,81,2],[14,78,1],[15,76,1]];
+  const HOOK2=[[0,78,2],[2,74,2],[4,78,2],[6,83,2],[8,81,4],[12,79,1],[13,78,1],[14,76,2]];
+  const HOOK3=[[0,78,2],[2,74,2],[4,78,2],[6,83,2],[8,85,2],[10,86,6]];
+  const mus={ph:null,step:0,next:0,tm:null,shift:0,ph0:0,bar:0,bus:null,dl:null};
+  const style=()=>{try{return localStorage.getItem('tesKepribadian.musik')==='b'?'b':'a'}catch(e){return 'a'}};
+  const busInit=()=>{if(mus.bus&&mus.bus.context===ac)return;mus.bus=ac.createGain();mus.bus.gain.value=.55;mus.bus.connect(out);
+    const s=ac.createGain();s.gain.value=.25;mus.bus.connect(s);s.connect(rev);
+    // gema (dotted 8th) untuk arpeggio dan melodi
+    const d=ac.createDelay(1);d.delayTime.value=60/124*.75;const fb=ac.createGain();fb.gain.value=.32;const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2600;
+    d.connect(lp);lp.connect(fb);fb.connect(d);const dw=ac.createGain();dw.gain.value=.35;lp.connect(dw);dw.connect(mus.bus);mus.dl=d};
+  const menv=(t,a,v,dur,to,dly)=>{const g=ac.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+dur);g.connect(to||mus.bus);if(dly){const s=ac.createGain();s.gain.value=dly;g.connect(s);s.connect(mus.dl)}return g};
+  const mosc=(type,f,t,dur,to,det)=>{const o=ac.createOscillator();o.type=type;o.frequency.value=f;if(det)o.detune.value=det;o.connect(to);o.start(t);o.stop(t+dur+.05);return o};
+  const mlp=(f,q,to)=>{const b=ac.createBiquadFilter();b.type='lowpass';b.frequency.value=f;if(q)b.Q.value=q;b.connect(to);return b};
+  // drum
+  const kick=(t,v=.9)=>{const g=menv(t,.002,v,.32);const o=ac.createOscillator();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(42,t+.13);o.connect(g);o.start(t);o.stop(t+.4)};
+  const taiko=(t,v=.8)=>{const g=menv(t,.002,v,.55);const o=ac.createOscillator();o.frequency.setValueAtTime(110,t);o.frequency.exponentialRampToValueAtTime(55,t+.2);o.connect(g);o.start(t);o.stop(t+.6);noise(t,.12,filt('lowpass',900,0,menv(t,.001,v*.5,.12)))};
+  const snare=(t,v=.5)=>{noise(t,.18,filt('bandpass',1900,.8,menv(t,.001,v,.17)));mosc('triangle',190,t,.1,menv(t,.001,v*.5,.09))};
+  const hat=(t,v=.18,open)=>{noise(t,open?.2:.05,filt('highpass',8000,0,menv(t,.001,v,open?.18:.04)))};
+  const tom=(t,f,v=.5)=>{const g=menv(t,.002,v,.35);const o=ac.createOscillator();o.frequency.setValueAtTime(f*1.6,t);o.frequency.exponentialRampToValueAtTime(f,t+.08);o.connect(g);o.start(t);o.stop(t+.4)};
+  // nada
+  const bassN=(t,m,dur,v=.32)=>{const lp=mlp(700,3,menv(t,.004,v,dur));lp.frequency.setValueAtTime(1400,t);lp.frequency.exponentialRampToValueAtTime(300,t+dur);mosc('sawtooth',hz(m),t,dur,lp);mosc('square',hz(m-12),t,dur,lp)};
+  const pluck=(t,m,v=.09,dur=.18)=>{const lp=mlp(3800,2,menv(t,.002,v,dur,null,.6));lp.frequency.setValueAtTime(4500,t);lp.frequency.exponentialRampToValueAtTime(800,t+dur);mosc('square',hz(m),t,dur,lp)};
+  const spicc=(t,m,v=.08)=>{const lp=mlp(1800,1,menv(t,.004,v,.11));mosc('sawtooth',hz(m),t,.12,lp,-6);mosc('sawtooth',hz(m),t,.12,lp,6)};
+  const chordStab=(t,notes,dur,v=.05,bright=2600)=>{const lp=mlp(bright,1,menv(t,.008,v,dur));lp.frequency.setValueAtTime(bright,t);lp.frequency.exponentialRampToValueAtTime(bright/3,t+dur);notes.forEach(m=>{mosc('sawtooth',hz(m),t,dur,lp,-9);mosc('sawtooth',hz(m),t,dur,lp,9);mosc('sawtooth',hz(m),t,dur,lp,0)})};
+  const lead=(t,m,dur,v=.1)=>{const A=style()==='a',g=menv(t,.02,v,dur+.15,null,A?.25:.5),lp=mlp(A?1900:3400,A?1.5:3,g);
+    const vib=ac.createOscillator(),vg=ac.createGain();vib.frequency.value=5.5;vg.gain.value=A?9:6;vib.connect(vg);vib.start(t+.12);vib.stop(t+dur+.3);
+    [A?'sawtooth':'square','sawtooth'].forEach((ty,i)=>{const o=mosc(ty,hz(m),t,dur+.2,lp,i?8:-8);vg.connect(o.detune)})};
+  const swell=(t,notes,dur,v=.04)=>{const g=ac.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+dur*.8);g.gain.exponentialRampToValueAtTime(.0001,t+dur);g.connect(mus.bus);const lp=mlp(1600,0,g);notes.forEach(m=>{mosc('sawtooth',hz(m),t,dur,lp,-7);mosc('sawtooth',hz(m),t,dur,lp,7)})};
+  // satu langkah 1/16 untuk tahap sekarang
+  const playStep=(t,s)=>{const A=style()==='a',ph=mus.ph,i=s%16,bar=Math.floor(s/16);
+    if(ph==='intro'){const [r,ch]=MINOR[bar%4];if(i%2===0)bassN(t,r,.2,.22);if(i%2===0)pluck(t,ch[(i/2)%3]+12,.06);if(!A&&i%4===2)hat(t,.08);return}
+    if(ph==='drive'||ph==='peak'){const P=ph==='peak',k=P?1:0,[r0,c0]=MINOR[bar%4],r=r0+k,ch=c0.map(n=>n+k);
+      if(A){if([0,3,6,10,12].includes(i))taiko(t,i===0?.9:.6);if(i===4||i===12)snare(t,.32);spicc(t,[r+24,r+31,r+36,r+31][i%4],P?.09:.07);if(i%2===0)bassN(t,r,.2,.26);if(i===0)chordStab(t,ch,.45,.04,2200);if(P&&i>=12)tom(t,[196,165,147,123][i-12],.45)}
+      else{if(i%4===0)kick(t);if(i===4||i===12)snare(t,.4);if(i%4===2||(P&&i%2===1))hat(t,P?.12:.1);bassN(t,i%2?r+12:r,.11,.26);pluck(t,ch[[0,1,2,1][i%4]]+12+(P&&i>=8?12:0),.07);if(i===0)swell(t,ch,1.9,.03);if(P&&i>=12)tom(t,[220,185,165,147][i-12],.35)}
+      return}
+    if(ph==='break'){if(i===0||i===3||i===8||i===11)(A?taiko:kick)(t,i%8===0?.7:.45);if(i===0)bassN(t,33,1.8,.2);if(i%2===0)spicc(t,[57,61,64,69][(i/2)%4],.045);return}
+    if(ph==='roll'){const e=(t-mus.ph0),dens=e<.8?4:e<1.6?2:1;if(i%dens===0)snare(t,.15+Math.min(.35,e*.15));if(i===0)bassN(t,33,1.8,.22);if(i%4===0)(A?taiko:kick)(t,.4);return}
+    if(ph==='anthem'){const bb=bar,[r,ch]=MAJOR[(bb%2)*2+(i>=8?1:0)];
+      if(bb>=4){if(i===0){chordStab(t,[62,66,69,74],2.4,.06,2400);bassN(t,38,2.2,.3);(A?taiko:kick)(t,1);lead(t,86,1.6,.08)}return}
+      if(A){if(i===0||i===6||i===8||i===14)taiko(t,i===0?1:.6);if(i===4||i===12)snare(t,.4);if(i%2===0)spicc(t,[r+24,r+31,r+36,r+31][i%4],.07);if(i%2===0)bassN(t,r,.22,.3);if(i===0||i===8)chordStab(t,ch,.9,.05,2600);if(bb===3&&i>=12)tom(t,[196,165,147,123][i-12],.5)}
+      else{if(i%4===0)kick(t,1);if(i===4||i===12)snare(t,.45);if(i%4===2)hat(t,.14,true);else if(i%2)hat(t,.08);bassN(t,i%2?r+12:r,.11,.28);if([2,6,10,14].includes(i))chordStab(t,ch,.16,.045,3600);pluck(t,ch[[0,1,2,1][i%4]]+24,.05)}
+      const H=bb%2===0?HOOK1:bb===1?HOOK2:HOOK3;H.forEach(([st,m,len])=>{if(st===i)lead(t,m,len*60/124/4*.95,A?.11:.09)});return}};
+  const tick16=()=>{if(!ac||!mus.ph)return;const sp=60/124/4;while(mus.next<ac.currentTime+.2){playStep(mus.next,mus.step);mus.step++;mus.next+=sp;if(mus.ph==='anthem'&&mus.step>=16*4+1){mus.ph=null;break}}};
+  const musGo=(ph,t,reset)=>{busInit();const was=mus.ph;mus.ph=ph;mus.ph0=t;if(reset||!was){mus.step=0;mus.next=t}if(!mus.tm)mus.tm=setInterval(tick16,40);tick16()};
+  const musStop=()=>{mus.ph=null;if(mus.tm){clearInterval(mus.tm);mus.tm=null}if(mus.bus&&ac){try{mus.bus.gain.setTargetAtTime(0,ac.currentTime,.03)}catch(e){}mus.bus=null}};
   const riser=(t,dur,v=.16)=>{const g=ac.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+dur);g.gain.linearRampToValueAtTime(0,t+dur+.05);g.connect(out);
     const b=filt('bandpass',400,1.2,g);b.frequency.setValueAtTime(400,t);b.frequency.exponentialRampToValueAtTime(4200,t+dur);noise(t,dur+.1,b);osc('sawtooth',N.A2,t,t+dur,filt('lowpass',900,0,g),N.A4,dur)};
-  const reveal=(t,big=true)=>{boom(t,1);cymbal(t,2.6,.32);timp(t,N.D2,.7);brass(t,[N.D3,N.A3,N.D4,N.Fs4,N.A4],big?2.6:1.6,.11);end(pad,t,.2);pad=layer(t+.05,[N.D3,N.Fs3,N.A3,N.D4],1400,.05,1.2);bell(t+.1,N.D6,.12,2.2)};
+  const reveal=t=>{boom(t,1);cymbal(t,2.6,.32);timp(t,N.D2,.7);bell(t+.1,N.D6,.12,2.2);musGo('anthem',t,true)};
   // --- kejadian dari animasi ---
   const cues={
     tap:n=>{const t=now();crack(t,.18+n*.06);timp(t,N.D2,.18+n*.08);if(n>=3)timp(t+.2,N.D2,.15+n*.04)},
     open:()=>{const t=now();boom(t);cymbal(t,1.4,.22);[N.D5,N.F5,N.A5,N.D6].forEach((f,i)=>bell(t+.45+i*.08,f,.14));
-      end(bed,t,.1);bed=layer(t+.3,[N.D2,N.A2],220,.075,1.5);bed.sub=osc('sine',N.D1,t+.3,t+60,amp(t+.3,1.5,.18,60));bed.lp.frequency.setValueAtTime(220,t+.3);bed.lp.frequency.linearRampToValueAtTime(700,t+9)},
-    scan:()=>whoosh(now(),.45,true,.2),
+      musGo('intro',t+.55,true)},
+    scan:()=>{const t=now();whoosh(t,.45,true,.2);if(mus.ph==='intro')musGo('drive',t)},
     warn:()=>stab(now()),
     shatter:()=>{const t=now();crack(t,.32);timp(t,N.A2*(.9+Math.random()*.2),.25)},
-    hop:i=>tick(now(),i),
-    three:()=>{const t=now();boom(t,.8);timp(t,N.D2,.6);if(bed)bed.lp.frequency.linearRampToValueAtTime(1100,t+1);brass(t,[N.D3,N.F3,N.Ab3],1.6,.06)},
+    hop:i=>{const t=now();tick(t,i);if(mus.ph==='drive')musGo('peak',t)},
+    three:()=>{const t=now();boom(t,.8);timp(t,N.D2,.6);musGo('break',t,true)},
     beat:()=>{const t=now();timp(t,N.D2,.55);timp(t+.17,N.D2,.4)},
     fall:()=>{const t=now();whoosh(t,.5,false,.22);timp(t+.35,N.A2*.8,.35)},
-    two:d=>{const t=now();timp(t,N.D2,.6);riser(t+.3,d);cymbal(t+.3,d,.22,true)},
+    two:d=>{const t=now();timp(t,N.D2,.6);riser(t+.3,d);cymbal(t+.3,d,.22,true);musGo('roll',t,true)},
     flip:i=>{const t=now();timp(t,(i%2?N.A2:N.D3)*(1+i*.025),.3);tick(t,i)},
-    land:()=>{const t=now();end(bed,t,.25);if(bed&&bed.sub)try{bed.sub.stop(t+.3)}catch(e){};bed=null},
+    land:()=>musStop(),
     converge:()=>{const t=now();cymbal(t,.75,.3,true);whoosh(t,.75,true,.18)},
     reveal:()=>reveal(now()),
     letter:i=>{const t=now();boom(t,.45);timp(t,[N.D2,N.Fs3/2,N.A2,N.D3][i],.55);bell(t,[N.D5,N.Fs5,N.A5,N.D6][i],.2,1.8)},
     shine:()=>{const t=now();[N.A5,N.Cs6,N.E6,N.A6].forEach((f,i)=>bell(t+i*.07,f,.09,1.2))},
-    meta:()=>{const t=now();bell(t,N.A5,.1,2);bell(t+.12,N.D6,.1,2.4);if(pad)end(pad,t+3,3)},
-    final:()=>{const t=now();end(bed,t,.15);bed=null;reveal(t,false);if(pad)end(pad,t+2.5,2.5)}};
+    meta:()=>{const t=now();bell(t,N.A5,.1,2);bell(t+.12,N.D6,.1,2.4)},
+    final:()=>{musStop();reveal(now())}};
   return {
     get on(){return on},
     cue(k,a){if(!on&&!ac)return;if(!init()||!cues[k])return;try{cues[k](a)}catch(e){}},
     set(v){on=v;try{localStorage.setItem(SFX_KEY,v?'1':'0')}catch(e){}if(v)init();if(out&&ac)out.gain.setTargetAtTime(v?.7:0,ac.currentTime,.05)},
-    stop(){if(!ac)return;const a=ac,o=out;bed=pad=null;ac=null;try{o.gain.setTargetAtTime(0,a.currentTime,.08);setTimeout(()=>a.close().catch(()=>{}),500)}catch(e){}}};
+    stop(){if(!ac)return;musStop();const a=ac,o=out;ac=null;try{o.gain.setTargetAtTime(0,a.currentTime,.08);setTimeout(()=>a.close().catch(()=>{}),500)}catch(e){}}};
 })();
 document.addEventListener('visibilitychange',()=>{if(document.hidden)sfx.stop()});
 // ---------- Momen terungkap: ketukan ke-5 membuka peta 16 tipe, lalu penyaringan ----------
