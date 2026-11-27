@@ -863,12 +863,28 @@ const hop=el=>{const c=el&&el.querySelector('.chr');if(!c)return;c.classList.rem
 const HATCH_TAPS=5,HATCH_CAP=['Ketuk telurnya!','Retak!','Ada yang bergerak…','Hampir!','Sekali lagi!'];
 // Sama persis dengan @keyframes kJolt (easing per segmen seperti animasi CSS), untuk mengulang guncangan pada telur yang sama.
 const JOLT=[{transform:'scale(1)'},{transform:'rotate(-9deg) scale(1.06)',offset:.25},{transform:'rotate(8deg) scale(1.03)',offset:.55},{transform:'rotate(-3deg)',offset:.8},{transform:'none'}].map(k=>({...k,easing:'ease-out'}));
-const playHatch=(wrap,t,done,fits)=>{if(!wrap)return;let n=0;document.body.classList.add('ung-tap');setTimeout(()=>{if(!wrap.isConnected||wrap.querySelector('.hatch.open'))document.body.classList.remove('ung-tap')},60000);const P=TYPE_PAL[t]||['#ffe08a','#ffffff'];
+// Diagnostik ketukan telur (hanya mode developer): frame setelah tiap ketukan, waktu respons (Event Timing), dan rincian frame panjang
+// (Long Animation Frames: skrip vs gambar), termasuk peralihan ketukan ke-5 ke layar terungkap. Ditampilkan di baris diagnostik.
+const TAPD={on:false};
+const tapDiag={start(){if(!devOn())return;this.stop();Object.assign(TAPD,{on:true,fr:[],ev:[],lo:[],t:[],t0:performance.now(),sum:''});
+    let l=0;const f=x=>{if(!TAPD.on)return;if(l)TAPD.fr.push([x,x-l]);l=x;requestAnimationFrame(f)};requestAnimationFrame(f);
+    try{TAPD.p1=new PerformanceObserver(L=>L.getEntries().forEach(e=>{if(/^(pointerdown|pointerup|click)$/.test(e.name))TAPD.ev.push([e.startTime,e.duration,e.processingStart-e.startTime,e.processingEnd-e.processingStart])}));TAPD.p1.observe({type:'event',durationThreshold:16,buffered:false})}catch(e){}
+    try{TAPD.p2=new PerformanceObserver(L=>L.getEntries().forEach(e=>TAPD.lo.push([e.startTime,e.duration,e.scripts?e.scripts.reduce((a,s)=>a+s.duration,0):0,e.renderStart?e.startTime+e.duration-e.renderStart:0])));TAPD.p2.observe({type:'long-animation-frame'})}catch(e){}},
+  tap(){if(TAPD.on)TAPD.t.push(performance.now())},
+  stop(){if(!TAPD.on)return;TAPD.on=false;try{TAPD.p1&&TAPD.p1.disconnect();TAPD.p2&&TAPD.p2.disconnect()}catch(e){}
+    const T=TAPD.t;if(!T.length)return;const R=Math.round,win=(a,b)=>x=>x[0]>=a&&x[0]<b,last=T[T.length-1];
+    const idle=TAPD.fr.filter(win(TAPD.t0+300,T[0])).map(x=>x[1]).sort((a,b)=>a-b),im=idle.length?idle[idle.length>>1]:0;
+    const ft=[],lo=[];let ev=[];T.slice(0,4).forEach(t=>{ft.push(...TAPD.fr.filter(win(t,t+600)).map(x=>x[1]));lo.push(...TAPD.lo.filter(win(t-50,t+600)))});
+    // kejadian masukan tercatat sebelum handler berjalan: ketukan ke-5 = yang dimulai setelah handler ketukan ke-4
+    const prev=T.length>1?T[T.length-2]:-1;ev=TAPD.ev.filter(x=>x[0]<=prev);const e5=TAPD.ev.filter(x=>x[0]>prev).reduce((m,x)=>Math.max(m,x[1]),0),f5=TAPD.fr.filter(win(last,last+800)).reduce((m,x)=>Math.max(m,x[1]),0);
+    const lm=lo.reduce((m,x)=>x[1]>m[1]?x:m,[0,0,0,0]),em=ev.reduce((m,x)=>x[1]>m[1]?x:m,[0,0,0,0]);
+    TAPD.sum=`ketukan ${T.length}×: telur diam ${im?R(1000/im):'-'} fps · respons terlama ${ev.length?R(em[1])+' ms (tunda '+R(em[2])+', proses '+R(em[3])+')':'<16 ms'} · frame terlama ${ft.length?R(Math.max(...ft)):'-'} ms, frame >34 ms: ${ft.filter(x=>x>34).length} · frame panjang ${lo.length?lo.length+'×, terlama '+R(lm[1])+' ms (skrip '+R(lm[2])+', gambar '+R(lm[3])+')':'0'} · ketukan ke-5: respons ${e5?R(e5)+' ms':'-'}, frame terlama ${R(f5)} ms`}};
+const playHatch=(wrap,t,done,fits)=>{if(!wrap)return;let n=0;tapDiag.start();document.body.classList.add('ung-tap');setTimeout(()=>{if(!wrap.isConnected||wrap.querySelector('.hatch.open'))document.body.classList.remove('ung-tap')},60000);const P=TYPE_PAL[t]||['#ffe08a','#ffffff'];
   const lab=()=>`Ketuk telur untuk menetaskan, ${HATCH_TAPS-n} ketukan lagi`;
   wrap.innerHTML=`<div class="hatch tap" role="button" tabindex="0" aria-label="${lab()}">${KARAKTER.egg(1,4,{peek:false})}<div class="hc">${KARAKTER.svg(t)}</div></div><p class="hatch-cap" aria-live="polite">${HATCH_CAP[0]}</p>`;
   const h=wrap.querySelector('.hatch'),cap=wrap.querySelector('.hatch-cap');sfx.warm();
-  const tap=()=>{if(h.classList.contains('open'))return;n++;
-    if(n>=HATCH_TAPS){h.classList.remove('tap');h.removeAttribute('role');h.removeAttribute('tabindex');h.removeAttribute('aria-label');cap.textContent='';
+  const tap=()=>{if(h.classList.contains('open'))return;n++;tapDiag.tap();
+    if(n>=HATCH_TAPS){setTimeout(()=>tapDiag.stop(),900);h.classList.remove('tap');h.removeAttribute('role');h.removeAttribute('tabindex');h.removeAttribute('aria-label');cap.textContent='';
       const open=()=>{document.body.classList.remove('ung-tap');h.classList.add('open');sparkle(h,[P[0],P[1],'#ffe08a','#ffffff'],24);if(done)done()};
       if(fits&&fits.length>2&&fits[0].t===t)ungkap(t,fits,open);else open();return}
     sfx.cue('tap',n);
@@ -1093,7 +1109,7 @@ function ungkap(t,fits,onEnd){
   const meta=()=>{q('.u-meta').innerHTML=`<span class="u-fam">${fam} · cocok ${pct(fits[0].v)}</span><small>Hampir: ${fits[1].t} ${pct(fits[1].v)}</small>`};
   const fr=[];{let l=0,k=0;const m=t=>{if(my!==ungRun&&!st.classList.contains('run'))return;if(l)fr.push(t-l);l=t;if(++k%60===0)sfx.watch();if(st.classList.contains('run'))requestAnimationFrame(m)};requestAnimationFrame(m)}
   const diag=()=>{const dg=$('ungDiag');if(!(typeof devOn==='function'&&devOn())){dg.hidden=true;return}const d=sfx.diag(),s=fr.slice().sort((a,b)=>a-b),med=s.length?s[s.length>>1]:0,p95=s.length?s[Math.floor(s.length*.95)]:0;
-    dg.textContent=`Diagnostik: ${navigator.hardwareConcurrency||'?'} inti · RAM ${navigator.deviceMemory?navigator.deviceMemory+' GB':'tidak diketahui'} · musik ${d.mode}${d.why?' ('+d.why+')':''} · jeda putar ${d.lat==null?'-':d.lat+' ms'} · suara tersendat: ${d.glitch==null?'tidak dilaporkan browser':d.glitch+' kali'} · gambar ${med?Math.round(1000/med):'-'} fps, p95 ${Math.round(p95)} ms · efek ${lite?'ringan':'penuh'}`;dg.hidden=false};
+    dg.textContent=`Diagnostik: ${navigator.hardwareConcurrency||'?'} inti · RAM ${navigator.deviceMemory?navigator.deviceMemory+' GB':'tidak diketahui'} · musik ${d.mode}${d.why?' ('+d.why+')':''} · jeda putar ${d.lat==null?'-':d.lat+' ms'} · suara tersendat: ${d.glitch==null?'tidak dilaporkan browser':d.glitch+' kali'} · gambar ${med?Math.round(1000/med):'-'} fps, p95 ${Math.round(p95)} ms · efek ${lite?'ringan':'penuh'}${TAPD.sum?' · '+TAPD.sum:''}`;dg.hidden=false};
   const finish=()=>{st.classList.remove('run');st.onclick=null;skipB.hidden=true;ok_.hidden=false;ok_.focus({preventScroll:true});sr.textContent=`Tipemu ${t}, ${fam}, cocok ${pct(fits[0].v)}. Hampir: ${fits[1].t}.`;diag()};
   const chr=()=>{const c=q('.u-chr');if(c&&!c.firstChild)c.innerHTML=KARAKTER.svg(t)};
   const final=()=>{skipped=true;ungRun++;const m2=ungRun;sfx.cue('final');build();chr();
