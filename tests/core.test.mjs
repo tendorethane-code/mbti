@@ -138,8 +138,8 @@ test('gaya jawab ekstrem terdeteksi', () => {
 
 test('impor file: valid, rusak, dan nilai aneh', () => {
   const ans = answersFor(C, 'INFP');
-  const ok = C.sanitizeImport(JSON.parse(JSON.stringify(C.exportData('Gama <b>', C.canon(ans)))));
-  assert.equal(ok.name, 'Gama b'); assert.equal(ok.v, 3); assert.equal(ok.migrated, false);
+  const ok = C.sanitizeImport(JSON.parse(JSON.stringify(C.exportData('Contoh <b>', C.canon(ans)))));
+  assert.equal(ok.name, 'Contoh b'); assert.equal(ok.v, 3); assert.equal(ok.migrated, false);
   assert.equal(C.resultOf(ok.c).type, 'INFP');
   assert.equal(C.sanitizeImport(null), null);
   assert.equal(C.sanitizeImport({app: 'lain', c: {}}), null);
@@ -152,15 +152,15 @@ test('impor file: valid, rusak, dan nilai aneh', () => {
 });
 
 test('nama file aman', () => {
-  assert.equal(C.fileSlug('Gama Putra'), 'gama-putra');
+  assert.equal(C.fileSlug('Contoh Putra'), 'contoh-putra');
   assert.equal(C.fileSlug('../../etc/passwd'), 'etc-passwd');
   assert.equal(C.fileSlug('   '), '');
   assert.equal(C.safeName('x'.repeat(50)).length, 30);
 });
 
 test('ringkasan teks lengkap', () => {
-  const t = C.summaryText(C.compute(answersFor(C, 'INFP')), 'Gama');
-  assert.match(t, /Peta Kepribadian · Gama/);
+  const t = C.summaryText(C.compute(answersFor(C, 'INFP')), 'Contoh');
+  assert.match(t, /Peta Kepribadian · Contoh/);
   assert.match(t, /Tipe: INFP-T \(Diplomat\)/);
   assert.match(t, /Introvert 100%/);
   assert.match(t, /Fungsi: Fi > Ne/);
@@ -274,7 +274,7 @@ test('catatan khusus: dibersihkan dan dibatasi', () => {
 
 test('link hasil: bolak-balik utuh, termasuk catatan dan huruf non-ASCII', () => {
   const ans = answersFor(C, 'ENTP', 'A', 1);
-  const d = C.sanitizeImport(JSON.parse(JSON.stringify(C.exportData('Gama ✨', C.canon(ans), {summary: 'Ringkasan — é', notes: [{tag: 'T/F · −2', title: 'Judul', text: 'Isi'}]}))));
+  const d = C.sanitizeImport(JSON.parse(JSON.stringify(C.exportData('Contoh ✨', C.canon(ans), {summary: 'Ringkasan — é', notes: [{tag: 'T/F · −2', title: 'Judul', text: 'Isi'}]}))));
   const back = C.decodeShare(C.encodeShare(d));
   assert.deepEqual(JSON.parse(JSON.stringify(back.c)), JSON.parse(JSON.stringify(d.c)));
   assert.equal(back.name, d.name); assert.equal(back.summary, 'Ringkasan — é'); assert.equal(back.notes[0].tag, 'T/F · −2');
@@ -417,7 +417,7 @@ test('kenapa tipe ini: huruf dan fungsi beda tipe dijelaskan, tipe yang jelas ti
 });
 test('kenapa tipe ini: dua tipe teratas hampir seri ditandai, tidak diklaim pasti', () => {
   const R = C.resultOf(C.canon(answersFor(C, 'ENFP', 'T', 1)));
-  const fits = [{t: 'ENTP', d: 60, st: 74, v: 67.2}, {t: 'ENFP', d: 70, st: 64.2, v: 67.1}, ...R.fits.slice(2)];
+  const fits = [{t: 'ENTP', d: 62, st: 80.8, v: 71.4}, {t: 'ENFP', d: 74, st: 68.6, v: 71.3}, ...R.fits.slice(2)];
   const W = C.typeWhy({...R, type: 'ENTP', letters: 'ENFP', fits});
   assert.ok(W.tie && W.title === 'ENTP atau ENFP?', JSON.stringify(W));
   assert.match(W.lines.join(' '), /Selisihnya hanya 0,1 poin/);
