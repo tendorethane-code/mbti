@@ -466,7 +466,7 @@ body.noscroll{overflow:hidden}
 .hatch.open>.hc{opacity:1;transform:scale(1) rotate(0);transition:transform .8s cubic-bezier(.2,1.6,.4,1) .3s,opacity .2s .3s}
 .spk{position:absolute;left:50%;top:50%;width:9px;height:9px;pointer-events:none;background:var(--c,#ffe08a);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);animation:kSpk 1.2s cubic-bezier(.15,.6,.4,1) forwards}
 @keyframes kSpk{0%{transform:translate(-50%,-50%) scale(.3);opacity:1}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.3) rotate(160deg);opacity:0}}
-.qtr{display:flex;align-items:center}.qtop .qegg{width:30px;flex:none;margin-left:10px}
+.qtr{display:flex;align-items:center}.qmus{width:36px;height:36px;flex:none;margin-right:10px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--mute);display:grid;place-items:center;cursor:pointer}.qmus svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.qmus[aria-pressed=true]{color:var(--ink);border-color:var(--ind);background:var(--pan)}.qmus[aria-pressed=true] .x{display:none}.qtop .qegg{width:30px;flex:none;margin-left:10px}
 .qtop{align-items:center}
 .eggbox{display:flex;gap:14px;align-items:center;margin:14px 0 4px;padding:12px 14px;border:1px solid var(--line);border-radius:18px;background:var(--pan)}
 .eggbox .ebi{width:72px;flex:none}.eggbox p{margin:0;font-size:14px;line-height:1.45}.eggbox b{display:block;font-size:15px;margin-bottom:2px}
@@ -659,7 +659,7 @@ body.ung-open>:not(#ungkap){visibility:hidden}body.ung-open>:not(#ungkap) *{anim
 </div></main>
 
 <main id="quiz" class="band" hidden><div class="qwrap qcard">
-<div class="qtop"><b id="qMod"></b><span class="qtr"><span class="mute" id="qCount"></span><span class="qegg" id="qEgg" aria-hidden="true"></span></span></div>
+<div class="qtop"><b id="qMod"></b><span class="qtr"><button type="button" class="qmus" id="qMus" aria-pressed="false" aria-label="Musik latar mati, ketuk untuk menyalakan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/><path class="x" d="M3 3l18 18"/></svg></button><span class="mute" id="qCount"></span><span class="qegg" id="qEgg" aria-hidden="true"></span></span></div>
 <div class="prog"><i id="qProg"></i></div>
 <div class="rasi-w" id="qRasi" aria-hidden="true"></div>
 <p class="qbabak" id="qBabak"></p>
@@ -734,7 +734,7 @@ let viewKind='';
 const V=()=>view||S;
 
 $('totalQ').textContent=TOTAL;
-const show=id=>{if(id!=='res')closeSheets();document.body.classList.remove('ung-tap');['home','quiz','done','res'].forEach(x=>$(x).hidden=x!==id);$('viewBar').hidden=!(view&&id==='res');window.scrollTo(0,0)};
+const show=id=>{if(id!=='res')closeSheets();if(id!=='quiz'&&typeof bgm!=='undefined'){bgm.stop();musUi()}document.body.classList.remove('ung-tap');['home','quiz','done','res'].forEach(x=>$(x).hidden=x!==id);$('viewBar').hidden=!(view&&id==='res');window.scrollTo(0,0)};
 const cssVar=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const rgb=h=>{h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');const n=parseInt(h,16);return [n>>16&255,n>>8&255,n&255]};
 const mix=(a,p)=>{const A=rgb(cssVar(a)),B=rgb(cssVar('--bg'));return `rgb(${A.map((v,i)=>Math.round(v*p/100+B[i]*(1-p/100))).join(',')})`};
@@ -1166,6 +1166,47 @@ const sfx=(()=>{
     stop(){if(!ac)return;musStop();const a=ac,o=out;ac=null;try{o.gain.setTargetAtTime(0,a.currentTime,.08);setTimeout(()=>a.close().catch(()=>{}),500)}catch(e){}}};
 })();
 document.addEventListener('visibilitychange',()=>{if(document.hidden)sfx.stop()});
+// ---------- Musik latar saat mengisi soal ----------
+// Tenang dan netral: tidak bergantung pada jawaban (suasana hati bisa menggeser cara orang menilai diri), tanpa melodi menonjol supaya tidak mengganggu membaca.
+// Pola diacak tiap bar supaya tidak berulang persis selama tes panjang. Ringan untuk baterai: gema dari dua tunda, bukan konvolusi.
+const BGM_KEY='tesKepribadian.musikSoal';
+const bgm=(()=>{let ac=null,out=null,dl=null,tm=null,next=0,step=0,st=null,seed=1;
+  const rnd=()=>(seed=seed*16807%2147483647)/2147483647,hz=m=>440*Math.pow(2,(m-69)/12);
+  const init=()=>{if(ac){if(ac.state==='suspended')ac.resume();return true}const A=window.AudioContext||window.webkitAudioContext;if(!A)return false;try{ac=new A()}catch(e){return false}
+    const comp=ac.createDynamicsCompressor();comp.threshold.value=-20;comp.ratio.value=4;comp.connect(ac.destination);out=ac.createGain();out.gain.value=0;out.connect(comp);
+    // dua tunda bersilang dengan umpan balik tersaring = gema ringan
+    dl=ac.createGain();dl.gain.value=.5;const w=ac.createGain();w.gain.value=.45;w.connect(out);
+    [[.37,.45],[.53,.4]].forEach(([t,fb])=>{const d=ac.createDelay(1.5);d.delayTime.value=t;const f=ac.createGain();f.gain.value=fb;const l=ac.createBiquadFilter();l.type='lowpass';l.frequency.value=2200;dl.connect(d);d.connect(l);l.connect(f);f.connect(d);l.connect(w)});
+    return true};
+  const env=(t,a,v,d,send)=>{const g=ac.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+d);g.connect(out);if(send){const s=ac.createGain();s.gain.value=send;g.connect(s);s.connect(dl)}return g};
+  const osc=(type,f,t,d,to,det)=>{const o=ac.createOscillator();o.type=type;o.frequency.value=f;if(det)o.detune.value=det;o.connect(to);o.start(t);o.stop(t+d+.05)};
+  const lp=(f,to)=>{const b=ac.createBiquadFilter();b.type='lowpass';b.frequency.value=f;b.connect(to);return b};
+  const piano=(t,m,v=.07,d=2.2)=>{const g=env(t,.006,v,d,.6),l=lp(2400,g);l.frequency.setValueAtTime(3200,t);l.frequency.exponentialRampToValueAtTime(900,t+d);osc('triangle',hz(m),t,d,l);osc('sine',hz(m)*2,t,d*.5,env(t,.006,v*.18,d*.4))};
+  const pad=(t,ns,d,v=.022)=>{const g=ac.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+d*.4);g.gain.setValueAtTime(v,t+d*.7);g.gain.exponentialRampToValueAtTime(.0001,t+d+.8);g.connect(out);const s=ac.createGain();s.gain.value=.5;g.connect(s);s.connect(dl);const l=lp(900,g);ns.forEach(m=>{osc('sawtooth',hz(m),t,d+.9,l,-6);osc('sawtooth',hz(m),t,d+.9,l,6)})};
+  const harp=(t,m,v=.05)=>osc('triangle',hz(m),t,1.7,lp(3000,env(t,.003,v,1.6,.6)));
+  const mar=(t,m,v=.06)=>{osc('sine',hz(m),t,.6,env(t,.003,v,.5,.5));osc('sine',hz(m)*4,t,.1,env(t,.002,v*.2,.08))};
+  const pz=(t,m,v=.07)=>osc('triangle',hz(m),t,.4,lp(900,env(t,.004,v,.35,.3)));
+  const sub=(t,m,d,v=.06)=>osc('sine',hz(m),t,d,env(t,.2,v,d));
+  const ST={
+    tenang:{bpm:70,CH:[[50,[62,66,69,73]],[47,[62,66,69,71]],[43,[62,66,67,71]],[45,[61,64,69,71]]],
+      bar(t,b,sp){const [r,c]=this.CH[Math.floor(b/2)%4];if(b%2===0){pad(t,c.map(m=>m-12),sp*32,.018);sub(t,r-12,sp*32,.05)}
+        const pat=[[0,4,8,12],[0,6,8,14],[0,4,10,12],[2,6,8,12]][Math.floor(rnd()*4)],tn=[c[0],c[1],c[2],c[3],c[2]+12,c[1]+12];
+        pat.forEach(s=>{if(rnd()<.85)piano(t+s*sp,tn[Math.floor(rnd()*tn.length)],.055+rnd()*.02)});if(rnd()<.3)piano(t+sp*Math.floor(rnd()*14),c[3]+12,.035)}},
+    hangat:{bpm:64,CH:[[50,[62,66,69,74]],[49,[61,64,69,73]],[47,[62,66,69,71]],[43,[62,67,71,74]]],
+      bar(t,b,sp){const [r,c]=this.CH[Math.floor(b/2)%4];if(b%2===0){pad(t,c.map(m=>m-12),sp*32,.026);sub(t,r-12,sp*32,.05)}
+        for(let s=0;s<16;s+=2)if(rnd()<.7)harp(t+s*sp,c[(s/2)%4]+(s>=8?12:0),.04)}},
+    ringan:{bpm:92,vol:2.6,CH:[[48,[60,64,67,72]],[45,[60,64,69,72]],[41,[60,65,69,72]],[43,[59,62,67,71]]],
+      bar(t,b,sp){const [r,c]=this.CH[b%4];pz(t,r,.08);pz(t+sp*8,r+7,.06);if(b%2===0)pad(t,c.map(m=>m-12),sp*16,.012);
+        [0,3,6,8,11,14].forEach(s=>{if(rnd()<.7)mar(t+s*sp,c[Math.floor(rnd()*4)]+12,.045)})}}};
+  const style=()=>{let s='tenang';try{s=localStorage.getItem('tesKepribadian.musikSoalGaya')||'tenang'}catch(e){}return ST[s]?s:'tenang'};
+  const tick=()=>{if(!ac||!st)return;const sp=60/st.bpm/4;while(next<ac.currentTime+.4){st.bar(next,step,sp);step++;next+=sp*16}};
+  return {get on(){try{return localStorage.getItem(BGM_KEY)==='1'}catch(e){return false}},get playing(){return !!tm},
+    set(v){try{localStorage.setItem(BGM_KEY,v?'1':'0')}catch(e){}},
+    play(){if(tm||!init())return;st=ST[style()];seed=(Date.now()%100000)+1;step=0;const n=ac.currentTime;next=n+.15;out.gain.cancelScheduledValues(n);out.gain.setValueAtTime(0,n);out.gain.linearRampToValueAtTime(st.vol||1.5,n+2.5);tick();tm=setInterval(tick,200)},
+    stop(){if(!tm)return;clearInterval(tm);tm=null;st=null;const a=ac,o=out;ac=null;try{o.gain.setTargetAtTime(0,a.currentTime,.3);setTimeout(()=>a.close().catch(()=>{}),1500)}catch(e){}}};
+})();
+document.addEventListener('visibilitychange',()=>{if(document.hidden)bgm.stop();else if(bgm.on&&!$('quiz').hidden){bgm.play();musUi()}});
+const musUi=()=>{const b=$('qMus');if(!b)return;b.setAttribute('aria-pressed',String(bgm.on));b.setAttribute('aria-label',bgm.on?'Musik latar nyala, ketuk untuk mematikan':'Musik latar mati, ketuk untuk menyalakan');b.dataset.playing=bgm.playing?'1':''};
 // ---------- Momen terungkap: ketukan ke-5 membuka peta 16 tipe, lalu penyaringan ----------
 // Urutan padam = urutan kecocokan dari jawaban (R.fits, yang paling tidak cocok duluan), jadi dua kotak terakhir memang dua tipe teratas.
 // Sorotan yang meloncat dan duel dua kotak hanya pertunjukan; hasilnya sudah pasti. Duel lebih lama kalau selisih < TIE_GAP.
@@ -1298,8 +1339,9 @@ function ungkap(t,fits,onEnd){
   meta();sfx.cue('meta');q('.u-meta').animate([{opacity:0,transform:'translateY(10px) scale(.96)'},{opacity:1,transform:'none'}],{duration:420,fill:'both',easing:'cubic-bezier(.2,1.3,.4,1)'});
   finish()})();
 }
+$('qMus').addEventListener('click',()=>{const v=!bgm.on;bgm.set(v);if(v)bgm.play();else bgm.stop();musUi()});
 let qFresh=null,qMile=null,qMsg='',qDir='next',qBreakOff=-1,answeredCount=0;
-function start(i){qDir='next';qBreakOff=-1;qMsg='';cur=i;resetArm=-1;const its=itemsOf(i);if(!its.length){renderHome();return}qi=its.findIndex(it=>!valid(S.c[it.id]));if(qi<0)qi=0;renderQ();show('quiz')}
+function start(i){qDir='next';qBreakOff=-1;qMsg='';cur=i;resetArm=-1;const its=itemsOf(i);if(!its.length){renderHome();return}qi=its.findIndex(it=>!valid(S.c[it.id]));if(qi<0)qi=0;renderQ();show('quiz');if(bgm.on)bgm.play();musUi()}
 function renderQ(){
   const its=itemsOf(cur),it=its[qi],v=shown(it,S.c);
   $('qMod').textContent=nameOf(cur);$('qCount').textContent=`${qi+1} / ${its.length}`;
