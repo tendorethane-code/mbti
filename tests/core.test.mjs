@@ -422,3 +422,17 @@ test('kenapa tipe ini: dua tipe teratas hampir seri ditandai, tidak diklaim past
   assert.ok(W.tie && W.title === 'ENTP atau ENFP?', JSON.stringify(W));
   assert.match(W.lines.join(' '), /Selisihnya hanya 0,1 poin/);
 });
+
+test('penjelasan: semua fungsi, facet Step II, dan Big Five punya penjelasan lengkap dengan bahasa rapi', async () => {
+  const fs = await import('node:fs');
+  const vm = await import('node:vm');
+  const src = ['data.js', 'penjelasan.js'].map(f => fs.readFileSync(new URL('../' + f, import.meta.url), 'utf8')).join('\n;\n');
+  const P = vm.runInContext(src + '\n;({FN_INFO,POS_INFO,IE_INFO,FACET_INFO,B5_INFO,B5F_INFO,lvlB5,FACETS,B5})', vm.createContext({}));
+  const all = [];
+  for (const f of C.FUNCS) { const x = P.FN_INFO[f]; assert.ok(x, f); for (const k of ['nama', 'ikon', 'lengkap', 'arti', 'contoh', 'kuat', 'lemah']) { assert.ok(x[k] && x[k].length >= (k === 'ikon' ? 1 : 5), f + '.' + k); all.push(x[k]); } }
+  assert.equal(P.POS_INFO.length, 4); P.POS_INFO.forEach(p => all.push(p.arti));
+  for (const ax of ['EI', 'SN', 'TF', 'JP']) { assert.equal(P.FACET_INFO[ax].length, P.FACETS[ax].length, ax); P.FACET_INFO[ax].forEach((pr, i) => { assert.equal(pr.length, 2, ax + i); pr.forEach(t => { assert.ok(t.length > 10, ax + i); assert.ok(!/\.$/.test(t), 'tanpa titik di akhir (ditambah di tampilan): ' + t); all.push(t); }); }); }
+  for (const d of P.B5) { const I = P.B5_INFO[d[0]]; assert.ok(I && I.arti && I.tinggi && I.rendah, d[0]); assert.equal(P.B5F_INFO[d[0]].length, d[2].length, d[0]); P.B5F_INFO[d[0]].forEach(t => { assert.ok(!/\.$/.test(t), t); all.push(t); }); all.push(I.arti, I.tinggi, I.rendah); }
+  assert.deepEqual([1, 2.4, 3, 3.6, 5].map(P.lvlB5), ['rendah', 'rendah', 'sedang', 'tinggi', 'tinggi']);
+  for (const t of all) { assert.ok(!/\b(lu|gw|gue|nggak|ngga|udah|bikin|banget)\b/i.test(t), t); assert.ok(!/[<>]/.test(t), 'aman untuk HTML: ' + t); }
+});
