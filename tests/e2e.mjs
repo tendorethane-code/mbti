@@ -16,7 +16,7 @@ const results = [];
 const check = (name, ok, info = '') => { results.push({name, ok: !!ok, info}); console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${!ok && info ? ' :: ' + info : ''}`); };
 
 // --- server statis (meniru GitHub Pages) ---
-const TYPES = {'.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json'};
+const TYPES = {'.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.mp3': 'audio/mpeg'};
 const server = http.createServer((req, res) => {
   let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
   if (p.endsWith('/')) p += 'index.html';
@@ -111,6 +111,12 @@ try {
   await load();
   check('judul halaman "Peta Kepribadian"', (await ev('document.title')) === 'Peta Kepribadian');
   check('h1 beranda', (await text('#home h1')).startsWith('Kenali cara kamu'));
+  // Logo "Rasi Empat": ikon tab (SVG), ikon layar utama (PNG 180 & 192), dan tanda merek di bilah atas memakai berkas yang benar-benar ada.
+  check('logo: ikon tab, ikon layar utama, dan tanda merek terpasang', await ev(`(async()=>{const L=[...document.querySelectorAll('link[rel=icon],link[rel=apple-touch-icon]')].map(l=>l.href);if(L.length!==3)return false;
+    const ok=await Promise.all(L.map(u=>fetch(u).then(r=>r.ok&&(r.headers.get('content-type')||'').startsWith('image/')).catch(()=>false)));
+    const png=await Promise.all(L.filter(u=>/\.png/.test(u)).map(u=>new Promise(r=>{const i=new Image();i.onload=()=>r(i.naturalWidth+'x'+i.naturalHeight);i.onerror=()=>r('');i.src=u})));
+    const bg=getComputedStyle(document.getElementById('brandHome'),'::before').backgroundImage;
+    return ok.every(Boolean)&&png.sort().join()==='180x180,192x192'&&/ikon\.svg/.test(bg)})()`));
   check('beranda tanpa perkiraan waktu', await ev("!/menit/.test(document.getElementById('home').innerText)"));
   check('total soal 189', (await text('#totalQ')) === '189');
   check('tema bawaan: gelap', (await ev("document.documentElement.dataset.theme")) === 'dark' && (await ev("getComputedStyle(document.body).backgroundColor")) === 'rgb(18, 16, 25)');
