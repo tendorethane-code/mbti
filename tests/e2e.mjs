@@ -244,7 +244,9 @@ try {
   check('pilihan gaya kartu: 8 gaya tersedia, Karakter bawaan', (await ev("document.querySelectorAll('[data-card-style]').length")) === 8 && (await ev("document.querySelector('[data-card-style=\"karakter\"]').getAttribute('aria-pressed')")) === 'true');
   await ev("document.getElementById('cardPrev').src=''");
   await click('[data-card-style="takaran"]');
-  check('ganti gaya kartu: tersimpan dan kartu dibuat ulang', await waitFor("localStorage.getItem('tesKepribadian.kartu')==='takaran'&&document.getElementById('cardPrev').naturalHeight>=960", 6000));
+  // Kalau gagal, catat keadaannya supaya akar masalah di CI bisa dilacak (cek ini pernah gagal sesekali hanya di CI).
+  const styleOk = await waitFor("localStorage.getItem('tesKepribadian.kartu')==='takaran'&&document.getElementById('cardPrev').naturalHeight>=960", 6000);
+  check('ganti gaya kartu: tersimpan dan kartu dibuat ulang', styleOk, styleOk ? '' : await ev("(()=>{const i=document.getElementById('cardPrev');return JSON.stringify({kartu:localStorage.getItem('tesKepribadian.kartu'),src:(i.getAttribute('src')||'').slice(0,30),complete:i.complete,w:i.naturalWidth,h:i.naturalHeight,hidden:i.hidden,connected:i.isConnected,msg:document.getElementById('copyMsg').textContent,fonts:document.fonts&&document.fonts.status,akhirOpen:document.getElementById('akhir').classList.contains('open')})})()"));
   await click('[data-card-style="poster"]');
   check('download kartu PNG valid', pf && fs.readFileSync(pf).subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])), pf || 'tidak ada file');
   if (pf) fs.copyFileSync(pf, path.join(OUT, '04-kartu.png'));
