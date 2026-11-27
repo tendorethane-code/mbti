@@ -1,5 +1,12 @@
 # Catatan rilis
 
+## Berikutnya: mengisi soal jadi lebih seru
+- **Rasi bintang**: setiap modul punya rasi sendiri (Kompas, Mozaik, Lima Arah, Delapan Cahaya, Lentera). Setiap jawaban menyalakan satu bintang, bintang yang berurutan tersambung garis, dan bintang berikutnya berkedip. Di layar selesai, rasinya tergambar utuh dengan percikan cahaya dan jumlah rasi yang sudah terkumpul.
+- **Babak pendek**: tiap modul dibagi jadi babak berisi ~11 soal. Di awal babak baru muncul kartu jeda berisi satu fakta tentang kepribadian dan pilihan "istirahat dulu".
+- **Perayaan kecil**: pesan di 25/50/75%, "Tinggal 5 lagi", "Satu lagi"; pilihan jawaban memantul sedikit saat dipilih; soal bergeser masuk dari kanan (dari kiri saat kembali).
+- **Sapaan saat kembali**: beranda menampilkan "Selamat datang lagi" dengan sisa soal dan tombol Lanjutkan; kartu modul menampilkan rasi kecilnya.
+- Semua hiasan **netral**: posisi bintang, pesan, dan fakta tidak bergantung pada isi jawaban, supaya tidak memengaruhi jawaban berikutnya. Animasi dimatikan kalau pengguna memilih "kurangi gerakan".
+
 ## 2026-11-26 (belum dirilis)
 Perubahan sejak versi live (`main` 244590f).
 
