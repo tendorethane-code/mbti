@@ -196,7 +196,8 @@ try {
   check('hasil: nggak ada NaN/undefined/null', await ev("!/NaN|undefined|null|Infinity/.test(document.getElementById('res').innerText)"));
   check('hasil: urutan fungsi Fi duluan', (await text('#res .grid2 .frow b')) === 'Fi');
   // Penjelasan istilah
-  check('penjelasan: "Tim di kepalamu" 4 kartu, kapten = fungsi teratas dengan nama ramah', await ev("(()=>{const t=[...document.querySelectorAll('#res .team .tm')];return t.length===4&&t[0].textContent.includes('Kapten')&&t[0].textContent.includes('Fi · Kompas Nilai')&&t[3].textContent.includes('Titik Buta')})()"));
+  check('penjelasan: "Tim di kepalamu" 4 kartu dengan ikon SVG, kapten = fungsi teratas dengan nama aslinya', await ev("(()=>{const t=[...document.querySelectorAll('#res .team .tm')];return t.length===4&&t[0].textContent.includes('Kapten')&&t[0].textContent.includes('Fi · Introverted Feeling')&&t[3].textContent.includes('Titik Buta')&&t.every(k=>k.querySelector('.tm-i svg.ik'))})()"));
+  check('penjelasan: tanpa emoji di bagian angka', await ev("!/\\p{Extended_Pictographic}/u.test(document.getElementById('angka').parentElement.textContent)"));
   check('penjelasan: tiap fungsi punya nama ramah, penjelasan tertutup dulu', await ev("(()=>{const r=[...document.querySelectorAll('#res .grid2 .frow.xrow')].filter(b=>b.querySelector('.fn-n'));return r.length===8&&r.every(b=>b.nextElementSibling.hidden&&b.getAttribute('aria-expanded')==='false')})()"));
   await ev("document.querySelector('#res .grid2 .frow.xrow').click()");
   check('penjelasan: ketuk fungsi membuka arti dan contoh', await ev("(()=>{const b=document.querySelector('#res .grid2 .frow.xrow'),x=b.nextElementSibling;return b.getAttribute('aria-expanded')==='true'&&!x.hidden&&/Contoh:/.test(x.textContent)&&/andalanmu/.test(x.textContent)})()"));
@@ -241,7 +242,7 @@ try {
   await ev("window.dispatchEvent(new Event('beforeprint'))");
   check('cetak: saat akan mencetak, sampul punya motif khas tipe dan cap family', await waitFor("(()=>{const m=document.getElementById('pcMotif'),s=document.getElementById('pcStamp');return !!m&&m.tagName==='IMG'&&m.dataset.ok==='1'&&m.naturalWidth===1240&&!!s&&s.tagName==='IMG'&&s.dataset.ok==='1'&&/Diplomat/.test(s.alt)})()", 5000));
   check('cetak: tabel skor rinci ikut kebuka', await ev("[...document.querySelectorAll('#res details')].every(d=>d.open)"));
-  check('cetak: penjelasan ketuk tidak ikut, kartu tim dan baris arti facet ikut', await ev("(()=>{const x=document.querySelector('#res .facet.xrow').nextElementSibling;return !x.hidden&&getComputedStyle(x).display==='none'&&getComputedStyle(document.querySelector('#res .team')).display!=='none'&&getComputedStyle(document.querySelector('#res .ol')).display==='block'})()"));
+  check('cetak: detail ikut di PDF (kartu tim, arti 8 fungsi, arti kutub facet, arti facet Big Five), ketuk facet tidak dobel', await ev("(()=>{const x=document.querySelector('#res .facet.xrow').nextElementSibling,fx=[...document.querySelectorAll('#res .xp.fx')];return !x.hidden&&getComputedStyle(x).display==='none'&&getComputedStyle(document.querySelector('#res .team')).display!=='none'&&fx.length===8&&fx.every(e=>getComputedStyle(e).display==='block')&&getComputedStyle(document.querySelector('#res .ol')).display==='block'&&document.querySelectorAll('#res .ol-b5').length===30&&getComputedStyle(document.querySelector('#res .ol-b5')).display==='block'})()"));
   const pdf = await cmd('Page.printToPDF', {printBackground: true});
   fs.writeFileSync(path.join(OUT, '05-hasil.pdf'), Buffer.from(pdf.data, 'base64'));
   check('cetak PDF berhasil', pdf.data.length > 10000);

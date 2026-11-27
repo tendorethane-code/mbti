@@ -427,9 +427,12 @@ test('penjelasan: semua fungsi, facet Step II, dan Big Five punya penjelasan len
   const fs = await import('node:fs');
   const vm = await import('node:vm');
   const src = ['data.js', 'penjelasan.js'].map(f => fs.readFileSync(new URL('../' + f, import.meta.url), 'utf8')).join('\n;\n');
-  const P = vm.runInContext(src + '\n;({FN_INFO,POS_INFO,IE_INFO,FACET_INFO,B5_INFO,B5F_INFO,lvlB5,FACETS,B5})', vm.createContext({}));
+  const P = vm.runInContext(src + '\n;({FN_INFO,POS_INFO,IE_INFO,FACET_INFO,B5_INFO,B5F_INFO,lvlB5,FACETS,B5,IKON,ikon})', vm.createContext({}));
   const all = [];
-  for (const f of C.FUNCS) { const x = P.FN_INFO[f]; assert.ok(x, f); for (const k of ['nama', 'ikon', 'lengkap', 'arti', 'contoh', 'kuat', 'lemah']) { assert.ok(x[k] && x[k].length >= (k === 'ikon' ? 1 : 5), f + '.' + k); all.push(x[k]); } }
+  for (const f of C.FUNCS) { const x = P.FN_INFO[f]; assert.ok(x, f); for (const k of ['lengkap', 'arti', 'contoh', 'kuat', 'lemah']) { assert.ok(x[k] && x[k].length >= 5, f + '.' + k); all.push(x[k]); } }
+  // Ikon buatan sendiri (SVG), bukan emoji
+  for (const k of [...C.FUNCS, 'N', 'O', 'C', 'A', 'E']) { assert.ok(/^<svg class="ik" viewBox="0 0 24 24"[^>]*>.*<path/.test(P.ikon(k)), 'ikon ' + k); assert.ok(!/\p{Extended_Pictographic}/u.test(P.IKON[k]), 'tanpa emoji ' + k); }
+  assert.equal(P.ikon('X'), '');
   assert.equal(P.POS_INFO.length, 4); P.POS_INFO.forEach(p => all.push(p.arti));
   for (const ax of ['EI', 'SN', 'TF', 'JP']) { assert.equal(P.FACET_INFO[ax].length, P.FACETS[ax].length, ax); P.FACET_INFO[ax].forEach((pr, i) => { assert.equal(pr.length, 2, ax + i); pr.forEach(t => { assert.ok(t.length > 10, ax + i); assert.ok(!/\.$/.test(t), 'tanpa titik di akhir (ditambah di tampilan): ' + t); all.push(t); }); }); }
   for (const d of P.B5) { const I = P.B5_INFO[d[0]]; assert.ok(I && I.arti && I.tinggi && I.rendah, d[0]); assert.equal(P.B5F_INFO[d[0]].length, d[2].length, d[0]); P.B5F_INFO[d[0]].forEach(t => { assert.ok(!/\.$/.test(t), t); all.push(t); }); all.push(I.arti, I.tinggi, I.rendah); }

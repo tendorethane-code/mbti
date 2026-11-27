@@ -1,8 +1,10 @@
 # Catatan rilis
 
 ## Berikutnya: penjelasan istilah di halaman hasil
-- **Cognitive functions**: pengantar singkat (teori Jung, bukan ukuran ilmiah), kartu **"Tim di kepalamu"** (Kapten, Co-pilot, Si Bungsu, Titik Buta) dengan ikon, nama ramah (mis. Fi = Kompas Nilai, Ne = Penjelajah Kemungkinan), arti, dan contoh sehari-hari. Di HP kartunya digeser ke samping. Tiap fungsi bisa diketuk untuk penjelasan lengkap; penjelasan i/e.
-- **Facet Step II**: arti kedua kutub tiap facet dan ke mana kamu condong (ketuk baris). Di PDF, satu baris arti kutub yang menang ikut dicetak.
+- **Cognitive functions**: pengantar singkat (teori Jung, bukan ukuran ilmiah), kartu **"Tim di kepalamu"** (Kapten, Co-pilot, Si Bungsu, Titik Buta) dengan ikon, nama asli (mis. Fi · Introverted Feeling), arti, dan contoh sehari-hari. Di HP kartunya digeser ke samping. Tiap fungsi bisa diketuk untuk penjelasan lengkap; penjelasan i/e.
+- **Ikon garis buatan sendiri** untuk 8 fungsi dan 5 sifat Big Five (tanpa emoji), sebahasa dengan web (garis membulat, aksen bintang kecil).
+- **Facet Step II**: arti kedua kutub tiap facet dan ke mana kamu condong (ketuk baris).
+- **PDF ikut rinci**: kartu tim, arti dan contoh kedelapan fungsi, arti kutub facet yang menang, dan arti tiap facet Big Five ikut dicetak.
 - **Big Five**: arti tiap sifat dan arti skormu (tinggi/sedang/rendah); tiap facet bisa diketuk untuk artinya.
 - Penjelasan di `penjelasan.js`; tes unit memastikan semua istilah punya penjelasan.
 
