@@ -85,6 +85,7 @@ input[type=text]{font:inherit;font-size:16px;width:100%;max-width:340px;min-heig
 .opt.on{border-color:var(--ind);background:var(--pan);background:color-mix(in srgb,var(--ind) 10%,var(--bg))}
 .opt.on span{background:var(--ind);color:#fff}
 .qnav{display:flex;justify-content:space-between;gap:10px;margin-top:26px;flex-wrap:wrap}
+.qsave{display:flex;justify-content:center;margin-top:10px}
 .hint{font-size:13px;color:var(--mute);text-align:center;margin-top:14px}
 .fit{display:grid;grid-template-columns:4.2em minmax(0,1fr) 3.2em;gap:12px;align-items:center}
 .fit b{font-size:20px}
@@ -504,8 +505,8 @@ body.noscroll{overflow:hidden}
 <p class="cheer" id="qCheer" aria-live="polite"></p>
 <p class="qtext" id="qText"></p>
 <div id="qBody"></div>
-<div class="qnav"><button class="btn ghost" id="qBack" type="button">Sebelumnya</button><button class="btn ghost" id="qHome" type="button">Simpan, lanjut nanti</button></div>
-<p class="hint">Jawabanmu tersimpan setiap kali kamu memilih. Di laptop, bisa memakai tombol 1–5 dan panah kiri.</p>
+<div class="qnav"><button class="btn ghost" id="qBack" type="button">‹ Sebelumnya</button><button class="btn ghost" id="qNext" type="button">Berikutnya ›</button></div><div class="qsave"><button class="btn ghost" id="qHome" type="button">Simpan, lanjut nanti</button></div>
+<p class="hint">Jawabanmu tersimpan setiap kali kamu memilih. Di laptop, bisa memakai tombol 1–5 dan panah kiri/kanan.</p>
 </div></main>
 
 <main id="done" class="band" hidden><div class="qwrap qcard done">
@@ -693,6 +694,13 @@ function renderQ(){
   $('quiz').querySelector('.qcard').dataset.dir=qDir;
   ['qText','qBody'].forEach(id=>{const e=$(id);e.classList.remove('enter');void e.offsetWidth;e.classList.add('enter')});
   $('qBack').disabled=qi===0;
+  // Berikutnya: untuk meninjau jawaban tanpa memilih ulang. Soal yang belum dijawab tidak bisa dilewati.
+  $('qNext').disabled=!valid(S.c[it.id]);
+}
+function goNext(){
+  if(lock||$('quiz').hidden)return;const its=itemsOf(cur);if(!valid(S.c[its[qi].id]))return;
+  qDir='next';if(qi<its.length-1){qi++;renderQ();return}
+  const first=its.findIndex(x=>!valid(S.c[x.id]));if(first>=0){qi=first;renderQ()}else finish();
 }
 function answer(v){
   if(lock||$('quiz').hidden)return;const its0=itemsOf(cur),it=its0[qi],was=valid(S.c[it.id]),before=its0.filter(x=>valid(S.c[x.id])).length;S.c[it.id]=it.k==='fc'&&it.fl?6-v:v;save();
@@ -705,8 +713,9 @@ function answer(v){
 }
 $('qBody').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(b)answer(+b.dataset.v)});
 $('qBack').addEventListener('click',()=>{if(qi>0&&!lock){qi--;qDir='back';renderQ();toQTop()}});
+$('qNext').addEventListener('click',()=>{goNext();toQTop()});
 $('qHome').addEventListener('click',renderHome);
-document.addEventListener('keydown',e=>{if($('quiz').hidden||e.target.tagName==='INPUT'||e.metaKey||e.ctrlKey||e.altKey)return;if(/^[1-5]$/.test(e.key))answer(+e.key);else if(e.key==='ArrowLeft'&&qi>0&&!lock){qi--;qDir='back';renderQ()}});
+document.addEventListener('keydown',e=>{if($('quiz').hidden||e.target.tagName==='INPUT'||e.metaKey||e.ctrlKey||e.altKey)return;if(/^[1-5]$/.test(e.key))answer(+e.key);else if(e.key==='ArrowLeft'&&qi>0&&!lock){qi--;qDir='back';renderQ()}else if(e.key==='ArrowRight')goNext()});
 
 function finish(){
   const A=ansOf(S),left=MAIN.filter(m=>!isDone(A,m)),dp=left.length?[]:itemsOf(DEEPI),deepLeft=dp.some(it=>!valid(S.c[it.id]));
