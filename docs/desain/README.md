@@ -106,6 +106,7 @@ Semua musik disintesis di browser dengan Web Audio (tanpa file musik, tanpa lise
 
 ## Logo (`logo/`)
 Enam draf logo orisinal (SVG dibuat kode) di `logo/logo-draf.js`, pratinjau `logo/pratinjau-logo.html`, gambar `gambar/logo-draf.jpg`. Diuji di ukuran besar, 64, 32, dan 16 px (ikon tab browser), latar terang/gelap, tab browser, ikon layar HP, dan bilah atas.
+- **Dipilih pemilik: E Rasi Empat** (belum dipasang).
 - A Peta 16 (16 kotak = 16 tipe, satu jadi bintang), B Kompas (4 arah = 4 sumbu), C Telur Nebula (telur yang menetas), D Pin Peta (penanda "kamu di sini"; mirip pin peta terkenal, tidak disarankan), E Rasi Empat (4 bintang = 4 huruf), F Si Roh (karakter netral).
 
 ## Arsip (`arsip/`)

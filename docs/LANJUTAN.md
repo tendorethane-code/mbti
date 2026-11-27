@@ -19,6 +19,14 @@ Rilis **2026-11-27** sudah di-merge ke `main` (squash, urutan #1 → #3 → #5 �
 | #6 | (sudah di-merge, rilis kedua 2026-11-27) | `main` | Momen terungkap + suara/musik (Ballad D minor) + mode developer `#dev`. Draf: `docs/desain/pratinjau-terungkap.html`, `docs/desain/musik-terungkap-draf.js`, `docs/desain/musik-soal-draf.js`. |
 | #7 | `claude/hopeful-dijkstra-5g5kvh` | `main` | Suara adaptif untuk HP lemah + diagnostik di mode developer (masukan pemilik: suara putus-putus di HP-nya). |
 
+### Yang sedang ditunggu / berikutnya (per 27 Nov 2026 malam)
+1. **PR #7 (terbuka, CI hijau)**: suara adaptif. Pemilik melaporkan: iPad lancar, HP-nya agak patah dan suara putus-putus. Diukur: 454 sumber suara bersamaan (penuh) → 104 (ringan). Menunggu pemilik mencoba di HP lewat `https://raw.githack.com/tendorethane-code/mbti/<SHA terbaru>/index.html#dev` lalu mengirim **screenshot baris diagnostik** (muncul di bawah tombol "Kenalan dengan karaktermu") dan **merek/tipe HP**. Kalau mode ringan masih putus: opsi berikutnya buang reverb konvolusi di mode ringan, kurangi lapisan musik lagi. Merge hanya setelah pemilik bilang "merge".
+2. **Logo: pemilik memilih E "Rasi Empat"** (`docs/desain/logo/logo-draf.js`, kunci `rasi`): 4 bintang = 4 huruf tipe, tersambung jadi layang-layang, satu paling terang, di atas gradien indigo→koral. **Belum dipasang.** Rencana pemasangan: favicon (ganti SVG data-URI di `<link rel="icon">`), `apple-touch-icon` (PNG 180 px), tanda merek di bilah atas (`.brand:before`, sekarang kotak gradien), lalu tanyakan apakah juga di kartu PNG dan sampul PDF. Cek ulang keterbacaan di 16 px.
+3. Pemilik belum menghapus 4 branch lama di GitHub (lihat paragraf di atas).
+4. Pemilik ingin menyampaikan sesuatu setelah compact; tunggu pesannya.
+
+Keputusan pemilik yang sudah final: musik momen terungkap **Ballad D minor** (gaya `manis`, apa adanya, tanpa struktur "naik terus"); layar soal **tanpa musik**; efek suara dipertahankan; mode developer `#dev` dipakai untuk mengecek semua tipe.
+
 Cara merge yang dipakai untuk PR bertumpuk: sebelum merge, gabungkan branch dasarnya ke branch PR (`git merge`, bukan rebase/force-push); setelah induknya di-squash, ganti base ke `main` lalu gabungkan `main` ke branch PR dan selesaikan konflik ("ambil dua-duanya"). Bandingkan tree akhir dengan gabungan yang sudah dites.
 
 **Tambahan baru dari pemilik**: tanya dulu masuk ke PR mana. Aturan praktis: perbaikan untuk rilis utama ke #1; hal yang berkaitan dengan Pendalaman ke #2; layar soal ke #3; fitur baru yang besar ke branch/PR baru dari branch #1.
