@@ -224,6 +224,11 @@ try {
    await sleep(2500);
    check('ganti gaya saat kartu sedang diunduh: pratinjau tetap gaya terakhir', before && got && (await ev("document.getElementById('cardPrev').naturalWidth")) === 540, String(await ev("document.getElementById('cardPrev').naturalWidth")));
    await click('[data-card-style="takaran"]'); await waitFor("document.getElementById('cardPrev').naturalHeight>=960", 6000);}
+  // Unduh lalu pratinjau gaya yang SAMA dimuat ulang di latar (mis. popup dibuka, font selesai): hasil unduhan ukuran penuh tetap dipakai untuk pratinjau (tekan lama untuk simpan di HP).
+  {await click('#dlCard'); await click('[data-card-style="takaran"]');
+   const full = await waitFor("document.getElementById('cardPrev').naturalWidth===1080", 8000);
+   await sleep(1500);
+   check('unduh lalu pratinjau gaya yang sama dimuat ulang: pratinjau tetap ukuran penuh', full && (await ev("document.getElementById('cardPrev').naturalWidth")) === 1080, String(await ev("document.getElementById('cardPrev').naturalWidth")));}
   check('ganti gaya kartu: tersimpan dan kartu dibuat ulang', styleOk, styleOk ? '' : await ev("(()=>{const i=document.getElementById('cardPrev');return JSON.stringify({kartu:localStorage.getItem('tesKepribadian.kartu'),src:(i.getAttribute('src')||'').slice(0,30),complete:i.complete,w:i.naturalWidth,h:i.naturalHeight,hidden:i.hidden,connected:i.isConnected,msg:document.getElementById('copyMsg').textContent,fonts:document.fonts&&document.fonts.status,akhirOpen:document.getElementById('akhir').classList.contains('open')})})()"));
   await click('[data-card-style="poster"]');
   check('download kartu PNG valid', pf && fs.readFileSync(pf).subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])), pf || 'tidak ada file');
