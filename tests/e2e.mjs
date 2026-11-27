@@ -127,13 +127,6 @@ try {
   // B. Navigasi soal: keyboard, mundur, simpan & keluar
   await click('#mods button[data-m="0"]');
   check('modul 1 mulai dari soal 1', (await text('#qCount')) === '1 / 44');
-  // Musik latar soal: bawaan mati, bisa dinyalakan (disimpan), tetap jalan saat menjawab (tidak bergantung jawaban), berhenti saat keluar dari layar soal.
-  {const off0 = await ev("document.getElementById('qMus').getAttribute('aria-pressed')==='false'&&!document.getElementById('qMus').dataset.playing");
-   await ev("document.getElementById('qMus').click()");
-   const on1 = await ev("document.getElementById('qMus').getAttribute('aria-pressed')==='true'&&document.getElementById('qMus').dataset.playing==='1'&&localStorage.getItem('tesKepribadian.musikSoal')==='1'");
-   check('musik soal: bawaan mati, ketuk untuk menyalakan, pilihan disimpan', off0 && on1);
-   await ev("document.getElementById('qMus').click()");
-   check('musik soal: ketuk lagi mematikan', await ev("document.getElementById('qMus').getAttribute('aria-pressed')==='false'&&!document.getElementById('qMus').dataset.playing&&localStorage.getItem('tesKepribadian.musikSoal')==='0'"));}
   await shot('02-soal-hp');
   check('HP: nggak ada scroll ke samping (soal)', await noOverflow());
   await cmd('Input.dispatchKeyEvent', {type: 'keyDown', key: '4', text: '4', code: 'Digit4'});
@@ -161,11 +154,7 @@ try {
   check('panah kanan tidak melewati soal yang belum dijawab', (await text('#qCount')) === '2 / 44');
   await cmd('Input.dispatchKeyEvent', {type: 'keyDown', key: 'ArrowLeft', code: 'ArrowLeft'});
   await waitFor("document.getElementById('qCount').textContent==='1 / 44'");
-  await ev("document.getElementById('qMus').click()");
-  const musOnBeforeHome = await ev("document.getElementById('qMus').dataset.playing==='1'");
   await click('#qHome');
-  check('musik soal: berhenti saat keluar dari layar soal (pilihan tetap tersimpan)', musOnBeforeHome && await ev("!document.getElementById('qMus').dataset.playing&&localStorage.getItem('tesKepribadian.musikSoal')==='1'"));
-  await ev("localStorage.setItem('tesKepribadian.musikSoal','0')");
   check('progres kesimpan: 1/44 dijawab', (await text('#mods .mod small')).includes('1/44 dijawab'));
   check('tombol modul berubah jadi "Lanjutkan"', (await text('#mods button[data-m="0"]')) === 'Lanjutkan');
   check('beranda: sapaan lanjutkan dengan sisa soal dan rasi kecil di kartu modul', await ev("(()=>{const w=document.getElementById('welcome');return !w.hidden&&/Tinggal 43 soal di Inti/.test(w.textContent)&&!!w.querySelector('.rasi')&&!!document.querySelector('#mods .mod .rasi-mini .rasi')})()"), await text('#welcome'));

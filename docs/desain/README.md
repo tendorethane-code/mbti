@@ -102,7 +102,7 @@ Panggung selalu gelap (seperti layar bioskop) di tema terang maupun gelap. Semua
 Semua musik disintesis di browser dengan Web Audio (tanpa file musik, tanpa lisensi), mengikuti tiap kejadian animasi.
 - Momen terungkap, tujuh draf: Film, Ceria, Lembut, Orkestra F# (gaya dari lagu referensi pertama pemilik), Orkestra D minor (referensi kedua), **Ballad D minor (dipilih, gaya `manis`)**, Ballad D mayor "naik terus". Draf yang tidak dipakai diarsipkan utuh di `musik-terungkap-draf.js`. Lagu referensi hanya dianalisis (nada dasar, akor, tekstur, dinamika); melodinya tidak disalin dan filenya tidak disimpan di repo.
 - Efek suara (retak, pecah, dentuman, dentang huruf) disukai pemilik dan dipertahankan; dicampur di jalur sendiri.
-- Musik saat mengisi soal: tombol musik di layar soal, bawaan mati. Draf Tenang, Hangat, Ringan, Orkestra (permintaan pemilik). Harus netral (tidak bergantung jawaban, tidak terlalu sedih/riang) dan tidak mengganggu membaca.
+- Musik saat mengisi soal: sempat dibuat empat draf (Tenang, Hangat, Ringan, Orkestra), tetapi pemilik memutuskan layar soal **tanpa musik**. Kodenya diarsipkan di `musik-soal-draf.js`.
 
 ## Arsip (`arsip/`)
 | File | Isi | Asal |
