@@ -16,7 +16,8 @@ Rilis **2026-11-27** sudah di-merge ke `main` (squash, urutan #1 → #3 → #5 �
 
 | PR | Branch | Base | Isi |
 |---|---|---|---|
-| #6 | `claude/hopeful-dijkstra-5g5kvh` | `main` | Momen terungkap: ketukan ke-5 membuka peta 16 tipe, tersingkir sesuai `R.fits`, tinggal 3, tinggal 2, karakter + huruf megah, efek suara + musik (pemilik memilih Ballad D minor). Layar soal tetap tanpa musik (keputusan pemilik; draf diarsipkan). Draf: `docs/desain/pratinjau-terungkap.html`, `docs/desain/musik-terungkap-draf.js`, `docs/desain/musik-soal-draf.js`. Lagu referensi pemilik hanya dianalisis, tidak disimpan. |
+| #6 | (sudah di-merge, rilis kedua 2026-11-27) | `main` | Momen terungkap + suara/musik (Ballad D minor) + mode developer `#dev`. Draf: `docs/desain/pratinjau-terungkap.html`, `docs/desain/musik-terungkap-draf.js`, `docs/desain/musik-soal-draf.js`. |
+| #7 | `claude/hopeful-dijkstra-5g5kvh` | `main` | Suara adaptif untuk HP lemah + diagnostik di mode developer (masukan pemilik: suara putus-putus di HP-nya). |
 
 Cara merge yang dipakai untuk PR bertumpuk: sebelum merge, gabungkan branch dasarnya ke branch PR (`git merge`, bukan rebase/force-push); setelah induknya di-squash, ganti base ke `main` lalu gabungkan `main` ke branch PR dan selesaikan konflik ("ambil dua-duanya"). Bandingkan tree akhir dengan gabungan yang sudah dites.
 

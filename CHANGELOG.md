@@ -1,5 +1,11 @@
 # Catatan rilis
 
+## Berikutnya: suara adaptif untuk HP lemah
+- Masukan pemilik: di iPad lancar, di HP-nya animasi agak patah dan suara putus-putus. Diukur: musik terungkap memainkan sampai **454 sumber suara bersamaan** (rata-rata 205); HP lemah tidak sanggup menghitungnya tepat waktu, sehingga suara putus dan gambar ikut tersendat.
+- **Kualitas suara adaptif**: perangkat kuat tetap versi penuh. HP lemah (≤ 4 inti prosesor atau RAM ≤ 4 GB) otomatis memakai mode ringan: 2 lapis per nada string (bukan 4–5), tanpa vibrato terpisah, paduan suara dan horn disederhanakan, tanpa desah gesek dan posisi stereo, jeda putar lebih longgar (`latencyHint: 'playback'`), dan efek visual ringan. Puncak sumber suara 454 → 104, rata-rata 205 → 45. Musik, akor, melodi, dan semua efek tetap sama; kerasnya selisih ≤ 1,3 dB per tahap.
+- Kalau browser melaporkan suara tersendat (Chrome `playoutStats`), sisa momen otomatis turun ke mode ringan.
+- **Mode developer**: pilihan "Suara: Otomatis / Penuh / Ringan", dan setelah momen terungkap tampil **diagnostik** (jumlah inti, RAM, mode suara, jeda putar, suara tersendat, fps, efek) untuk dicek di HP asli.
+
 ## 2026-11-27 (rilis kedua): momen terungkap
 Perubahan sejak rilis 2026-11-27 pertama. `?v=2026-11-27-2` untuk semua script (core.js berubah).
 - Ketukan ke-5 pada telur membuka **momen terungkap** layar penuh: telur pecah, cahayanya menjadi peta 16 tipe, lalu tipe tersingkir **sesuai urutan kecocokan dari jawabanmu** (yang paling tidak cocok padam duluan, jadi dua terakhir memang dua tipe teratas).

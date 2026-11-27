@@ -498,6 +498,7 @@ body.ung-open>:not(#ungkap){visibility:hidden}body.ung-open>:not(#ungkap) *{anim
 .ung-snd svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.ung-snd svg path:first-child{fill:currentColor}.ung-snd .x,.ung-snd.off .w{display:none}.ung-snd.off .x{display:inline}
 .ung-ok{display:block;margin:14px auto 0;min-width:min(280px,100%)}
 .ung-ok[hidden]{display:none}
+.ung-diag{margin:10px auto 0;max-width:460px;font-size:12px;line-height:1.5;color:#bdb6d6;text-align:center}.ung-diag[hidden]{display:none}
 .ung-st .u-sky{position:absolute;inset:0;pointer-events:none;opacity:.7;background-image:radial-gradient(1.2px 1.2px at 12% 18%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 72% 12%,#fff 50%,transparent 51%),radial-gradient(1.4px 1.4px at 88% 40%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 22% 62%,#fff 50%,transparent 51%),radial-gradient(1.2px 1.2px at 52% 88%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 8% 90%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 93% 82%,#fff 50%,transparent 51%),radial-gradient(1.3px 1.3px at 40% 30%,#fff 50%,transparent 51%)}
 .ung-st .u-sh{position:absolute;inset:0}
 .ung-st .u-rays{position:absolute;left:50%;top:38%;width:180%;aspect-ratio:1;margin:-90% 0 0 -90%;opacity:0;pointer-events:none;background:repeating-conic-gradient(from 0deg,rgba(255,221,140,.28) 0deg 7deg,transparent 7deg 22deg);-webkit-mask:radial-gradient(closest-side,#000 18%,transparent 72%);mask:radial-gradient(closest-side,#000 18%,transparent 72%);animation:kSpin 22s linear infinite}
@@ -623,7 +624,7 @@ body.ung-open>:not(#ungkap){visibility:hidden}body.ung-open>:not(#ungkap) *{anim
 <header class="topbar noprint"><button type="button" class="brand" id="brandHome" aria-label="Peta Kepribadian, ke beranda"><span class="bt">Peta Kepribadian</span></button><div class="tbr"><div class="seg" role="group" aria-label="Tema"><span class="mute" style="align-self:center;font-size:13px;padding:0 6px 0 4px">Tema</span><button type="button" data-theme-set="dark" aria-pressed="true" aria-label="Tema gelap"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><span class="tl">Gelap</span></button><button type="button" data-theme-set="light" aria-pressed="false" aria-label="Tema terang"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="tl">Terang</span></button></div><button type="button" class="histbtn" id="topHist" hidden aria-label="Riwayat tes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2"/></svg><span>Riwayat</span><b id="topHistN">0</b></button></div></header>
 
 <div class="sheet-bd noprint" id="sheetBd" hidden></div>
-<div class="ungkap noprint" id="ungkap" role="dialog" aria-modal="true" aria-label="Tipemu terungkap" hidden><div class="ung-in"><div class="ung-st" id="ungSt"></div><button type="button" class="ung-snd" id="ungSnd" aria-label="Suara" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="w" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="x" d="M16 9l6 6M22 9l-6 6"/></svg></button><button type="button" class="ung-skip" id="ungSkip">Lewati</button><button type="button" class="btn ung-ok" id="ungOk" hidden>Kenalan dengan karaktermu</button><p class="sr" id="ungSr" aria-live="polite"></p></div></div>
+<div class="ungkap noprint" id="ungkap" role="dialog" aria-modal="true" aria-label="Tipemu terungkap" hidden><div class="ung-in"><div class="ung-st" id="ungSt"></div><button type="button" class="ung-snd" id="ungSnd" aria-label="Suara" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="w" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="x" d="M16 9l6 6M22 9l-6 6"/></svg></button><button type="button" class="ung-skip" id="ungSkip">Lewati</button><button type="button" class="btn ung-ok" id="ungOk" hidden>Kenalan dengan karaktermu</button><p class="ung-diag" id="ungDiag" hidden></p><p class="sr" id="ungSr" aria-live="polite"></p></div></div>
 <section class="sheet noprint" id="histSheet" role="dialog" aria-modal="true" aria-labelledby="histTitle"><div class="wrap"><div class="sheet-h"><h2 id="histTitle">Riwayat tes</h2><button type="button" class="sheet-x" data-close aria-label="Tutup">&times;</button></div><div id="hist" class="hist"></div></div></section>
 <main id="home" class="band"><div class="wrap devp" id="devp" hidden></div><div class="wrap home">
 <div class="t">
@@ -876,11 +877,18 @@ const SFX_KEY='tesKepribadian.suara';
 const sfx=(()=>{
   let ac=null,out=null,fxo=null,rev=null,nb=null,on=true;
   try{on=localStorage.getItem(SFX_KEY)!=='0'}catch(e){}
+  // Kualitas suara: penuh untuk perangkat kuat; ringan untuk HP lemah (lebih sedikit lapisan per nada, jeda putar lebih longgar) supaya suara tidak putus.
+  // Otomatis dari inti prosesor dan RAM; mode developer bisa memaksa penuh/ringan. Bisa turun ke ringan di tengah jalan kalau browser melaporkan suara tersendat.
+  let aqLite=false,aqWhy='',glitch0=0;
+  const aqDecide=()=>{let f='';try{f=sessionStorage.getItem('tesKepribadian.aq')||''}catch(e){}
+    if(f==='penuh'||f==='ringan'){aqLite=f==='ringan';aqWhy='dipilih di mode developer';return}
+    const cores=navigator.hardwareConcurrency||8,mem=navigator.deviceMemory||8;aqLite=cores<=4||mem<=4;aqWhy=aqLite?`otomatis (${cores} inti, RAM ${navigator.deviceMemory?mem+' GB':'tak diketahui'})`:'otomatis'};
+  const glitches=()=>{try{const s=ac&&ac.playoutStats;return s&&typeof s.fallbackFramesEvents==='number'?s.fallbackFramesEvents:null}catch(e){return null}};
   const N={D1:36.71,D2:73.42,A2:110,D3:146.83,Eb3:155.56,F3:174.61,Fs3:185,Ab3:207.65,A3:220,D4:293.66,Fs4:369.99,A4:440,D5:587.33,F5:698.46,Fs5:739.99,A5:880,Cs6:1108.73,D6:1174.66,E6:1318.51,A6:1760};
   const init=()=>{
     if(ac){if(ac.state==='suspended')ac.resume();return true}
     const A=window.AudioContext||window.webkitAudioContext;if(!A)return false;
-    try{ac=new A()}catch(e){return false}
+    aqDecide();try{ac=aqLite?new A({latencyHint:'playback'}):new A()}catch(e){try{ac=new A()}catch(e2){return false}}glitch0=glitches()||0;
     const comp=ac.createDynamicsCompressor();comp.threshold.value=-14;comp.knee.value=6;comp.ratio.value=6;comp.attack.value=.003;comp.release.value=.25;comp.connect(ac.destination);
     out=ac.createGain();out.gain.value=on?.7:0;out.connect(comp);fxo=ac.createGain();fxo.gain.value=.7;fxo.connect(out);
     const sr=ac.sampleRate,len=sr*1.8|0,ir=ac.createBuffer(2,len,sr);
@@ -896,9 +904,9 @@ const sfx=(()=>{
   const filt=(type,f,qv,to)=>{const b=ac.createBiquadFilter();b.type=type;b.frequency.value=f;if(qv)b.Q.value=qv;b.connect(to);return b};
   // --- suara dasar ---
   const boom=(t,v=.9)=>{osc('sine',95,t,t+.9,amp(t,.005,v,.9),32,.6);noise(t,.25,filt('lowpass',180,0,amp(t,.002,v*.6,.25)))};
-  const timp=(t,f,v=.5)=>{const g=amp(t,.004,v,1.1,.35);osc('sine',f*1.45,t,t+1.2,g,f,.09);osc('triangle',f*2,t,t+.5,amp(t,.004,v*.25,.4),f*1.9,.1)};
-  const crack=(t,v=.35)=>{noise(t,.08,filt('highpass',2600,0,amp(t,.001,v,.08,.3)));const f=1500+Math.random()*1300;osc('sine',f,t,t+.25,amp(t,.001,v*.35,.22,.5));osc('sine',f*1.51,t,t+.18,amp(t,.001,v*.2,.16,.5))};
-  const bell=(t,f,v=.18,dur=1.6)=>{osc('sine',f,t,t+dur,amp(t,.003,v,dur,.6));osc('sine',f*2.76,t,t+dur*.5,amp(t,.002,v*.3,dur*.45,.6))};
+  const timp=(t,f,v=.5)=>{const g=amp(t,.004,v,1.1,.35);osc('sine',f*1.45,t,t+1.2,g,f,.09);if(!aqLite)osc('triangle',f*2,t,t+.5,amp(t,.004,v*.25,.4),f*1.9,.1)};
+  const crack=(t,v=.35)=>{noise(t,.08,filt('highpass',2600,0,amp(t,.001,v,.08,.3)));const f=1500+Math.random()*1300;osc('sine',f,t,t+.25,amp(t,.001,v*.35,.22,.5));if(!aqLite)osc('sine',f*1.51,t,t+.18,amp(t,.001,v*.2,.16,.5))};
+  const bell=(t,f,v=.18,dur=1.6)=>{osc('sine',f,t,t+dur,amp(t,.003,v,dur,.6));if(!aqLite)osc('sine',f*2.76,t,t+dur*.5,amp(t,.002,v*.3,dur*.45,.6))};
   const whoosh=(t,dur,up=true,v=.25)=>{const b=filt('bandpass',up?300:3200,1.4,amp(t,dur*.6,v,dur*.5,.4));b.frequency.setValueAtTime(up?300:3200,t);b.frequency.exponentialRampToValueAtTime(up?3500:250,t+dur);noise(t,dur*1.2,b)};
   const tick=(t,i=0)=>{osc('square',900+i*90,t,t+.04,filt('lowpass',2200,0,amp(t,.001,.12,.035)))};
   const stab=(t,v=.22)=>{const lp=filt('lowpass',300,4,amp(t,.01,v,.55,.3));lp.frequency.setValueAtTime(300,t);lp.frequency.exponentialRampToValueAtTime(1500,t+.15);lp.frequency.exponentialRampToValueAtTime(400,t+.5);[N.D3,N.Eb3,N.D3*1.004].forEach(f=>osc('sawtooth',f,t,t+.6,lp))};
@@ -915,27 +923,27 @@ const sfx=(()=>{
   const vibr=(t,dur,rate,depth,o)=>{const v=ac.createOscillator(),g=ac.createGain();v.frequency.value=rate;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(depth,t+Math.min(.4,dur*.5));v.connect(g);g.connect(o.detune);v.start(t);v.stop(t+dur+.1)};
   const timpH=(t,f,v)=>{const g=menv(t,.003,v,.5,null,0,.4);const o=ac.createOscillator();o.frequency.setValueAtTime(f*1.3,t);o.frequency.exponentialRampToValueAtTime(f,t+.06);o.connect(g);o.start(t);o.stop(t+.6)};
   const choir=(t,notes,dur,v=.05)=>{const g=ac.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+Math.min(.9,dur*.4));g.gain.setValueAtTime(v,t+dur*.7);g.gain.exponentialRampToValueAtTime(.0001,t+dur);g.connect(mus.bus);const s=ac.createGain();s.gain.value=.7;g.connect(s);s.connect(rev);
-    const f1=mlp(720,6,g,'bandpass'),f2=mlp(1150,7,g,'bandpass');notes.forEach(m=>[-7,7].forEach(d=>{const o=mosc('sawtooth',hz(m),t,dur,f1,d);o.connect(f2);vibr(t,dur,5,12,o)}))};
+    const f1=mlp(720,6,g,'bandpass'),f2=mlp(1150,7,g,'bandpass');if(aqLite){notes.forEach(m=>{const o=mosc('sawtooth',hz(m),t,dur,f1,0);o.connect(f2)});return}notes.forEach(m=>[-7,7].forEach(d=>{const o=mosc('sawtooth',hz(m),t,dur,f1,d);o.connect(f2);vibr(t,dur,5,12,o)}))};
   const piano=(t,m,dur=1.6,v=.11)=>{const d=Math.min(3.2,Math.max(.8,dur));const lp=mlp(2800,0,menv(t,.004,v,d,null,0,.55));lp.frequency.setValueAtTime(3600,t);lp.frequency.exponentialRampToValueAtTime(1100,t+d);
-    mosc('triangle',hz(m),t,d,lp);mosc('sine',hz(m)*2,t,d*.6,menv(t,.004,v*.22,d*.5,null,0,.4));mosc('sine',hz(m)*3.01,t,d*.3,menv(t,.003,v*.08,d*.25));noise(t,.02,mlp(2000,0,menv(t,.001,v*.15,.02)))};
+    mosc('triangle',hz(m),t,d,lp);if(aqLite)return;mosc('sine',hz(m)*2,t,d*.6,menv(t,.004,v*.22,d*.5,null,0,.4));mosc('sine',hz(m)*3.01,t,d*.3,menv(t,.003,v*.08,d*.25));noise(t,.02,mlp(2000,0,menv(t,.001,v*.15,.02)))};
   const SEC={vn:{n:3,cut:2300,pk:1900,vib:13},va:{n:3,cut:1700,pk:1200,vib:11},vc:{n:3,cut:1200,pk:700,vib:10},cb:{n:2,cut:650,pk:180,vib:7}};
   const pizzS=(t,m,v=.12)=>{const lp=mlp(1200,1,menv(t,.003,v,.45,null,0,.5));lp.frequency.setValueAtTime(1800,t);lp.frequency.exponentialRampToValueAtTime(300,t+.35);mosc('triangle',hz(m),t,.5,lp);mosc('sine',hz(m),t,.5,menv(t,.003,v*.6,.4))};
   const PAN={vn:-.45,va:.12,vc:.35,cb:.5};
-  const bowR=(t,m,dur,v,sec,o={})=>{const S=SEC[sec],n=S.n+(sec==='cb'?1:2),att=o.att||.4,rel=o.rel||.8,g=ac.createGain();
+  const bowR=(t,m,dur,v,sec,o={})=>{const S=SEC[sec],nf=S.n+(sec==='cb'?1:2),n=aqLite?(sec==='cb'?1:2):nf,att=o.att||.4,rel=o.rel||.8,g=ac.createGain();
     g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v*(o.from||1),t+att);if(o.to)g.gain.linearRampToValueAtTime(v*o.to,t+dur);else g.gain.setValueAtTime(v,t+Math.max(att,dur));g.gain.exponentialRampToValueAtTime(.0001,t+dur+rel);
-    let dst=mus.bus;if(ac.createStereoPanner){const p=ac.createStereoPanner();p.pan.value=o.pan!=null?o.pan:PAN[sec];p.connect(mus.bus);dst=p}
+    let dst=mus.bus;if(!aqLite&&ac.createStereoPanner){const p=ac.createStereoPanner();p.pan.value=o.pan!=null?o.pan:PAN[sec];p.connect(mus.bus);dst=p}
     g.connect(dst);const s=ac.createGain();s.gain.value=o.wet||.75;g.connect(s);s.connect(rev);let into=g;
     if(o.trem){const tg=ac.createGain();tg.gain.value=.6;tg.connect(g);const l=ac.createOscillator(),lg=ac.createGain();l.frequency.value=o.trem;lg.gain.value=.4;l.connect(lg);lg.connect(tg.gain);l.start(t);l.stop(t+dur+rel+.1);into=tg}
     const pk=ac.createBiquadFilter();pk.type='peaking';pk.frequency.value=S.pk;pk.Q.value=1.1;pk.gain.value=4;pk.connect(into);const lp=mlp(S.cut,.6,pk);
-    const vb=ac.createOscillator(),vg=ac.createGain();vb.frequency.value=5.2+Math.random()*.5;vg.gain.setValueAtTime(0,t);vg.gain.linearRampToValueAtTime(o.novib?0:S.vib,t+Math.min(.6,dur*.5));vb.connect(vg);vb.start(t);vb.stop(t+dur+rel+.1);
-    for(let k=0;k<n;k++){const os=mosc('sawtooth',hz(m),t,dur+rel+.05,lp,(k-(n-1)/2)*7+(Math.random()-.5)*5);vg.connect(os.detune)}
+    let vg=null;if(!aqLite&&!o.novib){const vb=ac.createOscillator();vg=ac.createGain();vb.frequency.value=5.2+Math.random()*.5;vg.gain.setValueAtTime(0,t);vg.gain.linearRampToValueAtTime(S.vib,t+Math.min(.6,dur*.5));vb.connect(vg);vb.start(t);vb.stop(t+dur+rel+.1)}
+    for(let k=0;k<n;k++){const os=mosc('sawtooth',hz(m),t,dur+rel+.05,lp,(k-(n-1)/2)*7+(Math.random()-.5)*5);if(vg)vg.connect(os.detune)}
     if(sec==='cb'||sec==='vc')mosc('sine',hz(m),t,dur+rel,into,0);
-    noise(t,Math.min(.25,att),mlp(S.pk*1.5,2,menv(t,.02,v*.1,Math.min(.25,att)),'bandpass'))};
+    if(!aqLite)noise(t,Math.min(.25,att),mlp(S.pk*1.5,2,menv(t,.02,v*.1,Math.min(.25,att)),'bandpass'))};
   const harp=(t,m,v=.05)=>{let dst=mus.bus;if(ac.createStereoPanner){const p=ac.createStereoPanner();p.pan.value=-.2;p.connect(mus.bus);dst=p}
-    const g=menv(t,.002,v,2,dst,.15,.7),lp=mlp(3200,0,g);lp.frequency.setValueAtTime(4200,t);lp.frequency.exponentialRampToValueAtTime(1200,t+1.2);mosc('triangle',hz(m),t,2.1,lp);mosc('sine',hz(m)*2,t,.8,menv(t,.002,v*.3,.7,dst))};
-  const hornPad=(t,notes,dur,v=.03)=>{let dst=mus.bus;if(ac.createStereoPanner){const p=ac.createStereoPanner();p.pan.value=.2;p.connect(mus.bus);dst=p}
+    const g=menv(t,.002,v,2,dst,.15,.7),lp=mlp(3200,0,g);lp.frequency.setValueAtTime(4200,t);lp.frequency.exponentialRampToValueAtTime(1200,t+1.2);mosc('triangle',hz(m),t,2.1,lp);if(!aqLite)mosc('sine',hz(m)*2,t,.8,menv(t,.002,v*.3,.7,dst))};
+  const hornPad=(t,notes,dur,v=.03)=>{let dst=mus.bus;if(!aqLite&&ac.createStereoPanner){const p=ac.createStereoPanner();p.pan.value=.2;p.connect(mus.bus);dst=p}
     const g=ac.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.35);g.gain.setValueAtTime(v,t+dur);g.gain.exponentialRampToValueAtTime(.0001,t+dur+.9);g.connect(dst);const s=ac.createGain();s.gain.value=.7;g.connect(s);s.connect(rev);
-    const lp=mlp(850,.7,g);notes.forEach(m=>{mosc('sawtooth',hz(m),t,dur+1,lp,-4);mosc('triangle',hz(m),t,dur+1,lp,4)})};
+    const lp=mlp(850,.7,g);notes.forEach(m=>{mosc('sawtooth',hz(m),t,dur+1,lp,-4);if(!aqLite)mosc('triangle',hz(m),t,dur+1,lp,4)})};
   const MN={i9:{b:38,vc:[50,57],va:[62,64,65],v2:[69,74],mel:[76,74],th:[72,70]},VI7:{b:34,vc:[46,53],va:[62,65,69],v2:[69,74],mel:[81,79],th:[77,76]},
     III9:{b:41,vc:[53,60],va:[60,65,67],v2:[69,72],mel:[79,77],th:[76,74]},VIIs:{b:36,vc:[48,55],va:[60,65],v2:[67,72],mel:[77,76],th:[74,72]},VII:{b:36,vc:[48,55],va:[60,64],v2:[67,72]},
     iv7:{b:43,vc:[55,62],va:[62,65],v2:[70,74],mel:[77,74],th:[74,70]},VI:{b:34,vc:[46,53],va:[62,65],v2:[70,74],mel:[77,74],th:[74,70]},
@@ -1006,7 +1014,10 @@ const sfx=(()=>{
     meta:()=>{const t=now();bell(t,N.A5,.1,2);bell(t+.12,N.D6,.1,2.4)},
     final:()=>{musStop();reveal(now())}};
   return {
-    get on(){return on},
+    get on(){return on},get lite(){return aqLite},
+    // Kalau browser melaporkan suara tersendat (Chrome: playoutStats), sisa momen ini memakai mode ringan.
+    watch(){const g=glitches();if(g!=null&&!aqLite&&g-glitch0>=3){aqLite=true;aqWhy='turun otomatis: suara tersendat'}return aqLite},
+    diag(){const g=glitches();return {mode:aqLite?'ringan':'penuh',why:aqWhy,lat:ac?Math.round(((ac.baseLatency||0)+(ac.outputLatency||0))*1000):null,glitch:g==null?null:g-glitch0}},
     cue(k,a){if(!on&&!ac)return;if(!init()||!cues[k])return;try{cues[k](a)}catch(e){}},
     set(v){on=v;try{localStorage.setItem(SFX_KEY,v?'1':'0')}catch(e){}if(v)init();if(out&&ac)out.gain.setTargetAtTime(v?.7:0,ac.currentTime,.05)},
     stop(){if(!ac)return;musStop();const a=ac,o=out;ac=null;try{o.gain.setTargetAtTime(0,a.currentTime,.08);setTimeout(()=>a.close().catch(()=>{}),500)}catch(e){}}};
@@ -1020,7 +1031,7 @@ let ungRun=0;
 function ungkap(t,fits,onEnd){
   const box=$('ungkap'),st=$('ungSt'),ok_=$('ungOk'),skipB=$('ungSkip'),sr=$('ungSr'),my=++ungRun,back=document.activeElement;
   let W=0,H=0,ts=0,T=[],skipped=false,lite=false;const P=TYPE_PAL[t]||['#ffe08a','#ffffff'],rank={};fits.forEach((f,i)=>rank[f.t]=i);
-  box.hidden=false;document.body.classList.add('noscroll','ung-open');ok_.hidden=true;skipB.hidden=false;sr.textContent='';st.dataset.out='';st.classList.remove('lite');
+  box.hidden=false;document.body.classList.add('noscroll','ung-open');ok_.hidden=true;skipB.hidden=false;sr.textContent='';st.dataset.out='';st.classList.remove('lite');$('ungDiag').hidden=true;
   const snd=$('ungSnd'),sndUi=()=>{snd.setAttribute('aria-pressed',String(sfx.on));snd.setAttribute('aria-label',sfx.on?'Matikan suara':'Nyalakan suara');snd.classList.toggle('off',!sfx.on)};sndUi();snd.onclick=e=>{e.stopPropagation();sfx.set(!sfx.on);sndUi()};
   const ok=()=>my===ungRun&&!skipped&&!box.hidden,q=s=>st.querySelector(s),sleep=ms=>new Promise(r=>setTimeout(r,ms));
   const tf=p=>`translate(${p.x-ts/2}px,${p.y-ts/2}px) scale(${p.s}) rotate(${p.r||0}deg)`;
@@ -1044,7 +1055,10 @@ function ungkap(t,fits,onEnd){
   const cx=()=>W/2,cy=()=>H*.42,gridPos=i=>{const c=i%4,r=(i/4)|0,g=ts*1.17;return {x:cx()+(c-1.5)*g,y:cy()+(r-1.5)*g}};
   const pct=v=>Math.round(v)+'%',fam=FAM[famOf(t)];
   const meta=()=>{q('.u-meta').innerHTML=`<span class="u-fam">${fam} · cocok ${pct(fits[0].v)}</span><small>Hampir: ${fits[1].t} ${pct(fits[1].v)}</small>`};
-  const finish=()=>{st.classList.remove('run');st.onclick=null;skipB.hidden=true;ok_.hidden=false;ok_.focus({preventScroll:true});sr.textContent=`Tipemu ${t}, ${fam}, cocok ${pct(fits[0].v)}. Hampir: ${fits[1].t}.`};
+  const fr=[];{let l=0,k=0;const m=t=>{if(my!==ungRun&&!st.classList.contains('run'))return;if(l)fr.push(t-l);l=t;if(++k%60===0&&sfx.watch()&&!lite){lite=true;st.classList.add('lite')}if(st.classList.contains('run'))requestAnimationFrame(m)};requestAnimationFrame(m)}
+  const diag=()=>{const dg=$('ungDiag');if(!(typeof devOn==='function'&&devOn())){dg.hidden=true;return}const d=sfx.diag(),s=fr.slice().sort((a,b)=>a-b),med=s.length?s[s.length>>1]:0,p95=s.length?s[Math.floor(s.length*.95)]:0;
+    dg.textContent=`Diagnostik: ${navigator.hardwareConcurrency||'?'} inti · RAM ${navigator.deviceMemory?navigator.deviceMemory+' GB':'tidak diketahui'} · suara ${d.mode} (${d.why||'-'}) · jeda putar ${d.lat==null?'-':d.lat+' ms'} · suara tersendat: ${d.glitch==null?'tidak dilaporkan browser':d.glitch+' kali'} · gambar ${med?Math.round(1000/med):'-'} fps, p95 ${Math.round(p95)} ms · efek ${lite?'ringan':'penuh'}`;dg.hidden=false};
+  const finish=()=>{st.classList.remove('run');st.onclick=null;skipB.hidden=true;ok_.hidden=false;ok_.focus({preventScroll:true});sr.textContent=`Tipemu ${t}, ${fam}, cocok ${pct(fits[0].v)}. Hampir: ${fits[1].t}.`;diag()};
   const chr=()=>{const c=q('.u-chr');if(c&&!c.firstChild)c.innerHTML=KARAKTER.svg(t)};
   const final=()=>{skipped=true;ungRun++;const m2=ungRun;sfx.cue('final');build();chr();
     Object.assign(q('.u-egg').style,{opacity:0});q('.u-rays').style.opacity=1;q('.u-vig').style.opacity=.35;const cw=q('.u-chr');cw.style.opacity=1;cw.style.transform='translate(-50%,-50%) scale(1)';
@@ -1053,6 +1067,7 @@ function ungkap(t,fits,onEnd){
   ok_.onclick=close;skipB.onclick=e=>{e.stopPropagation();if(ok())final()};
   box.onkeydown=e=>{if(e.key==='Escape'){e.preventDefault();ok_.hidden?final():close()}else if(e.key==='Tab'){e.preventDefault();const B=[snd,ok_.hidden?skipB:ok_],i=B.indexOf(document.activeElement);B[(i+(e.shiftKey?B.length-1:1))%B.length].focus()}};
   build();
+  if(sfx.lite){lite=true;st.classList.add('lite')}
   if(calm()){final();return}
   st.classList.add('run');st.onclick=()=>{if(ok())final()};skipB.focus({preventScroll:true});
   const out=x=>{st.dataset.out+=(st.dataset.out?',':'')+x.t};
@@ -1239,9 +1254,10 @@ const devOn=()=>{try{if(location.hash==='#dev')sessionStorage.setItem(DEV_KEY,'1
 const devOpen=d=>{location.hash='h='+encodeShare(d);openShared()};
 function devPanel(){const p=$('devp');if(!devOn()){p.hidden=true;p.innerHTML='';return}
   if(!p.innerHTML){p.innerHTML=`<div class="devh"><b>Mode developer</b><span>Hasil dari jawaban contoh, dibuka dalam mode lihat. Jawaban dan riwayatmu tidak tersentuh.</span></div>
-    <div class="devo"><label>Identitas <select id="devId"><option value="T">T (Turbulent)</option><option value="A">A (Assertive)</option></select></label><label>Jawaban <select id="devStr"><option value="2">Jelas</option><option value="1">Tipis (hasil ketat)</option></select></label><button type="button" id="devRnd">Acak</button><button type="button" id="devOff">Tutup mode developer</button></div>
+    <div class="devo"><label>Identitas <select id="devId"><option value="T">T (Turbulent)</option><option value="A">A (Assertive)</option></select></label><label>Jawaban <select id="devStr"><option value="2">Jelas</option><option value="1">Tipis (hasil ketat)</option></select></label><label>Suara <select id="devAq"><option value="">Otomatis</option><option value="penuh">Penuh</option><option value="ringan">Ringan</option></select></label><button type="button" id="devRnd">Acak</button><button type="button" id="devOff">Tutup mode developer</button></div>
     <div class="devg">${DEV_MAP.map(t=>{const P=TYPE_PAL[t];return `<button type="button" data-dev-t="${t}" style="--a:${P[0]};--b:${P[1]}">${t}</button>`}).join('')}</div>`;
     p.querySelector('.devg').addEventListener('click',e=>{const b=e.target.closest('[data-dev-t]');if(!b)return;const t=b.dataset.devT,id=$('devId').value;devOpen({v:DATA_V,name:`Contoh ${t}-${id}`,c:canon(sampleAnswers(t,id,+$('devStr').value))})});
+    {const a=$('devAq');try{a.value=sessionStorage.getItem('tesKepribadian.aq')||''}catch(e){}a.addEventListener('change',()=>{try{a.value?sessionStorage.setItem('tesKepribadian.aq',a.value):sessionStorage.removeItem('tesKepribadian.aq')}catch(e){}sfx.stop()})}
     $('devRnd').addEventListener('click',()=>devOpen({v:DATA_V,name:'Contoh acak',c:canon(randomAnswers())}));
     $('devOff').addEventListener('click',()=>{try{sessionStorage.removeItem(DEV_KEY)}catch(e){}if(location.hash==='#dev')clearHash();devPanel()})}
   p.hidden=false}

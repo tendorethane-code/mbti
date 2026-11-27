@@ -231,6 +231,7 @@ try {
   await ev("document.getElementById('ungSkip').click()");
   const skipped = skipOk && await waitFor("!document.getElementById('ungOk').hidden&&document.getElementById('ungSkip').hidden&&[...document.querySelectorAll('#ungSt .u-ch')].map(e=>e.textContent).join('')==='INFP'&&!document.querySelector('#ungSt .u-tile')", 1000);
   await cmd('Input.dispatchKeyEvent', {type: 'keyDown', key: 'Escape', code: 'Escape'});
+  check('diagnostik suara tidak tampil di luar mode developer', await ev("document.getElementById('ungDiag').hidden"));
   check('hasil: putar ulang menetas (menunggu diketuk)', replayWait && await waitFor("document.getElementById('ungkap').hidden&&!!document.querySelector('#res .hchar.m .hatch.open .hc svg.chr')", 3000));
   check('momen terungkap: tombol Lewati langsung ke akhir, Esc menutup', skipped);
   // Kurangi gerakan: momen terungkap langsung tampil di keadaan akhir, tanpa animasi peta.
@@ -531,6 +532,16 @@ try {
    check('mode developer: jawaban acak tidak error', await waitFor("!document.getElementById('res').hidden&&!/NaN|undefined/.test(document.getElementById('res').textContent)", 4000));
    await ev("document.getElementById('viewMine').click()"); await waitFor("!document.getElementById('home').hidden", 3000);
    check('mode developer: jawaban dan riwayat pengguna tidak berubah', (await ev("localStorage.getItem('tesKepribadian.v1')+'|'+localStorage.getItem('tesKepribadian.riwayat')")) === before);
+   // Kualitas suara dipaksa ringan dari panel; diagnostik muncul setelah momen terungkap (hanya di mode developer)
+   await ev("(()=>{const a=document.getElementById('devAq');a.value='ringan';a.dispatchEvent(new Event('change'));document.getElementById('devStr').value='2';document.querySelector('#devp [data-dev-t=ISFJ]').click()})()");
+   await waitFor("!document.getElementById('res').hidden", 4000);
+   await ev("document.querySelector('#res .hchar-cap.m [data-hatch]').click()");
+   for (let i = 0; i < 5; i++) { await ev("document.querySelector('#res .hchar.m .hatch').click()"); await sleep(60); }
+   await waitFor("!document.getElementById('ungkap').hidden", 2000); await ev("document.getElementById('ungSkip').click()");
+   const dg = await waitFor("!document.getElementById('ungDiag').hidden&&/Diagnostik: .* suara ringan \\(dipilih di mode developer\\).* efek ringan/.test(document.getElementById('ungDiag').textContent)", 3000);
+   check('mode developer: kualitas suara bisa dipaksa ringan, diagnostik tampil setelah momen terungkap', dg, await ev("document.getElementById('ungDiag').textContent"));
+   await ev("document.getElementById('ungOk').click()"); await ev("document.getElementById('viewMine').click()"); await waitFor("!document.getElementById('home').hidden", 3000);
+   await ev("(()=>{const a=document.getElementById('devAq');a.value='';a.dispatchEvent(new Event('change'))})()");
    await ev("document.getElementById('devOff').click()");
    check('mode developer: bisa ditutup, beranda biasa tanpa panel', await ev("document.getElementById('devp').hidden&&!document.querySelector('#devp [data-dev-t]')"));
    await goto(BASE);
