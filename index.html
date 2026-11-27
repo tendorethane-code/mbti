@@ -54,6 +54,11 @@ input[type=text]{font:inherit;font-size:16px;width:100%;max-width:340px;min-heig
 .mini{height:6px;background:var(--trk);border-radius:3px;margin-top:6px;overflow:hidden}
 .mini i{display:block;height:100%;background:var(--ind)}
 .rowb{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;align-items:center}
+/* Kumpulan tombol: kisi dua kolom sama lebar di semua ukuran layar dan huruf (tidak patah sembarangan). */
+.acts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
+.acts .btn{width:100%;min-width:0;padding:10px 12px;line-height:1.25}
+.acts #goRes{order:1}.acts #goShare{order:2}.acts #openFile{order:3}.acts #askReset{order:4}
+.acts2 #doneNext{grid-column:1/-1}
 .tt{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .cell{aspect-ratio:1.25;border-radius:10px;display:flex;flex-direction:column;justify-content:center;align-items:center;font-weight:800;font-size:clamp(14px,2vw,19px);border:2px solid transparent}
 .cell small{font-weight:600;font-size:13px;opacity:.85}
@@ -197,6 +202,8 @@ footer{border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
 .hrow b{display:block}
 .hrow small{color:var(--mute);font-size:13px}
 .hrow .btn{min-height:40px;padding:6px 14px;font-size:14px}
+/* Di HP: info selebar penuh, tombol di bawahnya (dua kolom), supaya teks tidak terjepit. */
+@media(max-width:600px){.hrow{grid-template-columns:minmax(0,1fr)}.hrow .rowb{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.hrow .btn{width:100%;min-width:0;padding:6px 8px;line-height:1.25}}
 .cta{border:2px dashed var(--line);border-radius:14px;padding:16px;margin-top:14px}
 .ncard .basis{margin-top:8px}
 .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:10px max(5vw,16px);border-bottom:1px solid var(--line)}
@@ -470,7 +477,7 @@ body.noscroll{overflow:hidden}
 <label for="nama">Nama (untuk judul hasil, opsional)</label>
 <input type="text" id="nama" maxlength="30" autocomplete="off" placeholder="Namamu">
 <div class="mods" id="mods"></div>
-<div class="rowb">
+<div class="rowb acts">
 <button class="btn" id="goRes" type="button">Lihat hasil</button>
 <button class="btn ghost" id="openFile" type="button">Buka file jawaban</button>
 <button class="btn ghost" id="askReset" type="button">Mulai tes baru</button>
@@ -506,7 +513,7 @@ body.noscroll{overflow:hidden}
 <div class="doneic" aria-hidden="true"><svg viewBox="0 0 48 48" width="56" height="56"><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="3" opacity=".25"/><path d="M14 25l7 7 14-15" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
 <h1 id="doneTitle">Modul selesai</h1>
 <p class="lead" id="doneText"></p>
-<div class="rowb"><button class="btn" id="doneNext" type="button">Lanjut ke modul berikutnya</button><button class="btn ghost" id="doneRes" type="button">Lihat hasil</button><button class="btn ghost" id="doneHome" type="button">Ke beranda</button></div>
+<div class="rowb acts acts2"><button class="btn" id="doneNext" type="button">Lanjut ke modul berikutnya</button><button class="btn ghost" id="doneRes" type="button">Lihat hasil</button><button class="btn ghost" id="doneHome" type="button">Ke beranda</button></div>
 </div></main>
 
 <div id="viewBar" class="viewbar noprint" hidden><div class="wrap"><p id="viewText"></p><div class="rowb" style="margin-top:8px"><button class="btn" id="viewSave" type="button">Simpan hasil ini di browser ini</button><button class="btn ghost" id="viewMine" type="button">Kerjakan tesmu sendiri</button></div><div class="note" id="viewConfirm" hidden>Browser ini sudah berisi jawaban lain. Kalau disimpan, jawaban itu akan diganti. Lanjutkan?<div class="rowb" style="margin-top:10px"><button class="btn warn" id="viewSaveYes" type="button">Ganti dan simpan</button><button class="btn ghost" id="viewSaveNo" type="button">Batal</button></div></div></div></div>
