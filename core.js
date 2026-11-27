@@ -161,6 +161,16 @@ function decodeShare(str){
   }catch(e){return null}
 }
 
+// Jawaban contoh yang mengarah ke satu tipe (nilai mentah sesuai posisi A/B di layar). Dipakai mode developer dan tes otomatis.
+function sampleAnswers(type,ident='T',strength=2){
+  const hi=3+strength,lo=3-strength,letterOf={EI:type[0],SN:type[1],TF:type[2],JP:type[3],AT:ident};
+  const rank=f=>{const i=STACK[type].indexOf(f);return i<0?1:5-i};const ans={};
+  for(const m of MODS)ans[m.id]=m.items.map(it=>{let want;
+    if(m.id==='inti')want=it.bl===letterOf[it.ax]?hi:lo;else if(m.id==='facet')want=RIGHT[it.ax]===letterOf[it.ax]?hi:lo;
+    else if(m.id==='big5')want=it.d==='N'?((ident==='T')!==it.rev?hi:lo):3;else if(it.k==='lk')want=rank(it.fn);
+    else want=rank(it.fb)>rank(it.fa)?hi:rank(it.fb)<rank(it.fa)?lo:3;return it.fl?6-want:want});
+  return ans}
+const randomAnswers=(rnd=Math.random)=>Object.fromEntries(MODS.map(m=>[m.id,m.items.map(()=>1+Math.floor(rnd()*5))]));
 const nmf=(n,d=1)=>n.toFixed(d).replace('.',',');
 const sgn=v=>(v>0?'+':v<0?'−':'')+nmf(Math.abs(v));
 

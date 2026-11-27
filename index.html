@@ -40,6 +40,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 .btn.warn{background:var(--acc)}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 .btn:focus-visible,.opt:focus-visible,.dotb:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.devp{margin-bottom:18px;padding:14px 16px;border-radius:18px;border:1px dashed var(--ind);background:var(--pan)}.devp[hidden]{display:none}
+.devh b{display:block;font-size:16px}.devh span{display:block;margin-top:2px;font-size:13px;color:var(--mute)}
+.devo{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}.devo label{display:flex;gap:6px;align-items:center;font-size:13px;font-weight:700}
+.devo select,.devo button{font:inherit;font-size:13px;font-weight:700;min-height:36px;padding:4px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.devg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.devg button{min-height:44px;border:0;border-radius:12px;font:inherit;font-weight:800;font-size:14px;color:#14101f;cursor:pointer;background:linear-gradient(135deg,var(--a),var(--b))}
 .home{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);grid-template-areas:"t p" "f p";gap:0 clamp(24px,4vw,56px);align-items:start}
 .home .t{grid-area:t}.home .p{grid-area:p}.home .f{grid-area:f}
 .eyebrow{font-weight:700;color:var(--ind);margin:0 0 6px}
@@ -619,7 +625,7 @@ body.ung-open>:not(#ungkap){visibility:hidden}body.ung-open>:not(#ungkap) *{anim
 <div class="sheet-bd noprint" id="sheetBd" hidden></div>
 <div class="ungkap noprint" id="ungkap" role="dialog" aria-modal="true" aria-label="Tipemu terungkap" hidden><div class="ung-in"><div class="ung-st" id="ungSt"></div><button type="button" class="ung-snd" id="ungSnd" aria-label="Suara" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="w" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="x" d="M16 9l6 6M22 9l-6 6"/></svg></button><button type="button" class="ung-skip" id="ungSkip">Lewati</button><button type="button" class="btn ung-ok" id="ungOk" hidden>Kenalan dengan karaktermu</button><p class="sr" id="ungSr" aria-live="polite"></p></div></div>
 <section class="sheet noprint" id="histSheet" role="dialog" aria-modal="true" aria-labelledby="histTitle"><div class="wrap"><div class="sheet-h"><h2 id="histTitle">Riwayat tes</h2><button type="button" class="sheet-x" data-close aria-label="Tutup">&times;</button></div><div id="hist" class="hist"></div></div></section>
-<main id="home" class="band"><div class="wrap home">
+<main id="home" class="band"><div class="wrap devp" id="devp" hidden></div><div class="wrap home">
 <div class="t">
 <p class="eyebrow"><span class="pill">Tes kepribadian · gratis · tanpa daftar</span></p>
 <h1>Kenali cara kamu <span class="grad">berpikir, merasa, dan memilih.</span></h1>
@@ -791,7 +797,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('.xrow');if(!b)re
 window.addEventListener('beforeprint',()=>{document.querySelectorAll('#res details').forEach(d=>d.open=true);if(paintCover)paintCover(true)});
 
 function renderHome(){
-  view=null;histArm=-1;renderHist();
+  view=null;histArm=-1;renderHist();devPanel();
   $('nama').value=S.name||'';
   const A=ansOf(S),md=mainDoneOf(S),dp=md?itemsOf(DEEPI):[],dc=dp.filter(it=>valid(S.c[it.id])).length,dok=md&&dc===dp.length;
   $('mods').innerHTML=MODS.map((m,i)=>{const c=answered(A,m),n=m.items.length,ok=c===n;return `<div class="mod ${ok?'ok':''}"><span class="no">${ok?'✓':i+1}</span><div><b>${m.name}</b><small>${m.sub} · ${ok?'selesai':c?`${c}/${n} dijawab`:'belum dimulai'}</small><div class="mini"><i style="width:${c/n*100}%"></i></div>${c?`<div class="rasi-mini" aria-hidden="true">${rasiSVG(i)}</div>`:''}</div><button class="btn ${ok?'ghost':''}" type="button" data-m="${i}">${ok?'Ulangi':c?'Lanjutkan':'Mulai'}</button></div>`}).join('');
@@ -1226,6 +1232,19 @@ $('fileIn').addEventListener('change',e=>{const f=e.target.files&&e.target.files
   r.onerror=()=>{$('fileMsg').textContent='File tidak bisa dibaca.'};r.readAsText(f);e.target.value=''});
 
 // Link hasil (#h=...): ditampilkan tanpa mengubah jawaban yang tersimpan di browser ini.
+// ---------- Mode developer (#dev): lihat hasil tiap tipe dari jawaban contoh, tanpa menyentuh jawaban atau riwayat ----------
+// Tidak ada server atau akun, jadi ini bukan hak akses: siapa pun yang membuka #dev bisa memakainya, dan semuanya hanya mode lihat.
+const DEV_KEY='tesKepribadian.dev',DEV_MAP=['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP','ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'];
+const devOn=()=>{try{if(location.hash==='#dev')sessionStorage.setItem(DEV_KEY,'1');return sessionStorage.getItem(DEV_KEY)==='1'}catch(e){return location.hash==='#dev'}};
+const devOpen=d=>{location.hash='h='+encodeShare(d);openShared()};
+function devPanel(){const p=$('devp');if(!devOn()){p.hidden=true;p.innerHTML='';return}
+  if(!p.innerHTML){p.innerHTML=`<div class="devh"><b>Mode developer</b><span>Hasil dari jawaban contoh, dibuka dalam mode lihat. Jawaban dan riwayatmu tidak tersentuh.</span></div>
+    <div class="devo"><label>Identitas <select id="devId"><option value="T">T (Turbulent)</option><option value="A">A (Assertive)</option></select></label><label>Jawaban <select id="devStr"><option value="2">Jelas</option><option value="1">Tipis (hasil ketat)</option></select></label><button type="button" id="devRnd">Acak</button><button type="button" id="devOff">Tutup mode developer</button></div>
+    <div class="devg">${DEV_MAP.map(t=>{const P=TYPE_PAL[t];return `<button type="button" data-dev-t="${t}" style="--a:${P[0]};--b:${P[1]}">${t}</button>`}).join('')}</div>`;
+    p.querySelector('.devg').addEventListener('click',e=>{const b=e.target.closest('[data-dev-t]');if(!b)return;const t=b.dataset.devT,id=$('devId').value;devOpen({v:DATA_V,name:`Contoh ${t}-${id}`,c:canon(sampleAnswers(t,id,+$('devStr').value))})});
+    $('devRnd').addEventListener('click',()=>devOpen({v:DATA_V,name:'Contoh acak',c:canon(randomAnswers())}));
+    $('devOff').addEventListener('click',()=>{try{sessionStorage.removeItem(DEV_KEY)}catch(e){}if(location.hash==='#dev')clearHash();devPanel()})}
+  p.hidden=false}
 function openShared(){
   const m=location.hash.match(/^#h=([A-Za-z0-9_-]+)$/);if(!m)return false;
   const d=decodeShare(m[1]);

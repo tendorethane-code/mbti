@@ -9,6 +9,8 @@
 - **Musik latar** bertempo yang berubah per tahap, dipilih pemilik dari tujuh draf: **ballad orkestra D minor yang manis** (68 bpm): seluruh orkestra langsung masuk begitu telur pecah, akor berwarna (add9, maj7) dengan melodi biola dalam terts, piano, harpa, horn lembut, paduan suara samar, lalu mekar ke D mayor saat karakter keluar. Enam draf lain (Film, Ceria, Lembut, Orkestra F#, Orkestra D minor, Ballad D mayor "naik terus") diarsipkan utuh di `docs/desain/musik-terungkap-draf.js`.
 - **Lebih lancar tanpa mengurangi efek**: selama layar ini tampil, halaman di belakangnya tidak digambar dan animasinya berhenti, pekerjaan latar (motif sampul PDF, gambar kecil kartu) ditunda sampai selesai, dan karakter baru digambar menjelang keluar. Jumlah partikel dan cahayanya sama dengan draf yang disetujui. Hanya kalau HP sangat lambat (median frame > 24 ms saat peta muncul; di uji CPU 10x lebih lambat pun tidak terpicu) efek dikurangi: partikel setengah, tanpa getar layar, sinar diam.
 
+- **Mode developer** (`…/mbti/#dev`): panel 16 tipe di beranda, pilihan A/T dan jawaban jelas/tipis, tombol acak. Hasil dibuka dalam mode lihat (seperti link bagikan), jadi jawaban dan riwayat pengguna tidak tersentuh. Bukan hak akses (tidak ada server/akun): siapa pun yang tahu #dev bisa membukanya. Jawaban contoh memakai satu sumber dengan tes otomatis (`sampleAnswers` di `core.js`).
+
 ### Perbaikan
 - Kartu: kalau kartu diunduh sebelum pratinjau di latar selesai dimuat, pratinjau ukuran penuh (1080 px, untuk tekan lama di HP) bisa tertimpa versi 540 px. Sekarang pratinjau hasil unduhan dipertahankan selama gaya, tema, dan data sama. Ditemukan lewat CI yang gagal sekali; ada tes E2E baru yang memunculkannya dengan pasti.
 

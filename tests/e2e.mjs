@@ -510,6 +510,32 @@ try {
   check('font menggantung: pratinjau dan contoh kartu tetap muncul', await waitFor("document.fonts.status==='loading'&&document.getElementById('cardPrev').naturalHeight>=960&&[...document.querySelectorAll('#akhir canvas[data-thumb]')].every(c=>c.getContext('2d').getImageData(45,80,1,1).data[3]>0)", 8000));
   listeners.splice(listeners.indexOf(hang), 1); await cmd('Fetch.disable'); await cmd('Network.setCacheDisabled', {cacheDisabled: false});
 
+  // L. Mode developer (#dev): 16 tipe dari jawaban contoh, mode lihat, jawaban dan riwayat tidak tersentuh
+  {const before = await ev("localStorage.getItem('tesKepribadian.v1')+'|'+localStorage.getItem('tesKepribadian.riwayat')");
+   await goto(BASE + '#dev');
+   const panel = await waitFor("!document.getElementById('devp').hidden&&document.querySelectorAll('#devp [data-dev-t]').length===16", 4000);
+   check('mode developer: #dev menampilkan panel 16 tipe', panel);
+   const bad = [];
+   for (const t of C.TABLE) for (const id of ['A', 'T']) {
+     await ev(`document.getElementById('devId').value='${id}';document.querySelector('#devp [data-dev-t="${t}"]').click()`);
+     const ok = await waitFor(`!document.getElementById('res').hidden&&!document.getElementById('viewBar').hidden&&document.querySelector('#res h1').textContent.includes('${t}-${id}')&&!/NaN|undefined/.test(document.getElementById('res').textContent)&&!!document.querySelector('#res .hchar.m[data-hchar="${t}"] svg.chr')`, 4000);
+     if (!ok) bad.push(t + '-' + id);
+     await ev("document.getElementById('viewMine').click()");
+     await waitFor("!document.getElementById('home').hidden&&!document.getElementById('devp').hidden", 3000);
+   }
+   check('mode developer: 32 hasil (16 tipe x A/T) tampil benar, tanpa NaN, dengan karakter tipenya', bad.length === 0, bad.join(','));
+   await ev("document.getElementById('devStr').value='1';document.querySelector('#devp [data-dev-t=\"ENFP\"]').click()");
+   check('mode developer: jawaban tipis tetap menghasilkan halaman hasil', await waitFor("!document.getElementById('res').hidden&&!/NaN|undefined/.test(document.getElementById('res').textContent)", 4000));
+   await ev("document.getElementById('viewMine').click()"); await waitFor("!document.getElementById('home').hidden", 3000);
+   await ev("document.getElementById('devRnd').click()");
+   check('mode developer: jawaban acak tidak error', await waitFor("!document.getElementById('res').hidden&&!/NaN|undefined/.test(document.getElementById('res').textContent)", 4000));
+   await ev("document.getElementById('viewMine').click()"); await waitFor("!document.getElementById('home').hidden", 3000);
+   check('mode developer: jawaban dan riwayat pengguna tidak berubah', (await ev("localStorage.getItem('tesKepribadian.v1')+'|'+localStorage.getItem('tesKepribadian.riwayat')")) === before);
+   await ev("document.getElementById('devOff').click()");
+   check('mode developer: bisa ditutup, beranda biasa tanpa panel', await ev("document.getElementById('devp').hidden&&!document.querySelector('#devp [data-dev-t]')"));
+   await goto(BASE);
+   check('mode developer: tanpa #dev panel tidak muncul', await ev("document.getElementById('devp').hidden"));}
+
   check('nggak ada error JavaScript sama sekali', errors.length === 0, errors.join(' | '));
 } catch (e) {
   check('tes jalan sampai selesai', false, e.stack);
