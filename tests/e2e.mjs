@@ -222,6 +222,12 @@ try {
   const replayWait = await ev("!!document.querySelector('#res .hchar.m .hatch.tap')&&!document.querySelector('#res .hchar.m .hatch.open')");
   for (let i = 0; i < 5; i++) { await ev("document.querySelector('#res .hchar.m .hatch').click()"); await sleep(80); }
   const skipOk = await waitFor("!document.getElementById('ungkap').hidden&&!document.getElementById('ungSkip').hidden", 2000);
+  // Tombol suara: bisa dimatikan dan dinyalakan, pilihan disimpan.
+  const sndOn = await ev("document.getElementById('ungSnd').getAttribute('aria-pressed')==='true'");
+  await ev("document.getElementById('ungSnd').click()");
+  const sndOff = await ev("document.getElementById('ungSnd').getAttribute('aria-pressed')==='false'&&document.getElementById('ungSnd').classList.contains('off')&&localStorage.getItem('tesKepribadian.suara')==='0'&&!document.getElementById('ungkap').hidden&&!document.getElementById('ungSkip').hidden");
+  await ev("document.getElementById('ungSnd').click()");
+  check('momen terungkap: suara menyala bawaan, bisa dimatikan/dinyalakan, pilihan disimpan, tidak melewati animasi', sndOn && sndOff && await ev("document.getElementById('ungSnd').getAttribute('aria-pressed')==='true'&&localStorage.getItem('tesKepribadian.suara')==='1'"));
   await ev("document.getElementById('ungSkip').click()");
   const skipped = skipOk && await waitFor("!document.getElementById('ungOk').hidden&&document.getElementById('ungSkip').hidden&&[...document.querySelectorAll('#ungSt .u-ch')].map(e=>e.textContent).join('')==='INFP'&&!document.querySelector('#ungSt .u-tile')", 1000);
   await cmd('Input.dispatchKeyEvent', {type: 'keyDown', key: 'Escape', code: 'Escape'});

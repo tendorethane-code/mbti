@@ -5,6 +5,8 @@
 - Penyaringan makin pelan dan tegang: sorotan memindai peta, yang tersingkir menyala merah, bergetar, lalu pecah (16 → 11 → 7 → 5), lalu "Siapa yang keluar?" dan "Satu lagi…" dengan sorotan yang meloncat-loncat, tinggal 3 berdetak, tinggal 2 berduel. Kalau selisih kecocokan di bawah 2 poin, duelnya lebih lama dan tertulis "Ketat sekali!".
 - Akhirnya: kilatan, karakter melompat keluar dengan konfeti, empat huruf tipe jatuh satu per satu dengan nama sumbunya, kilau emas, lalu family, kecocokan, dan "Hampir: <tipe kedua>". Tombol "Kenalan dengan karaktermu" menutupnya, lalu telur di layar menetas.
 - Bisa dilewati (tombol Lewati, ketuk panggung, atau Esc). Kalau "kurangi gerakan" aktif, langsung tampil keadaan akhir. Juga dipakai oleh "Putar ulang menetas" di hasil.
+- **Suara** yang disintesis langsung di browser (Web Audio), tanpa file musik dan tanpa lisensi, mengikuti tiap kejadian: retakan tiap ketukan telur, dentuman dan denting saat telur pecah, drone yang makin tegang, pecahan kaca tiap tipe tersingkir, detak jantung "Tinggal 3", drum dan suara naik saat duel, hening sesaat, lalu akor brass + simbal saat karakter keluar dan dentang tiap huruf. Tombol suara di pojok kiri atas; pilihan disimpan. Berhenti saat ditutup atau tab disembunyikan.
+- **Lancar di HP lemah**: selama layar ini tampil, halaman di belakangnya tidak digambar dan animasinya berhenti, pekerjaan latar (motif sampul PDF, gambar kecil kartu) ditunda sampai selesai, dan karakter baru digambar menjelang keluar. Kalau HP terlalu lambat (diukur saat peta muncul), efek otomatis dikurangi: partikel setengah, tanpa getar layar, sinar diam.
 
 ## 2026-11-27
 Perubahan sejak versi live (`main` 244590f).
