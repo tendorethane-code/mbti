@@ -423,6 +423,68 @@ test('kenapa tipe ini: dua tipe teratas hampir seri ditandai, tidak diklaim past
   assert.match(W.lines.join(' '), /Selisihnya hanya 0,1 poin/);
 });
 
+test('karakter: 16 tipe (biasa dan melambai) dan telur menghasilkan SVG yang valid', async () => {
+  const fs = await import('node:fs');
+  const vm = await import('node:vm');
+  const src = ['data.js', 'legacy.js', 'core.js', 'karakter.js'].map(f => fs.readFileSync(new URL('../' + f, import.meta.url), 'utf8')).join('\n;\n');
+  const ctx = vm.createContext({});
+  const K = vm.runInContext(src + '\n;KARAKTER', ctx);
+  const types = Object.keys(vm.runInContext('TYPE_PAL', ctx));
+  assert.equal(types.length, 16);
+  const famOf = t => t[1] === 'N' ? (t[2] === 'T' ? 'NT' : 'NF') : (t[3] === 'J' ? 'SJ' : 'SP');
+  for (const t of types) for (const o of [{}, {wave: true}]) {
+    const s = K.svg(t, o);
+    assert.ok(s.startsWith('<svg class="chr f-' + famOf(t)) && s.endsWith('</svg>'), t);
+    assert.ok(!/NaN|undefined|\[object/.test(s), t + JSON.stringify(o));
+    const ids = [...s.matchAll(/ id="([^"]+)"/g)].map(m => m[1]);
+    assert.equal(new Set(ids).size, ids.length, 'id unik dalam satu SVG: ' + t);
+    for (const m of s.matchAll(/url\(#([^)]+)\)/g)) assert.ok(ids.includes(m[1]), 'rujukan ' + m[1] + ' ada di ' + t);
+    assert.equal((s.match(/<svg/g) || []).length, (s.match(/<\/svg>/g) || []).length);
+  }
+  // Telur: aman di luar batas, retakan sesuai modul, mata mengintip hanya di 75–99%.
+  for (const [p, k] of [[-1, -2], [0, 0], [.3, 1], [.8, 3], [1, 4], [2, 9], [NaN, 2]]) { const e = K.egg(p, k); assert.ok(e.startsWith('<svg class="egg"') && !/NaN|undefined/.test(e), p + ',' + k); }
+  const cracks = e => (e.match(/stroke="#fff6d6" stroke-width="2"/g) || []).length;
+  assert.deepEqual([0, 1, 2, 3, 4].map(k => cracks(K.egg(.5, k))), [0, 1, 2, 3, 4]);
+  assert.ok(K.egg(.8, 3).includes('eg-peek') && !K.egg(.5, 2).includes('eg-peek') && !K.egg(1, 4).includes('eg-peek'));
+  // Netral: telur hanya bergantung pada progres, bukan tipe (fungsi tidak menerima tipe sama sekali).
+  assert.ok(/^function eggSVG\(p, k, o\)/.test(K.egg.toString()), 'telur hanya menerima progres, modul, dan pilihan ketukan (tanpa tipe)');
+  // Ketukan menetas: retakan bertambah sampai 5, mata mengintip bisa dipaksa.
+  assert.deepEqual([0, 1, 3, 5, 9].map(n => cracks(K.egg(1, 4, {extra: n}))), [4, 5, 7, 9, 9]);
+  assert.ok(K.egg(1, 4, {peek: true}).includes('eg-peek') && !K.egg(.8, 3, {peek: false}).includes('eg-peek'));
+  assert.equal(K.egg(.42, 2).replace(/eg\d+/g, ''), K.egg(.42, 2).replace(/eg\d+/g, ''));
+});
+
+test('Pendalaman per fungsi: tiap fungsi punya soal, INFJ dan ISFJ tidak lagi dapat soal yang sama', () => {
+  const plan = (t, i = 'A') => { const c = C.canon(answersFor(C, t, i, 2)); return C.deepPlan(C.resultOf(c), c).map(q => q.id); };
+  assert.ok(plan('INFJ').includes('d-ni-firasat') && !plan('INFJ').includes('d-si-pengalaman'));
+  assert.ok(plan('ISFJ').includes('d-si-pengalaman') && !plan('ISFJ').includes('d-ni-firasat'));
+  assert.notDeepEqual(plan('INFJ'), plan('ISFJ'));
+  for (const [t, id] of [['ENFJ', 'd-fe-suasana'], ['INTP', 'd-ti-paham'], ['ENTJ', 'd-te-atur'], ['ENTP', 'd-ne-ide'], ['ESTP', 'd-se-detail']]) assert.ok(plan(t).includes(id), `${t} harus dapat ${id}: ${plan(t)}`);
+});
+test('Pendalaman per fungsi: setiap jawaban (1, 3, 5) menghasilkan temuan bertanda fungsi', () => {
+  const base = C.canon(answersFor(C, 'ENFJ', 'A', 2)), R = C.resultOf(base);
+  const ids = C.DEEP.map(d => d[0]).filter(id => /^d-(fe|ti|te|ni|ne|si|se)-/.test(id));
+  assert.equal(ids.length, 12);
+  for (const id of ids) for (const v of [1, 3, 5]) {
+    if (id === 'd-se-detail' && v === 3) continue;
+    const before = C.deepFindings(R, base).length, F = C.deepFindings(R, {...base, [id]: v});
+    assert.ok(F.length > before, `${id}=${v} tanpa temuan`);
+    assert.match(F.find(f => !C.deepFindings(R, base).some(g => g.key === f.key && g.title === f.title)).b, /Fungsi (Fi|Fe|Ti|Te|Ni|Ne|Si|Se) \d,\d/);
+  }
+});
+test('Pendalaman: maksimal 16 soal, soal yang sudah dijawab tidak hilang', () => {
+  let seed = 7; const rnd = () => (seed = seed * 16807 % 2147483647) / 2147483647;
+  for (let k = 0; k < 300; k++) {
+    const lean = answersFor(C, C.TABLE[k % 16], k % 2 ? 'A' : 'T', 1), a = {};
+    for (const m of C.MODS) a[m.id] = lean[m.id].map(v => rnd() < .45 ? 1 + Math.floor(rnd() * 5) : v);
+    const c = C.canon(a), R = C.resultOf(c), p = C.deepPlan(R, c);
+    assert.ok(p.length >= 5 && p.length <= 18, `rencana ${p.length} soal`);
+    const answered = {...c}; p.forEach(q => answered[q.id] = 3);
+    const p2 = C.deepPlan(R, answered).map(q => q.id);
+    assert.ok(p.every(q => p2.includes(q.id) || !['d-dekat', 'd-kenal'].includes(q.id)), 'soal yang dijawab hilang dari rencana');
+  }
+});
+
 test('penjelasan: semua fungsi, facet Step II, dan Big Five punya penjelasan lengkap dengan bahasa rapi', async () => {
   const fs = await import('node:fs');
   const vm = await import('node:vm');

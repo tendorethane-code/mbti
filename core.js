@@ -310,7 +310,10 @@ function probeCtx(R,c){
   const ax=k=>R.hasType&&R.ax[k]!=null?R.ax[k]:NaN,dist=k=>Math.abs(ax(k)-50);
   const gap=k=>{const s=R.src&&R.src[k];return s&&s.inti!=null&&s.facet!=null?Math.abs(s.inti-s.facet):0};
   const has=k=>valid(c[k]),hi=k=>has(k)&&c[k]>=4,lo=k=>has(k)&&c[k]<=2;
-  return {b5f,fac,fnRank,ax,dist,gap,has,hi,lo};
+  // Skor fungsi (1-5) dan "dua fungsi bersaing ketat": salah satu masuk 3 besar dan selisih skornya kecil.
+  const fnG=f=>{const x=R.fn&&R.fn.find(y=>y.f===f);return x?x.g:NaN},top=(f,n)=>{const r=fnRank(f);return r>=0&&r<n};
+  const rival=(a,b,th)=>(top(a,3)||top(b,3))&&Math.abs(fnG(a)-fnG(b))<(th||.5);
+  return {b5f,fac,fnRank,fnG,top,rival,ax,dist,gap,has,hi,lo};
 }
 const PROBE_RULES={
   'd-energi':X=>X.ax('EI')>=55&&(X.b5f('N','Canggung')>=3.5||X.fac('EI',0)>=1||X.fac('EI',4)>=1),
@@ -334,8 +337,21 @@ const PROBE_RULES={
   'd-ingin-tuntas':X=>X.b5f('C','Disiplin diri')<=2.5,
   'd-marah':X=>X.b5f('N','Mudah marah')>=3.5,
   'd-cemas':X=>X.b5f('N','Cemas')>=4,
-  'd-tekanan':X=>R_N(X)>=3.5};
+  'd-tekanan':X=>R_N(X)>=3.5,
+  'd-fe-suasana':X=>X.top('Fe',2)||X.rival('Fe','Fi'),
+  'd-fe-nilai':X=>(X.top('Fe',2)&&(X.top('Fi',4)||X.rival('Fe','Fi',.8)))||(X.top('Fi',2)&&(X.top('Fe',4)||X.rival('Fe','Fi',.8))),
+  'd-fe-jujur':X=>X.top('Fe',2),
+  'd-ti-paham':X=>X.top('Ti',2)||X.rival('Ti','Te'),
+  'd-ti-benar':X=>X.top('Ti',2)||X.top('Te',2),
+  'd-te-ukur':X=>X.top('Te',2)||X.rival('Ti','Te'),
+  'd-te-atur':X=>X.top('Te',2),
+  'd-ni-firasat':X=>X.top('Ni',2),
+  'd-ne-ide':X=>X.top('Ne',2)||X.rival('Ni','Ne'),
+  'd-si-pengalaman':X=>X.top('Si',2)||X.top('Se',2)||X.rival('Si','Se'),
+  'd-se-tempat':X=>X.top('Se',2)||X.rival('Si','Se'),
+  'd-se-detail':X=>X.top('Se',2)};
 const R_N=X=>X._N;
+const DEEP_MAX=16,DEEP_DROP=['d-se-detail','d-te-atur','d-fe-jujur','d-se-tempat','d-ti-paham','d-te-ukur','d-ni-firasat','d-ingin-rapi','d-ingin-tuntas'];
 const PROBE_FALLBACK=['d-tekanan','d-berarti','d-yakin','d-kebiasaan','d-pikiran','d-batal'];
 const deepFlip=id=>[...id].reduce((s,ch)=>s+ch.charCodeAt(0),0)%2===1;
 // Soal Pendalaman yang berlaku sekarang. Kosong sampai semua modul utama selesai.
@@ -344,6 +360,9 @@ function deepPlan(R,cIn){
   const X=probeCtx(R,c);X._N=R.b5.N.dom;
   const ids=DEEP.map(d=>d[0]).filter(id=>{try{return !!PROBE_RULES[id](X,c)}catch(e){return false}});
   for(const id of PROBE_FALLBACK){if(ids.length>=5)break;if(!ids.includes(id))ids.push(id)}
+  // Maksimal DEEP_MAX soal supaya tidak melelahkan. Yang dibuang lebih dulu: soal yang hanya menguatkan fungsi yang sudah jelas.
+  // Soal lanjutan dan soal pemisah fungsi kembar (Fi/Fe, Ti/Te, Ni/Ne, Si/Se) tidak pernah dibuang. Soal yang sudah dijawab tetap dipertahankan.
+  for(const id of DEEP_DROP){if(ids.length<=DEEP_MAX)break;const i=ids.indexOf(id);if(i>=0&&!valid(c[id]))ids.splice(i,1)}
   const order=DEEP.map(d=>d[0]);ids.sort((a,b)=>order.indexOf(a)-order.indexOf(b));
   return ids.map(id=>{const d=DEEP.find(x=>x[0]===id),fl=d[1]==='fc'&&deepFlip(id);return d[1]==='fc'?{k:'fc',id,q:d[2],a:fl?d[4]:d[3],b:fl?d[3]:d[4],fl}:{k:'lk',id,q:d[2],fl:false}});
 }
@@ -403,14 +422,63 @@ function deepFindings(R,cIn){
   if(lo('d-tekanan'))add('tekanan','Saat tertekan','Menarik diri saat tertekan','Saat tertekan, kamu cenderung menarik diri dan diam. Orang di sekitarmu mungkin tidak sadar kamu sedang kesulitan.',`Pendalaman${R.b5?` · Neuroticism ${nmf(R.b5.N.dom)}`:''}`);
   if(hi('d-tekanan'))add('tekanan','Saat tertekan','Butuh tempat meluapkan','Saat tertekan, kamu butuh meluapkannya atau bercerita ke orang terdekat supaya lega.',`Pendalaman${R.b5?` · Neuroticism ${nmf(R.b5.N.dom)}`:''}`);
   if(R.b5&&(b5f('O','Ide')>=4||b5f('O','Nilai')>=4)&&b5f('O','Pengalaman baru')<=2.5)add('ide','Openness','Terbuka pada ide, hati-hati pada pengalaman','Kamu senang mengulik ide dan mempertanyakan nilai, tapi jarang mencoba makanan atau tempat baru. Keterbukaanmu ada di pikiran, bukan di kebiasaan.',`Big Five Ide ${nmf(b5f('O','Ide'))} · Nilai ${nmf(b5f('O','Nilai'))} · Pengalaman baru ${nmf(b5f('O','Pengalaman baru'))}`);
+  // Fungsi: memisahkan fungsi yang sering tertukar. Setiap jawaban (termasuk tengah) menghasilkan temuan.
+  const fg=f=>{const x=R.fn&&R.fn.find(y=>y.f===f);return x?nmf(x.g):'-'},FB=(...fs)=>'Pendalaman · '+fs.map(f=>`Fungsi ${f} ${fg(f)}`).join(' · ');
+  const tri=(id,key,tag,b,L,M,Hh)=>{if(lo(id))add(key,tag,L[0],L[1],b);else if(mid(id))add(key,tag,M[0],M[1],b);else if(hi(id))add(key,tag,Hh[0],Hh[1],b)};
+  tri('d-fe-suasana','fe','Fe · suasana',FB('Fe','Fi'),
+    ['Memberi ruang saat suasana tegang','Saat suasana kelompok menegang, kamu memilih memberi ruang daripada ikut menengahi. Kamu tidak merasa harus menjaga kenyamanan semua orang setiap saat.'],
+    ['Membaca dulu sebelum menengahi','Saat suasana menegang, kamu menimbang dulu: kadang memberi ruang, kadang ikut mencairkan suasana, tergantung siapa dan seberapa serius.'],
+    ['Penjaga suasana','Kamu peka saat suasana kelompok menegang dan refleks berusaha mencairkannya. Kenyamanan bersama terasa seperti tanggung jawabmu, ciri khas Fe. Peran ini bisa melelahkan kalau selalu kamu ambil sendiri.']);
+  tri('d-fe-nilai','fenilai','Fi atau Fe',FB('Fi','Fe'),
+    ['Kompas dari dalam','Nilai-nilaimu terutama lahir dari apa yang kamu rasakan benar, bukan dari apa yang diterima kelompok. Ini lebih dekat ke Fi.'],
+    ['Dua kompas','Nilaimu berasal dari dua arah sekaligus: rasa benar di dalam diri dan kebaikan orang-orang di sekitarmu. Ini menjelaskan kenapa skor Fi dan Fe-mu berdekatan.'],
+    ['Kompas yang melihat sekitar','Nilai-nilaimu banyak dibentuk oleh apa yang membuat orang-orang di sekitarmu baik-baik saja. Ini lebih dekat ke Fe.']);
+  tri('d-fe-jujur','fejujur','Fe · berterus terang',FB('Fe'),
+    ['Jujur apa adanya','Kamu memilih mengatakan pendapatmu apa adanya, walaupun mungkin tidak enak didengar. Bagimu, berterus terang adalah bentuk peduli yang paling tulus.'],
+    ['Jujur, dengan takaran','Kamu menimbang: kadang langsung berterus terang, kadang menunggu waktu yang pas, tergantung seberapa siap orangnya.'],
+    ['Jujur yang bisa diterima','Kamu tetap jujur, tapi memilih cara dan waktu supaya pesannya bisa diterima. Kamu memikirkan dampak kata-kata pada orangnya, ciri khas Fe.']);
+  tri('d-ti-paham','ti','Ti · memahami',FB('Ti','Te'),
+    ['Paham dulu, baru pakai','Kamu baru nyaman memakai sesuatu setelah paham cara kerjanya. Ini ciri Ti: memahami sampai ke logika dasarnya.'],
+    ['Gambaran dulu, lalu jalan','Kamu butuh gambaran dasar cara kerjanya, lalu sisanya kamu pelajari sambil memakai.'],
+    ['Belajar sambil jalan','Kamu lebih suka langsung mencoba dan memahami sambil jalan. Pemahaman bagimu datang dari memakai, bukan dari membedah lebih dulu.']);
+  tri('d-ti-benar','tite','Ti atau Te',FB('Ti','Te'),
+    ['Logikanya harus beres','Cara yang kurang tepat tetap mengganggumu walaupun targetnya bisa tercapai. Bagimu, cara berpikir yang benar sama pentingnya dengan hasil. Ini lebih dekat ke Ti.'],
+    ['Tergantung taruhannya','Kamu ikut jalan dulu, tapi akan mempersoalkan caranya kalau bisa merugikan hasil akhir.'],
+    ['Yang penting target tercapai','Kalau targetnya tercapai, kamu bisa menerima cara yang menurutmu kurang tepat. Kamu mengutamakan hasil dan efisiensi, lebih dekat ke Te.']);
+  tri('d-te-ukur','teukur','Te · menilai hasil',FB('Te','Ti'),
+    ['Percaya pada hasil yang terukur','Kamu menilai sebuah rencana dari hasil dan angka yang terlihat. Ini ciri Te: efektivitas dibuktikan oleh kenyataan.'],
+    ['Alasan dan hasil','Kamu butuh keduanya untuk yakin: alasan yang masuk akal dan hasil yang terlihat.'],
+    ['Percaya pada alasan yang konsisten','Bagimu, rencana yang baik adalah yang alasannya konsisten, bahkan sebelum hasilnya terlihat. Ini lebih dekat ke Ti.']);
+  tri('d-te-atur','teatur','Te · saat kacau',FB('Te'),
+    ['Mengambil kendali saat kacau','Saat kerja kelompok berantakan, kamu turun tangan membagi tugas dan menetapkan target. Ciri khas Te: mengubah kekacauan jadi rencana kerja.'],
+    ['Turun tangan kalau perlu','Kamu baru mengambil alih kalau situasinya benar-benar membutuhkan. Selebihnya, kamu fokus pada bagianmu.'],
+    ['Fokus pada bagianmu','Saat kerja kelompok berantakan, kamu memilih memastikan bagianmu sendiri beres. Kamu tidak merasa harus mengatur orang lain.']);
+  tri('d-ni-firasat','ni','Ni · firasat',FB('Ni'),
+    ['Firasat yang kamu percaya','Kamu cenderung memegang firasatmu tentang arah sebuah situasi, bahkan sebelum ada bukti. Ini ciri Ni. Firasat seperti ini sering tepat, tapi tetap ada baiknya diuji.'],
+    ['Firasat sebagai petunjuk','Firasat kamu jadikan petunjuk arah, tapi kamu tetap mencari tanda yang menguatkannya.'],
+    ['Menunggu bukti','Walaupun punya firasat kuat, kamu menunggu bukti sebelum mempercayainya. Intuisimu kamu perlakukan sebagai dugaan, bukan kesimpulan.']);
+  tri('d-ne-ide','ne','Ni atau Ne',FB('Ne','Ni'),
+    ['Satu ide sampai matang','Ide baru biasanya kamu dalami sampai matang daripada melompat ke ide lain. Ini lebih dekat ke Ni.'],
+    ['Menjelajah, lalu memilih','Kamu menjelajahi beberapa kemungkinan dulu, lalu memilih satu untuk didalami.'],
+    ['Ide yang beranak-pinak','Satu ide memancing banyak ide lain, dan kamu ingin menjelajahi semuanya. Ini ciri Ne. Tantangannya ada di memilih mana yang dituntaskan.']);
+  tri('d-si-pengalaman','si','Si atau Se',FB('Si','Se'),
+    ['Belajar dari yang pernah terjadi','Di situasi baru, kamu bersandar pada pengalaman serupa yang pernah kamu alami. Ini ciri Si.'],
+    ['Pengalaman dan pengamatan','Kamu memakai pengalaman lama sebagai pegangan, sambil membaca keadaan saat itu.'],
+    ['Membaca keadaan saat ini','Di situasi baru, kamu mengamati keadaan saat itu dan langsung bertindak. Ini ciri Se: hadir penuh di saat ini.']);
+  tri('d-se-tempat','se','Se · pengalaman baru',FB('Se','Si'),
+    ['Nyaman di tempat yang dikenal','Kamu paling menikmati tempat yang sudah kamu kenal. Kenyamanan dan kenangan baik lebih menarik daripada hal baru, lebih dekat ke Si.'],
+    ['Sesekali berpetualang','Kamu suka tempat yang dikenal, tapi sesekali tetap ingin mencoba yang baru.'],
+    ['Haus pengalaman baru','Tempat baru dengan banyak hal untuk langsung dicoba membuatmu bersemangat. Ini ciri Se: menikmati pengalaman secara langsung.']);
+  if(hi('d-se-detail'))add('sedetail','Se · peka sekitar','Peka terhadap sekitar','Kamu cepat menangkap perubahan kecil di sekitarmu: suasana, suara, atau gerak-gerik orang. Ini ciri Se.',FB('Se'));
+  if(lo('d-se-detail'))add('sedetail','Se · peka sekitar','Perhatian ke dalam','Perhatianmu lebih banyak tertuju ke dalam pikiran daripada ke detail di sekitarmu.',FB('Se'));
   return out;
 }
 
 // ---------- Riwayat: satu entri = jawaban per id + nama + catatan ----------
 // Alur cerita hasil (web dan PDF): tiga temuan paling khas tampil besar, sisanya ringkas.
 // "Khas" = paling banyak memisahkan hal yang di tes utama tercampur. Ketiganya diambil dari wilayah yang berbeda.
-const FIND_AREA={introcanggung:'EI',sendiri:'EI',diam:'EI',gugup:'emosi',bocor:'emosi',marah:'emosi',cemas:'emosi',tekanan:'emosi',sn:'SN',ide:'SN',tfctx:'TF',debat:'TF',yakin:'TF',peduli:'TF',telat:'JP',rutin:'JP',batal:'JP',berarti:'motiv',jarak:'motiv'};
-const FIND_RANK=['tfctx','sn','introcanggung','bocor','jarak','rutin','telat','debat','gugup','peduli','yakin','berarti','sendiri','batal','marah','cemas','tekanan','ide','diam'];
+const FIND_AREA={fe:'TF',fenilai:'TF',fejujur:'TF',ti:'TF',tite:'TF',teukur:'TF',teatur:'JP',ni:'SN',ne:'SN',si:'SN',se:'SN',sedetail:'SN',introcanggung:'EI',sendiri:'EI',diam:'EI',gugup:'emosi',bocor:'emosi',marah:'emosi',cemas:'emosi',tekanan:'emosi',sn:'SN',ide:'SN',tfctx:'TF',debat:'TF',yakin:'TF',peduli:'TF',telat:'JP',rutin:'JP',batal:'JP',berarti:'motiv',jarak:'motiv'};
+const FIND_RANK=['tfctx','sn','fenilai','tite','ne','introcanggung','bocor','jarak','rutin','telat','debat','gugup','peduli','yakin','berarti','sendiri','batal','marah','cemas','tekanan','ide','diam','fe','ni','si','teukur','ti','teatur','fejujur','se','sedetail'];
 function storyFindings(F,notes){
   const rk=k=>{const i=FIND_RANK.indexOf(k);return i<0?FIND_RANK.length:i},sorted=(F||[]).slice().sort((a,b)=>rk(a.key)-rk(b.key));
   const big=[],used=new Set();
