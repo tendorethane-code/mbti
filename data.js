@@ -180,4 +180,17 @@ const DEEP=[
 ['d-ingin-tuntas','lk',"Saya ingin lebih banyak hal penting yang benar-benar selesai (bukan berarti jadwal yang lebih padat)."],
 ['d-marah','fc',"Setelah bertengkar hebat dengan seseorang:","Emosimu cepat reda dan kamu kembali biasa","Emosimu bertahan lama dan kamu menjauh"],
 ['d-cemas','fc',"Yang paling sering kamu khawatirkan:","Penilaian orang lain tentang dirimu","Hal yang akan terjadi ke depan, seperti masa depan atau rencana"],
-['d-tekanan','fc',"Saat sedang sangat tertekan, kamu biasanya:","Menarik diri dan diam","Meluapkannya atau bercerita ke orang terdekat"]];
+['d-tekanan','fc',"Saat sedang sangat tertekan, kamu biasanya:","Menarik diri dan diam","Meluapkannya atau bercerita ke orang terdekat"],
+// Pendalaman per fungsi: memisahkan fungsi yang sering tertukar (Fi/Fe, Ti/Te, Ni/Ne, Si/Se). Dipilih kalau fungsi itu dominan/auxiliary atau bersaing ketat.
+['d-fe-suasana','fc',"Di sebuah kumpulan, dua orang mulai bersitegang dan suasana jadi canggung. Biasanya kamu:","Memberi ruang, biar mereka menyelesaikannya sendiri","Berusaha mencairkan suasana supaya semua kembali nyaman"],
+['d-fe-nilai','fc',"Nilai-nilai yang kamu pegang lebih banyak terbentuk dari:","Apa yang kamu rasakan benar di dalam dirimu","Apa yang membuat orang-orang di sekitarmu baik-baik saja"],
+['d-fe-jujur','fc',"Teman meminta pendapatmu tentang keputusan yang menurutmu keliru, padahal dia sudah yakin. Kamu:","Mengatakan apa adanya, walaupun mungkin tidak enak didengar","Memilih cara dan waktu yang tepat supaya dia bisa menerimanya"],
+['d-ti-paham','fc',"Saat mulai memakai aplikasi atau alat yang baru:","Kamu ingin paham dulu cara kerjanya sampai masuk akal","Kamu langsung memakainya dan paham sambil jalan"],
+['d-ti-benar','fc',"Dalam kerja kelompok, cara yang disepakati menurutmu kurang tepat, tapi sudah berjalan dan targetnya bisa tercapai. Kamu:","Tetap mempersoalkannya sampai logikanya jelas","Mengikutinya, yang penting targetnya tercapai"],
+['d-te-ukur','fc',"Untuk menilai apakah sebuah rencana berhasil, kamu lebih percaya pada:","Hasil dan angka yang terlihat","Apakah alasan di baliknya konsisten dan masuk akal"],
+['d-te-atur','fc',"Kerja kelompok mulai berantakan dan tenggatnya sudah dekat. Kamu:","Mengambil alih: membagi tugas dan menetapkan target","Menyelesaikan bagianmu sendiri sebaik mungkin"],
+['d-ni-firasat','fc',"Kamu punya firasat kuat tentang arah sebuah situasi, tapi belum ada buktinya. Biasanya kamu:","Tetap berpegang pada firasat itu","Menunggu bukti dulu sebelum mempercayainya"],
+['d-ne-ide','fc',"Saat sebuah ide baru yang menarik muncul:","Kamu mendalami ide itu sampai matang","Ide itu memancing ide-ide lain, dan kamu ingin menjelajahi semuanya"],
+['d-si-pengalaman','fc',"Saat menghadapi situasi yang belum pernah kamu alami, yang paling membantumu:","Mengingat pengalaman serupa yang pernah terjadi","Mengamati keadaan saat itu, lalu langsung bertindak"],
+['d-se-tempat','fc',"Tempat liburan yang paling kamu nikmati:","Tempat yang sudah kamu kenal dan kamu suka","Tempat baru dengan banyak hal yang bisa langsung dicoba"],
+['d-se-detail','lk',"Saya cepat menyadari hal-hal di sekitar saya, seperti perubahan suasana ruangan, suara, atau gerak-gerik orang."]];

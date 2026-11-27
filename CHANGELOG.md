@@ -15,13 +15,18 @@
 - **Sapaan saat kembali**: beranda menampilkan "Selamat datang lagi" dengan sisa soal dan tombol Lanjutkan; kartu modul menampilkan rasi kecilnya.
 - Semua hiasan **netral**: posisi bintang, pesan, dan fakta tidak bergantung pada isi jawaban, supaya tidak memengaruhi jawaban berikutnya. Animasi dimatikan kalau pengguna memilih "kurangi gerakan".
 
+## Berikutnya: Pendalaman per fungsi
+- 12 soal Pendalaman baru untuk fungsi yang sebelumnya belum punya soal khusus (Fe, Ti, Te, Ni, Ne, Si, Se), terutama untuk memisahkan fungsi yang sering tertukar: Fi/Fe, Ti/Te, Ni/Ne, Si/Se. Setiap jawaban (termasuk tengah) menghasilkan temuan yang menyebut skor fungsinya.
+- Soal dipilih kalau fungsi itu dominan/auxiliary atau bersaing ketat dengan kembarannya. Rata-rata per tipe kini lebih merata (simulasi: 9,9–13,8 soal; sebelumnya ENTP/ESTP ~6 vs INFP ~10), dan INFJ/ISFJ tidak lagi mendapat soal yang sama.
+- Maksimal 16 soal per orang (soal lanjutan dan soal yang sudah dijawab tidak dibuang). Pengguna yang sudah selesai bisa mendapat 1–4 soal baru; ajakan Pendalaman menyebut sisa soalnya.
+
 ## 2026-11-26 (belum dirilis)
 Perubahan sejak versi live (`main` 244590f).
 
 ### Tes
 - Semua soal diaudit dan Big Five dicocokkan dengan IPIP-NEO-120; 9 soal diganti, beberapa diperjelas.
 - Bahasa "kamu"/"saya" yang rapi, tanpa perkiraan waktu.
-- Modul **Pendalaman** opsional dan adaptif (bank 22 soal) untuk temuan khusus.
+- Modul **Pendalaman** opsional dan adaptif untuk temuan khusus.
 - File jawaban versi 3 (per id soal). File dan data browser versi lama tetap terbaca; soal yang isinya berubah dikosongkan, dan beranda memberi tahu berapa soal yang perlu dijawab lagi.
 
 ### Hasil
