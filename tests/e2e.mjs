@@ -134,6 +134,20 @@ try {
   check('panah kiri balik ke soal sebelumnya', await waitFor("document.getElementById('qCount').textContent==='1 / 44'"));
   check('jawaban sebelumnya ditandai', await ev(`document.querySelector('#qBody [data-v="4"]').getAttribute('aria-pressed')==='true'`));
   check('tombol "Sebelumnya" mati di soal pertama', await ev("document.getElementById('qBack').disabled"));
+  // Berikutnya: maju ke soal yang sudah dijawab tanpa memilih ulang; soal yang belum dijawab tidak bisa dilewati.
+  check('tombol "Berikutnya" aktif di soal yang sudah dijawab', !(await ev("document.getElementById('qNext').disabled")));
+  await click('#qNext');
+  check('"Berikutnya" maju tanpa mengubah jawaban', await waitFor("document.getElementById('qCount').textContent==='2 / 44'") && (await ev("JSON.parse(localStorage.getItem('tesKepribadian.v1')).c[MODS[0].items[0].id]")) !== undefined);
+  check('tombol "Berikutnya" mati di soal yang belum dijawab', await ev("document.getElementById('qNext').disabled"));
+  await cmd('Input.dispatchKeyEvent', {type: 'keyDown', key: 'ArrowLeft', code: 'ArrowLeft'});
+  await waitFor("document.getElementById('qCount').textContent==='1 / 44'");
+  await cmd('Input.dispatchKeyEvent', {type: 'keyDown', key: 'ArrowRight', code: 'ArrowRight'});
+  check('panah kanan = Berikutnya', await waitFor("document.getElementById('qCount').textContent==='2 / 44'"));
+  await cmd('Input.dispatchKeyEvent', {type: 'keyDown', key: 'ArrowRight', code: 'ArrowRight'});
+  await sleep(250);
+  check('panah kanan tidak melewati soal yang belum dijawab', (await text('#qCount')) === '2 / 44');
+  await cmd('Input.dispatchKeyEvent', {type: 'keyDown', key: 'ArrowLeft', code: 'ArrowLeft'});
+  await waitFor("document.getElementById('qCount').textContent==='1 / 44'");
   await click('#qHome');
   check('progres kesimpan: 1/44 dijawab', (await text('#mods .mod small')).includes('1/44 dijawab'));
   check('tombol modul berubah jadi "Lanjutkan"', (await text('#mods button[data-m="0"]')) === 'Lanjutkan');

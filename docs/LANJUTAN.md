@@ -30,7 +30,7 @@ Pemilik mencoba lewat raw.githack, dikunci ke commit supaya tidak kena cache:
 `https://raw.githack.com/tendorethane-code/mbti/<SHA commit>/index.html`
 Selalu berikan link dengan SHA terbaru setelah push. Data di raw.githack terpisah dari situs live (beda alamat), jadi uji upgrade data lama baru bisa setelah merge.
 
-## Keadaan sekarang (branch #1; tes: 46 unit, 122 E2E)
+## Keadaan sekarang (branch #1; tes: 46 unit, 127 E2E)
 - 189 soal di 4 modul utama + Pendalaman adaptif (`DEEP` di `data.js`, aturan `PROBE_RULES` di `core.js`). Bahasa "kamu"/"saya", tanpa perkiraan waktu. Soal sudah diaudit dan dicocokkan dengan IPIP-NEO-120.
 - File jawaban v3 per id soal; v1/v2 dibaca lewat `legacy.js`. Data browser versi lama dimigrasi otomatis, dan beranda memberi tahu berapa soal yang perlu dijawab lagi.
 - **Hasil web** (alur cerita, sama dengan PDF): hero (tipe bergradien, hook "yang paling khas", 3 tipe teratas, kotak **"Kenapa X, bukan Y?"** dari `typeWhy()` kalau huruf dan urutan fungsi menunjuk tipe berbeda atau selisih < 2 poin, tombol Simpan & bagikan) → Bab 1 satu kalimat + peta → Bab 2 kekuatan → Bab 3 tiga temuan paling khas (`storyFindings`) → Bab 4 keseharian → Bab 5 yang perlu dijaga + orang terdekat → penutup → "Angka di balik hasilmu" → "Seberapa bisa dipegang".
