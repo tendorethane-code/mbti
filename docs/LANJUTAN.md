@@ -9,20 +9,16 @@ Dokumen ini merangkum keadaan proyek dan keputusan yang sudah diambil bersama pe
 - **Jangan merge PR apa pun tanpa kata "merge" dari pemilik.** Push ke branch PR boleh. Pemilik mencoba perubahan di HP lewat link pratinjau (lihat "Pratinjau di HP").
 - Pemilik suka diberi contoh visual (screenshot/gambar) sebelum memutuskan, dan sering memberi masukan lewat screenshot yang dicoret.
 - Untuk desain: tunjukkan beberapa draf, simpan semua draf ke `docs/desain/` (pemilik ingin semuanya disimpan), baru pasang yang dipilih.
-- Situs live = `main` di GitHub Pages, masih versi lama sampai PR #1 di-merge.
+- Situs live = `main` di GitHub Pages (`https://tendorethane-code.github.io/mbti/`).
 
-## Status PR (per 26 Nov 2026)
-Semua CI hijau. Tidak ada yang di-merge. Pemilik masih ingin menambah perubahan sebelum merge.
+## Status (per 27 Nov 2026)
+Rilis **2026-11-27** sudah di-merge ke `main` (squash, urutan #1 → #3 → #5 → #2 → #4; branch-nya dihapus karena riwayatnya memuat data pribadi yang sudah dihapus dari file). Isi rilis: lihat `CHANGELOG.md`. Sebelum merge sudah lewat cek rilis lengkap pada gabungan kelima PR (51 unit, 156 E2E); pemilik mengecek di HP setelah deploy.
 
 | PR | Branch | Base | Isi |
 |---|---|---|---|
-| #1 | `claude/hopeful-dijkstra-5g5kvh` | `main` | Rilis besar v3 (semua isi di bawah "Keadaan sekarang"). Sudah lewat cek rilis lengkap (lihat CHANGELOG). Menunggu pemilik mencoba di HP lalu bilang "merge". |
-| #2 | `claude/pendalaman-fungsi` | branch #1 | 12 soal Pendalaman per fungsi (Fe, Ti, Te, Ni, Ne, Si, Se), maks. 16 soal per orang. |
-| #3 | `claude/kuis-seru` | branch #1 | Mengisi soal jadi seru: rasi bintang per modul, babak ~11 soal + kartu jeda fakta, pesan 25/50/75%, sapaan "selamat datang lagi". Semua hiasan netral terhadap isi jawaban. |
-| #5 | `claude/karakter` | #3 | Karakter di web: `karakter.js` (Roh Peta + Telur Nebula), telur netral di layar soal/beranda, menetas setelah 4 modul utama, karakter di hero/riwayat, kartu Karakter (bawaan) + maskot mini Poster, sampul PDF (karakter + cap satu baris di bawah kotak teks) + melambai di penutup. Urutan merge: #1 → #3 → #5. |
-| #4 | `claude/penjelasan` | branch #1 | Penjelasan istilah di hasil (masukan teman pemilik): Tim di kepalamu, ikon garis SVG sendiri (tanpa emoji), nama asli fungsi, arti fungsi/facet/Big Five yang bisa diketuk, detail ikut di PDF. `penjelasan.js`. |
+| #6 | `claude/terungkap` | `main` | Momen terungkap: ketukan ke-5 membuka peta 16 tipe, tersingkir sesuai `R.fits`, tinggal 3, tinggal 2, karakter + huruf megah. Draf: `docs/desain/pratinjau-terungkap.html`. |
 
-Urutan merge yang disepakati: #1 dulu (**squash merge**, lalu hapus branch-nya, karena riwayat branch memuat data pribadi yang sudah dihapus dari file), lalu ganti base #2 dan #3 ke `main` (di GitHub: Edit base), lalu merge sesuai pilihan pemilik. #2 dan #3 tidak saling bergantung. Kalau #2 dan #3 sama-sama menyentuh `CHANGELOG.md`/`README.md`, merge base ke branch-nya dan selesaikan konflik (jangan rebase/force-push).
+Cara merge yang dipakai untuk PR bertumpuk: sebelum merge, gabungkan branch dasarnya ke branch PR (`git merge`, bukan rebase/force-push); setelah induknya di-squash, ganti base ke `main` lalu gabungkan `main` ke branch PR dan selesaikan konflik ("ambil dua-duanya"). Bandingkan tree akhir dengan gabungan yang sudah dites.
 
 **Tambahan baru dari pemilik**: tanya dulu masuk ke PR mana. Aturan praktis: perbaikan untuk rilis utama ke #1; hal yang berkaitan dengan Pendalaman ke #2; layar soal ke #3; fitur baru yang besar ke branch/PR baru dari branch #1.
 
@@ -31,7 +27,7 @@ Pemilik mencoba lewat raw.githack, dikunci ke commit supaya tidak kena cache:
 `https://raw.githack.com/tendorethane-code/mbti/<SHA commit>/index.html`
 Selalu berikan link dengan SHA terbaru setelah push. Data di raw.githack terpisah dari situs live (beda alamat), jadi uji upgrade data lama baru bisa setelah merge.
 
-## Keadaan sekarang (branch #1; tes: 46 unit, 131 E2E)
+## Keadaan sekarang (`main`; tes: 51 unit, 156 E2E sebelum #6)
 - 189 soal di 4 modul utama + Pendalaman adaptif (`DEEP` di `data.js`, aturan `PROBE_RULES` di `core.js`). Bahasa "kamu"/"saya", tanpa perkiraan waktu. Soal sudah diaudit dan dicocokkan dengan IPIP-NEO-120.
 - File jawaban v3 per id soal; v1/v2 dibaca lewat `legacy.js`. Data browser versi lama dimigrasi otomatis, dan beranda memberi tahu berapa soal yang perlu dijawab lagi.
 - **Hasil web** (alur cerita, sama dengan PDF): hero (tipe bergradien, hook "yang paling khas", 3 tipe teratas, kotak **"Kenapa X, bukan Y?"** dari `typeWhy()` kalau huruf dan urutan fungsi menunjuk tipe berbeda atau selisih < 2 poin, tombol Simpan & bagikan) → Bab 1 satu kalimat + peta → Bab 2 kekuatan → Bab 3 tiga temuan paling khas (`storyFindings`) → Bab 4 keseharian → Bab 5 yang perlu dijaga + orang terdekat → penutup → "Angka di balik hasilmu" → "Seberapa bisa dipegang".
@@ -39,7 +35,7 @@ Selalu berikan link dengan SHA terbaru setelah push. Data di raw.githack terpisa
 - **PDF**: sampul dengan motif khas tiap tipe (`drawMotif`) + cap family (`drawStamp`) + tanggal di bawah; latar bersemburat warna tipe (`typeSurf`); Bab 1 memuat kotak "Kenapa…"; bagian angka tidak terbelah. Gambar sampul dipasang sebagai `<img>` PNG, **bukan canvas** (Chrome HP mencetak canvas dengan latar putih). Motif sampul digambar saat browser senggang dan cadangan sinkron saat `beforeprint`.
 - **Motif**: 16 motif per tipe dalam bahasa family (NT kisi, NF riak, SJ garis rapi, SP diagonal). Pemilik ingin motif ramai dan bercampur dengan judul (halus, bertekstur), versi besar ENTP/ISFJ/ESFJ/ENTJ dipertahankan. **INFP harus selalu paling kaya**; yang dipasang: H+ (gerhana dengan korona yang tumbuh jadi taman, bunga tersembunyi, manik cahaya, kelopak cahaya), dengan versi terang khusus.
 - **Warna**: palet per tipe (`TYPE_PAL`, `typePal()`) dipakai di seluruh hasil, kartu, dan PDF.
-- **Kartu PNG** 1080×1920, 7 gaya: Poster (bawaan, dengan motif tipe), Takaran, Mozaik, Peta, Editorial, Aura, Koleksi. Ditolak: Konstelasi, Jurnal, Paspor, Piringan (arsip di `docs/desain/arsip/`).
+- **Kartu PNG** 1080×1920, 8 gaya: Karakter (bawaan, karakter besar + balon "INI AKU"), Poster (dengan motif tipe dan maskot mini), Takaran, Mozaik, Peta, Editorial, Aura, Koleksi. Ditolak: Konstelasi, Jurnal, Paspor, Piringan (arsip di `docs/desain/arsip/`).
 - **Performa**: kartu dan motif digambar berskala, bertahap (idle/IntersectionObserver), dan di-cache. Script memakai `?v=` (ganti angkanya setiap rilis; lihat README bagian Rilis).
 
 ## Arsip desain (`docs/desain/`)
@@ -48,10 +44,10 @@ Selalu berikan link dengan SHA terbaru setelah push. Data di raw.githack terpisa
 ## Karakter dan animasi seru (permintaan 26 Nov 2026)
 Pemilik minta animasi yang fun, seru, kreatif, dan karakter lucu per tipe (chibi atau apa saja yang eye-catching). Keputusan dan batasan yang sudah disampaikan ke pemilik:
 - Orisinal, jangan mirip ilustrasi 16Personalities (figur manusia low-poly).
-- Selama mengisi soal hanya **Pemandu** (maskot netral) yang tampil, reaksinya sama untuk jawaban apa pun; karakter tipe baru muncul saat hasil terungkap, supaya tidak memengaruhi jawaban.
+- Selama mengisi soal yang tampil hanya **Telur Nebula** yang netral (rencana awal maskot Pemandu diganti telur); karakter tipe baru muncul saat menetas, supaya tidak memengaruhi jawaban.
 - Karakter adalah hiasan/identitas; teks hasil tetap dari skor (jangan menambah klaim stereotip).
 - SVG buatan kode, animasi transform/opacity saja, hormati "kurangi gerakan".
-- Rencana setelah pemilik memilih: 16 karakter (draf dulu, simpan semua), karakter di hero hasil + animasi hasil terungkap, di kartu Poster dan sampul PDF (SVG → canvas/PNG), Pemandu dan animasi seru di layar soal (bagian ini masuk #3).
+- Rencana setelah pemilik memilih: 16 karakter (draf dulu, simpan semua), karakter di hero hasil + animasi hasil terungkap, di kartu Poster dan sampul PDF (SVG → canvas/PNG), animasi seru di layar soal (masuk #3). Semua sudah dirilis kecuali momen terungkap (#6).
 
 Keputusan pemilik sejauh ini (detail di `docs/desain/README.md`):
 - Gaya **Roh Peta** (`docs/desain/karakter-roh.js`), versi **jalan tengah**: badan unik per tipe (`rohUnik`) dengan **tekstur + pin** family (`{tex: true, pin: true}`) dan gaya gerak per family. ENTJ roket, ISTJ jam weker, ESTJ lencana perisai.

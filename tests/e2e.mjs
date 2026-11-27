@@ -163,7 +163,7 @@ try {
 
   // C. Kerjain semua modul
   await click('#mods button[data-m="0"]');
-  let n = 0, guard = 0, deepPrompt = false, rasiDone = false, sawBreak = false, sawMile = false, sawQEgg = false, charInQuiz = false, sawCrack = false, sawHatch = false;
+  let n = 0, guard = 0, deepPrompt = false, rasiDone = false, sawBreak = false, sawMile = false, sawQEgg = false, charInQuiz = false, sawCrack = false, sawHatch = false, ungOpen = false, ungOrder = false, ungEnd = false;
   while (guard++ < 400) {
     if (await visible('quiz')) {
       const before = await text('#qCount');
@@ -181,7 +181,16 @@ try {
         const notYet = await ev("!!document.querySelector('#doneIc .hatch.tap')&&!document.querySelector('#doneIc .hatch.open')&&/Ketuk telurnya/.test(document.getElementById('doneIc').textContent)");
         const cracks = [];
         for (let i = 0; i < 5; i++) { cracks.push(await ev("(document.querySelector('#doneIc .hatch .egg')||{outerHTML:''}).outerHTML.split('stroke=\"#fff6d6\" stroke-width=\"2\"').length-1")); await ev("document.querySelector('#doneIc .hatch').click()"); await sleep(120); }
-        sawHatch = notYet && cracks.every((c, i) => !i || c > cracks[i - 1]) && await waitFor("!!document.querySelector('#doneIc .hatch.open .hc svg.chr')&&document.getElementById('doneTitle').textContent==='Telurmu menetas!'&&/Kenalan dengan karaktermu: INFP/.test(document.getElementById('doneText').textContent)", 4000);
+        // Ketukan ke-5 membuka momen terungkap layar penuh; telur di tempat baru menetas setelah ditutup.
+        ungOpen = await waitFor("!document.getElementById('ungkap').hidden&&document.querySelectorAll('#ungSt .u-tile').length===16&&!document.querySelector('#doneIc .hatch.open')", 2000);
+        const ungDone = await waitFor("!document.getElementById('ungOk').hidden", 30000);
+        // Jujur: yang tersingkir persis urutan kecocokan dari jawaban, paling tidak cocok duluan; dua terakhir = dua teratas.
+        const want = await ev("resultOf(JSON.parse(localStorage.getItem('tesKepribadian.v1')).c).fits.slice(1).reverse().map(f=>f.t).join(',')"), got = await ev("document.getElementById('ungSt').dataset.out");
+        ungOrder = ungDone && got === want && got.split(',').length === 15;
+        ungEnd = ungDone && await ev("(()=>{const F=resultOf(JSON.parse(localStorage.getItem('tesKepribadian.v1')).c).fits,st=document.getElementById('ungSt'),L=[...st.querySelectorAll('.u-ch')].map(e=>e.textContent).join('');return L==='INFP'&&[...st.querySelectorAll('.u-ch')].every(e=>getComputedStyle(e).opacity>.9)&&/Diplomat · cocok \\d+%/.test(st.querySelector('.u-fam').textContent)&&st.querySelector('.u-meta small').textContent.startsWith('Hampir: '+F[1].t)&&st.dataset.tight===(F[0].v-F[1].v<TIE_GAP?'1':'')&&!!st.querySelector('.u-chr svg.chr')&&document.activeElement===document.getElementById('ungOk')})()");
+        if (!ungOrder) console.log('  urutan:', got, '| harus:', want);
+        await ev("document.getElementById('ungOk').click()");
+        sawHatch = notYet && cracks.every((c, i) => !i || c > cracks[i - 1]) && await waitFor("document.getElementById('ungkap').hidden&&!document.body.classList.contains('noscroll')&&!!document.querySelector('#doneIc .hatch.open .hc svg.chr')&&document.getElementById('doneTitle').textContent==='Telurmu menetas!'&&/Kenalan dengan karaktermu: INFP/.test(document.getElementById('doneText').textContent)", 4000);
       }
       if (!rasiDone) rasiDone = /Rasi \S+.* terkumpul · \d dari \d rasi/.test(await text('#doneRasiCap')) && (await ev("document.querySelectorAll('#doneRasi .st.on').length>0"));
       if (await ev("!document.getElementById('doneNext').hidden")) await click('#doneNext');
@@ -192,6 +201,9 @@ try {
   check('layar soal: telur mini ikut tumbuh', sawQEgg);
   check('layar soal: karakter tipe tidak pernah muncul selama tes (netral)', !charInQuiz);
   check('modul selesai: telur mendapat retakan baru', sawCrack);
+  check('menetas: ketukan ke-5 membuka momen terungkap (peta 16 tipe), telur di tempat belum menetas', ungOpen);
+  check('momen terungkap: urutan tersingkir persis urutan kecocokan dari jawaban (paling tidak cocok duluan)', ungOrder);
+  check('momen terungkap: akhir menampilkan huruf INFP, family, kecocokan, tipe kedua; fokus ke tombol', ungEnd);
   check('modul utama terakhir: telur menetas setelah diketuk 5 kali (retak tiap ketukan) jadi karakter INFP', sawHatch);
   check('babak baru dibuka dengan kartu jeda berisi fakta dan pilihan istirahat', sawBreak);
   check('tonggak setengah jalan dirayakan', sawMile);
@@ -209,7 +221,20 @@ try {
   await ev("document.querySelector('#res .hchar-cap.m [data-hatch]').click()");
   const replayWait = await ev("!!document.querySelector('#res .hchar.m .hatch.tap')&&!document.querySelector('#res .hchar.m .hatch.open')");
   for (let i = 0; i < 5; i++) { await ev("document.querySelector('#res .hchar.m .hatch').click()"); await sleep(80); }
-  check('hasil: putar ulang menetas (menunggu diketuk)', replayWait && await waitFor("!!document.querySelector('#res .hchar.m .hatch.open .hc svg.chr')", 3000));
+  const skipOk = await waitFor("!document.getElementById('ungkap').hidden&&!document.getElementById('ungSkip').hidden", 2000);
+  await ev("document.getElementById('ungSkip').click()");
+  const skipped = skipOk && await waitFor("!document.getElementById('ungOk').hidden&&document.getElementById('ungSkip').hidden&&[...document.querySelectorAll('#ungSt .u-ch')].map(e=>e.textContent).join('')==='INFP'&&!document.querySelector('#ungSt .u-tile')", 1000);
+  await cmd('Input.dispatchKeyEvent', {type: 'keyDown', key: 'Escape', code: 'Escape'});
+  check('hasil: putar ulang menetas (menunggu diketuk)', replayWait && await waitFor("document.getElementById('ungkap').hidden&&!!document.querySelector('#res .hchar.m .hatch.open .hc svg.chr')", 3000));
+  check('momen terungkap: tombol Lewati langsung ke akhir, Esc menutup', skipped);
+  // Kurangi gerakan: momen terungkap langsung tampil di keadaan akhir, tanpa animasi peta.
+  await cmd('Emulation.setEmulatedMedia', {features: [{name: 'prefers-reduced-motion', value: 'reduce'}]});
+  await ev("document.querySelector('#res .hchar-cap.m [data-hatch]').click()");
+  for (let i = 0; i < 5; i++) { await ev("document.querySelector('#res .hchar.m .hatch').click()"); await sleep(40); }
+  const calmOk = await ev("!document.getElementById('ungkap').hidden&&!document.getElementById('ungOk').hidden&&!document.querySelector('#ungSt .u-tile')&&getComputedStyle(document.querySelector('#ungSt .u-meta')).opacity==='1'");
+  await ev("document.getElementById('ungOk').click()");
+  await cmd('Emulation.setEmulatedMedia', {features: []});
+  check('momen terungkap: kurangi gerakan langsung ke keadaan akhir', calmOk && await ev("document.getElementById('ungkap').hidden"));
   check('hasil: 3 sel nyala berurutan, 13 redup', await ev("(()=>{const r=[...document.querySelectorAll('#ttRes .cell')].map(c=>c.dataset.rank);return r.filter(x=>x==='0').length===13&&['1','2','3'].every(k=>r.filter(x=>x===k).length===1)&&document.querySelector('#ttRes .cell[data-rank=\"1\"]').textContent.startsWith('INFP')})()"));
   check('hasil: semua bagian tampil (15 section: hero, 5 bab, penutup, simpan, 6 bagian angka, seberapa bisa dipegang)', (await ev("document.querySelectorAll('#res section').length")) === 15, await ev("document.querySelectorAll('#res section').length"));
   check('hasil: ringkasan kepribadian dari skor', /^Kamu .*waktu sendiri/.test(await text('#sumText')), await text('#sumText'));

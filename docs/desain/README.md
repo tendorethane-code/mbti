@@ -79,6 +79,25 @@ Dibuat dari web sungguhan dengan data buatan "Contoh" (gambar `gambar/penempatan
 ## Uji coba tekstur (tidak dipasang)
 Permintaan pemilik "iseng, coba kasih tekstur lebih". Dibandingkan tiga versi di hasil web, kartu Karakter, sampul dan halaman PDF (gambar `gambar/uji-tex-*.jpg`, kolom kiri ke kanan): V0 sekarang (polos dengan semburat warna tipe), V1 butiran halus (noise, overlay di gelap, multiply di terang), V2 butiran + pola family samar (riak NF, kisi NT, garis SJ, diagonal SP). Dibuat dengan menempelkan CSS/canvas saat mengambil gambar; kode web tidak diubah.
 
+Keputusan pemilik: tetap pakai yang sekarang (V0).
+
+## Momen terungkap: telur membuka peta tipe (`pratinjau-terungkap.html`)
+Lanjutan dari animasi "peta 16 tipe mengacak" di `pratinjau-karakter.html`, yang belum pernah dipasang di web. Diubah dari kesan undian menjadi **penyaringan**, supaya hasil tidak terkesan untung-untungan: urutan padam mengikuti kecocokan dari jawaban (`R.fits`, yang paling tidak cocok padam duluan). Draf memakai urutan tiruan; web asli memakai `R.fits`.
+
+Alur setelah ketukan ke-5 (sekitar 17–18 detik, ketuk panggung untuk melewati, langsung ke keadaan akhir kalau "kurangi gerakan" aktif):
+1. Telur pecah, inti cahaya meledak, 16 kotak terbang keluar dari telur.
+2. Penyaringan (versi 2, lebih intens atas permintaan pemilik, sekitar 6,5 detik), makin sedikit makin pelan dan tegang. Angka "tipe tersisa" besar berdetak tiap ada yang keluar:
+   - 16 → 11: sorotan cahaya memindai peta dari atas ke bawah, lima kotak terjauh menyala merah dan bergetar, lalu pecah satu per satu jadi empat keping + debu bintang, layar bergetar.
+   - 11 → 7: sama, sedikit lebih pelan.
+   - 7 → 5: sepasang menyala merah tanpa pindaian.
+   - 5 → 4 dan 4 → 3: "Siapa yang keluar?" / "Satu lagi…": sorotan emas meloncat-loncat di antara yang tersisa, melambat seperti roda putar, berhenti di yang paling tidak cocok, menyala merah, pecah.
+3. Tinggal 3: layar meredup, tiga kotak berjajar dan berdetak, lalu satu jatuh.
+4. Tinggal 2 (puncak): cahaya bolak-balik makin cepat. Kalau beda kecocokan < 2% (`TIE_GAP`), duel lebih lama dan tertulis "Ketat sekali!".
+5. Akhirnya: kotak pemenang memadat jadi bintang, kilatan, gelombang cahaya, sinar berputar, karakter melompat keluar dengan konfeti.
+6. Huruf megah: E/I, S/N, T/F, J/P jatuh satu per satu dengan gelombang cahaya dan getaran, nama sumbunya muncul di bawah, kilau emas menyapu keempatnya, lalu family + kecocokan dan "Hampir: <tipe kedua>".
+
+Panggung selalu gelap (seperti layar bioskop) di tema terang maupun gelap. Semua gerak memakai transform/opacity lewat Web Animations API. Gambar: `gambar/terungkap-1-telur-sampai-tinggal2.jpg`, `gambar/terungkap-2-duel-sampai-huruf.jpg`, `gambar/terungkap-3-ketat.jpg`, penyaringan versi 2: `gambar/terungkap-4-eliminasi.jpg` (gambar 1 masih versi 1).
+
 ## Arsip (`arsip/`)
 | File | Isi | Asal |
 |---|---|---|

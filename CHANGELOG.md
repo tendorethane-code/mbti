@@ -1,5 +1,11 @@
 # Catatan rilis
 
+## Berikutnya: momen terungkap
+- Ketukan ke-5 pada telur membuka **momen terungkap** layar penuh: telur pecah, cahayanya menjadi peta 16 tipe, lalu tipe tersingkir **sesuai urutan kecocokan dari jawabanmu** (yang paling tidak cocok padam duluan, jadi dua terakhir memang dua tipe teratas).
+- Penyaringan makin pelan dan tegang: sorotan memindai peta, yang tersingkir menyala merah, bergetar, lalu pecah (16 → 11 → 7 → 5), lalu "Siapa yang keluar?" dan "Satu lagi…" dengan sorotan yang meloncat-loncat, tinggal 3 berdetak, tinggal 2 berduel. Kalau selisih kecocokan di bawah 2 poin, duelnya lebih lama dan tertulis "Ketat sekali!".
+- Akhirnya: kilatan, karakter melompat keluar dengan konfeti, empat huruf tipe jatuh satu per satu dengan nama sumbunya, kilau emas, lalu family, kecocokan, dan "Hampir: <tipe kedua>". Tombol "Kenalan dengan karaktermu" menutupnya, lalu telur di layar menetas.
+- Bisa dilewati (tombol Lewati, ketuk panggung, atau Esc). Kalau "kurangi gerakan" aktif, langsung tampil keadaan akhir. Juga dipakai oleh "Putar ulang menetas" di hasil.
+
 ## 2026-11-27
 Perubahan sejak versi live (`main` 244590f).
 
