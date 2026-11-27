@@ -970,6 +970,17 @@ const sfx=(()=>{
   const DM={i:{b:38,vc:[50,57],va:[62,65],v2:[69,74]},VI:{b:34,vc:[46,53],va:[62,65],v2:[70,74]},III:{b:41,vc:[53,60],va:[60,65],v2:[69,72]},
     VIIs:{b:36,vc:[48,55],va:[60,65],v2:[67,72]},VII:{b:36,vc:[48,55],va:[60,64],v2:[67,72]},iv:{b:43,vc:[55,62],va:[62,67],v2:[70,74]},
     Vs:{b:33,vc:[45,52],va:[62,64],v2:[69,74]},V:{b:33,vc:[45,52],va:[61,64],v2:[69,73]},i9:{b:38,vc:[50,57],va:[62,64,65],v2:[69,74,76]}};
+  // ---- ballad orkestra "manis": D minor saat penyaringan, mekar ke D mayor saat terungkap; biola dalam terts, piano, harpa, horn lembut, paduan suara samar ----
+  const hornPad=(t,notes,dur,v=.03)=>{let dst=mus.bus;if(ac.createStereoPanner){const p=ac.createStereoPanner();p.pan.value=.2;p.connect(mus.bus);dst=p}
+    const g=ac.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.35);g.gain.setValueAtTime(v,t+dur);g.gain.exponentialRampToValueAtTime(.0001,t+dur+.9);g.connect(dst);const s=ac.createGain();s.gain.value=.7;g.connect(s);s.connect(rev);
+    const lp=mlp(850,.7,g);notes.forEach(m=>{mosc('sawtooth',hz(m),t,dur+1,lp,-4);mosc('triangle',hz(m),t,dur+1,lp,4)})};
+  const MN={i9:{b:38,vc:[50,57],va:[62,64,65],v2:[69,74],mel:[76,74],th:[72,70]},VI7:{b:34,vc:[46,53],va:[62,65,69],v2:[69,74],mel:[81,79],th:[77,76]},
+    III9:{b:41,vc:[53,60],va:[60,65,67],v2:[69,72],mel:[79,77],th:[76,74]},VIIs:{b:36,vc:[48,55],va:[60,65],v2:[67,72],mel:[77,76],th:[74,72]},VII:{b:36,vc:[48,55],va:[60,64],v2:[67,72]},
+    iv7:{b:43,vc:[55,62],va:[62,65],v2:[70,74],mel:[77,74],th:[74,70]},VI:{b:34,vc:[46,53],va:[62,65],v2:[70,74],mel:[77,74],th:[74,70]},
+    Vs:{b:33,vc:[45,52],va:[62,64],v2:[69,74],mel:[74,73],th:[70,69]},V:{b:33,vc:[45,52],va:[61,64],v2:[69,73]},
+    I9:{b:38,vc:[50,57],va:[62,64,66],v2:[69,74,76]},V6:{b:37,vc:[45,52],va:[61,64],v2:[69,73]},vi7:{b:35,vc:[47,54],va:[62,66],v2:[69,74]},
+    IVM7:{b:43,vc:[55,62],va:[62,66],v2:[67,71]},ii7:{b:40,vc:[52,59],va:[62,67],v2:[67,71]}};
+  const TH3={78:74,76:73,74:71,73:69,81:78,79:76,71:67,69:66};  // terts di bawah dalam D mayor
   // ---- skor ----
   const at=(H,i)=>H.filter(n=>n[0]===i);
   const SC={
@@ -1049,6 +1060,32 @@ const sfx=(()=>{
         if(i===4&&/s$/.test(key)){const r=DM[key.slice(0,-1)];r.va.forEach(m=>bowR(t,m,4*this.sp+.2,.03,'va',{att:.25}))}
         if(i%2===0)harp(t,[c.vc[0]+12,c.va[0],c.va[1],c.v2[0],c.v2[1],c.v2[0]+12,c.v2[1],c.va[1]][(i/2)%8],.035);if(i%4===2)bowR(t,c.v2[(i/4|0)%2],this.sp*3,.034,'vn',{att:.06,rel:.3,novib:1,pan:-.2});
         at(this.HOOK[b],i).forEach(([,m,l])=>{const d=l*this.sp;bowR(t,m,d,.068,'vn',{att:.14,rel:.5,pan:-.4});bowR(t,m-12,d,.048,'vn',{att:.16,rel:.5,pan:-.15});bowR(t,m-24,d,.028,'vc',{att:.18,rel:.45})})}}
+,
+    manis:{bpm:68,dly:.5,bars:3,tail:9,
+      SEQ:['i9','VI7','III9','VIIs','iv7','VI','Vs','V'],
+      HOOK:[[[0,78,4],[4,76,2],[6,74,2],[8,76,6],[14,73,2]],[[0,74,4],[4,78,2],[6,81,2],[8,79,6],[14,78,2]],[[0,76,4],[4,78,2],[6,79,2],[8,81,4],[12,79,2],[14,76,2]]],
+      ANTH:[['I9','V6'],['vi7','IVM7'],['ii7','Vs']],
+      chord(t,c,d,v=1){bowR(t,c.b-12,d,.1*v,'cb',{att:.3});bowR(t,c.b,d,.05*v,'cb',{att:.3});c.vc.forEach(m=>bowR(t,m,d,.034*v,'vc',{att:.3}));c.va.forEach(m=>bowR(t,m,d,.03*v,'va',{att:.35}));hornPad(t,[c.vc[0],c.vc[1],c.va[0]],d,.022*v)},
+      // langsung megah: seluruh orkestra masuk begitu telur pecah
+      intro(t,i,b){if(i===0){const c=MN.i9;this.chord(t,c,3.8,1.1);c.v2.forEach(m=>bowR(t,m+12,3.6,.026,'vn',{att:.3}));choir(t,[62,65,69],3.6,.025);[50,57,62,65,69,74,76,81,86,88,93].forEach((m,k)=>harp(t+k*.05,m,.04))}
+        if(i<6&&i%2===0)timpH(t,hz(38),.12+i*.04)},
+      drive(t,i,b,k){const h=b*2+(i>=8?1:0),key=this.SEQ[h%this.SEQ.length],c=MN[key],sd=8*this.sp,cr=1+h*.08;
+        if(i%8===0){this.chord(t,c,sd+.2,cr);if(c.mel){const d6=6*this.sp;bowR(t,c.mel[0]+(k?12:0),d6,.05*cr,'vn',{att:.18,rel:.4,pan:-.45});bowR(t,c.th[0]+(k?12:0),d6,.036*cr,'vn',{att:.2,rel:.4,pan:-.2})}if(k)timpH(t,hz(c.b+12),.15)}
+        if(i%8===6&&c.mel){const d2=2*this.sp+.1;bowR(t,c.mel[1]+(k?12:0),d2,.045*cr,'vn',{att:.08,rel:.35,pan:-.45});bowR(t,c.th[1]+(k?12:0),d2,.032*cr,'vn',{att:.08,rel:.35,pan:-.2})}
+        if(i===4&&/s$/.test(key)){const r=MN[key.slice(0,-1)];r.va.forEach(m=>bowR(t,m,4*this.sp+.2,.03,'va',{att:.25}))}
+        if(i%2===0||k)piano(t,[c.vc[0]+12,c.va[0],c.va[1],c.v2[0],c.v2[1],c.v2[0],c.va[1],c.va[0]][(k?i:i/2)%8],1.1,.04);if(i%4===2)harp(t,c.v2[1]+12,.03)},
+      brk(t,i,b){const c=MN.VI7;if(i===0){c.va.forEach(m=>bowR(t,m,3.6,.026,'va',{att:.6}));bowR(t,c.vc[0],3.6,.04,'vc',{att:.7});hornPad(t,[46,53,57],3.4,.02)}if(i===0||i===6||i===10)piano(t,[81,77,74][[0,6,10].indexOf(i)],2.2,.06);if(i%4===0)pizzS(t,c.b+12,.11)},
+      roll(t,i,b,e){if(i===0){bowR(t,33,3.4,.08,'cb',{att:.3,to:2.4});bowR(t,45,3.4,.05,'vc',{att:.3,to:2.4});[61,64].forEach(m=>bowR(t,m,3.4,.028,'va',{att:.3,trem:14,to:2}));choir(t,[57,61,64],3.2,.03);hornPad(t,[45,52,57],3,.025)}
+        if(i%2===0)bowR(t,[69,70,73,74,76,77,79,81][Math.min(7,i/2)],this.sp*2.2,.028+Math.min(.035,e*.018),'vn',{att:.05,trem:15,rel:.2});if(i%2===0)timpH(t,hz(45),.06+Math.min(.18,e*.07));if(i===12)[57,61,64,69,73,76,81,85].forEach((m,k)=>harp(t+k*.05,m,.035))},
+      // mekar ke D mayor: melodi biola oktaf + terts di bawah, cello kontramelodi, piano dan harpa mengalir
+      anthem(t,i,b){if(b>=3){if(i===0){const c=MN.I9;this.chord(t,c,4.6,1.2);c.v2.forEach(m=>bowR(t,m,4.4,.026,'vn',{pan:-.3}));bowR(t,78,4.2,.05,'vn',{att:.3,pan:-.45});bowR(t,74,4.2,.036,'vn',{att:.3,pan:-.2});choir(t,[62,66,69,74],4.6,.03);timpH(t,hz(50),.3);
+            [50,57,62,66,69,74,76,78,81,86,90].forEach((m,k)=>harp(t+k*.05,m,.045))}
+          if(i===8){[69,74].forEach(m=>bowR(t,m,4.8,.026,'va',{att:1.5,wet:.95}));bowR(t,81,4.8,.022,'vn',{att:1.7,wet:.95});piano(t,86,3,.05)}return}
+        const key=this.ANTH[b][i>=8?1:0],c=MN[key],sd=8*this.sp;
+        if(i%8===0){this.chord(t,c,sd+.2,1.1);choir(t,c.va.map(m=>m+12).slice(0,2),sd+.3,.018);if(i===0)timpH(t,hz(c.b+12),.2)}
+        if(i===4&&/s$/.test(key)){const r=MN[key.slice(0,-1)];r.va.forEach(m=>bowR(t,m,4*this.sp+.2,.03,'va',{att:.25}))}
+        piano(t,[c.vc[0]+12,c.va[0],c.va[1],c.v2[0],c.v2[1],c.v2[0],c.va[1],c.va[0]][(i/2|0)%8]+(i%2?12:0),1,i%2?.025:.04);if(i%2===0)harp(t,c.v2[(i/2)%2]+12,.03);
+        at(this.HOOK[b],i).forEach(([,m,l])=>{const d=l*this.sp;bowR(t,m,d,.06,'vn',{att:.14,rel:.5,pan:-.45});bowR(t,m-12,d,.035,'vn',{att:.16,rel:.5,pan:-.3});if(TH3[m])bowR(t,TH3[m],d,.04,'vn',{att:.16,rel:.5,pan:-.15});bowR(t,m-24,d,.026,'vc',{att:.18,rel:.45})})}}
 };
   for(const k in SC)SC[k].sp=60/SC[k].bpm/4;
   const style=()=>{let s='orkestra';try{s=localStorage.getItem('tesKepribadian.musik')||'orkestra'}catch(e){}return SC[s]?s:'orkestra'};
