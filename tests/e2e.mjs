@@ -532,15 +532,34 @@ try {
    check('mode developer: jawaban acak tidak error', await waitFor("!document.getElementById('res').hidden&&!/NaN|undefined/.test(document.getElementById('res').textContent)", 4000));
    await ev("document.getElementById('viewMine').click()"); await waitFor("!document.getElementById('home').hidden", 3000);
    check('mode developer: jawaban dan riwayat pengguna tidak berubah', (await ev("localStorage.getItem('tesKepribadian.v1')+'|'+localStorage.getItem('tesKepribadian.riwayat')")) === before);
-   // Kualitas suara dipaksa ringan dari panel; diagnostik muncul setelah momen terungkap (hanya di mode developer)
-   await ev("(()=>{const a=document.getElementById('devAq');a.value='ringan';a.dispatchEvent(new Event('change'));document.getElementById('devStr').value='2';document.querySelector('#devp [data-dev-t=ISFJ]').click()})()");
-   await waitFor("!document.getElementById('res').hidden", 4000);
-   await ev("document.querySelector('#res .hchar-cap.m [data-hatch]').click()");
-   for (let i = 0; i < 5; i++) { await ev("document.querySelector('#res .hchar.m .hatch').click()"); await sleep(60); }
-   await waitFor("!document.getElementById('ungkap').hidden", 2000); await ev("document.getElementById('ungSkip').click()");
-   const dg = await waitFor("!document.getElementById('ungDiag').hidden&&/Diagnostik: .* suara ringan \\(dipilih di mode developer\\).* efek ringan/.test(document.getElementById('ungDiag').textContent)", 3000);
-   check('mode developer: kualitas suara bisa dipaksa ringan, diagnostik tampil setelah momen terungkap', dg, await ev("document.getElementById('ungDiag').textContent"));
-   await ev("document.getElementById('ungOk').click()"); await ev("document.getElementById('viewMine').click()"); await waitFor("!document.getElementById('home').hidden", 3000);
+   // Musik dari rekaman (otomatis): mesin suara disiapkan begitu telur tampil (sebelum ketukan pertama), telur diperbarui di tempat, diagnostik menyebut rekaman.
+   const hatchRun = async (t, pre) => {
+     await ev(`document.getElementById('devStr').value='2';document.querySelector('#devp [data-dev-t=${t}]').click()`);
+     await waitFor("!document.getElementById('res').hidden", 4000);
+     await ev("window.__acN=0;if(!window.__acW){window.__acW=1;const A=window.AudioContext;window.AudioContext=class extends A{constructor(...a){super(...a);window.__acN++}}}" + (pre || ''));
+     await ev("document.querySelector('#res .hchar-cap.m [data-hatch]').click()"); await sleep(1500);
+     const warm = await ev("window.__acN===1");
+     await ev("window.__egg=document.querySelector('#res .hchar.m .hatch .egg')");
+     const same = [];
+     for (let i = 0; i < 5; i++) { if (i) same.push(await ev("document.querySelector('#res .hchar.m .hatch .egg')===window.__egg")); await ev("document.querySelector('#res .hchar.m .hatch').click()"); await sleep(60); }
+     await waitFor("!document.getElementById('ungkap').hidden", 2000); await ev("document.getElementById('ungSkip').click()");
+     await waitFor("!document.getElementById('ungDiag').hidden", 3000);
+     const diag = await ev("document.getElementById('ungDiag').textContent");
+     await ev("document.getElementById('ungOk').click()"); await ev("document.getElementById('viewMine').click()"); await waitFor("!document.getElementById('home').hidden", 3000);
+     return {warm, same: same.length === 4 && same.every(Boolean), diag};
+   };
+   const r1 = await hatchRun('ISFJ');
+   check('suara: mesin suara disiapkan saat telur tampil, bukan saat ketukan pertama', r1.warm);
+   check('telur: ketukan menambah retakan pada telur yang sama (tidak digambar ulang)', r1.same);
+   check('suara: musik diputar dari rekaman, diagnostik tampil setelah momen terungkap (mode developer)', /Diagnostik: .* musik rekaman ·/.test(r1.diag), r1.diag);
+   // Rekaman gagal dimuat (halaman baru, unduhan ditolak): musik jatuh ke sintesis langsung, momen tetap berjalan.
+   await goto(BASE + '#dev'); await waitFor("!document.getElementById('devp').hidden", 4000);
+   const r2 = await hatchRun('ESTP', "const f0=window.fetch;window.fetch=(u,...a)=>/musik-terungkap/.test(String(u))?Promise.reject(new Error('diblokir')):f0(u,...a)");
+   check('suara: kalau rekaman gagal dimuat, musik disintesis langsung', /musik sintesis (penuh|ringan)/.test(r2.diag), r2.diag);
+   // Panel developer bisa memaksa sintesis ringan untuk membandingkan; efek visual tidak ikut turun karena pilihan suara.
+   await ev("(()=>{const a=document.getElementById('devAq');a.value='ringan';a.dispatchEvent(new Event('change'))})()");
+   const r3 = await hatchRun('ISFJ');
+   check('mode developer: musik bisa dipaksa sintesis ringan', /musik sintesis ringan \(dipilih di mode developer\)/.test(r3.diag), r3.diag);
    await ev("(()=>{const a=document.getElementById('devAq');a.value='';a.dispatchEvent(new Event('change'))})()");
    await ev("document.getElementById('devOff').click()");
    check('mode developer: bisa ditutup, beranda biasa tanpa panel', await ev("document.getElementById('devp').hidden&&!document.querySelector('#devp [data-dev-t]')"));

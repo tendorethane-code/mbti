@@ -1,10 +1,15 @@
 # Catatan rilis
 
-## Berikutnya: suara adaptif untuk HP lemah
-- Masukan pemilik: di iPad lancar, di HP-nya animasi agak patah dan suara putus-putus. Diukur: musik terungkap memainkan sampai **454 sumber suara bersamaan** (rata-rata 205); HP lemah tidak sanggup menghitungnya tepat waktu, sehingga suara putus dan gambar ikut tersendat.
-- **Kualitas suara adaptif**: perangkat kuat tetap versi penuh. HP lemah (≤ 4 inti prosesor atau RAM ≤ 4 GB) otomatis memakai mode ringan: 2 lapis per nada string (bukan 4–5), tanpa vibrato terpisah, paduan suara dan horn disederhanakan, tanpa desah gesek dan posisi stereo, jeda putar lebih longgar (`latencyHint: 'playback'`), dan efek visual ringan. Puncak sumber suara 454 → 104, rata-rata 205 → 45. Musik, akor, melodi, dan semua efek tetap sama; kerasnya selisih ≤ 1,3 dB per tahap.
-- Kalau browser melaporkan suara tersendat (Chrome `playoutStats`), sisa momen otomatis turun ke mode ringan.
-- **Mode developer**: pilihan "Suara: Otomatis / Penuh / Ringan", dan setelah momen terungkap tampil **diagnostik** (jumlah inti, RAM, mode suara, jeda putar, suara tersendat, fps, efek) untuk dicek di HP asli.
+## Berikutnya: suara lancar di HP lemah, kualitas tetap penuh
+`?v=2026-11-27-3` untuk semua script (karakter.js berubah).
+- Masukan pemilik: di iPad lancar; di HP-nya ketukan telur agak patah dan suara hilang-muncul, animasi momen terungkap sendiri lancar. Diminta: perbaiki yang rusak saja, kualitas tidak boleh turun.
+- **Penyebab suara putus, diukur**: menyintesis musik orkestra secara langsung memakan rata-rata 40% satu inti prosesor desktop (puncak 84%); mode ringan pun masih sampai ~50%. Prosesor HP yang 2–4× lebih lambat tidak sanggup, jadi suara hilang-muncul. Efek suara sendiri cuma 4–7%.
+- **Musik kini diputar dari rekaman** `audio/musik-terungkap.mp3` (820 KB): hasil render sintesis yang sama dengan kualitas penuh (`tools/render-musik.mjs`, jalankan ulang tiap musik diubah). Empat potongan dimulai tepat pada isyarat animasi yang sama (intro, break, roll, anthem); pergantian drive dan peak terekam pada jarak standar animasi. Dibanding sintesis langsung: waktu sama (selisih < 50 ms), kerasnya selisih ≤ 0,3 dB per tahap, spektrum ≤ 0,8 dB per oktaf. Semua perangkat mendapat versi penuh; mode ringan di HP lemah tidak dipakai lagi.
+- Rekaman diunduh begitu telur tampil. Kalau gagal dimuat, musik tetap disintesis langsung (penuh atau ringan sesuai perangkat) seperti sebelumnya.
+- **Efek suara selalu kualitas penuh**, dan **efek visual tidak lagi ikut turun** karena pengaturan suara; mode visual ringan hanya aktif kalau gambar benar-benar tersendat (seperti rilis kedua).
+- **Ketukan telur lebih ringan**, tampilan sama: mesin suara (termasuk perhitungan gema) disiapkan saat senggang begitu telur tampil, bukan saat ketukan pertama (dulu macet ~370 ms di HP yang diperlambat 6×, sekarang tidak ada tugas panjang); tiap ketukan hanya menambah retakan pada telur yang sama, tidak menggambar ulang seluruh telur; animasi karakter yang masih tersembunyi di dalam telur ditahan sampai menetas.
+- Perbaikan galat: permintaan melanjutkan suara yang tertunda tidak lagi menjadi galat saat momen ditutup.
+- **Mode developer**: pilihan "Musik: Rekaman (otomatis) / Sintesis penuh / Sintesis ringan" untuk membandingkan; diagnostik menyebut sumber musik.
 
 ## 2026-11-27 (rilis kedua): momen terungkap
 Perubahan sejak rilis 2026-11-27 pertama. `?v=2026-11-27-2` untuk semua script (core.js berubah).
