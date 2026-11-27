@@ -34,7 +34,7 @@ Perubahan sejak versi live (`main` 244590f).
 - Gambar kartu dan motif digambar bertahap dan di-cache supaya ringan di HP.
 - Gambar sampul PDF (judul, motif, cap) dipasang sebagai PNG transparan, bukan canvas: Chrome di HP mencetak canvas dengan latar putih.
 - Kartu tidak lagi menunggu font dari Google tanpa batas: kalau font lambat, kartu digambar dengan font cadangan dulu lalu digambar ulang begitu font datang.
-- Layar soal: tombol **Berikutnya** (dan panah kanan) untuk meninjau jawaban maju-mundur tanpa memilih ulang; soal yang belum dijawab tidak bisa dilewati.
+- Layar soal: tombol **Kembali** dan **Lanjut** (dan panah kiri/kanan), dua kolom sama lebar di semua ukuran layar dan ukuran huruf. Lanjut untuk meninjau jawaban maju-mundur tanpa memilih ulang; soal yang belum dijawab tidak bisa dilewati.
 - Tes: 46 unit, 127 cek E2E.
 
 ### Catatan untuk rollback
