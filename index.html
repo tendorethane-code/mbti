@@ -980,6 +980,9 @@ const sfx=(()=>{
     Vs:{b:33,vc:[45,52],va:[62,64],v2:[69,74],mel:[74,73],th:[70,69]},V:{b:33,vc:[45,52],va:[61,64],v2:[69,73]},
     I9:{b:38,vc:[50,57],va:[62,64,66],v2:[69,74,76]},V6:{b:37,vc:[45,52],va:[61,64],v2:[69,73]},vi7:{b:35,vc:[47,54],va:[62,66],v2:[69,74]},
     IVM7:{b:43,vc:[55,62],va:[62,66],v2:[67,71]},ii7:{b:40,vc:[52,59],va:[62,67],v2:[67,71]}};
+  Object.assign(MN,{I6:{b:42,vc:[50,57],va:[62,66],v2:[69,74],mel:[78,76],th:[74,73]},IV9:{b:43,vc:[55,62],va:[62,67,69],v2:[67,71],mel:[79,78],th:[76,74]},
+    ivm:{b:43,vc:[55,62],va:[62,65,69],v2:[67,70]}});
+  Object.assign(MN.I9,{mel:[76,74],th:[73,71]});Object.assign(MN.V6,{mel:[76,73],th:[73,69]});Object.assign(MN.vi7,{mel:[74,73],th:[71,69]});Object.assign(MN.ii7,{mel:[79,78],th:[76,74]});MN.VDs={...MN.Vs,mel:[74,73],th:[71,69]};MN.VD=MN.V;
   const TH3={78:74,76:73,74:71,73:69,81:78,79:76,71:67,69:66};  // terts di bawah dalam D mayor
   // ---- skor ----
   const at=(H,i)=>H.filter(n=>n[0]===i);
@@ -1086,9 +1089,37 @@ const sfx=(()=>{
         if(i===4&&/s$/.test(key)){const r=MN[key.slice(0,-1)];r.va.forEach(m=>bowR(t,m,4*this.sp+.2,.03,'va',{att:.25}))}
         piano(t,[c.vc[0]+12,c.va[0],c.va[1],c.v2[0],c.v2[1],c.v2[0],c.va[1],c.va[0]][(i/2|0)%8]+(i%2?12:0),1,i%2?.025:.04);if(i%2===0)harp(t,c.v2[(i/2)%2]+12,.03);
         at(this.HOOK[b],i).forEach(([,m,l])=>{const d=l*this.sp;bowR(t,m,d,.06,'vn',{att:.14,rel:.5,pan:-.45});bowR(t,m-12,d,.035,'vn',{att:.16,rel:.5,pan:-.3});if(TH3[m])bowR(t,TH3[m],d,.04,'vn',{att:.16,rel:.5,pan:-.15});bowR(t,m-24,d,.026,'vc',{att:.18,rel:.45})})}}
+,
+    ballad:{bpm:68,dly:.5,bars:3,tail:14,
+      SEQ:['I9','V6','vi7','IV9','ii7','I6','IV9','VDs'],
+      HOOK:[[[0,78,4],[4,76,2],[6,74,2],[8,76,6],[14,73,2]],[[0,74,4],[4,78,2],[6,81,2],[8,79,6],[14,78,2]],[[0,76,4],[4,78,2],[6,79,2],[8,81,4],[12,79,2],[14,76,2]]],
+      ANTH:[['I9','V6'],['vi7','IVM7'],['ii7','Vs']],
+      chord(t,c,d,v=1){bowR(t,c.b-12,d,.1*v,'cb',{att:.3});bowR(t,c.b,d,.045*v,'cb',{att:.3});c.vc.forEach(m=>bowR(t,m,d,.026*v,'vc',{att:.3}));c.va.forEach(m=>bowR(t,m,d,.046*v,'va',{att:.35}));c.va.forEach(m=>bowR(t,m+12,d,.018*v,'vn',{att:.4,pan:-.3}));hornPad(t,[c.vc[0],c.vc[1],c.va[0]],d,.02*v)},
+      mot(t,c,d,v,up){bowR(t,c.mel[0]+up,d,.052*v,'vn',{att:.16,rel:.45,pan:-.45});bowR(t,c.th[0]+up,d,.038*v,'vn',{att:.18,rel:.45,pan:-.2})},
+      // pembuka singkat (~1 detik): harpa menyapu naik dan string mengembang; orkestra penuh masuk di langkah ke-8
+      intro(t,i,b){if(i===0){[50,57,62,66,69,74,76,78,81,86,90].forEach((m,k)=>harp(t+k*.05,m,.042));const c=MN.I9;c.va.forEach(m=>bowR(t,m,1.9,.026,'va',{att:1,from:.1}));c.v2.forEach(m=>bowR(t,m+12,1.9,.02,'vn',{att:1,from:.1}))}
+        if(i>=4&&i<8)timpH(t,hz(38),.06+(i-4)*.05)},
+      drive(t,i,b,k){const h=Math.max(0,b*2+(i>=8?1:0)-1),key=this.SEQ[h%this.SEQ.length],c=MN[key],sd=8*this.sp,cr=1+h*.08,up=k?12:0;
+        if(i%8===0){this.chord(t,c,sd+.2,cr);if(h===0){choir(t,[62,66,69,74],sd+.6,.028);timpH(t,hz(38),.3);[62,66,69,74,78,81,86].forEach((m,j)=>harp(t+j*.04,m,.035))}
+          if(c.mel)this.mot(t,c,6*this.sp,cr,up);if(k)timpH(t,hz(c.b+12),.15)}
+        if(i%8===6&&c.mel){const d2=2*this.sp+.1;bowR(t,c.mel[1]+up,d2,.046*cr,'vn',{att:.08,rel:.35,pan:-.45});bowR(t,c.th[1]+up,d2,.033*cr,'vn',{att:.08,rel:.35,pan:-.2})}
+        if(i===4&&/s$/.test(key)){const r=MN[key.slice(0,-1)];r.va.forEach(m=>bowR(t,m,4*this.sp+.2,.03,'va',{att:.25}))}
+        if(i%2===0||k)piano(t,[c.vc[0]+12,c.va[0],c.va[1],c.v2[0],c.v2[1],c.v2[0],c.va[1],c.va[0]][(k?i:i/2)%8],1.1,.04);if(i%4===2)harp(t,c.v2[1]+12,.03)},
+      // tinggal 3: satu momen minor pinjaman (Gm), sunyi dan menyentuh
+      brk(t,i,b){const c=MN.ivm;if(i===0){c.va.forEach(m=>bowR(t,m,3.6,.026,'va',{att:.6}));bowR(t,c.vc[0],3.6,.04,'vc',{att:.7});bowR(t,c.b,3.6,.05,'cb',{att:.7});hornPad(t,[43,50,58],3.4,.02)}
+        if(i===0||i===6||i===10)piano(t,[82,79,74][[0,6,10].indexOf(i)],2.4,.06);if(i%4===0)pizzS(t,c.b,.1)},
+      roll(t,i,b,e){SC.manis.roll.call(this,t,i,b,e)},
+      anthem(t,i,b){if(b>=3){// penutup: G -> Gm (minor pinjaman) -> D(add9), seperti akhir referensi
+          const step=(c,d,v)=>{this.chord(t,c,d,v);c.v2.forEach(m=>bowR(t,m,d,.024*v,'vn',{pan:-.3}))};
+          if(i===0){step(MN.IV9,4*this.sp+.3,1.1);bowR(t,79,4*this.sp,.055,'vn',{att:.12,pan:-.45});bowR(t,76,4*this.sp,.04,'vn',{att:.14,pan:-.2});piano(t,67,1.5,.05)}
+          if(i===4){step(MN.ivm,4*this.sp+.3,1);bowR(t,82,4*this.sp,.055,'vn',{att:.12,pan:-.45});bowR(t,79,4*this.sp,.04,'vn',{att:.14,pan:-.2});piano(t,70,1.5,.05);choir(t,[62,67,70],1.6,.022)}
+          if(i===8){const c=MN.I9;this.chord(t,c,4.8,1.2);c.v2.forEach(m=>bowR(t,m,4.6,.026,'vn',{pan:-.3}));bowR(t,81,4.4,.05,'vn',{att:.25,pan:-.45});bowR(t,78,4.4,.038,'vn',{att:.25,pan:-.2});choir(t,[62,66,69,74],4.8,.03);timpH(t,hz(50),.28);
+            [50,57,62,66,69,74,76,78,81,86,90].forEach((m,k)=>harp(t+k*.05,m,.045));piano(t,74,3,.05);piano(t,86,3,.04)}
+          if(i===13){[69,74].forEach(m=>bowR(t,m,4.2,.024,'va',{att:1.4,wet:.95}));bowR(t,81,4.2,.02,'vn',{att:1.6,wet:.95})}return}
+        SC.manis.anthem.call(this,t,i,b)}}
 };
   for(const k in SC)SC[k].sp=60/SC[k].bpm/4;
-  const style=()=>{let s='orkestra';try{s=localStorage.getItem('tesKepribadian.musik')||'orkestra'}catch(e){}return SC[s]?s:'orkestra'};
+  const style=()=>{let s='ballad';try{s=localStorage.getItem('tesKepribadian.musik')||'ballad'}catch(e){}return SC[s]?s:'ballad'};
   const busInit=()=>{if(mus.bus&&mus.bus.context===ac)return;mus.sc=SC[style()];mus.bus=ac.createGain();mus.bus.gain.value=.6;mus.bus.connect(out);
     const d=ac.createDelay(2);d.delayTime.value=60/mus.sc.bpm*mus.sc.dly;const fb=ac.createGain();fb.gain.value=.3;const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2600;
     d.connect(lp);lp.connect(fb);fb.connect(d);const dw=ac.createGain();dw.gain.value=.35;lp.connect(dw);dw.connect(mus.bus);mus.dl=d};
