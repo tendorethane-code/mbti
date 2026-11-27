@@ -1084,7 +1084,8 @@ function renderRes(keep){
   {const dock=document.querySelector('#res .dock'),hs=document.querySelector('#res .hshare');if(dock&&hs&&'IntersectionObserver' in window){dock.classList.add('dock-off');new IntersectionObserver(es=>es.forEach(e=>dock.classList.toggle('dock-off',e.isIntersecting))).observe(hs)}}
   $('dlCard').addEventListener('click',async()=>{$('copyMsg').textContent='Sedang membuat kartu…';let c;try{await fontsOk(3000);await charImg(R.hasType?R.type:null);c=drawCard(R,name);$('cardPrev').hidden=false}catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.';return}
     // Satu kali ubah ke PNG untuk unduhan dan pratinjau sekaligus (kartu 1080x1920 berat di HP).
-    {const img=$('cardPrev'),tok=img._tok=(img._tok||0)+1;c.toBlob(b=>{if(!b)return;dl(b,`peta-kepribadian${slug?'-'+slug:''}.png`);if(img._tok===tok&&img.isConnected)canvasImg(img,c,b)},'image/png')}
+    // Pratinjau memakai hasil unduhan (ukuran penuh, untuk tekan lama di HP) selama gayanya belum diganti; pemuatan ulang gaya yang sama di latar tidak membatalkannya.
+    {const img=$('cardPrev'),st=cardStyle();c.toBlob(b=>{if(!b)return;dl(b,`peta-kepribadian${slug?'-'+slug:''}.png`);if(cardStyle()===st&&img.isConnected)canvasImg(img,c,b)},'image/png')}
     $('copyMsg').textContent='Kartu diunduh. Kalau di HP tidak terunduh, tekan lama gambar pratinjau lalu pilih simpan.'});
 }
 // ---------- Motif sampul PDF: satu motif khas per tipe, memakai "bahasa" family-nya ----------
