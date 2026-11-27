@@ -76,6 +76,9 @@ Dibuat dari web sungguhan dengan data buatan "Contoh" (gambar `gambar/penempatan
 - Sampul P4 (pemilik): karakter di kiri bawah di atas baris angka, cap family tetap di kanan bawah (`gambar/penempatan-sampul-kiri-bawah.jpg`).
 - Kartu K1: Poster dengan karakter kecil di kanan atas (ditolak pemilik: menutupi) (sempit untuk judul tipe yang lebar seperti ENTP). K2: gaya kartu baru "Karakter" dengan karakter besar di tengah, nama tipe bergradien, family, dan tiga tipe paling cocok. K2 + balon kata "INI AKU: …" berisi dua ciri pertama; Poster + maskot mini di bilah bawah di samping tanggal (`gambar/penempatan-kartu-2.jpg`).
 
+## Uji coba tekstur (tidak dipasang)
+Permintaan pemilik "iseng, coba kasih tekstur lebih". Dibandingkan tiga versi di hasil web, kartu Karakter, sampul dan halaman PDF (gambar `gambar/uji-tex-*.jpg`, kolom kiri ke kanan): V0 sekarang (polos dengan semburat warna tipe), V1 butiran halus (noise, overlay di gelap, multiply di terang), V2 butiran + pola family samar (riak NF, kisi NT, garis SJ, diagonal SP). Dibuat dengan menempelkan CSS/canvas saat mengambil gambar; kode web tidak diubah.
+
 ## Arsip (`arsip/`)
 | File | Isi | Asal |
 |---|---|---|
