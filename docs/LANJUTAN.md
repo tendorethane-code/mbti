@@ -16,7 +16,15 @@ Rilis **2026-11-27** sudah di-merge ke `main` (squash, urutan #1 → #3 → #5 �
 
 | PR | Branch | Base | Isi |
 |---|---|---|---|
-| #6 | `claude/hopeful-dijkstra-5g5kvh` | `main` | Momen terungkap: ketukan ke-5 membuka peta 16 tipe, tersingkir sesuai `R.fits`, tinggal 3, tinggal 2, karakter + huruf megah, efek suara + musik (pemilik memilih Ballad D minor). Layar soal tetap tanpa musik (keputusan pemilik; draf diarsipkan). Draf: `docs/desain/pratinjau-terungkap.html`, `docs/desain/musik-terungkap-draf.js`, `docs/desain/musik-soal-draf.js`. Lagu referensi pemilik hanya dianalisis, tidak disimpan. |
+| #6 | (sudah di-merge, rilis kedua 2026-11-27) | `main` | Momen terungkap + suara/musik (Ballad D minor) + mode developer `#dev`. Draf: `docs/desain/pratinjau-terungkap.html`, `docs/desain/musik-terungkap-draf.js`, `docs/desain/musik-soal-draf.js`. |
+| #7 | `claude/hopeful-dijkstra-5g5kvh` | `main` | Suara adaptif untuk HP lemah + diagnostik di mode developer (masukan pemilik: suara putus-putus di HP-nya). |
+
+### Yang sedang ditunggu / berikutnya (per 27 Nov 2026 malam)
+1. **PR #7 di-merge (rilis ketiga, 28 Nov 2026)**: musik momen terungkap diputar dari rekaman `audio/musik-terungkap.mp3` (render kualitas penuh lewat `tools/render-musik.mjs`; jalankan ulang setiap musik diubah), sintesis langsung jadi cadangan. Ketukan telur: telur tetap di lapisan grafisnya sendiri, percikan SVG (bukan clip-path). Di HP pemilik (Android kelas menengah): suara lancar, frame lambat setelah ketukan 35 → 0–2. Belum disentuh karena pemilik tidak merasakannya: satu frame ~100 ms sesekali saat ketukan (kemungkinan persiapan suara), peralihan ketukan ke-5 ~240–300 ms. Pelajaran: jumlah inti/RAM bukan penanda HP lemah (HP pemilik 8 inti/8 GB tetap putus); ukur dulu di HP asli lewat diagnostik `#dev` sebelum memangkas efek. Safari belum dicek otomatis (WebKit tidak terpasang di lingkungan ini); pemilik bisa cek di iPad.
+2. **Logo: pemilik memilih E "Rasi Empat"** (`docs/desain/logo/logo-draf.js`, kunci `rasi`): 4 bintang = 4 huruf tipe, tersambung jadi layang-layang, satu paling terang, di atas gradien indigo→koral. **Belum dipasang.** Rencana pemasangan: favicon (ganti SVG data-URI di `<link rel="icon">`), `apple-touch-icon` (PNG 180 px), tanda merek di bilah atas (`.brand:before`, sekarang kotak gradien), lalu tanyakan apakah juga di kartu PNG dan sampul PDF. Cek ulang keterbacaan di 16 px.
+3. Pemilik belum menghapus 4 branch lama di GitHub (lihat paragraf di atas).
+
+Keputusan pemilik yang sudah final: musik momen terungkap **Ballad D minor** (gaya `manis`, apa adanya, tanpa struktur "naik terus"); layar soal **tanpa musik**; efek suara dipertahankan; mode developer `#dev` dipakai untuk mengecek semua tipe.
 
 Cara merge yang dipakai untuk PR bertumpuk: sebelum merge, gabungkan branch dasarnya ke branch PR (`git merge`, bukan rebase/force-push); setelah induknya di-squash, ganti base ke `main` lalu gabungkan `main` ke branch PR dan selesaikan konflik ("ambil dua-duanya"). Bandingkan tree akhir dengan gabungan yang sudah dites.
 

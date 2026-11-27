@@ -61,6 +61,7 @@ Facet Expressive, Active, dan Enthusiastic, serta semua facet T/F dan J/P, digan
 - `core.js`: logika skor, migrasi file lama, ringkasan kepribadian, link hasil (tanpa DOM, bisa dites di Node)
 - `karakter.js`: karakter per tipe (Roh Peta, SVG) dan Telur Nebula yang terbentuk selama mengisi soal; draf dan semua opsinya di `docs/desain/`
 - `penjelasan.js`: penjelasan istilah di halaman hasil (8 cognitive functions, facet Step II, Big Five dan facet-nya)
+- `audio/musik-terungkap.mp3`: musik momen terungkap, hasil render sintesis Web Audio di `index.html` dengan kualitas penuh (supaya HP lemah tidak perlu menyintesis orkestra secara langsung). Dibuat ulang dengan `node tools/render-musik.mjs` (butuh Playwright dan ffmpeg) setiap kali musiknya diubah; alat itu juga menulis ulang baris `MUS_FILE` di `index.html`
 - `index.html`: tampilan
 - `tests/core.test.mjs`: unit test untuk integritas soal, bahasa, ke-16 tipe × A/T, jawaban acak, impor & migrasi file, ringkasan kepribadian, catatan, dan link hasil
 - `tests/e2e.mjs`: tes end-to-end di Chrome headless untuk semua alur, termasuk file versi lama, catatan khusus (dan teks berbahaya), serta mode lihat link

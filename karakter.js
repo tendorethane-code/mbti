@@ -327,12 +327,13 @@
     return `<svg class="egg" viewBox="0 0 200 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Telur misterius, ${Math.round(p * 100)}% terisi">` +
       `<defs><clipPath id="${id}c"><path d="${EGG}"/></clipPath>${blob(id + 'b1', '#b9a6ff')}${blob(id + 'b2', '#7fd6c6')}${blob(id + 'b3', '#ffb8a0')}${blob(id + 'h', '#fff3c0')}` +
       `<linearGradient id="${id}bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b3070"/><stop offset="1" stop-color="#191433"/></linearGradient></defs>` +
-      `<ellipse class="eg-sh" cx="100" cy="212" rx="50" ry="8" fill="#000" opacity=".2"/><circle cx="100" cy="125" r="100" fill="url(#${id}h)" opacity="${f1(Math.min(1, Math.max(0, p - .4) * 1.3 + ex * .12))}"/>` +
+      `<ellipse class="eg-sh" cx="100" cy="212" rx="50" ry="8" fill="#000" opacity=".2"/><circle class="eg-gl" cx="100" cy="125" r="100" fill="url(#${id}h)" opacity="${f1(Math.min(1, Math.max(0, p - .4) * 1.3 + ex * .12))}"/>` +
       `<g class="eg-wob${wob}"><g class="eg-shell"><path d="${EGG}" fill="url(#${id}bg)"/>` +
       `<g clip-path="url(#${id}c)"><g class="eg-spin"><circle cx="70" cy="96" r="62" fill="url(#${id}b1)" opacity=".75"/><circle cx="138" cy="150" r="56" fill="url(#${id}b2)" opacity=".55"/><circle cx="88" cy="186" r="52" fill="url(#${id}b3)" opacity=".6"/></g>` +
       st.map(([x, y, r, t]) => `<circle class="tw" style="animation-delay:${t}s" cx="${x}" cy="${y}" r="${r}" fill="#fff"/>`).join('') + `</g>` +
       `<path d="${EGG}" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="0.1 ${f1(7 - 4.6 * p)}" opacity="${f1(.25 + .75 * p)}"/><path d="${EGG}" fill="none" stroke="#8f80e0" stroke-width="2" opacity=".6"/>` +
-      CRACK.slice(0, k).concat(CRACK_TAP.slice(0, ex)).map(d => `<path d="${d}" fill="none" stroke="#ffe9a8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/><path d="${d}" fill="none" stroke="#fff6d6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`).join('') +
+      // retakan dibungkus satu grup supaya ketukan bisa menambah retakan tanpa menggambar ulang seluruh telur
+      '<g class="eg-cr">' + CRACK.slice(0, k).concat(CRACK_TAP.slice(0, ex)).map(d => `<path d="${d}" fill="none" stroke="#ffe9a8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/><path d="${d}" fill="none" stroke="#fff6d6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`).join('') + '</g>' +
       (peek ? `<g class="eg-peek"><path d="M74 128L86 118L96 128L106 116L116 126L128 118" fill="none" stroke="#fff6d6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="100" cy="134" rx="24" ry="11" fill="#0b0918"/><ellipse class="eye" cx="91" cy="134" rx="3.6" ry="5.2" fill="#fff"/><ellipse class="eye" cx="109" cy="134" rx="3.6" ry="5.2" fill="#fff"/></g>` : '') +
       `<ellipse cx="74" cy="80" rx="9" ry="17" fill="#fff" opacity=".25" transform="rotate(-25 74 80)"/></g></g></svg>`;
   }

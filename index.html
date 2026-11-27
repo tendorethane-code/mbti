@@ -462,15 +462,19 @@ body.noscroll{overflow:hidden}
 .hatch{position:relative;width:min(230px,62vw);margin:0 auto}
 .hatch>.egg,.hatch>.hc{transition:transform .7s cubic-bezier(.3,.6,.4,1),opacity .7s}
 .hatch>.hc{position:absolute;inset:0;opacity:0;transform:scale(0) rotate(-12deg)}
+/* karakter di dalam telur belum terlihat: animasinya ditahan sampai menetas supaya tidak membebani HP saat telur diketuk */
+.hatch:not(.open)>.hc,.hatch:not(.open)>.hc *{animation-play-state:paused!important}
 .hatch.open>.egg{transform:scale(1.25);opacity:0}
 .hatch.tap{cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:24px}.hatch.tap:focus-visible{outline:2px solid var(--ind);outline-offset:6px}
-.hatch.tap>.egg{animation:kNudge 2.4s ease-in-out infinite}.hatch>.egg.jolt{animation:kJolt .45s ease-out}
+/* telur tetap di lapisan grafisnya sendiri selama menunggu ketukan: tanpa ini tiap guncangan memindah telur ke lapisan baru lalu balik lagi (digambar ulang dua kali per ketukan) */
+.hatch.tap>.egg{animation:kNudge 2.4s ease-in-out infinite;will-change:transform}.hatch>.egg.jolt{animation:kJolt .45s ease-out}
 @keyframes kNudge{0%,80%,100%{transform:rotate(0)}85%{transform:rotate(-4deg)}90%{transform:rotate(4deg)}95%{transform:rotate(-2deg)}}
 @keyframes kJolt{0%{transform:scale(1)}25%{transform:rotate(-9deg) scale(1.06)}55%{transform:rotate(8deg) scale(1.03)}80%{transform:rotate(-3deg)}100%{transform:none}}
 .hatch>.egg{transform-origin:50% 92%}
 .hatch-cap{text-align:center;font-weight:800;color:var(--ind);margin:8px 0 0;min-height:1.4em}
 .hatch.open>.hc{opacity:1;transform:scale(1) rotate(0);transition:transform .8s cubic-bezier(.2,1.6,.4,1) .3s,opacity .2s .3s}
-.spk{position:absolute;left:50%;top:50%;width:9px;height:9px;pointer-events:none;background:var(--c,#ffe08a);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);animation:kSpk 1.2s cubic-bezier(.15,.6,.4,1) forwards}
+/* bintang percikan digambar sebagai SVG (titik sama dengan clip-path lama): clip-path pada elemen bergerak mahal untuk chip grafis HP */
+.spk{position:absolute;left:50%;top:50%;width:9px;height:9px;pointer-events:none;animation:kSpk 1.2s cubic-bezier(.15,.6,.4,1) forwards}.spk svg{display:block;width:100%;height:100%}.spk polygon{fill:var(--c,#ffe08a)}
 @keyframes kSpk{0%{transform:translate(-50%,-50%) scale(.3);opacity:1}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.3) rotate(160deg);opacity:0}}
 .qtr{display:flex;align-items:center}.qtop .qegg{width:30px;flex:none;margin-left:10px}
 .qtop{align-items:center}
@@ -498,6 +502,7 @@ body.ung-open>:not(#ungkap){visibility:hidden}body.ung-open>:not(#ungkap) *{anim
 .ung-snd svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.ung-snd svg path:first-child{fill:currentColor}.ung-snd .x,.ung-snd.off .w{display:none}.ung-snd.off .x{display:inline}
 .ung-ok{display:block;margin:14px auto 0;min-width:min(280px,100%)}
 .ung-ok[hidden]{display:none}
+.ung-diag{margin:10px auto 0;max-width:460px;font-size:12px;line-height:1.5;color:#bdb6d6;text-align:center}.ung-diag[hidden]{display:none}
 .ung-st .u-sky{position:absolute;inset:0;pointer-events:none;opacity:.7;background-image:radial-gradient(1.2px 1.2px at 12% 18%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 72% 12%,#fff 50%,transparent 51%),radial-gradient(1.4px 1.4px at 88% 40%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 22% 62%,#fff 50%,transparent 51%),radial-gradient(1.2px 1.2px at 52% 88%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 8% 90%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 93% 82%,#fff 50%,transparent 51%),radial-gradient(1.3px 1.3px at 40% 30%,#fff 50%,transparent 51%)}
 .ung-st .u-sh{position:absolute;inset:0}
 .ung-st .u-rays{position:absolute;left:50%;top:38%;width:180%;aspect-ratio:1;margin:-90% 0 0 -90%;opacity:0;pointer-events:none;background:repeating-conic-gradient(from 0deg,rgba(255,221,140,.28) 0deg 7deg,transparent 7deg 22deg);-webkit-mask:radial-gradient(closest-side,#000 18%,transparent 72%);mask:radial-gradient(closest-side,#000 18%,transparent 72%);animation:kSpin 22s linear infinite}
@@ -623,7 +628,7 @@ body.ung-open>:not(#ungkap){visibility:hidden}body.ung-open>:not(#ungkap) *{anim
 <header class="topbar noprint"><button type="button" class="brand" id="brandHome" aria-label="Peta Kepribadian, ke beranda"><span class="bt">Peta Kepribadian</span></button><div class="tbr"><div class="seg" role="group" aria-label="Tema"><span class="mute" style="align-self:center;font-size:13px;padding:0 6px 0 4px">Tema</span><button type="button" data-theme-set="dark" aria-pressed="true" aria-label="Tema gelap"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><span class="tl">Gelap</span></button><button type="button" data-theme-set="light" aria-pressed="false" aria-label="Tema terang"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="tl">Terang</span></button></div><button type="button" class="histbtn" id="topHist" hidden aria-label="Riwayat tes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2"/></svg><span>Riwayat</span><b id="topHistN">0</b></button></div></header>
 
 <div class="sheet-bd noprint" id="sheetBd" hidden></div>
-<div class="ungkap noprint" id="ungkap" role="dialog" aria-modal="true" aria-label="Tipemu terungkap" hidden><div class="ung-in"><div class="ung-st" id="ungSt"></div><button type="button" class="ung-snd" id="ungSnd" aria-label="Suara" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="w" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="x" d="M16 9l6 6M22 9l-6 6"/></svg></button><button type="button" class="ung-skip" id="ungSkip">Lewati</button><button type="button" class="btn ung-ok" id="ungOk" hidden>Kenalan dengan karaktermu</button><p class="sr" id="ungSr" aria-live="polite"></p></div></div>
+<div class="ungkap noprint" id="ungkap" role="dialog" aria-modal="true" aria-label="Tipemu terungkap" hidden><div class="ung-in"><div class="ung-st" id="ungSt"></div><button type="button" class="ung-snd" id="ungSnd" aria-label="Suara" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="w" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="x" d="M16 9l6 6M22 9l-6 6"/></svg></button><button type="button" class="ung-skip" id="ungSkip">Lewati</button><button type="button" class="btn ung-ok" id="ungOk" hidden>Kenalan dengan karaktermu</button><p class="ung-diag" id="ungDiag" hidden></p><p class="sr" id="ungSr" aria-live="polite"></p></div></div>
 <section class="sheet noprint" id="histSheet" role="dialog" aria-modal="true" aria-labelledby="histTitle"><div class="wrap"><div class="sheet-h"><h2 id="histTitle">Riwayat tes</h2><button type="button" class="sheet-x" data-close aria-label="Tutup">&times;</button></div><div id="hist" class="hist"></div></div></section>
 <main id="home" class="band"><div class="wrap devp" id="devp" hidden></div><div class="wrap home">
 <div class="t">
@@ -691,11 +696,11 @@ body.ung-open>:not(#ungkap){visibility:hidden}body.ung-open>:not(#ungkap) *{anim
 
 <footer class="band"><div class="wrap">Peta Kepribadian bukan tes MBTI® resmi dan belum divalidasi secara ilmiah. MBTI adalah merek dagang The Myers-Briggs Company. Jawabanmu hanya tersimpan di browser ini dan tidak dikirim ke server mana pun.</div></footer>
 
-<script src="data.js?v=2026-11-27-2"></script>
-<script src="legacy.js?v=2026-11-27-2"></script>
-<script src="core.js?v=2026-11-27-2"></script>
-<script src="karakter.js?v=2026-11-27-2"></script>
-<script src="penjelasan.js?v=2026-11-27-2"></script>
+<script src="data.js?v=2026-11-27-3"></script>
+<script src="legacy.js?v=2026-11-27-3"></script>
+<script src="core.js?v=2026-11-27-3"></script>
+<script src="karakter.js?v=2026-11-27-3"></script>
+<script src="penjelasan.js?v=2026-11-27-3"></script>
 <script>
 {
 const KEY='tesKepribadian.v1';
@@ -854,19 +859,42 @@ const toQTop=()=>{if(window.scrollY>4)window.scrollTo({top:0,behavior:'auto'})};
 const MAIN_N=MAIN.reduce((n,m)=>n+m.items.length,0);
 const eggProg=D=>{const A=ansOf(D);return {p:MAIN.reduce((n,m)=>n+answered(A,m),0)/MAIN_N,k:MAIN.filter(m=>isDone(A,m)).length}};
 const calm=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
-const sparkle=(el,cols,n)=>{if(!el||calm())return;n=n||16;for(let i=0;i<n;i++){const sp=document.createElement('i'),a=Math.random()*Math.PI*2,d=50+Math.random()*90;sp.className='spk';sp.style.setProperty('--dx',Math.cos(a)*d+'px');sp.style.setProperty('--dy',Math.sin(a)*d*.85+'px');sp.style.setProperty('--c',cols[i%cols.length]);el.appendChild(sp);setTimeout(()=>sp.remove(),1300)}};
+const SPK_SVG='<svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,0 62,38 100,50 62,62 50,100 38,62 0,50 38,38"/></svg>';
+const sparkle=(el,cols,n)=>{if(!el||calm())return;n=n||16;for(let i=0;i<n;i++){const sp=document.createElement('i'),a=Math.random()*Math.PI*2,d=50+Math.random()*90;sp.className='spk';sp.innerHTML=SPK_SVG;sp.style.setProperty('--dx',Math.cos(a)*d+'px');sp.style.setProperty('--dy',Math.sin(a)*d*.85+'px');sp.style.setProperty('--c',cols[i%cols.length]);el.appendChild(sp);setTimeout(()=>sp.remove(),1300)}};
 const hop=el=>{const c=el&&el.querySelector('.chr');if(!c)return;c.classList.remove('hop');void c.getBoundingClientRect();c.classList.add('hop');setTimeout(()=>c.classList.remove('hop'),800)};
 // Menetas dengan diketuk: tiap ketukan telur bergetar dan retak bertambah, ketukan terakhir telur pecah dan karakter melompat keluar.
 const HATCH_TAPS=5,HATCH_CAP=['Ketuk telurnya!','Retak!','Ada yang bergerak…','Hampir!','Sekali lagi!'];
-const playHatch=(wrap,t,done,fits)=>{if(!wrap)return;let n=0;document.body.classList.add('ung-tap');setTimeout(()=>{if(!wrap.isConnected||wrap.querySelector('.hatch.open'))document.body.classList.remove('ung-tap')},60000);const P=TYPE_PAL[t]||['#ffe08a','#ffffff'];
+// Sama persis dengan @keyframes kJolt (easing per segmen seperti animasi CSS), untuk mengulang guncangan pada telur yang sama.
+const JOLT=[{transform:'scale(1)'},{transform:'rotate(-9deg) scale(1.06)',offset:.25},{transform:'rotate(8deg) scale(1.03)',offset:.55},{transform:'rotate(-3deg)',offset:.8},{transform:'none'}].map(k=>({...k,easing:'ease-out'}));
+// Diagnostik ketukan telur (hanya mode developer): frame setelah tiap ketukan, waktu respons (Event Timing), dan rincian frame panjang
+// (Long Animation Frames: skrip vs gambar), termasuk peralihan ketukan ke-5 ke layar terungkap. Ditampilkan di baris diagnostik.
+const TAPD={on:false};
+const tapDiag={start(){if(!devOn())return;this.stop();Object.assign(TAPD,{on:true,fr:[],ev:[],lo:[],t:[],t0:performance.now(),sum:''});
+    let l=0;const f=x=>{if(!TAPD.on)return;if(l)TAPD.fr.push([x,x-l]);l=x;requestAnimationFrame(f)};requestAnimationFrame(f);
+    try{TAPD.p1=new PerformanceObserver(L=>L.getEntries().forEach(e=>{if(/^(pointerdown|pointerup|click)$/.test(e.name))TAPD.ev.push([e.startTime,e.duration,e.processingStart-e.startTime,e.processingEnd-e.processingStart])}));TAPD.p1.observe({type:'event',durationThreshold:16,buffered:false})}catch(e){}
+    try{TAPD.p2=new PerformanceObserver(L=>L.getEntries().forEach(e=>TAPD.lo.push([e.startTime,e.duration,e.scripts?e.scripts.reduce((a,s)=>a+s.duration,0):0,e.renderStart?e.startTime+e.duration-e.renderStart:0])));TAPD.p2.observe({type:'long-animation-frame'})}catch(e){}},
+  tap(){if(TAPD.on)TAPD.t.push(performance.now())},
+  stop(){if(!TAPD.on)return;TAPD.on=false;try{TAPD.p1&&TAPD.p1.disconnect();TAPD.p2&&TAPD.p2.disconnect()}catch(e){}
+    const T=TAPD.t;if(!T.length)return;const R=Math.round,win=(a,b)=>x=>x[0]>=a&&x[0]<b,last=T[T.length-1];
+    const idle=TAPD.fr.filter(win(TAPD.t0+300,T[0])).map(x=>x[1]).sort((a,b)=>a-b),im=idle.length?idle[idle.length>>1]:0;
+    const ft=[],lo=[];let ev=[];T.slice(0,4).forEach(t=>{ft.push(...TAPD.fr.filter(win(t,t+600)).map(x=>x[1]));lo.push(...TAPD.lo.filter(win(t-50,t+600)))});
+    // kejadian masukan tercatat sebelum handler berjalan: ketukan ke-5 = yang dimulai setelah handler ketukan ke-4
+    const prev=T.length>1?T[T.length-2]:-1;ev=TAPD.ev.filter(x=>x[0]<=prev);const e5=TAPD.ev.filter(x=>x[0]>prev).reduce((m,x)=>Math.max(m,x[1]),0),f5=TAPD.fr.filter(win(last,last+800)).reduce((m,x)=>Math.max(m,x[1]),0);
+    const lm=lo.reduce((m,x)=>x[1]>m[1]?x:m,[0,0,0,0]),em=ev.reduce((m,x)=>x[1]>m[1]?x:m,[0,0,0,0]);
+    TAPD.sum=`ketukan ${T.length}×: telur diam ${im?R(1000/im):'-'} fps · respons terlama ${ev.length?R(em[1])+' ms (tunda '+R(em[2])+', proses '+R(em[3])+')':'<16 ms'} · frame terlama ${ft.length?R(Math.max(...ft)):'-'} ms, frame >34 ms: ${ft.filter(x=>x>34).length} · frame panjang ${lo.length?lo.length+'×, terlama '+R(lm[1])+' ms (skrip '+R(lm[2])+', gambar '+R(lm[3])+')':'0'} · ketukan ke-5: respons ${e5?R(e5)+' ms':'-'}, frame terlama ${R(f5)} ms`}};
+const playHatch=(wrap,t,done,fits)=>{if(!wrap)return;let n=0;tapDiag.start();document.body.classList.add('ung-tap');setTimeout(()=>{if(!wrap.isConnected||wrap.querySelector('.hatch.open'))document.body.classList.remove('ung-tap')},60000);const P=TYPE_PAL[t]||['#ffe08a','#ffffff'];
   const lab=()=>`Ketuk telur untuk menetaskan, ${HATCH_TAPS-n} ketukan lagi`;
   wrap.innerHTML=`<div class="hatch tap" role="button" tabindex="0" aria-label="${lab()}">${KARAKTER.egg(1,4,{peek:false})}<div class="hc">${KARAKTER.svg(t)}</div></div><p class="hatch-cap" aria-live="polite">${HATCH_CAP[0]}</p>`;
-  const h=wrap.querySelector('.hatch'),cap=wrap.querySelector('.hatch-cap');
-  const tap=()=>{if(h.classList.contains('open'))return;n++;
-    if(n>=HATCH_TAPS){h.classList.remove('tap');h.removeAttribute('role');h.removeAttribute('tabindex');h.removeAttribute('aria-label');cap.textContent='';
+  const h=wrap.querySelector('.hatch'),cap=wrap.querySelector('.hatch-cap');sfx.warm();
+  const tap=()=>{if(h.classList.contains('open'))return;n++;tapDiag.tap();
+    if(n>=HATCH_TAPS){setTimeout(()=>tapDiag.stop(),900);h.classList.remove('tap');h.removeAttribute('role');h.removeAttribute('tabindex');h.removeAttribute('aria-label');cap.textContent='';
       const open=()=>{document.body.classList.remove('ung-tap');h.classList.add('open');sparkle(h,[P[0],P[1],'#ffe08a','#ffffff'],24);if(done)done()};
       if(fits&&fits.length>2&&fits[0].t===t)ungkap(t,fits,open);else open();return}
-    sfx.cue('tap',n);const old=h.querySelector('.egg');old.outerHTML=KARAKTER.egg(1,4,{extra:n,peek:n>=2});const e=h.querySelector('.egg');if(!calm())e.classList.add('jolt');
+    sfx.cue('tap',n);
+    // Telur tidak digambar ulang: hanya retakan, cahaya, dan mata mengintip yang diperbarui (hasil gambarnya sama dengan telur baru), jadi ketukan ringan di HP lemah.
+    const e=h.querySelector('.egg'),nw=document.createElement('div');nw.innerHTML=KARAKTER.egg(1,4,{extra:n,peek:n>=2});const ne=nw.firstChild,cr=e.querySelector('.eg-cr'),gl=e.querySelector('.eg-gl');
+    if(cr&&gl){cr.innerHTML=ne.querySelector('.eg-cr').innerHTML;gl.setAttribute('opacity',ne.querySelector('.eg-gl').getAttribute('opacity'));const pk=ne.querySelector('.eg-peek');if(pk&&!e.querySelector('.eg-peek'))cr.after(pk)}else e.replaceWith(ne);
+    const eg=h.querySelector('.egg');if(!calm()){if(eg.classList.contains('jolt'))eg.animate(JOLT,{duration:450});else eg.classList.add('jolt')}
     sparkle(h,['#ffe08a','#ffffff'],4+n*2);cap.textContent=HATCH_CAP[n];h.setAttribute('aria-label',lab())};
   h.addEventListener('click',e=>{e.stopPropagation();tap()});
   h.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tap()}})};
@@ -876,18 +904,36 @@ const SFX_KEY='tesKepribadian.suara';
 const sfx=(()=>{
   let ac=null,out=null,fxo=null,rev=null,nb=null,on=true;
   try{on=localStorage.getItem(SFX_KEY)!=='0'}catch(e){}
+  // Musik latar diputar dari rekaman (audio/musik-terungkap.mp3, hasil render sintesis ini dengan kualitas penuh lewat tools/render-musik.mjs),
+  // jadi HP lemah tidak perlu menyintesis orkestra secara langsung (itu yang membuat suara putus-putus). Efek suara tetap disintesis langsung, kualitas penuh.
+  // Sintesis langsung untuk musik hanya cadangan kalau rekaman gagal dimuat: penuh untuk perangkat kuat, ringan untuk HP lemah (otomatis dari inti prosesor dan RAM,
+  // atau turun di tengah jalan kalau browser melaporkan suara tersendat). Mode developer bisa memaksa sintesis penuh/ringan untuk membandingkan.
+  let aqLite=false,aqWhy='',glitch0=0,aqForce='';
+  const aqDecide=()=>{let f='';try{f=sessionStorage.getItem('tesKepribadian.aq')||''}catch(e){}aqForce=f==='penuh'||f==='ringan'?f:'';
+    if(aqForce){aqLite=f==='ringan';aqWhy='dipilih di mode developer';return}
+    const cores=navigator.hardwareConcurrency||8,mem=navigator.deviceMemory||8;aqLite=cores<=4||mem<=4;aqWhy=aqLite?`otomatis (${cores} inti, RAM ${navigator.deviceMemory?mem+' GB':'tak diketahui'})`:'otomatis'};
+  const glitches=()=>{try{const s=ac&&ac.playoutStats;return s&&typeof s.fallbackFramesEvents==='number'?s.fallbackFramesEvents:null}catch(e){return null}};
   const N={D1:36.71,D2:73.42,A2:110,D3:146.83,Eb3:155.56,F3:174.61,Fs3:185,Ab3:207.65,A3:220,D4:293.66,Fs4:369.99,A4:440,D5:587.33,F5:698.46,Fs5:739.99,A5:880,Cs6:1108.73,D6:1174.66,E6:1318.51,A6:1760};
-  const init=()=>{
-    if(ac){if(ac.state==='suspended')ac.resume();return true}
-    const A=window.AudioContext||window.webkitAudioContext;if(!A)return false;
-    try{ac=new A()}catch(e){return false}
+  // Persiapan dibagi beberapa langkah kecil (konteks, gema, derau) supaya bisa dicicil saat senggang sebelum telur diketuk;
+  // kalau belum sempat, init() menyelesaikan sisanya sekaligus. Buffer gema dan derau dipakai ulang antar putaran.
+  let irBuf=null,nbBuf=null,gen=0;
+  const base=()=>{const A=window.AudioContext||window.webkitAudioContext;if(!A)return false;
+    aqDecide();try{ac=aqLite&&(aqForce||!MUS_FILE.seg.intro)?new A({latencyHint:'playback'}):new A()}catch(e){try{ac=new A()}catch(e2){return false}}glitch0=glitches()||0;
     const comp=ac.createDynamicsCompressor();comp.threshold.value=-14;comp.knee.value=6;comp.ratio.value=6;comp.attack.value=.003;comp.release.value=.25;comp.connect(ac.destination);
     out=ac.createGain();out.gain.value=on?.7:0;out.connect(comp);fxo=ac.createGain();fxo.gain.value=.7;fxo.connect(out);
-    const sr=ac.sampleRate,len=sr*1.8|0,ir=ac.createBuffer(2,len,sr);
-    for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3.2)}
-    rev=ac.createConvolver();rev.buffer=ir;const rg=ac.createGain();rg.gain.value=.4;rev.connect(rg);rg.connect(out);
-    nb=ac.createBuffer(1,sr,sr);const d=nb.getChannelData(0);for(let i=0;i<sr;i++)d[i]=Math.random()*2-1;
-    return true};
+    rev=ac.createConvolver();const rg=ac.createGain();rg.gain.value=.4;rev.connect(rg);rg.connect(out);nb=null;return true};
+  const PREP=[
+    ()=>{const sr=ac.sampleRate;if(irBuf&&irBuf.sampleRate===sr)return;const len=sr*1.8|0;irBuf=ac.createBuffer(2,len,sr);
+      for(let c=0;c<2;c++){const d=irBuf.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3.2)}},
+    ()=>{if(!rev.buffer)rev.buffer=irBuf},
+    ()=>{const sr=ac.sampleRate;if(!nbBuf||nbBuf.sampleRate!==sr){nbBuf=ac.createBuffer(1,sr,sr);const d=nbBuf.getChannelData(0);for(let i=0;i<sr;i++)d[i]=Math.random()*2-1}nb=nbBuf}];
+  const ready=()=>rev&&rev.buffer&&nb;
+  const init=()=>{
+    if(!ac&&!base())return false;
+    if(!ready())PREP.forEach(f=>f());
+    // resume() bisa tertunda (izin putar belum ada) lalu ditolak saat konteks ditutup: tangani supaya tidak jadi galat
+    if(ac.state==='suspended'){const r=ac.resume();if(r&&r.catch)r.catch(()=>{})}
+    musDecode();return true};
   const now=()=>ac.currentTime+.01;
   // gain dengan selubung: naik cepat, turun eksponensial
   const amp=(t,a,peak,dur,rv)=>{const g=ac.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(peak,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+dur);g.connect(fxo);if(rv){const s=ac.createGain();s.gain.value=rv;g.connect(s);s.connect(rev)}return g};
@@ -907,7 +953,7 @@ const sfx=(()=>{
     noise(t,dur+.05,filt('highpass',5200,0,g))};
   // --- musik latar: sekuenser bertempo yang berubah per tahap (ballad orkestra "manis"; draf lain diarsipkan di docs/desain/musik-terungkap-draf.js) ---
   const hz=m=>440*Math.pow(2,(m-69)/12);
-  const mus={ph:null,step:0,next:0,tm:null,ph0:0,bus:null,dl:null,sc:null};
+  const mus={ph:null,step:0,next:0,tm:null,ph0:0,bus:null,dl:null,sc:null,file:false,src:''};
   const menv=(t,a,v,dur,to,dly,rv)=>{const g=ac.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+dur);g.connect(to||mus.bus);
     if(dly){const s=ac.createGain();s.gain.value=dly;g.connect(s);s.connect(mus.dl)}if(rv){const s=ac.createGain();s.gain.value=rv;g.connect(s);s.connect(rev)}return g};
   const mosc=(type,f,t,dur,to,det)=>{const o=ac.createOscillator();o.type=type;o.frequency.value=f;if(det)o.detune.value=det;o.connect(to);o.start(t);o.stop(t+dur+.05);return o};
@@ -915,27 +961,27 @@ const sfx=(()=>{
   const vibr=(t,dur,rate,depth,o)=>{const v=ac.createOscillator(),g=ac.createGain();v.frequency.value=rate;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(depth,t+Math.min(.4,dur*.5));v.connect(g);g.connect(o.detune);v.start(t);v.stop(t+dur+.1)};
   const timpH=(t,f,v)=>{const g=menv(t,.003,v,.5,null,0,.4);const o=ac.createOscillator();o.frequency.setValueAtTime(f*1.3,t);o.frequency.exponentialRampToValueAtTime(f,t+.06);o.connect(g);o.start(t);o.stop(t+.6)};
   const choir=(t,notes,dur,v=.05)=>{const g=ac.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+Math.min(.9,dur*.4));g.gain.setValueAtTime(v,t+dur*.7);g.gain.exponentialRampToValueAtTime(.0001,t+dur);g.connect(mus.bus);const s=ac.createGain();s.gain.value=.7;g.connect(s);s.connect(rev);
-    const f1=mlp(720,6,g,'bandpass'),f2=mlp(1150,7,g,'bandpass');notes.forEach(m=>[-7,7].forEach(d=>{const o=mosc('sawtooth',hz(m),t,dur,f1,d);o.connect(f2);vibr(t,dur,5,12,o)}))};
+    const f1=mlp(720,6,g,'bandpass'),f2=mlp(1150,7,g,'bandpass');if(aqLite){notes.forEach(m=>{const o=mosc('sawtooth',hz(m),t,dur,f1,0);o.connect(f2)});return}notes.forEach(m=>[-7,7].forEach(d=>{const o=mosc('sawtooth',hz(m),t,dur,f1,d);o.connect(f2);vibr(t,dur,5,12,o)}))};
   const piano=(t,m,dur=1.6,v=.11)=>{const d=Math.min(3.2,Math.max(.8,dur));const lp=mlp(2800,0,menv(t,.004,v,d,null,0,.55));lp.frequency.setValueAtTime(3600,t);lp.frequency.exponentialRampToValueAtTime(1100,t+d);
-    mosc('triangle',hz(m),t,d,lp);mosc('sine',hz(m)*2,t,d*.6,menv(t,.004,v*.22,d*.5,null,0,.4));mosc('sine',hz(m)*3.01,t,d*.3,menv(t,.003,v*.08,d*.25));noise(t,.02,mlp(2000,0,menv(t,.001,v*.15,.02)))};
+    mosc('triangle',hz(m),t,d,lp);if(aqLite)return;mosc('sine',hz(m)*2,t,d*.6,menv(t,.004,v*.22,d*.5,null,0,.4));mosc('sine',hz(m)*3.01,t,d*.3,menv(t,.003,v*.08,d*.25));noise(t,.02,mlp(2000,0,menv(t,.001,v*.15,.02)))};
   const SEC={vn:{n:3,cut:2300,pk:1900,vib:13},va:{n:3,cut:1700,pk:1200,vib:11},vc:{n:3,cut:1200,pk:700,vib:10},cb:{n:2,cut:650,pk:180,vib:7}};
   const pizzS=(t,m,v=.12)=>{const lp=mlp(1200,1,menv(t,.003,v,.45,null,0,.5));lp.frequency.setValueAtTime(1800,t);lp.frequency.exponentialRampToValueAtTime(300,t+.35);mosc('triangle',hz(m),t,.5,lp);mosc('sine',hz(m),t,.5,menv(t,.003,v*.6,.4))};
   const PAN={vn:-.45,va:.12,vc:.35,cb:.5};
-  const bowR=(t,m,dur,v,sec,o={})=>{const S=SEC[sec],n=S.n+(sec==='cb'?1:2),att=o.att||.4,rel=o.rel||.8,g=ac.createGain();
+  const bowR=(t,m,dur,v,sec,o={})=>{const S=SEC[sec],nf=S.n+(sec==='cb'?1:2),n=aqLite?(sec==='cb'?1:2):nf,att=o.att||.4,rel=o.rel||.8,g=ac.createGain();
     g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v*(o.from||1),t+att);if(o.to)g.gain.linearRampToValueAtTime(v*o.to,t+dur);else g.gain.setValueAtTime(v,t+Math.max(att,dur));g.gain.exponentialRampToValueAtTime(.0001,t+dur+rel);
-    let dst=mus.bus;if(ac.createStereoPanner){const p=ac.createStereoPanner();p.pan.value=o.pan!=null?o.pan:PAN[sec];p.connect(mus.bus);dst=p}
+    let dst=mus.bus;if(!aqLite&&ac.createStereoPanner){const p=ac.createStereoPanner();p.pan.value=o.pan!=null?o.pan:PAN[sec];p.connect(mus.bus);dst=p}
     g.connect(dst);const s=ac.createGain();s.gain.value=o.wet||.75;g.connect(s);s.connect(rev);let into=g;
     if(o.trem){const tg=ac.createGain();tg.gain.value=.6;tg.connect(g);const l=ac.createOscillator(),lg=ac.createGain();l.frequency.value=o.trem;lg.gain.value=.4;l.connect(lg);lg.connect(tg.gain);l.start(t);l.stop(t+dur+rel+.1);into=tg}
     const pk=ac.createBiquadFilter();pk.type='peaking';pk.frequency.value=S.pk;pk.Q.value=1.1;pk.gain.value=4;pk.connect(into);const lp=mlp(S.cut,.6,pk);
-    const vb=ac.createOscillator(),vg=ac.createGain();vb.frequency.value=5.2+Math.random()*.5;vg.gain.setValueAtTime(0,t);vg.gain.linearRampToValueAtTime(o.novib?0:S.vib,t+Math.min(.6,dur*.5));vb.connect(vg);vb.start(t);vb.stop(t+dur+rel+.1);
-    for(let k=0;k<n;k++){const os=mosc('sawtooth',hz(m),t,dur+rel+.05,lp,(k-(n-1)/2)*7+(Math.random()-.5)*5);vg.connect(os.detune)}
+    let vg=null;if(!aqLite&&!o.novib){const vb=ac.createOscillator();vg=ac.createGain();vb.frequency.value=5.2+Math.random()*.5;vg.gain.setValueAtTime(0,t);vg.gain.linearRampToValueAtTime(S.vib,t+Math.min(.6,dur*.5));vb.connect(vg);vb.start(t);vb.stop(t+dur+rel+.1)}
+    for(let k=0;k<n;k++){const os=mosc('sawtooth',hz(m),t,dur+rel+.05,lp,(k-(n-1)/2)*7+(Math.random()-.5)*5);if(vg)vg.connect(os.detune)}
     if(sec==='cb'||sec==='vc')mosc('sine',hz(m),t,dur+rel,into,0);
-    noise(t,Math.min(.25,att),mlp(S.pk*1.5,2,menv(t,.02,v*.1,Math.min(.25,att)),'bandpass'))};
+    if(!aqLite)noise(t,Math.min(.25,att),mlp(S.pk*1.5,2,menv(t,.02,v*.1,Math.min(.25,att)),'bandpass'))};
   const harp=(t,m,v=.05)=>{let dst=mus.bus;if(ac.createStereoPanner){const p=ac.createStereoPanner();p.pan.value=-.2;p.connect(mus.bus);dst=p}
-    const g=menv(t,.002,v,2,dst,.15,.7),lp=mlp(3200,0,g);lp.frequency.setValueAtTime(4200,t);lp.frequency.exponentialRampToValueAtTime(1200,t+1.2);mosc('triangle',hz(m),t,2.1,lp);mosc('sine',hz(m)*2,t,.8,menv(t,.002,v*.3,.7,dst))};
-  const hornPad=(t,notes,dur,v=.03)=>{let dst=mus.bus;if(ac.createStereoPanner){const p=ac.createStereoPanner();p.pan.value=.2;p.connect(mus.bus);dst=p}
+    const g=menv(t,.002,v,2,dst,.15,.7),lp=mlp(3200,0,g);lp.frequency.setValueAtTime(4200,t);lp.frequency.exponentialRampToValueAtTime(1200,t+1.2);mosc('triangle',hz(m),t,2.1,lp);if(!aqLite)mosc('sine',hz(m)*2,t,.8,menv(t,.002,v*.3,.7,dst))};
+  const hornPad=(t,notes,dur,v=.03)=>{let dst=mus.bus;if(!aqLite&&ac.createStereoPanner){const p=ac.createStereoPanner();p.pan.value=.2;p.connect(mus.bus);dst=p}
     const g=ac.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.35);g.gain.setValueAtTime(v,t+dur);g.gain.exponentialRampToValueAtTime(.0001,t+dur+.9);g.connect(dst);const s=ac.createGain();s.gain.value=.7;g.connect(s);s.connect(rev);
-    const lp=mlp(850,.7,g);notes.forEach(m=>{mosc('sawtooth',hz(m),t,dur+1,lp,-4);mosc('triangle',hz(m),t,dur+1,lp,4)})};
+    const lp=mlp(850,.7,g);notes.forEach(m=>{mosc('sawtooth',hz(m),t,dur+1,lp,-4);if(!aqLite)mosc('triangle',hz(m),t,dur+1,lp,4)})};
   const MN={i9:{b:38,vc:[50,57],va:[62,64,65],v2:[69,74],mel:[76,74],th:[72,70]},VI7:{b:34,vc:[46,53],va:[62,65,69],v2:[69,74],mel:[81,79],th:[77,76]},
     III9:{b:41,vc:[53,60],va:[60,65,67],v2:[69,72],mel:[79,77],th:[76,74]},VIIs:{b:36,vc:[48,55],va:[60,65],v2:[67,72],mel:[77,76],th:[74,72]},VII:{b:36,vc:[48,55],va:[60,64],v2:[67,72]},
     iv7:{b:43,vc:[55,62],va:[62,65],v2:[70,74],mel:[77,74],th:[74,70]},VI:{b:34,vc:[46,53],va:[62,65],v2:[70,74],mel:[77,74],th:[74,70]},
@@ -979,15 +1025,28 @@ const sfx=(()=>{
   const playStep=(t,s)=>{const S=mus.sc,i=s%16,b=Math.floor(s/16),ph=mus.ph;
     if(ph==='intro')S.intro(t,i,b,s);else if(ph==='drive')S.drive(t,i,b,0,s);else if(ph==='peak'){if(S.peak)S.peak(t,i,b,s);else S.drive(t,i,b,1,s)}else if(ph==='break')S.brk(t,i,b,s);else if(ph==='roll')S.roll(t,i,b,t-mus.ph0,s);else if(ph==='hold'){if(S.hold)S.hold(t,i,b,s)}else if(ph==='anthem')S.anthem(t,i,b)};
   const tick16=()=>{if(!ac||!mus.ph)return;while(mus.next<ac.currentTime+.2){playStep(mus.next,mus.step);mus.step++;mus.next+=mus.sc.sp;if(mus.ph==='anthem'&&mus.step>=16*mus.sc.bars+(mus.sc.tail||1)){mus.ph=null;break}}};
-  const musGo=(ph,t,reset)=>{busInit();const was=mus.ph;mus.ph=ph;mus.ph0=t;if(reset||!was||mus.sc.resetAll){mus.step=0;mus.next=t}if(!mus.tm)mus.tm=setInterval(tick16,40);tick16()};
-  const musStop=()=>{mus.ph=null;if(mus.tm){clearInterval(mus.tm);mus.tm=null}if(mus.bus&&ac){try{mus.bus.gain.setTargetAtTime(0,ac.currentTime,.03)}catch(e){}mus.bus=null}};
+  // --- rekaman musik: satu file berisi empat potongan, masing-masing dimulai pada isyarat yang mereset sekuenser (intro, break, roll, anthem).
+  // Pergantian tahap tanpa reset (drive, peak) sudah terekam di potongan intro pada jarak standar animasi. Baris MUS_FILE ditulis ulang oleh tools/render-musik.mjs.
+  const MUS_FILE={src:'audio/musik-terungkap.mp3?v=deeb36ec',g:0.6057,seg:{"intro":[0.25,10.4854],"break":[11.2354,4.955],"roll":[16.6904,4.9541],"anthem":[22.1445,18.4987]}};
+  let musBuf=null,musReq=null,musDec=null;const segs=[];
+  const musFileOk=()=>!aqForce&&!!musBuf;
+  const musFetch=()=>{if(!musReq&&!musBuf&&MUS_FILE.seg.intro&&window.fetch)musReq=fetch(MUS_FILE.src).then(r=>r.ok?r.arrayBuffer():null).catch(()=>null);return musReq};
+  const musDecode=()=>{if(musBuf||musDec||!ac||!musFetch())return;const a=ac;
+    musDec=musReq.then(ab=>ab&&new Promise((res,rej)=>{const p=a.decodeAudioData(ab.slice(0),res,rej);if(p&&p.catch)p.catch(rej)})).then(b=>{if(b)musBuf=b}).catch(()=>{}).then(()=>{musDec=null;if(!musBuf)musReq=null})};
+  const segPlay=(k,t)=>{const s=MUS_FILE.seg[k];if(!s)return false;const g=ac.createGain();g.gain.value=MUS_FILE.g;g.connect(out);const b=ac.createBufferSource();b.buffer=musBuf;b.connect(g);
+    let off=s[0],w=t;if(w<ac.currentTime){off+=ac.currentTime-w;w=ac.currentTime}if(off>=s[0]+s[1])return true;b.start(w,off,s[0]+s[1]-off);const x={b,g};segs.push(x);b.onended=()=>{const i=segs.indexOf(x);if(i>=0)segs.splice(i,1)};return true};
+  const segFade=()=>{const n=ac.currentTime;segs.splice(0).forEach(({b,g})=>{try{g.gain.setTargetAtTime(0,n,.03);b.stop(n+.4)}catch(e){}})};
+  const musGo=(ph,t,reset)=>{
+    if(musFileOk()){if(reset&&MUS_FILE.seg[ph]){mus.ph=null;if(mus.tm){clearInterval(mus.tm);mus.tm=null}mus.file=segPlay(ph,t);if(mus.file)mus.src=mus.src==='sintesis'?'campur':'rekaman'}if(mus.file)return}
+    mus.file=false;if(!mus.src)mus.src='sintesis';busInit();const was=mus.ph;mus.ph=ph;mus.ph0=t;if(reset||!was||mus.sc.resetAll){mus.step=0;mus.next=t}if(!mus.tm)mus.tm=setInterval(tick16,40);tick16()};
+  const musStop=()=>{mus.ph=null;mus.file=false;if(ac)segFade();if(mus.tm){clearInterval(mus.tm);mus.tm=null}if(mus.bus&&ac){try{mus.bus.gain.setTargetAtTime(0,ac.currentTime,.03)}catch(e){}mus.bus=null}};
   const riser=(t,dur,v=.16)=>{const g=ac.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+dur);g.gain.linearRampToValueAtTime(0,t+dur+.05);g.connect(fxo);
     const b=filt('bandpass',400,1.2,g);b.frequency.setValueAtTime(400,t);b.frequency.exponentialRampToValueAtTime(4200,t+dur);noise(t,dur+.1,b);osc('sawtooth',N.A2,t,t+dur,filt('lowpass',900,0,g),N.A4,dur)};
   const reveal=t=>{boom(t,1);cymbal(t,2.6,.32);timp(t,N.D2,.7);bell(t+.1,N.D6,.12,2.2);musGo('anthem',t,true)};
   // --- kejadian dari animasi ---
   const cues={
     tap:n=>{const t=now();crack(t,.18+n*.06);timp(t,N.D2,.18+n*.08);if(n>=3)timp(t+.2,N.D2,.15+n*.04)},
-    open:()=>{const t=now();boom(t);cymbal(t,1.4,.22);[N.D5,N.F5,N.A5,N.D6].forEach((f,i)=>bell(t+.45+i*.08,f,.14));
+    open:()=>{const t=now();mus.src='';boom(t);cymbal(t,1.4,.22);[N.D5,N.F5,N.A5,N.D6].forEach((f,i)=>bell(t+.45+i*.08,f,.14));
       musGo('intro',t+.55,true)},
     scan:()=>{const t=now();whoosh(t,.45,true,.2);if(mus.ph==='intro')musGo('drive',t)},
     warn:()=>stab(now()),
@@ -1007,9 +1066,16 @@ const sfx=(()=>{
     final:()=>{musStop();reveal(now())}};
   return {
     get on(){return on},
+    // Kalau browser melaporkan suara tersendat (Chrome: playoutStats), sisa momen ini memakai mode ringan.
+    watch(){const g=glitches();if(g!=null&&!aqLite&&g-glitch0>=3){aqLite=true;aqWhy='turun otomatis: suara tersendat'}return aqLite},
+    diag(){const g=glitches();return {mode:mus.src==='rekaman'?'rekaman':mus.src==='campur'?'rekaman (awal sintesis)':'sintesis '+(aqLite?'ringan':'penuh'),why:mus.src==='rekaman'?'':aqWhy,lat:ac?Math.round(((ac.baseLatency||0)+(ac.outputLatency||0))*1000):null,glitch:g==null?null:g-glitch0}},
     cue(k,a){if(!on&&!ac)return;if(!init()||!cues[k])return;try{cues[k](a)}catch(e){}},
+    // Dipanggil begitu telur tampil: unduh rekaman musik dan siapkan mesin suara sedikit demi sedikit saat senggang, bukan saat ketukan pertama.
+    warm(){if(!on)return;musFetch();const idle=window.requestIdleCallback?f=>requestIdleCallback(f,{timeout:300}):f=>setTimeout(f,30),g=++gen;let i=0,c=ac;
+      // berhenti kalau suara dihentikan atau mesin suara diganti di tengah jalan (gen berubah)
+      const nx=()=>idle(()=>{if(g!==gen)return;try{if(!ac){if(c||!base())return;c=ac}else if(ac!==c)return;else if(i<PREP.length)PREP[i++]();else{musDecode();return}}catch(e){return}nx()});nx()},
     set(v){on=v;try{localStorage.setItem(SFX_KEY,v?'1':'0')}catch(e){}if(v)init();if(out&&ac)out.gain.setTargetAtTime(v?.7:0,ac.currentTime,.05)},
-    stop(){if(!ac)return;musStop();const a=ac,o=out;ac=null;try{o.gain.setTargetAtTime(0,a.currentTime,.08);setTimeout(()=>a.close().catch(()=>{}),500)}catch(e){}}};
+    stop(){gen++;if(!ac)return;musStop();segs.length=0;const a=ac,o=out;ac=null;rev=null;nb=null;try{o.gain.setTargetAtTime(0,a.currentTime,.08);setTimeout(()=>{try{a.close().catch(()=>{})}catch(e){}},500)}catch(e){}}};
 })();
 document.addEventListener('visibilitychange',()=>{if(document.hidden)sfx.stop()});
 // ---------- Momen terungkap: ketukan ke-5 membuka peta 16 tipe, lalu penyaringan ----------
@@ -1020,7 +1086,7 @@ let ungRun=0;
 function ungkap(t,fits,onEnd){
   const box=$('ungkap'),st=$('ungSt'),ok_=$('ungOk'),skipB=$('ungSkip'),sr=$('ungSr'),my=++ungRun,back=document.activeElement;
   let W=0,H=0,ts=0,T=[],skipped=false,lite=false;const P=TYPE_PAL[t]||['#ffe08a','#ffffff'],rank={};fits.forEach((f,i)=>rank[f.t]=i);
-  box.hidden=false;document.body.classList.add('noscroll','ung-open');ok_.hidden=true;skipB.hidden=false;sr.textContent='';st.dataset.out='';st.classList.remove('lite');
+  box.hidden=false;document.body.classList.add('noscroll','ung-open');ok_.hidden=true;skipB.hidden=false;sr.textContent='';st.dataset.out='';st.classList.remove('lite');$('ungDiag').hidden=true;
   const snd=$('ungSnd'),sndUi=()=>{snd.setAttribute('aria-pressed',String(sfx.on));snd.setAttribute('aria-label',sfx.on?'Matikan suara':'Nyalakan suara');snd.classList.toggle('off',!sfx.on)};sndUi();snd.onclick=e=>{e.stopPropagation();sfx.set(!sfx.on);sndUi()};
   const ok=()=>my===ungRun&&!skipped&&!box.hidden,q=s=>st.querySelector(s),sleep=ms=>new Promise(r=>setTimeout(r,ms));
   const tf=p=>`translate(${p.x-ts/2}px,${p.y-ts/2}px) scale(${p.s}) rotate(${p.r||0}deg)`;
@@ -1044,7 +1110,10 @@ function ungkap(t,fits,onEnd){
   const cx=()=>W/2,cy=()=>H*.42,gridPos=i=>{const c=i%4,r=(i/4)|0,g=ts*1.17;return {x:cx()+(c-1.5)*g,y:cy()+(r-1.5)*g}};
   const pct=v=>Math.round(v)+'%',fam=FAM[famOf(t)];
   const meta=()=>{q('.u-meta').innerHTML=`<span class="u-fam">${fam} · cocok ${pct(fits[0].v)}</span><small>Hampir: ${fits[1].t} ${pct(fits[1].v)}</small>`};
-  const finish=()=>{st.classList.remove('run');st.onclick=null;skipB.hidden=true;ok_.hidden=false;ok_.focus({preventScroll:true});sr.textContent=`Tipemu ${t}, ${fam}, cocok ${pct(fits[0].v)}. Hampir: ${fits[1].t}.`};
+  const fr=[];{let l=0,k=0;const m=t=>{if(my!==ungRun&&!st.classList.contains('run'))return;if(l)fr.push(t-l);l=t;if(++k%60===0)sfx.watch();if(st.classList.contains('run'))requestAnimationFrame(m)};requestAnimationFrame(m)}
+  const diag=()=>{const dg=$('ungDiag');if(!(typeof devOn==='function'&&devOn())){dg.hidden=true;return}const d=sfx.diag(),s=fr.slice().sort((a,b)=>a-b),med=s.length?s[s.length>>1]:0,p95=s.length?s[Math.floor(s.length*.95)]:0;
+    dg.textContent=`Diagnostik: ${navigator.hardwareConcurrency||'?'} inti · RAM ${navigator.deviceMemory?navigator.deviceMemory+' GB':'tidak diketahui'} · musik ${d.mode}${d.why?' ('+d.why+')':''} · jeda putar ${d.lat==null?'-':d.lat+' ms'} · suara tersendat: ${d.glitch==null?'tidak dilaporkan browser':d.glitch+' kali'} · gambar ${med?Math.round(1000/med):'-'} fps, p95 ${Math.round(p95)} ms · efek ${lite?'ringan':'penuh'}${TAPD.sum?' · '+TAPD.sum:''}`;dg.hidden=false};
+  const finish=()=>{st.classList.remove('run');st.onclick=null;skipB.hidden=true;ok_.hidden=false;ok_.focus({preventScroll:true});sr.textContent=`Tipemu ${t}, ${fam}, cocok ${pct(fits[0].v)}. Hampir: ${fits[1].t}.`;diag()};
   const chr=()=>{const c=q('.u-chr');if(c&&!c.firstChild)c.innerHTML=KARAKTER.svg(t)};
   const final=()=>{skipped=true;ungRun++;const m2=ungRun;sfx.cue('final');build();chr();
     Object.assign(q('.u-egg').style,{opacity:0});q('.u-rays').style.opacity=1;q('.u-vig').style.opacity=.35;const cw=q('.u-chr');cw.style.opacity=1;cw.style.transform='translate(-50%,-50%) scale(1)';
@@ -1239,9 +1308,10 @@ const devOn=()=>{try{if(location.hash==='#dev')sessionStorage.setItem(DEV_KEY,'1
 const devOpen=d=>{location.hash='h='+encodeShare(d);openShared()};
 function devPanel(){const p=$('devp');if(!devOn()){p.hidden=true;p.innerHTML='';return}
   if(!p.innerHTML){p.innerHTML=`<div class="devh"><b>Mode developer</b><span>Hasil dari jawaban contoh, dibuka dalam mode lihat. Jawaban dan riwayatmu tidak tersentuh.</span></div>
-    <div class="devo"><label>Identitas <select id="devId"><option value="T">T (Turbulent)</option><option value="A">A (Assertive)</option></select></label><label>Jawaban <select id="devStr"><option value="2">Jelas</option><option value="1">Tipis (hasil ketat)</option></select></label><button type="button" id="devRnd">Acak</button><button type="button" id="devOff">Tutup mode developer</button></div>
+    <div class="devo"><label>Identitas <select id="devId"><option value="T">T (Turbulent)</option><option value="A">A (Assertive)</option></select></label><label>Jawaban <select id="devStr"><option value="2">Jelas</option><option value="1">Tipis (hasil ketat)</option></select></label><label>Musik <select id="devAq"><option value="">Rekaman (otomatis)</option><option value="penuh">Sintesis penuh</option><option value="ringan">Sintesis ringan</option></select></label><button type="button" id="devRnd">Acak</button><button type="button" id="devOff">Tutup mode developer</button></div>
     <div class="devg">${DEV_MAP.map(t=>{const P=TYPE_PAL[t];return `<button type="button" data-dev-t="${t}" style="--a:${P[0]};--b:${P[1]}">${t}</button>`}).join('')}</div>`;
     p.querySelector('.devg').addEventListener('click',e=>{const b=e.target.closest('[data-dev-t]');if(!b)return;const t=b.dataset.devT,id=$('devId').value;devOpen({v:DATA_V,name:`Contoh ${t}-${id}`,c:canon(sampleAnswers(t,id,+$('devStr').value))})});
+    {const a=$('devAq');try{a.value=sessionStorage.getItem('tesKepribadian.aq')||''}catch(e){}a.addEventListener('change',()=>{try{a.value?sessionStorage.setItem('tesKepribadian.aq',a.value):sessionStorage.removeItem('tesKepribadian.aq')}catch(e){}sfx.stop()})}
     $('devRnd').addEventListener('click',()=>devOpen({v:DATA_V,name:'Contoh acak',c:canon(randomAnswers())}));
     $('devOff').addEventListener('click',()=>{try{sessionStorage.removeItem(DEV_KEY)}catch(e){}if(location.hash==='#dev')clearHash();devPanel()})}
   p.hidden=false}

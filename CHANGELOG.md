@@ -1,5 +1,19 @@
 # Catatan rilis
 
+## 2026-11-28 (rilis ketiga): suara dan ketukan telur lancar di HP, kualitas tetap penuh
+`?v=2026-11-27-3` untuk semua script (karakter.js berubah).
+- Masukan pemilik: di iPad lancar; di HP-nya ketukan telur agak patah dan suara hilang-muncul, animasi momen terungkap sendiri lancar. Diminta: perbaiki yang rusak saja, kualitas tidak boleh turun.
+- **Penyebab suara putus, diukur**: menyintesis musik orkestra secara langsung memakan rata-rata 40% satu inti prosesor desktop (puncak 84%); mode ringan pun masih sampai ~50%. Prosesor HP yang 2–4× lebih lambat tidak sanggup, jadi suara hilang-muncul. Efek suara sendiri cuma 4–7%.
+- **Musik kini diputar dari rekaman** `audio/musik-terungkap.mp3` (820 KB): hasil render sintesis yang sama dengan kualitas penuh (`tools/render-musik.mjs`, jalankan ulang tiap musik diubah). Empat potongan dimulai tepat pada isyarat animasi yang sama (intro, break, roll, anthem); pergantian drive dan peak terekam pada jarak standar animasi. Dibanding sintesis langsung: waktu sama (selisih < 50 ms), kerasnya selisih ≤ 0,3 dB per tahap, spektrum ≤ 0,8 dB per oktaf. Semua perangkat mendapat versi penuh; mode ringan di HP lemah tidak dipakai lagi.
+- Rekaman diunduh begitu telur tampil. Kalau gagal dimuat, musik tetap disintesis langsung (penuh atau ringan sesuai perangkat) seperti sebelumnya.
+- **Efek suara selalu kualitas penuh**, dan **efek visual tidak lagi ikut turun** karena pengaturan suara; mode visual ringan hanya aktif kalau gambar benar-benar tersendat (seperti rilis kedua).
+- **Ketukan telur lebih ringan**, tampilan sama: mesin suara (termasuk perhitungan gema) disiapkan saat senggang begitu telur tampil, bukan saat ketukan pertama (dulu macet ~370 ms di HP yang diperlambat 6×, sekarang tidak ada tugas panjang); tiap ketukan hanya menambah retakan pada telur yang sama, tidak menggambar ulang seluruh telur; animasi karakter yang masih tersembunyi di dalam telur ditahan sampai menetas.
+- **Guncangan telur lebih mulus di HP** (diukur di HP pemilik: kode ketukan 0 ms, yang lambat menggambarnya): telur tetap di lapisan grafisnya sendiri selama menunggu ketukan, jadi tidak digambar ulang tiap guncangan; bintang percikan digambar sebagai SVG (bentuk sama) alih-alih clip-path yang mahal untuk chip grafis.
+- Hasil di HP Android kelas menengah pemilik: suara tidak putus lagi; frame lambat setelah ketukan 35 → 0–2, respons ketukan terlama ~270 → 128–168 ms.
+- Mode developer: diagnostik ketukan telur (respons, frame setelah ketukan, rincian frame panjang, peralihan ketukan ke-5).
+- Perbaikan galat: permintaan melanjutkan suara yang tertunda tidak lagi menjadi galat saat momen ditutup.
+- **Mode developer**: pilihan "Musik: Rekaman (otomatis) / Sintesis penuh / Sintesis ringan" untuk membandingkan; diagnostik menyebut sumber musik.
+
 ## 2026-11-27 (rilis kedua): momen terungkap
 Perubahan sejak rilis 2026-11-27 pertama. `?v=2026-11-27-2` untuk semua script (core.js berubah).
 - Ketukan ke-5 pada telur membuka **momen terungkap** layar penuh: telur pecah, cahayanya menjadi peta 16 tipe, lalu tipe tersingkir **sesuai urutan kecocokan dari jawabanmu** (yang paling tidak cocok padam duluan, jadi dua terakhir memang dua tipe teratas).
