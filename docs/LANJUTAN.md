@@ -12,11 +12,11 @@ Dokumen ini merangkum keadaan proyek dan keputusan yang sudah diambil bersama pe
 - Situs live = `main` di GitHub Pages (`https://tendorethane-code.github.io/mbti/`).
 
 ## Status (per 27 Nov 2026)
-Rilis **2026-11-27** sudah di-merge ke `main` (squash, urutan #1 → #3 → #5 → #2 → #4; branch-nya dihapus karena riwayatnya memuat data pribadi yang sudah dihapus dari file). Isi rilis: lihat `CHANGELOG.md`. Sebelum merge sudah lewat cek rilis lengkap pada gabungan kelima PR (51 unit, 156 E2E); pemilik mengecek di HP setelah deploy.
+Rilis **2026-11-27** sudah di-merge ke `main` (squash, urutan #1 → #3 → #5 → #2 → #4). Branch PR lama (`claude/kuis-seru`, `claude/karakter`, `claude/pendalaman-fungsi`, `claude/penjelasan`) harus dihapus karena riwayatnya memuat data pribadi yang sudah dihapus dari file; sesi Claude tidak bisa menghapus branch (proxy menolak), jadi pemilik menghapusnya di GitHub (Code → Branches). `claude/hopeful-dijkstra-5g5kvh` dimulai ulang dari `main` untuk PR #6. Isi rilis: lihat `CHANGELOG.md`. Sebelum merge sudah lewat cek rilis lengkap pada gabungan kelima PR (51 unit, 156 E2E); pemilik mengecek di HP setelah deploy.
 
 | PR | Branch | Base | Isi |
 |---|---|---|---|
-| #6 | `claude/terungkap` | `main` | Momen terungkap: ketukan ke-5 membuka peta 16 tipe, tersingkir sesuai `R.fits`, tinggal 3, tinggal 2, karakter + huruf megah. Draf: `docs/desain/pratinjau-terungkap.html`. |
+| #6 | `claude/hopeful-dijkstra-5g5kvh` | `main` | Momen terungkap: ketukan ke-5 membuka peta 16 tipe, tersingkir sesuai `R.fits`, tinggal 3, tinggal 2, karakter + huruf megah. Draf: `docs/desain/pratinjau-terungkap.html`. |
 
 Cara merge yang dipakai untuk PR bertumpuk: sebelum merge, gabungkan branch dasarnya ke branch PR (`git merge`, bukan rebase/force-push); setelah induknya di-squash, ganti base ke `main` lalu gabungkan `main` ke branch PR dan selesaikan konflik ("ambil dua-duanya"). Bandingkan tree akhir dengan gabungan yang sudah dites.
 
