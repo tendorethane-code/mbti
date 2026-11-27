@@ -1,5 +1,20 @@
 # Catatan rilis
 
+## Berikutnya: karakter per tipe
+- **Roh Peta**: satu karakter orisinal per tipe, berupa SVG. Bentuk badannya unik per tipe (mis. ENTP bohlam, ENFP bintang, ISTJ jam weker, ESFP balon). INFP memakai badan jeli kosmos dengan gerhana sebagai lingkaran cahaya. Family tetap terbaca lewat tekstur halus di dalam badan, pin berlambang family, dan gaya gerak (Diplomat melayang, Analyst memiringkan kepala, Sentinel bernapas tenang, Explorer melompat).
+- **Telur Nebula** selama mengisi soal: telur mini di kepala kartu soal dan di beranda. Bintang di dalamnya bertambah tiap jawaban, retak di akhir tiap modul, ada mata yang mengintip di 75%. Setelah 4 modul utama selesai, telur **tidak langsung menetas**: ketuk telurnya, tiap ketukan membuatnya bergetar dan retak bertambah, dan ketukan kelima membuatnya pecah (juga bisa dengan Enter/Spasi). Telur ini **netral**: hanya bergantung pada jumlah soal terjawab dan modul selesai, bukan isi jawaban. Karakter tipe tidak pernah muncul selama tes.
+- **Hasil**: karakter di bagian atas (bisa diketuk, ada tombol putar ulang menetas); sebelum lengkap, tampil telur dengan progres modul. Karakter mini di riwayat.
+- **Kartu**: gaya baru **Karakter** (jadi bawaan) dengan balon kata "INI AKU: …"; Poster mendapat maskot mini di bilah bawah.
+- **PDF**: karakter di kiri bawah sampul (cap family tetap di kanan); karakter melambai di halaman penutup.
+- Semua animasi memakai transform/opacity dan mati kalau pengguna memilih "kurangi gerakan".
+
+## Berikutnya: mengisi soal jadi lebih seru
+- **Rasi bintang**: setiap modul punya rasi sendiri (Kompas, Mozaik, Lima Arah, Delapan Cahaya, Lentera). Setiap jawaban menyalakan satu bintang, bintang yang berurutan tersambung garis, dan bintang berikutnya berkedip. Di layar selesai, rasinya tergambar utuh dengan percikan cahaya dan jumlah rasi yang sudah terkumpul.
+- **Babak pendek**: tiap modul dibagi jadi babak berisi ~11 soal. Di awal babak baru muncul kartu jeda berisi satu fakta tentang kepribadian dan pilihan "istirahat dulu".
+- **Perayaan kecil**: pesan di 25/50/75%, "Tinggal 5 lagi", "Satu lagi"; pilihan jawaban memantul sedikit saat dipilih; soal bergeser masuk dari kanan (dari kiri saat kembali).
+- **Sapaan saat kembali**: beranda menampilkan "Selamat datang lagi" dengan sisa soal dan tombol Lanjutkan; kartu modul menampilkan rasi kecilnya.
+- Semua hiasan **netral**: posisi bintang, pesan, dan fakta tidak bergantung pada isi jawaban, supaya tidak memengaruhi jawaban berikutnya. Animasi dimatikan kalau pengguna memilih "kurangi gerakan".
+
 ## Berikutnya: Pendalaman per fungsi
 - 12 soal Pendalaman baru untuk fungsi yang sebelumnya belum punya soal khusus (Fe, Ti, Te, Ni, Ne, Si, Se), terutama untuk memisahkan fungsi yang sering tertukar: Fi/Fe, Ti/Te, Ni/Ne, Si/Se. Setiap jawaban (termasuk tengah) menghasilkan temuan yang menyebut skor fungsinya.
 - Soal dipilih kalau fungsi itu dominan/auxiliary atau bersaing ketat dengan kembarannya. Rata-rata per tipe kini lebih merata (simulasi: 9,9–13,8 soal; sebelumnya ENTP/ESTP ~6 vs INFP ~10), dan INFJ/ISFJ tidak lagi mendapat soal yang sama.

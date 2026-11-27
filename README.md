@@ -12,6 +12,7 @@ Plus modul opsional **Pendalaman adaptif** untuk temuan khusus: soalnya dipilih 
 Live: https://tendorethane-code.github.io/mbti/
 
 ## Fitur
+- Mengisi soal dibuat ringan: rasi bintang per modul yang menyala satu bintang per jawaban, babak pendek dengan kartu jeda berisi fakta, perayaan kecil di 25/50/75%, dan sapaan "selamat datang lagi". Semua hiasan netral, tidak bergantung pada isi jawaban.
 - Tanpa perkiraan waktu. Progres tersimpan otomatis di browser (localStorage) setiap kali menjawab, jadi bisa dikerjakan sesantainya dan dilanjutkan kapan saja.
 - Tampilan: aksen warna mengikuti family hasil, layar soal dengan kartu yang tenang, kalimat penyemangat kecil, dan transisi halus (dimatikan kalau pengguna memilih kurangi gerakan).
 - **Palet per tipe**: 16 tipe punya 16 pasangan warna sendiri (`TYPE_PAL`), satu nuansa per family. Di tema terang, warnanya digelapkan lewat kecerahan (HSL) supaya tetap hidup, tidak kusam. `typeSurf()` memberi semburat warna tipe pada latar, panel, dan garis (PDF: seluruh halaman; web: panel dan garis). Sampul PDF punya motif khas untuk tiap tipe (`drawMotif`), masing-masing tetap memakai bahasa family-nya: Analyst berbasis kisi (INTJ garis mengerucut ke satu titik, INTP spiral emas, ENTJ tangga naik, ENTP pohon kemungkinan), Diplomat berbasis lingkaran/riak (INFJ mandala, INFP paling kaya: gerhana "H+" dengan korona yang tumbuh jadi taman, bunga tersembunyi di dalam bulatan gelap, manik cahaya, cincin berlian, kelopak cahaya yang berguguran, sulur mengalir, dan nebula cat air; di tema terang ada ruang terang di sekitar gerhana supaya tetap kontras. Draf lain ada di `docs/desain/`, ENFJ bunga kehidupan, ENFP gelembung ide), Sentinel berbasis garis rapi (ISTJ buku besar, ISFJ anyaman, ESTJ susunan bata, ESFJ untaian bendera), Explorer berbasis diagonal dinamis (ISTP crosshair teknis, ISFP sapuan kuas, ESTP garis kecepatan + kilat, ESFP konfeti + pita). Semua motif diberi butiran halus supaya bertekstur, dan sengaja boleh bercampur dengan judul. Identitas family dijaga oleh cap bulat (`drawStamp`) bertuliskan nama family, yang duduk di bawah kotak hook (ikut alur, tidak pernah menimpa teks). Kartu Poster juga memakai motif tipenya sebagai latar. Performa: motif sampul baru digambar saat akan mencetak (`beforeprint`), gambar sampul ditaruh langsung di `<canvas>` (tanpa penyandian PNG), cahaya memakai sprite gradien (bukan `shadowBlur`), dan motif kartu digambar sesuai skala pratinjau. Di halaman hasil, `--acc` dan `--ind` diganti palet tipe, jadi semua elemen (judul, tabel 16 tipe, batang skor, titik, fungsi, tombol) ikut warna tipenya, begitu juga kartu dan PDF. Di tema terang warnanya digelapkan otomatis sampai kontrasnya cukup (diuji).
@@ -58,12 +59,13 @@ Facet Expressive, Active, dan Enthusiastic, serta semua facet T/F dan J/P, digan
 - `data.js`: semua soal, masing-masing dengan id tetap, plus bank soal Pendalaman
 - `legacy.js`: urutan soal versi lama, untuk membaca file dan link lama
 - `core.js`: logika skor, migrasi file lama, ringkasan kepribadian, link hasil (tanpa DOM, bisa dites di Node)
+- `karakter.js`: karakter per tipe (Roh Peta, SVG) dan Telur Nebula yang terbentuk selama mengisi soal; draf dan semua opsinya di `docs/desain/`
 - `index.html`: tampilan
 - `tests/core.test.mjs`: unit test untuk integritas soal, bahasa, ke-16 tipe × A/T, jawaban acak, impor & migrasi file, ringkasan kepribadian, catatan, dan link hasil
 - `tests/e2e.mjs`: tes end-to-end di Chrome headless untuk semua alur, termasuk file versi lama, catatan khusus (dan teks berbahaya), serta mode lihat link
 
 ## Rilis
-- Situs live = branch `main` di GitHub Pages. GitHub Pages meng-cache tiap file 10 menit, jadi setiap kali `data.js`, `legacy.js`, atau `core.js` berubah, **ganti angka `?v=` di tag `<script>` pada `index.html`** supaya pengunjung tidak mendapat campuran file lama dan baru.
+- Situs live = branch `main` di GitHub Pages. GitHub Pages meng-cache tiap file 10 menit, jadi setiap kali `data.js`, `legacy.js`, `core.js`, atau `karakter.js` berubah, **ganti angka `?v=` di tag `<script>` pada `index.html`** supaya pengunjung tidak mendapat campuran file lama dan baru.
 - Jalankan `npm test` sebelum merge. CI menjalankan tes yang sama untuk setiap pull request.
 - Kalau rilis bermasalah: revert commit merge di `main`, GitHub Pages memperbarui situs dalam beberapa menit.
 
