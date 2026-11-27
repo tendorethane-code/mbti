@@ -65,10 +65,16 @@ Pemilik ingin karakter yang "terbentuk" selama mengisi soal lalu terungkap setel
 - B. Awan Bintang: debu bintang makin banyak dan rapat, inti makin terang, meletup jadi karakter.
 - C. Botol Ramuan: cairan naik, satu lapis warna per modul (warna dari modul, bukan jawaban), sumbat meletup, karakter keluar dari asap.
 
+Gabungan telur + awan bintang (permintaan pemilik; gambar `gambar/progres-telur-awan.jpg`, baris = 0, 60, 120, 150, 189 soal):
+- E1. Telur Nebula: kulit telur dari awan nebula yang berputar, bintang bertambah tiap jawaban, pinggiran debu bintang makin padat, retakan cahaya tiap modul, sepasang mata netral mengintip di 75%.
+- E2. Telur Rasi: garis telur digambar titik demi titik seperti rasi, bintang besar menyala tiap modul, kabut nebula makin tebal.
+- E3. Telur Awan + Bulan: telur dari gumpalan awan dengan galaksi berputar, satu bulan mengorbit per modul (4 bulan).
+
 ## Penempatan karakter di PDF dan kartu (mockup)
 Dibuat dari web sungguhan dengan data buatan "Contoh" (gambar `gambar/penempatan-*.jpg`):
 - Sampul PDF P1: karakter di kanan, sejajar judul. P2: karakter berdiri di atas baris angka, cap family mengecil di sampingnya. P3: karakter di tengah antara judul dan kotak "yang paling khas", cap family dihilangkan (pin di karakter sudah menandai family). Ketiganya muat satu halaman (265 mm).
-- Kartu K1: Poster dengan karakter kecil di kanan atas (sempit untuk judul tipe yang lebar seperti ENTP). K2: gaya kartu baru "Karakter" dengan karakter besar di tengah, nama tipe bergradien, family, dan tiga tipe paling cocok.
+- Sampul P4 (pemilik): karakter di kiri bawah di atas baris angka, cap family tetap di kanan bawah (`gambar/penempatan-sampul-kiri-bawah.jpg`).
+- Kartu K1: Poster dengan karakter kecil di kanan atas (ditolak pemilik: menutupi) (sempit untuk judul tipe yang lebar seperti ENTP). K2: gaya kartu baru "Karakter" dengan karakter besar di tengah, nama tipe bergradien, family, dan tiga tipe paling cocok. K2 + balon kata "INI AKU: …" berisi dua ciri pertama; Poster + maskot mini di bilah bawah di samping tanggal (`gambar/penempatan-kartu-2.jpg`).
 
 ## Arsip (`arsip/`)
 | File | Isi | Asal |

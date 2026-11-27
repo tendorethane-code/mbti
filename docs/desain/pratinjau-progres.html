@@ -62,6 +62,14 @@ h1{margin:0 0 6px;font-size:26px}p{color:var(--mute);margin:0 0 14px;max-width:7
 <div class="ctl"><span id="pv">0 / 189</span><input type="range" id="rng" min="0" max="189" value="0">
 <button class="btn" id="one">Jawab 1 soal</button><button class="btn pri" id="play">Putar cepat</button>
 <select id="ty"></select><button class="btn" data-th="dark">Gelap</button><button class="btn" data-th="light">Terang</button></div>
+<h2 style="margin:6px 0 4px">Gabungan: Telur Kosmos + Awan Bintang</h2>
+<p>Telurnya tetap, kulitnya dari awan bintang. Tiga cara menggabungkannya.</p>
+<div class="row" style="margin-bottom:22px">
+<div class="card"><h2>E1. Telur Nebula</h2><small>Kulit telur dari awan nebula yang berputar pelan. Setiap jawaban menambah bintang di dalamnya dan memadatkan pinggiran debu bintang. Retakan cahaya tiap modul; di 75% sepasang mata mengintip dari retakan.</small><div class="stage" id="sE1"></div><div class="lbl" id="lE1"></div></div>
+<div class="card"><h2>E2. Telur Rasi</h2><small>Garis telur digambar titik demi titik seperti rasi bintang mengikuti jawabanmu. Setiap modul selesai, satu bintang besar menyala. Kabut nebula di dalamnya makin tebal sampai rasinya tertutup dan telur pecah.</small><div class="stage" id="sE2"></div><div class="lbl" id="lE2"></div></div>
+<div class="card"><h2>E3. Telur Awan + Bulan</h2><small>Telur dari gumpalan awan dengan galaksi berputar di dalamnya. Setiap modul selesai, satu bulan kecil ikut mengorbit (koleksi 4 bulan). Saat penuh, bulan-bulan berputar makin cepat lalu awannya buyar.</small><div class="stage" id="sE3"></div><div class="lbl" id="lE3"></div></div>
+</div>
+<h2 style="margin:6px 0 8px">Konsep sebelumnya</h2>
 <div class="row">
 <div class="card"><h2>A. Telur Kosmos</h2><small>Setiap jawaban menerbangkan bintang ke dalam telur. Telur makin bercahaya, retak di akhir tiap modul, bergoyang lalu gemetar menjelang akhir, kemudian menetas.</small><div class="stage" id="sA"></div><div class="lbl" id="lA"></div></div>
 <div class="card"><h2>B. Awan Bintang</h2><small>Debu bintang berputar. Setiap jawaban menambah bintang dan menarik awannya makin rapat, sampai memadat jadi inti bercahaya yang meletup jadi karakter.</small><div class="stage" id="sB"></div><div class="lbl" id="lB"></div></div>
@@ -144,6 +152,82 @@ document.getElementById('one').onclick=()=>{if(n>=TOT){n=0;mount();return}n++;fl
 let timer=null;document.getElementById('play').onclick=()=>{clearInterval(timer);n=0;mount();timer=setInterval(()=>{n=Math.min(TOT,n+3);if(n%9===0)flyIn();render();if(n>=TOT)clearInterval(timer)},55)};
 ty.onchange=()=>{if(done){mount();n=TOT;render()}};
 document.querySelectorAll('[data-th]').forEach(b=>b.onclick=()=>document.documentElement.dataset.theme=b.dataset.th);
+mount();
+</script>
+<style>
+.peek ellipse.e{transform-box:fill-box;transform-origin:center;animation:blink 3.4s infinite}
+.puls{transform-box:fill-box;transform-origin:center;animation:puls 1s ease-in-out infinite}@keyframes puls{50%{transform:scale(1.8);opacity:.6}}
+.orbit{transform-box:view-box;transform-origin:100px 122px;animation:spin 12s linear infinite}
+.orbit.fast{animation-duration:.7s!important}
+.burstOut{transition:transform .7s cubic-bezier(.3,.6,.4,1),opacity .7s;transform:scale(1.25);opacity:0;transform-box:fill-box;transform-origin:center}
+.flashLn{transition:stroke .2s;stroke:#ffe08a!important}
+</style>
+<script>
+// ---------- Gabungan telur + awan bintang (E1-E3) ----------
+const gid=(s)=>document.getElementById(s);
+const eggPts=(N)=>{const s=document.createElementNS('http://www.w3.org/2000/svg','path');s.setAttribute('d',EGG);const L=s.getTotalLength();return Array.from({length:N},(_,i)=>{const p=s.getPointAtLength(L*i/N);return [+p.x.toFixed(1),+p.y.toFixed(1)]})};
+const inEgg=(x,y)=>{const t=(y-125)/86,rx=t<0?54+12*(1+t):64;return ((x-100)/rx)**2+t*t<.85};
+const E1S=[];while(E1S.length<64){const x=40+rnd()*120,y=40+rnd()*165;if(inEgg(x,y))E1S.push([x,y,.8+rnd()*1.8,rnd()*2])}
+const blob=(id,c)=>`<radialGradient id="${id}"><stop offset="0" stop-color="${c}" stop-opacity=".95"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient>`;
+const CRL=['M70 70L80 86L72 98','M132 82L122 96L130 110L120 120','M54 140L70 150L62 166L76 178','M146 150L132 160L140 176'];
+
+function e1Svg(){return `<svg viewBox="0 0 200 230"><defs><clipPath id="e1c"><path d="${EGG}"/></clipPath>${blob('e1b1','#b9a6ff')}${blob('e1b2','#7fd6c6')}${blob('e1b3','#ffb8a0')}${blob('e1h','#fff3c0')}
+<linearGradient id="e1bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b3070"/><stop offset="1" stop-color="#191433"/></linearGradient></defs>
+<ellipse cx="100" cy="212" rx="50" ry="8" fill="#000" opacity=".2"/><circle id="e1Halo" cx="100" cy="125" r="100" fill="url(#e1h)" opacity="0"/>
+<g class="wob" id="e1Wob"><g id="e1Shell"><path d="${EGG}" fill="url(#e1bg)"/>
+<g clip-path="url(#e1c)"><g class="spin" style="transform-origin:100px 125px;animation-duration:26s"><circle cx="70" cy="96" r="62" fill="url(#e1b1)" opacity=".75"/><circle cx="138" cy="150" r="56" fill="url(#e1b2)" opacity=".55"/><circle cx="88" cy="186" r="52" fill="url(#e1b3)" opacity=".6"/></g>
+<g id="e1Stars"></g></g>
+<path id="e1Rim" d="${EGG}" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="0.1 7" opacity=".3"/><path d="${EGG}" fill="none" stroke="#8f80e0" stroke-width="2" opacity=".6"/>
+${CRL.map((d,k)=>`<g class="cr" data-k="${k}" opacity="0"><path d="${d}" fill="none" stroke="#ffe9a8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/><path d="${d}" fill="none" stroke="#fff6d6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>`).join('')}
+<g class="peek" id="e1Eyes" opacity="0"><path d="M74 128L86 118L96 128L106 116L116 126L128 118" fill="none" stroke="#fff6d6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="100" cy="134" rx="24" ry="11" fill="#0b0918"/><ellipse class="e" cx="91" cy="134" rx="3.6" ry="5.2" fill="#fff"/><ellipse class="e" cx="109" cy="134" rx="3.6" ry="5.2" fill="#fff"/></g>
+<ellipse cx="74" cy="80" rx="9" ry="17" fill="#fff" opacity=".25" transform="rotate(-25 74 80)"/></g></g></svg><div class="hero" id="hE1"></div>`}
+function renderE1(p,k){const s=gid('sE1');if(!s.querySelector('#e1Stars'))return;
+  s.querySelector('#e1Stars').innerHTML=E1S.slice(0,Math.round(p*E1S.length)).map(([x,y,r,t])=>`<circle class="tw" style="animation-delay:${t.toFixed(2)}s" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="#fff"/>`).join('');
+  const rim=s.querySelector('#e1Rim');rim.setAttribute('opacity',(.25+.75*p).toFixed(2));rim.setAttribute('stroke-dasharray',`0.1 ${(7-4.6*p).toFixed(2)}`);
+  s.querySelector('#e1Halo').setAttribute('opacity',(Math.max(0,p-.4)*1.3).toFixed(2));
+  s.querySelectorAll('.cr').forEach(c=>c.setAttribute('opacity',k>c.dataset.k?1:0));s.querySelector('#e1Eyes').setAttribute('opacity',p>=.75&&p<1?1:0);
+  const w=s.querySelector('#e1Wob');w.classList.toggle('l1',p>=.25&&p<.6);w.classList.toggle('l2',p>=.6&&p<.9);w.classList.toggle('l3',p>=.9&&p<1);
+  gid('lE1').textContent=p>=1?'Menetas!':p>=.75?'Ada yang mengintip…':p>=.5?'Awannya makin padat':p>0?'Bintang pertama masuk':'Telur awan yang sepi'}
+
+let E2P=null,E3P=null;const E2N=36,E2BIG=[8,17,26,35];
+function e2Svg(){E2P=E2P||eggPts(E2N);return `<svg viewBox="0 0 200 230"><defs><clipPath id="e2c"><path d="${EGG}"/></clipPath>${blob('e2f','#a996f2')}${blob('e2g','#7fd6c6')}${blob('e2h','#fff3c0')}</defs>
+<ellipse cx="100" cy="212" rx="50" ry="8" fill="#000" opacity=".15"/><circle id="e2Halo" cx="100" cy="125" r="100" fill="url(#e2h)" opacity="0"/>
+<g class="wob" id="e2Wob"><g id="e2All"><g clip-path="url(#e2c)" id="e2Fog" opacity="0"><circle cx="86" cy="104" r="80" fill="url(#e2f)"/><circle cx="124" cy="170" r="66" fill="url(#e2g)" opacity=".7"/>
+${E1S.slice(0,30).map(([x,y,r,t])=>`<circle class="tw" style="animation-delay:${t.toFixed(2)}s" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(r*.7).toFixed(1)}" fill="#fff"/>`).join('')}</g>
+<path d="${EGG}" fill="none" stroke="#b9acf2" stroke-width="1.4" stroke-dasharray="2 6" opacity=".35"/><path id="e2Ln" fill="none" stroke="#b9acf2" stroke-width="2" stroke-linejoin="round" opacity=".85"/><g id="e2Pts"></g></g></g></svg><div class="hero" id="hE2"></div>`}
+function renderE2(p,k){const s=gid('sE2');if(!s.querySelector('#e2Pts'))return;const m=Math.ceil(p*E2N);
+  const pts=E2P.slice(0,m);s.querySelector('#e2Ln').setAttribute('d',pts.length>1?'M'+pts.map(q=>q.join(' ')).join('L')+(p>=1?'Z':''):'');
+  s.querySelector('#e2Pts').innerHTML=pts.map((q,i)=>{const big=E2BIG.indexOf(i);const lit=big>=0&&k>big;return lit?`<path d="M${q[0]} ${q[1]-9}Q${q[0]} ${q[1]} ${q[0]+9} ${q[1]}Q${q[0]} ${q[1]} ${q[0]} ${q[1]+9}Q${q[0]} ${q[1]} ${q[0]-9} ${q[1]}Q${q[0]} ${q[1]} ${q[0]} ${q[1]-9}Z" fill="#ffe08a"/><circle cx="${q[0]}" cy="${q[1]}" r="11" fill="#ffe08a" opacity=".25"/>`
+    :`<circle${i===m-1&&p<1?' class="puls"':''} cx="${q[0]}" cy="${q[1]}" r="${big>=0?3.4:2.4}" fill="#fff"/>`}).join('');
+  s.querySelector('#e2Fog').setAttribute('opacity',(p*.95).toFixed(2));s.querySelector('#e2Halo').setAttribute('opacity',(Math.max(0,p-.5)*1.4).toFixed(2));
+  const w=s.querySelector('#e2Wob');w.classList.toggle('l2',p>=.75&&p<.95);w.classList.toggle('l3',p>=.95&&p<1);
+  gid('lE2').textContent=p>=1?'Rasinya utuh, pecah!':k?`${k} bintang besar menyala`:p>0?'Rasi mulai tergambar':'Langit menunggu'}
+
+function e3Svg(){E3P=E3P||eggPts(24);return `<svg viewBox="0 0 200 230"><defs><clipPath id="e3c"><path d="${EGG}"/></clipPath>${blob('e3h','#fff3c0')}${blob('e3k','#fff6d6')}
+<radialGradient id="e3p" cx=".35" cy=".3"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#ddd5fb"/></radialGradient></defs>
+<ellipse cx="100" cy="212" rx="54" ry="8" fill="#000" opacity=".18"/><circle id="e3Halo" cx="100" cy="125" r="100" fill="url(#e3h)" opacity="0"/>
+<g id="e3Moons"></g>
+<g class="wob" id="e3Wob"><g id="e3Cloud">${E3P.map(([x,y],i)=>`<circle cx="${x}" cy="${y}" r="${11+(i*5)%6}" fill="url(#e3p)" stroke="#b3a6ee" stroke-width="2"/>`).join('')}<path d="${EGG}" fill="url(#e3p)"/>
+<g clip-path="url(#e3c)"><g id="e3Gal" opacity=".2"><g class="spin" style="transform-origin:100px 128px;animation-duration:9s"><path d="M100 128C122 104 150 124 138 150C126 174 92 168 84 150M100 128C78 152 50 132 62 106C74 82 108 88 116 106" fill="none" stroke="#8f7fe6" stroke-width="9" stroke-linecap="round" opacity=".85"/>
+<path d="M100 128C122 104 150 124 138 150M100 128C78 152 50 132 62 106" fill="none" stroke="#ffe08a" stroke-width="2.4" stroke-linecap="round"/></g><circle cx="100" cy="128" r="16" fill="url(#e3k)"/></g></g>
+<ellipse cx="72" cy="78" rx="10" ry="18" fill="#fff" opacity=".7" transform="rotate(-25 72 78)"/></g></g></svg><div class="hero" id="hE3"></div>`}
+function renderE3(p,k){const s=gid('sE3');if(!s.querySelector('#e3Moons'))return;
+  s.querySelector('#e3Gal').setAttribute('opacity',(.15+.85*p).toFixed(2));s.querySelector('#e3Halo').setAttribute('opacity',(Math.max(0,p-.5)*1.3).toFixed(2));
+  const R0=[78,84,74,88],DU=[9,13,11,16],have=s.querySelectorAll('#e3Moons .orbit').length;
+  if(have!==k)s.querySelector('#e3Moons').innerHTML=Array.from({length:k},(_,i)=>`<g class="orbit" style="animation-duration:${DU[i]}s;animation-delay:-${i*2.3}s"><circle cx="100" cy="${122-R0[i]}" r="${7+i%2*2}" fill="${NEU[i]}" stroke="#6d63b8" stroke-width="2"/><circle cx="${97}" cy="${119-R0[i]}" r="2" fill="#fff" opacity=".8"/></g>`).join('');
+  const w=s.querySelector('#e3Wob');w.classList.toggle('l1',p>=.5&&p<.9);w.classList.toggle('l3',p>=.9&&p<1);
+  gid('lE3').textContent=p>=1?'Awannya buyar!':k?`${k} dari 4 bulan terkumpul`:p>0?'Galaksi mulai berputar':'Gumpalan awan diam'}
+
+// sambungkan ke kontrol yang sudah ada
+const _mount=mount,_render=render,_reveal=reveal;
+mount=function(){gid('sE1').innerHTML=e1Svg();gid('sE2').innerHTML=e2Svg();gid('sE3').innerHTML=e3Svg();_mount()};
+render=function(){const p=n/TOT,k=CUM.filter(c=>n>=c).length;renderE1(p,k);renderE2(p,k);renderE3(p,k);_render()};
+reveal=function(){_reveal();const t=ty.value,P=TYPE_PAL[t],ch=()=>R.rohUnik(t,{tex:true,pin:true}),pop=(id,d)=>setTimeout(()=>{const h=gid(id);h.innerHTML=ch();h.classList.add('go')},d);
+  const s1=gid('sE1');s1.querySelector('#e1Wob').className.baseVal='wob';s1.querySelector('#e1Eyes').setAttribute('opacity',0);s1.querySelector('#e1Shell').classList.add('burstOut');pop('hE1',380);confetti(s1,['#ffffff','#ffe08a']);
+  const s2=gid('sE2');s2.querySelector('#e2Wob').className.baseVal='wob';s2.querySelector('#e2Ln').classList.add('flashLn');setTimeout(()=>s2.querySelector('#e2All').classList.add('burstOut'),300);pop('hE2',650);setTimeout(()=>confetti(s2,P),650);
+  const s3=gid('sE3');s3.querySelector('#e3Wob').className.baseVal='wob';s3.querySelectorAll('.orbit').forEach(o=>o.classList.add('fast'));setTimeout(()=>{s3.querySelector('#e3Cloud').classList.add('burstOut');s3.querySelector('#e3Moons').classList.add('burstOut')},700);pop('hE3',1000);setTimeout(()=>confetti(s3,P),1000)};
+flyIn=function(){['sE1','sE2','sE3','sA','sB','sC'].forEach(id=>{const st=gid(id),d=document.createElement('div');d.className='fly';d.style.left='50%';d.style.top='108%';st.appendChild(d);
+  d.animate([{transform:'translate(-50%,0) scale(1)'},{transform:`translate(${-50+(Math.random()*60-30)}%,-160px) scale(1.4)`,offset:.6},{transform:'translate(-50%,-150px) scale(.2)',opacity:0}],{duration:700,easing:'cubic-bezier(.3,0,.5,1)'}).onfinish=()=>d.remove()})};
 mount();
 </script>
 </body>
