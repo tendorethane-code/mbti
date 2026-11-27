@@ -19,8 +19,8 @@ Semua CI hijau. Tidak ada yang di-merge. Pemilik masih ingin menambah perubahan 
 | #1 | `claude/hopeful-dijkstra-5g5kvh` | `main` | Rilis besar v3 (semua isi di bawah "Keadaan sekarang"). Sudah lewat cek rilis lengkap (lihat CHANGELOG). Menunggu pemilik mencoba di HP lalu bilang "merge". |
 | #2 | `claude/pendalaman-fungsi` | branch #1 | 12 soal Pendalaman per fungsi (Fe, Ti, Te, Ni, Ne, Si, Se), maks. 16 soal per orang. |
 | #3 | `claude/kuis-seru` | branch #1 | Mengisi soal jadi seru: rasi bintang per modul, babak ~11 soal + kartu jeda fakta, pesan 25/50/75%, sapaan "selamat datang lagi". Semua hiasan netral terhadap isi jawaban. |
-| (belum PR) | `claude/karakter` | branch #1 | Karakter per tipe, masih draf di `docs/desain/` (lihat bagian Karakter di bawah). Belum dipasang ke web. |
-| (belum PR) | `claude/penjelasan` | branch #1 | Penjelasan istilah di hasil (masukan teman pemilik): Tim di kepalamu, arti fungsi/facet/Big Five yang bisa diketuk, `penjelasan.js`. Menunggu pemilik mencoba dan memutuskan perlu PR. |
+| (belum PR) | `claude/karakter` | #3 (sudah memuat #1 + #3) | Karakter di web: `karakter.js` (Roh Peta + Telur Nebula), telur netral di layar soal/beranda, menetas setelah 4 modul utama, karakter di hero hasil/riwayat, gaya kartu Karakter (bawaan) + maskot mini Poster, karakter di sampul PDF kiri bawah + melambai di penutup. Tes 47 unit, 144 E2E. Menunggu pemilik mencoba di HP; PR bisa dibuat kalau diminta (base #3). |
+| #4 | `claude/penjelasan` | branch #1 | Penjelasan istilah di hasil (masukan teman pemilik): Tim di kepalamu, ikon garis SVG sendiri (tanpa emoji), nama asli fungsi, arti fungsi/facet/Big Five yang bisa diketuk, detail ikut di PDF. `penjelasan.js`. |
 
 Urutan merge yang disepakati: #1 dulu (**squash merge**, lalu hapus branch-nya, karena riwayat branch memuat data pribadi yang sudah dihapus dari file), lalu ganti base #2 dan #3 ke `main` (di GitHub: Edit base), lalu merge sesuai pilihan pemilik. #2 dan #3 tidak saling bergantung. Kalau #2 dan #3 sama-sama menyentuh `CHANGELOG.md`/`README.md`, merge base ke branch-nya dan selesaikan konflik (jangan rebase/force-push).
 
@@ -56,7 +56,9 @@ Pemilik minta animasi yang fun, seru, kreatif, dan karakter lucu per tipe (chibi
 Keputusan pemilik sejauh ini (detail di `docs/desain/README.md`):
 - Gaya **Roh Peta** (`docs/desain/karakter-roh.js`), versi **jalan tengah**: badan unik per tipe (`rohUnik`) dengan **tekstur + pin** family (`{tex: true, pin: true}`) dan gaya gerak per family. ENTJ roket, ISTJ jam weker, ESTJ lencana perisai.
 - INFP: **Kosmos Gerhana** (badan jeli kosmos + gerhana sebagai lingkaran cahaya di belakang kepala).
-- Menunggu pilihan: konsep progres saat mengisi soal (`pratinjau-progres.html`: A telur, B awan bintang, C ramuan; harus netral, terungkap setelah 4 modul utama) dan penempatan (`gambar/penempatan-*.jpg`: sampul P1/P2/P3, kartu K1 Poster+karakter / K2 gaya baru "Karakter").
+- Dipilih pemilik (27 Nov): progres **E1 Telur Nebula** (`pratinjau-progres.html`), kartu **gaya baru "Karakter" jadi bawaan** dengan balon kata "INI AKU: …" + **maskot mini di bilah bawah Poster**, sampul PDF **karakter di kiri bawah** (cap family tetap kanan bawah), **karakter melambai di halaman penutup PDF**. Ikon emoji tidak disukai: pakai ikon/gambar buatan sendiri.
+- Kapan karakter muncul (dijawab ke pemilik): menetas setelah **4 modul utama** selesai (tipe final butuh modul fungsi; Pendalaman tidak mengubah tipe). Sebelum itu hasil sementara menampilkan telur dengan progres modul. Di halaman hasil karakter tampil di hero (dengan tombol putar ulang animasi menetas), juga di riwayat.
+- Rencana teknis: branch `claude/karakter` menggabungkan #3 (layar soal) dulu, lalu `karakter.js` produksi (port dari `docs/desain/karakter-*.js`, hanya versi terpilih) + telur E1 kecil di kepala kartu soal dan besar di beranda/layar selesai modul; menetas di layar selesai modul terakhir; gambar karakter untuk kartu/PDF lewat SVG → Image → canvas/PNG (bukan canvas langsung di cetak). PR-nya nanti base #3.
 
 ## Ide yang sudah dibahas tapi belum dikerjakan
 - Kartu lain diberi motif juga (sekarang hanya Poster). Saranku: jangan, supaya gaya lain tetap punya karakter sendiri.
