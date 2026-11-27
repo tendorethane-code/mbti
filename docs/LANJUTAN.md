@@ -19,6 +19,7 @@ Semua CI hijau. Tidak ada yang di-merge. Pemilik masih ingin menambah perubahan 
 | #1 | `claude/hopeful-dijkstra-5g5kvh` | `main` | Rilis besar v3 (semua isi di bawah "Keadaan sekarang"). Sudah lewat cek rilis lengkap (lihat CHANGELOG). Menunggu pemilik mencoba di HP lalu bilang "merge". |
 | #2 | `claude/pendalaman-fungsi` | branch #1 | 12 soal Pendalaman per fungsi (Fe, Ti, Te, Ni, Ne, Si, Se), maks. 16 soal per orang. |
 | #3 | `claude/kuis-seru` | branch #1 | Mengisi soal jadi seru: rasi bintang per modul, babak ~11 soal + kartu jeda fakta, pesan 25/50/75%, sapaan "selamat datang lagi". Semua hiasan netral terhadap isi jawaban. |
+| (belum PR) | `claude/karakter` | branch #1 | Karakter per tipe, masih draf di `docs/desain/` (lihat bagian Karakter di bawah). Belum dipasang ke web. |
 
 Urutan merge yang disepakati: #1 dulu (**squash merge**, lalu hapus branch-nya, karena riwayat branch memuat data pribadi yang sudah dihapus dari file), lalu ganti base #2 dan #3 ke `main` (di GitHub: Edit base), lalu merge sesuai pilihan pemilik. #2 dan #3 tidak saling bergantung. Kalau #2 dan #3 sama-sama menyentuh `CHANGELOG.md`/`README.md`, merge base ke branch-nya dan selesaikan konflik (jangan rebase/force-push).
 
@@ -29,7 +30,7 @@ Pemilik mencoba lewat raw.githack, dikunci ke commit supaya tidak kena cache:
 `https://raw.githack.com/tendorethane-code/mbti/<SHA commit>/index.html`
 Selalu berikan link dengan SHA terbaru setelah push. Data di raw.githack terpisah dari situs live (beda alamat), jadi uji upgrade data lama baru bisa setelah merge.
 
-## Keadaan sekarang (branch #1; tes: 46 unit, 122 E2E)
+## Keadaan sekarang (branch #1; tes: 46 unit, 127 E2E)
 - 189 soal di 4 modul utama + Pendalaman adaptif (`DEEP` di `data.js`, aturan `PROBE_RULES` di `core.js`). Bahasa "kamu"/"saya", tanpa perkiraan waktu. Soal sudah diaudit dan dicocokkan dengan IPIP-NEO-120.
 - File jawaban v3 per id soal; v1/v2 dibaca lewat `legacy.js`. Data browser versi lama dimigrasi otomatis, dan beranda memberi tahu berapa soal yang perlu dijawab lagi.
 - **Hasil web** (alur cerita, sama dengan PDF): hero (tipe bergradien, hook "yang paling khas", 3 tipe teratas, kotak **"Kenapa X, bukan Y?"** dari `typeWhy()` kalau huruf dan urutan fungsi menunjuk tipe berbeda atau selisih < 2 poin, tombol Simpan & bagikan) → Bab 1 satu kalimat + peta → Bab 2 kekuatan → Bab 3 tiga temuan paling khas (`storyFindings`) → Bab 4 keseharian → Bab 5 yang perlu dijaga + orang terdekat → penutup → "Angka di balik hasilmu" → "Seberapa bisa dipegang".
@@ -42,6 +43,19 @@ Selalu berikan link dengan SHA terbaru setelah push. Data di raw.githack terpisa
 
 ## Arsip desain (`docs/desain/`)
 13 draf motif INFP (A Malam Danau, B Taman, B+, B++, C Bangau, D Kosmos, E Jendela, F Taman Kosmos, G Lubang Hitam, H Gerhana, H+ dipakai, H++ Pusaran, H3 Pita Sutra) dengan `pratinjau-infp.html`, kartu yang ditolak, dan motif versi lama. Pemilik tidak suka elemen menjuntai (wisteria) dan planet bercincin ("agak alay"); suka sulur mengalir (B), kosmos cat air (D), gerhana (H+), dan pita tipis yang mengitari (H3).
+
+## Karakter dan animasi seru (permintaan 26 Nov 2026)
+Pemilik minta animasi yang fun, seru, kreatif, dan karakter lucu per tipe (chibi atau apa saja yang eye-catching). Keputusan dan batasan yang sudah disampaikan ke pemilik:
+- Orisinal, jangan mirip ilustrasi 16Personalities (figur manusia low-poly).
+- Selama mengisi soal hanya **Pemandu** (maskot netral) yang tampil, reaksinya sama untuk jawaban apa pun; karakter tipe baru muncul saat hasil terungkap, supaya tidak memengaruhi jawaban.
+- Karakter adalah hiasan/identitas; teks hasil tetap dari skor (jangan menambah klaim stereotip).
+- SVG buatan kode, animasi transform/opacity saja, hormati "kurangi gerakan".
+- Rencana setelah pemilik memilih: 16 karakter (draf dulu, simpan semua), karakter di hero hasil + animasi hasil terungkap, di kartu Poster dan sampul PDF (SVG → canvas/PNG), Pemandu dan animasi seru di layar soal (bagian ini masuk #3).
+
+Keputusan pemilik sejauh ini (detail di `docs/desain/README.md`):
+- Gaya **Roh Peta** (`docs/desain/karakter-roh.js`), versi **jalan tengah**: badan unik per tipe (`rohUnik`) dengan **tekstur + pin** family (`{tex: true, pin: true}`) dan gaya gerak per family. ENTJ roket, ISTJ jam weker, ESTJ lencana perisai.
+- INFP: **Kosmos Gerhana** (badan jeli kosmos + gerhana sebagai lingkaran cahaya di belakang kepala).
+- Menunggu pilihan: konsep progres saat mengisi soal (`pratinjau-progres.html`: A telur, B awan bintang, C ramuan; harus netral, terungkap setelah 4 modul utama) dan penempatan (`gambar/penempatan-*.jpg`: sampul P1/P2/P3, kartu K1 Poster+karakter / K2 gaya baru "Karakter").
 
 ## Ide yang sudah dibahas tapi belum dikerjakan
 - Kartu lain diberi motif juga (sekarang hanya Poster). Saranku: jangan, supaya gaya lain tetap punya karakter sendiri.
