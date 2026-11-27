@@ -668,7 +668,10 @@ document.addEventListener('click',e=>{if(e.target.closest('[data-home]')||e.targ
 const putCanvas=(el,src,sync)=>{if(!el||!src||!el.isConnected)return;el.onload=()=>{el.dataset.ok='1'};
   if(sync||!src.toBlob){el.src=src.toDataURL('image/png');return}
   src.toBlob(b=>{if(!b||!el.isConnected)return;if(el._u)URL.revokeObjectURL(el._u);el._u=URL.createObjectURL(b);el.src=el._u},'image/png')};
-const canvasImg=(img,c)=>{if(!img||!c)return;const set=u=>{if(img._u)URL.revokeObjectURL(img._u);img._u=u;img.src=u};if(c.toBlob)c.toBlob(b=>{if(b&&img.isConnected)set(URL.createObjectURL(b))},'image/png');else img.src=c.toDataURL('image/png')};const CARD_CACHE=new Map();
+// Pratinjau hanya menerima hasil permintaan terakhir: kalau gaya diganti saat kartu sebelumnya masih diubah ke PNG, hasil lama dibuang.
+// blob: hasil PNG yang sudah ada (mis. dari unduhan), supaya kartu besar tidak diubah ke PNG dua kali.
+const canvasImg=(img,c,blob)=>{if(!img||!c)return;const tok=img._tok=(img._tok||0)+1;const set=u=>{if(img._tok!==tok){URL.revokeObjectURL(u);return}if(img._u)URL.revokeObjectURL(img._u);img._u=u;img.src=u};
+  if(blob){set(URL.createObjectURL(blob));return}if(c.toBlob)c.toBlob(b=>{if(b&&img.isConnected)set(URL.createObjectURL(b))},'image/png');else img.src=c.toDataURL('image/png')};const CARD_CACHE=new Map();
 // Font dari Google bisa lambat atau menggantung di sinyal lemah. Kartu menunggu font paling lama sebentar, bukan selamanya.
 const fontsReady=(()=>{let p=null;return()=>p||(p=(async()=>{if(!document.fonts)return;try{await Promise.all(['800','700','400'].map(w=>document.fonts.load(w+' 40px Manrope')))}catch(e){}try{await document.fonts.ready}catch(e){}})())})();
 const fontsWithin=ms=>Promise.race([fontsReady().then(()=>true),new Promise(r=>setTimeout(()=>r(false),ms))]);
@@ -1022,7 +1025,8 @@ function renderRes(keep){
     // Motif sampul hanya dipakai di PDF, jadi baru digambar saat akan mencetak (tidak membebani halaman).
     paintCover=sync=>{const el=$('pcMotif');if(el&&!el.dataset.ok&&!(el.src&&!sync)){try{putCanvas(el,drawMotif(R.type,theme()==='dark'),sync)}catch(e){}}};
     // Motif sampul disiapkan saat browser senggang beberapa detik setelah hasil tampil, jadi siap sebelum tombol PDF ditekan.
-    setTimeout(()=>later(()=>{if(paintCover)paintCover(false)}),3500);const later=fn=>'requestIdleCallback' in window?requestIdleCallback(fn,{timeout:1500}):setTimeout(fn,60);(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>later(draw))}{const dk=theme()==='dark',pl=R.hasType?typePal(R.type,dk):{a:cssVar('--ind'),b:cssVar('--acc')},rs=$('res').style;rs.setProperty('--fam',pl.a);rs.setProperty('--fam2',pl.b);
+    // Motif sampul (gambar besar) hanya perlu saat mencetak; jangan bersaing dengan kartu selama popup simpan & bagikan terbuka.
+    {const tryCover=()=>{const ak=$('akhir');if(ak&&ak.classList.contains('open')){setTimeout(()=>later(tryCover),4000);return}if(paintCover)paintCover(false)};setTimeout(()=>later(tryCover),3500)}const later=fn=>'requestIdleCallback' in window?requestIdleCallback(fn,{timeout:1500}):setTimeout(fn,60);(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>later(draw))}{const dk=theme()==='dark',pl=R.hasType?typePal(R.type,dk):{a:cssVar('--ind'),b:cssVar('--acc')},rs=$('res').style;rs.setProperty('--fam',pl.a);rs.setProperty('--fam2',pl.b);
     // Semburat warna tipe: panel dan garis di web, seluruh halaman (termasuk latar) di PDF.
     if(R.hasType){const sf=typeSurf(R.type,dk);rs.setProperty('--pan',sf.pan);rs.setProperty('--line',sf.line);rs.setProperty('--trk',sf.trk);
       $('pageStyle').textContent=`@page{size:A4;margin:12mm;background:${sf.bg}}@media print{:root,:root[data-theme]{--bg:${sf.bg};--pan:${sf.pan};--line:${sf.line};--trk:${sf.trk}}}`}
@@ -1054,8 +1058,9 @@ function renderRes(keep){
     const io='IntersectionObserver' in window?new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting))start()},{rootMargin:'700px 0px'}):null;
     if(io)io.observe($('akhir'));startShare=start;setTimeout(()=>idle(start),2500)}
   {const dock=document.querySelector('#res .dock'),hs=document.querySelector('#res .hshare');if(dock&&hs&&'IntersectionObserver' in window){dock.classList.add('dock-off');new IntersectionObserver(es=>es.forEach(e=>dock.classList.toggle('dock-off',e.isIntersecting))).observe(hs)}}
-  $('dlCard').addEventListener('click',async()=>{$('copyMsg').textContent='Sedang membuat kartu…';let c;try{await fontsOk(3000);await charImg(R.hasType?R.type:null);c=drawCard(R,name);canvasImg($('cardPrev'),c);$('cardPrev').hidden=false}catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.';return}
-    c.toBlob(b=>{if(b)dl(b,`peta-kepribadian${slug?'-'+slug:''}.png`)},'image/png');
+  $('dlCard').addEventListener('click',async()=>{$('copyMsg').textContent='Sedang membuat kartu…';let c;try{await fontsOk(3000);await charImg(R.hasType?R.type:null);c=drawCard(R,name);$('cardPrev').hidden=false}catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.';return}
+    // Satu kali ubah ke PNG untuk unduhan dan pratinjau sekaligus (kartu 1080x1920 berat di HP).
+    {const img=$('cardPrev'),tok=img._tok=(img._tok||0)+1;c.toBlob(b=>{if(!b)return;dl(b,`peta-kepribadian${slug?'-'+slug:''}.png`);if(img._tok===tok&&img.isConnected)canvasImg(img,c,b)},'image/png')}
     $('copyMsg').textContent='Kartu diunduh. Kalau di HP tidak terunduh, tekan lama gambar pratinjau lalu pilih simpan.'});
 }
 // ---------- Motif sampul PDF: satu motif khas per tipe, memakai "bahasa" family-nya ----------
