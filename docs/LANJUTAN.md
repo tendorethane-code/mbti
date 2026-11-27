@@ -20,6 +20,7 @@ Semua CI hijau. Tidak ada yang di-merge. Pemilik masih ingin menambah perubahan 
 | #2 | `claude/pendalaman-fungsi` | branch #1 | 12 soal Pendalaman per fungsi (Fe, Ti, Te, Ni, Ne, Si, Se), maks. 16 soal per orang. |
 | #3 | `claude/kuis-seru` | branch #1 | Mengisi soal jadi seru: rasi bintang per modul, babak ~11 soal + kartu jeda fakta, pesan 25/50/75%, sapaan "selamat datang lagi". Semua hiasan netral terhadap isi jawaban. |
 | (belum PR) | `claude/karakter` | branch #1 | Karakter per tipe, masih draf di `docs/desain/` (lihat bagian Karakter di bawah). Belum dipasang ke web. |
+| (belum PR) | `claude/penjelasan` | branch #1 | Penjelasan istilah di hasil (masukan teman pemilik): Tim di kepalamu, arti fungsi/facet/Big Five yang bisa diketuk, `penjelasan.js`. Menunggu pemilik mencoba dan memutuskan perlu PR. |
 
 Urutan merge yang disepakati: #1 dulu (**squash merge**, lalu hapus branch-nya, karena riwayat branch memuat data pribadi yang sudah dihapus dari file), lalu ganti base #2 dan #3 ke `main` (di GitHub: Edit base), lalu merge sesuai pilihan pemilik. #2 dan #3 tidak saling bergantung. Kalau #2 dan #3 sama-sama menyentuh `CHANGELOG.md`/`README.md`, merge base ke branch-nya dan selesaikan konflik (jangan rebase/force-push).
 
