@@ -233,7 +233,7 @@ body:before{content:"";position:fixed;inset:-20vh -20vw;z-index:-1;pointer-event
 @keyframes enter{from{opacity:0;transform:translateX(14px)}}
 @media(prefers-reduced-motion:reduce){.enter{animation:none}.btn,.dotb,.tt .cell{transition:none}}
 .done{text-align:center}.done .rowb{justify-content:center}.done .lead{margin-inline:auto}
-.doneic{color:var(--acc);display:flex;justify-content:center;margin-bottom:6px}
+.doneic{color:var(--acc);display:flex;flex-direction:column;align-items:center;margin-bottom:6px}
 #res .code{color:var(--fam,var(--acc))}
 #res>section.rhero{position:relative;overflow:hidden}
 #res>section.rhero:before{content:"";position:absolute;inset:-40% -10% auto auto;width:70%;height:140%;pointer-events:none;background:radial-gradient(closest-side,var(--fam,var(--acc)),transparent);opacity:.16}
@@ -432,6 +432,12 @@ body.noscroll{overflow:hidden}
 .hatch>.egg,.hatch>.hc{transition:transform .7s cubic-bezier(.3,.6,.4,1),opacity .7s}
 .hatch>.hc{position:absolute;inset:0;opacity:0;transform:scale(0) rotate(-12deg)}
 .hatch.open>.egg{transform:scale(1.25);opacity:0}
+.hatch.tap{cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:24px}.hatch.tap:focus-visible{outline:2px solid var(--ind);outline-offset:6px}
+.hatch.tap>.egg{animation:kNudge 2.4s ease-in-out infinite}.hatch>.egg.jolt{animation:kJolt .45s ease-out}
+@keyframes kNudge{0%,80%,100%{transform:rotate(0)}85%{transform:rotate(-4deg)}90%{transform:rotate(4deg)}95%{transform:rotate(-2deg)}}
+@keyframes kJolt{0%{transform:scale(1)}25%{transform:rotate(-9deg) scale(1.06)}55%{transform:rotate(8deg) scale(1.03)}80%{transform:rotate(-3deg)}100%{transform:none}}
+.hatch>.egg{transform-origin:50% 92%}
+.hatch-cap{text-align:center;font-weight:800;color:var(--ind);margin:8px 0 0;min-height:1.4em}
 .hatch.open>.hc{opacity:1;transform:scale(1) rotate(0);transition:transform .8s cubic-bezier(.2,1.6,.4,1) .3s,opacity .2s .3s}
 .spk{position:absolute;left:50%;top:50%;width:9px;height:9px;pointer-events:none;background:var(--c,#ffe08a);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);animation:kSpk 1.2s cubic-bezier(.15,.6,.4,1) forwards}
 @keyframes kSpk{0%{transform:translate(-50%,-50%) scale(.3);opacity:1}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.3) rotate(160deg);opacity:0}}
@@ -758,9 +764,18 @@ const eggProg=D=>{const A=ansOf(D);return {p:MAIN.reduce((n,m)=>n+answered(A,m),
 const calm=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 const sparkle=(el,cols,n)=>{if(!el||calm())return;n=n||16;for(let i=0;i<n;i++){const sp=document.createElement('i'),a=Math.random()*Math.PI*2,d=50+Math.random()*90;sp.className='spk';sp.style.setProperty('--dx',Math.cos(a)*d+'px');sp.style.setProperty('--dy',Math.sin(a)*d*.85+'px');sp.style.setProperty('--c',cols[i%cols.length]);el.appendChild(sp);setTimeout(()=>sp.remove(),1300)}};
 const hop=el=>{const c=el&&el.querySelector('.chr');if(!c)return;c.classList.remove('hop');void c.getBoundingClientRect();c.classList.add('hop');setTimeout(()=>c.classList.remove('hop'),800)};
-// Animasi menetas: telur gemetar, pecah, karakter melompat keluar dengan percikan warna tipe.
-const playHatch=(wrap,t)=>{if(!wrap)return;wrap.innerHTML=`<div class="hatch">${KARAKTER.egg(1,4)}<div class="hc">${KARAKTER.svg(t)}</div></div>`;const h=wrap.querySelector('.hatch'),w=h.querySelector('.eg-wob'),P=TYPE_PAL[t]||['#ffe08a','#fff'];
-  if(calm()){h.classList.add('open');return}w.classList.add('l3');setTimeout(()=>{w.classList.remove('l3');h.classList.add('open');sparkle(h,[P[0],P[1],'#ffe08a','#ffffff'],22)},1100)};
+// Menetas dengan diketuk: tiap ketukan telur bergetar dan retak bertambah, ketukan terakhir telur pecah dan karakter melompat keluar.
+const HATCH_TAPS=5,HATCH_CAP=['Ketuk telurnya!','Retak!','Ada yang bergerak…','Hampir!','Sekali lagi!'];
+const playHatch=(wrap,t,done)=>{if(!wrap)return;let n=0;const P=TYPE_PAL[t]||['#ffe08a','#ffffff'];
+  const lab=()=>`Ketuk telur untuk menetaskan, ${HATCH_TAPS-n} ketukan lagi`;
+  wrap.innerHTML=`<div class="hatch tap" role="button" tabindex="0" aria-label="${lab()}">${KARAKTER.egg(1,4,{peek:false})}<div class="hc">${KARAKTER.svg(t)}</div></div><p class="hatch-cap" aria-live="polite">${HATCH_CAP[0]}</p>`;
+  const h=wrap.querySelector('.hatch'),cap=wrap.querySelector('.hatch-cap');
+  const tap=()=>{if(h.classList.contains('open'))return;n++;
+    if(n>=HATCH_TAPS){h.classList.add('open');h.classList.remove('tap');h.removeAttribute('role');h.removeAttribute('tabindex');h.removeAttribute('aria-label');cap.textContent='';sparkle(h,[P[0],P[1],'#ffe08a','#ffffff'],24);if(done)done();return}
+    const old=h.querySelector('.egg');old.outerHTML=KARAKTER.egg(1,4,{extra:n,peek:n>=2});const e=h.querySelector('.egg');if(!calm())e.classList.add('jolt');
+    sparkle(h,['#ffe08a','#ffffff'],4+n*2);cap.textContent=HATCH_CAP[n];h.setAttribute('aria-label',lab())};
+  h.addEventListener('click',e=>{e.stopPropagation();tap()});
+  h.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tap()}})};
 let qFresh=null,qMile=null,qMsg='',qDir='next',qBreakOff=-1,answeredCount=0;
 function start(i){qDir='next';qBreakOff=-1;qMsg='';cur=i;resetArm=-1;const its=itemsOf(i);if(!its.length){renderHome();return}qi=its.findIndex(it=>!valid(S.c[it.id]));if(qi<0)qi=0;renderQ();show('quiz')}
 function renderQ(){
@@ -821,7 +836,8 @@ function finish(){
   if(left.length){$('doneText').textContent=`Tinggal ${left.length} modul lagi: ${left.map(m=>m.name).join(', ')}. Hasil sementara sudah bisa dilihat, tapi baru lengkap setelah semua modul selesai.`;next=left[0];$('doneNext').textContent='Lanjut ke modul berikutnya'}
   else if(deepLeft){$('doneText').textContent=`Semua modul utama selesai. Hasil lengkapmu sudah siap. Ada satu modul opsional, Pendalaman: ${dp.length} soal yang dipilih dari pola hasilmu, untuk temuan yang lebih spesifik.`;next=DEEPI;$('doneNext').textContent='Lanjut ke Pendalaman'}
   else $('doneText').textContent='Semua modul selesai, termasuk Pendalaman. Hasil lengkapmu sudah siap.';
-  {const ic=$('doneIc');if(cur<DEEPI&&!left.length){const R2=resultOf(S.c);$('doneTitle').textContent='Telurmu menetas!';$('doneText').textContent=`Kenalan dengan karaktermu: ${R2.type}, ${FAM[famOf(R2.type)]}. `+$('doneText').textContent;ic.removeAttribute('aria-hidden');setTimeout(()=>playHatch(ic,R2.type),250)}
+  {const ic=$('doneIc');if(cur<DEEPI&&!left.length){const R2=resultOf(S.c),rest=$('doneText').textContent;$('doneTitle').textContent='Telurmu siap menetas!';$('doneText').textContent='Ketuk telurnya sampai pecah untuk berkenalan dengan karaktermu. '+rest;ic.removeAttribute('aria-hidden');
+      playHatch(ic,R2.type,()=>{$('doneTitle').textContent='Telurmu menetas!';$('doneText').textContent=`Kenalan dengan karaktermu: ${R2.type}, ${FAM[famOf(R2.type)]}. `+rest})}
     else if(cur<DEEPI){const g=eggProg(S);ic.innerHTML=`<div class="doneegg">${KARAKTER.egg(g.p,g.k)}</div><p class="rasi-cap">Retakan baru di telurmu · ${g.k} dari ${MAIN.length} modul</p>`}
     else ic.innerHTML=DONE_IC}
   if(!left.length)hRecord(S);

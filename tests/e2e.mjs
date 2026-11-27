@@ -176,7 +176,13 @@ try {
     } else if (await visible('done')) {
       if ((await text('#doneText')).includes('Semua modul utama selesai') && (await text('#doneNext')) === 'Lanjut ke Pendalaman') deepPrompt = true;
       if (!sawCrack && await ev("!!document.querySelector('#doneIc .doneegg svg.egg')&&/Retakan baru/.test(document.getElementById('doneIc').textContent)")) sawCrack = true;
-      if (!sawHatch && (await text('#doneTitle')) === 'Telurmu menetas!') sawHatch = await waitFor("!!document.querySelector('#doneIc .hatch.open .hc svg.chr')&&/Kenalan dengan karaktermu: INFP/.test(document.getElementById('doneText').textContent)", 4000);
+      if (!sawHatch && (await text('#doneTitle')) === 'Telurmu siap menetas!') {
+        // Belum menetas sebelum diketuk; tiap ketukan menambah retakan; ketukan ke-5 menetas.
+        const notYet = await ev("!!document.querySelector('#doneIc .hatch.tap')&&!document.querySelector('#doneIc .hatch.open')&&/Ketuk telurnya/.test(document.getElementById('doneIc').textContent)");
+        const cracks = [];
+        for (let i = 0; i < 5; i++) { cracks.push(await ev("(document.querySelector('#doneIc .hatch .egg')||{outerHTML:''}).outerHTML.split('stroke=\"#fff6d6\" stroke-width=\"2\"').length-1")); await ev("document.querySelector('#doneIc .hatch').click()"); await sleep(120); }
+        sawHatch = notYet && cracks.every((c, i) => !i || c > cracks[i - 1]) && await waitFor("!!document.querySelector('#doneIc .hatch.open .hc svg.chr')&&document.getElementById('doneTitle').textContent==='Telurmu menetas!'&&/Kenalan dengan karaktermu: INFP/.test(document.getElementById('doneText').textContent)", 4000);
+      }
       if (!rasiDone) rasiDone = /Rasi \S+.* terkumpul · \d dari \d rasi/.test(await text('#doneRasiCap')) && (await ev("document.querySelectorAll('#doneRasi .st.on').length>0"));
       if (await ev("!document.getElementById('doneNext').hidden")) await click('#doneNext');
       else break;
@@ -186,7 +192,7 @@ try {
   check('layar soal: telur mini ikut tumbuh', sawQEgg);
   check('layar soal: karakter tipe tidak pernah muncul selama tes (netral)', !charInQuiz);
   check('modul selesai: telur mendapat retakan baru', sawCrack);
-  check('modul utama terakhir: telur menetas jadi karakter INFP', sawHatch);
+  check('modul utama terakhir: telur menetas setelah diketuk 5 kali (retak tiap ketukan) jadi karakter INFP', sawHatch);
   check('babak baru dibuka dengan kartu jeda berisi fakta dan pilihan istirahat', sawBreak);
   check('tonggak setengah jalan dirayakan', sawMile);
   check('modul selesai: rasi utuh dan jumlah rasi terkumpul', rasiDone);
@@ -201,7 +207,9 @@ try {
   await ev("document.querySelector('#res .hchar.m').click()");
   check('hasil: ketuk karakter membuatnya melompat', await ev("!!document.querySelector('#res .hchar.m .chr.hop')"));
   await ev("document.querySelector('#res .hchar-cap.m [data-hatch]').click()");
-  check('hasil: putar ulang menetas', await waitFor("!!document.querySelector('#res .hchar.m .hatch.open .hc svg.chr')", 3000));
+  const replayWait = await ev("!!document.querySelector('#res .hchar.m .hatch.tap')&&!document.querySelector('#res .hchar.m .hatch.open')");
+  for (let i = 0; i < 5; i++) { await ev("document.querySelector('#res .hchar.m .hatch').click()"); await sleep(80); }
+  check('hasil: putar ulang menetas (menunggu diketuk)', replayWait && await waitFor("!!document.querySelector('#res .hchar.m .hatch.open .hc svg.chr')", 3000));
   check('hasil: 3 sel nyala berurutan, 13 redup', await ev("(()=>{const r=[...document.querySelectorAll('#ttRes .cell')].map(c=>c.dataset.rank);return r.filter(x=>x==='0').length===13&&['1','2','3'].every(k=>r.filter(x=>x===k).length===1)&&document.querySelector('#ttRes .cell[data-rank=\"1\"]').textContent.startsWith('INFP')})()"));
   check('hasil: semua bagian tampil (15 section: hero, 5 bab, penutup, simpan, 6 bagian angka, seberapa bisa dipegang)', (await ev("document.querySelectorAll('#res section').length")) === 15, await ev("document.querySelectorAll('#res section').length"));
   check('hasil: ringkasan kepribadian dari skor', /^Kamu .*waktu sendiri/.test(await text('#sumText')), await text('#sumText'));

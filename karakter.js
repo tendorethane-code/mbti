@@ -310,26 +310,30 @@
   // Sama untuk semua orang: hanya bergantung pada jumlah soal terjawab dan modul selesai, bukan isi jawaban.
   const EGG = 'M100 30C140 30 166 96 166 142C166 184 136 206 100 206C64 206 34 184 34 142C34 96 60 30 100 30Z';
   const CRACK = ['M70 70L80 86L72 98', 'M132 82L122 96L130 110L120 120', 'M54 140L70 150L62 166L76 178', 'M146 150L132 160L140 176'];
+  // Retakan tambahan saat telur diketuk menjelang menetas (o.extra = 0..5).
+  const CRACK_TAP = ['M90 40L98 56L90 68L98 80', 'M42 108L58 116L50 130L62 140', 'M158 104L144 118L154 130L142 142', 'M84 184L96 174L92 162L104 152', 'M116 192L124 178L118 166L130 156'];
   const EGG_STARS = (() => { let sd = 7; const rnd = () => (sd = sd * 16807 % 2147483647) / 2147483647, out = [];
     const inEgg = (x, y) => { const t = (y - 125) / 86, rx = t < 0 ? 54 + 12 * (1 + t) : 64; return ((x - 100) / rx) ** 2 + t * t < .85; };
     while (out.length < 64) { const x = 40 + rnd() * 120, y = 40 + rnd() * 165; if (inEgg(x, y)) out.push([f1(x), f1(y), f1(.8 + rnd() * 1.8), f1(rnd() * 2)]); }
     return out; })();
   const blob = (id, c) => `<radialGradient id="${id}"><stop offset="0" stop-color="${c}" stop-opacity=".95"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient>`;
   // p: 0..1 (soal utama terjawab), k: jumlah modul utama selesai (0..4).
-  function eggSVG(p, k) {
+  // o (opsional, tetap netral): extra = retakan tambahan karena diketuk (0..5), peek = mata mengintip.
+  function eggSVG(p, k, o) {
     p = Math.max(0, Math.min(1, +p || 0)); k = Math.max(0, Math.min(4, k | 0));
+    const ex = Math.max(0, Math.min(CRACK_TAP.length, (o && o.extra) | 0)), peek = o && o.peek != null ? !!o.peek : p >= .75 && p < 1;
     const id = 'eg' + (++uid), st = EGG_STARS.slice(0, Math.round(p * EGG_STARS.length));
     const wob = p >= 1 ? '' : p >= .9 ? ' l3' : p >= .6 ? ' l2' : p >= .25 ? ' l1' : '';
     return `<svg class="egg" viewBox="0 0 200 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Telur misterius, ${Math.round(p * 100)}% terisi">` +
       `<defs><clipPath id="${id}c"><path d="${EGG}"/></clipPath>${blob(id + 'b1', '#b9a6ff')}${blob(id + 'b2', '#7fd6c6')}${blob(id + 'b3', '#ffb8a0')}${blob(id + 'h', '#fff3c0')}` +
       `<linearGradient id="${id}bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b3070"/><stop offset="1" stop-color="#191433"/></linearGradient></defs>` +
-      `<ellipse class="eg-sh" cx="100" cy="212" rx="50" ry="8" fill="#000" opacity=".2"/><circle cx="100" cy="125" r="100" fill="url(#${id}h)" opacity="${f1(Math.max(0, p - .4) * 1.3)}"/>` +
+      `<ellipse class="eg-sh" cx="100" cy="212" rx="50" ry="8" fill="#000" opacity=".2"/><circle cx="100" cy="125" r="100" fill="url(#${id}h)" opacity="${f1(Math.min(1, Math.max(0, p - .4) * 1.3 + ex * .12))}"/>` +
       `<g class="eg-wob${wob}"><g class="eg-shell"><path d="${EGG}" fill="url(#${id}bg)"/>` +
       `<g clip-path="url(#${id}c)"><g class="eg-spin"><circle cx="70" cy="96" r="62" fill="url(#${id}b1)" opacity=".75"/><circle cx="138" cy="150" r="56" fill="url(#${id}b2)" opacity=".55"/><circle cx="88" cy="186" r="52" fill="url(#${id}b3)" opacity=".6"/></g>` +
       st.map(([x, y, r, t]) => `<circle class="tw" style="animation-delay:${t}s" cx="${x}" cy="${y}" r="${r}" fill="#fff"/>`).join('') + `</g>` +
       `<path d="${EGG}" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="0.1 ${f1(7 - 4.6 * p)}" opacity="${f1(.25 + .75 * p)}"/><path d="${EGG}" fill="none" stroke="#8f80e0" stroke-width="2" opacity=".6"/>` +
-      CRACK.slice(0, k).map(d => `<path d="${d}" fill="none" stroke="#ffe9a8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/><path d="${d}" fill="none" stroke="#fff6d6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`).join('') +
-      (p >= .75 && p < 1 ? `<g class="eg-peek"><path d="M74 128L86 118L96 128L106 116L116 126L128 118" fill="none" stroke="#fff6d6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="100" cy="134" rx="24" ry="11" fill="#0b0918"/><ellipse class="eye" cx="91" cy="134" rx="3.6" ry="5.2" fill="#fff"/><ellipse class="eye" cx="109" cy="134" rx="3.6" ry="5.2" fill="#fff"/></g>` : '') +
+      CRACK.slice(0, k).concat(CRACK_TAP.slice(0, ex)).map(d => `<path d="${d}" fill="none" stroke="#ffe9a8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/><path d="${d}" fill="none" stroke="#fff6d6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`).join('') +
+      (peek ? `<g class="eg-peek"><path d="M74 128L86 118L96 128L106 116L116 126L128 118" fill="none" stroke="#fff6d6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="100" cy="134" rx="24" ry="11" fill="#0b0918"/><ellipse class="eye" cx="91" cy="134" rx="3.6" ry="5.2" fill="#fff"/><ellipse class="eye" cx="109" cy="134" rx="3.6" ry="5.2" fill="#fff"/></g>` : '') +
       `<ellipse cx="74" cy="80" rx="9" ry="17" fill="#fff" opacity=".25" transform="rotate(-25 74 80)"/></g></g></svg>`;
   }
 

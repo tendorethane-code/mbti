@@ -447,6 +447,9 @@ test('karakter: 16 tipe (biasa dan melambai) dan telur menghasilkan SVG yang val
   assert.deepEqual([0, 1, 2, 3, 4].map(k => cracks(K.egg(.5, k))), [0, 1, 2, 3, 4]);
   assert.ok(K.egg(.8, 3).includes('eg-peek') && !K.egg(.5, 2).includes('eg-peek') && !K.egg(1, 4).includes('eg-peek'));
   // Netral: telur hanya bergantung pada progres, bukan tipe (fungsi tidak menerima tipe sama sekali).
-  assert.equal(K.egg.length, 2);
+  assert.ok(/^function eggSVG\(p, k, o\)/.test(K.egg.toString()), 'telur hanya menerima progres, modul, dan pilihan ketukan (tanpa tipe)');
+  // Ketukan menetas: retakan bertambah sampai 5, mata mengintip bisa dipaksa.
+  assert.deepEqual([0, 1, 3, 5, 9].map(n => cracks(K.egg(1, 4, {extra: n}))), [4, 5, 7, 9, 9]);
+  assert.ok(K.egg(1, 4, {peek: true}).includes('eg-peek') && !K.egg(.8, 3, {peek: false}).includes('eg-peek'));
   assert.equal(K.egg(.42, 2).replace(/eg\d+/g, ''), K.egg(.42, 2).replace(/eg\d+/g, ''));
 });
