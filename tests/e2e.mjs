@@ -309,6 +309,7 @@ try {
    const full = await waitFor("document.getElementById('cardPrev').naturalWidth===1080", 8000);
    await sleep(1500);
    check('unduh lalu pratinjau gaya yang sama dimuat ulang: pratinjau tetap ukuran penuh', full && (await ev("document.getElementById('cardPrev').naturalWidth")) === 1080, String(await ev("document.getElementById('cardPrev').naturalWidth")));}
+
   check('ganti gaya kartu: tersimpan dan kartu dibuat ulang', styleOk, styleOk ? '' : await ev("(()=>{const i=document.getElementById('cardPrev');return JSON.stringify({kartu:localStorage.getItem('tesKepribadian.kartu'),src:(i.getAttribute('src')||'').slice(0,30),complete:i.complete,w:i.naturalWidth,h:i.naturalHeight,hidden:i.hidden,connected:i.isConnected,msg:document.getElementById('copyMsg').textContent,fonts:document.fonts&&document.fonts.status,akhirOpen:document.getElementById('akhir').classList.contains('open')})})()"));
   await click('[data-card-style="poster"]');
   check('download kartu PNG valid', pf && fs.readFileSync(pf).subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])), pf || 'tidak ada file');
@@ -336,6 +337,13 @@ try {
   // G. Muat ulang: progres tetap ada
   await load();
   check('muat ulang: 5 modul tetap selesai', (await ev("document.querySelectorAll('#mods .mod.ok').length")) === 5);
+  // Kartu diunduh segera setelah hasil dibuka, sebelum pratinjau latar (sekitar 2,5 detik kemudian) jalan:
+  // pratinjau latar gaya yang sama tidak boleh menimpa hasil unduhan ukuran penuh dengan versi 540 px.
+  {await click('#goRes'); await ev("document.getElementById('dlCard').click()");
+   const full = await waitFor("document.getElementById('cardPrev').naturalWidth===1080", 8000);
+   await sleep(4500);
+   check('kartu diunduh sebelum pratinjau latar jalan: pratinjau tetap ukuran penuh', full && (await ev("document.getElementById('cardPrev').naturalWidth")) === 1080, String(await ev("document.getElementById('cardPrev').naturalWidth")));
+   await load();}
   check('riwayat: 1 hasil tersimpan otomatis', (await ev("document.querySelectorAll('#hist .hrow').length")) === 1);
   check('riwayat: tiap hasil punya karakter mini', await ev("!!document.querySelector('#hist .hrow .hmini svg.chr')"));
   check('muat ulang: nama tetap', (await ev("document.getElementById('nama').value")) === 'Tes QA');

@@ -1526,7 +1526,7 @@ function renderRes(keep){
   const busy=()=>/\bung-(open|tap)\b/.test(document.body.className),idle=fn=>{if(busy())return setTimeout(()=>idle(fn),1000);const open=$('akhir')&&$('akhir').classList.contains('open');if(open)return setTimeout(fn,16);const run=()=>busy()?idle(fn):fn();return 'requestIdleCallback' in window?requestIdleCallback(run,{timeout:1200}):setTimeout(run,40)};
   const ckey=st=>[theme(),st,name,JSON.stringify(D.c)].join('|');
   const cached=(st,sc)=>{const k=sc+'|'+ckey(st);let c=CARD_CACHE.get(k);if(!c){c=drawCard(R,name,st,sc);if(CARD_CACHE.size>40)CARD_CACHE.clear();CARD_CACHE.set(k,c)}return c};
-  refreshCard=async()=>{try{await fontsOk();await charImg(R.hasType?R.type:null);const c=cached(cardStyle(),.5);canvasImg($('cardPrev'),c);$('cardPrev').hidden=false;return c}catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.';return null}};
+  refreshCard=async()=>{try{await fontsOk();await charImg(R.hasType?R.type:null);const c=cached(cardStyle(),.5),img=$('cardPrev');if(img.dataset.full!==ckey(cardStyle()))canvasImg(img,c);img.hidden=false;return c}catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.';return null}};
   const paintThumbs=()=>{const th=[...document.querySelectorAll('#akhir canvas[data-thumb]')];
     const step=()=>{const t=th.shift();if(!t||!t.isConnected)return;try{const x=t.getContext('2d');x.clearRect(0,0,t.width,t.height);x.drawImage(cached(t.dataset.thumb,1/6),0,0,t.width,t.height)}catch(e){}idle(step)};idle(step)};
   // Motif kartu digambar di jeda tersendiri dulu, baru kartunya, supaya tidak jadi satu blok berat.
@@ -1539,7 +1539,7 @@ function renderRes(keep){
   $('dlCard').addEventListener('click',async()=>{$('copyMsg').textContent='Sedang membuat kartu…';let c;try{await fontsOk(3000);await charImg(R.hasType?R.type:null);c=drawCard(R,name);$('cardPrev').hidden=false}catch(e){$('copyMsg').textContent='Gagal membuat kartu di browser ini. Coba Simpan PDF atau screenshot.';return}
     // Satu kali ubah ke PNG untuk unduhan dan pratinjau sekaligus (kartu 1080x1920 berat di HP).
     // Pratinjau memakai hasil unduhan (ukuran penuh, untuk tekan lama di HP) selama gayanya belum diganti; pemuatan ulang gaya yang sama di latar tidak membatalkannya.
-    {const img=$('cardPrev'),st=cardStyle();c.toBlob(b=>{if(!b)return;dl(b,`peta-kepribadian${slug?'-'+slug:''}.png`);if(cardStyle()===st&&img.isConnected)canvasImg(img,c,b)},'image/png')}
+    {const img=$('cardPrev'),st=cardStyle();c.toBlob(b=>{if(!b)return;dl(b,`peta-kepribadian${slug?'-'+slug:''}.png`);if(cardStyle()===st&&img.isConnected){canvasImg(img,c,b);img.dataset.full=ckey(st)}},'image/png')}
     $('copyMsg').textContent='Kartu diunduh. Kalau di HP tidak terunduh, tekan lama gambar pratinjau lalu pilih simpan.'});
 }
 // ---------- Motif sampul PDF: satu motif khas per tipe, memakai "bahasa" family-nya ----------
