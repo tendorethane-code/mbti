@@ -19,7 +19,7 @@ Semua CI hijau. Tidak ada yang di-merge. Pemilik masih ingin menambah perubahan 
 | #1 | `claude/hopeful-dijkstra-5g5kvh` | `main` | Rilis besar v3 (semua isi di bawah "Keadaan sekarang"). Sudah lewat cek rilis lengkap (lihat CHANGELOG). Menunggu pemilik mencoba di HP lalu bilang "merge". |
 | #2 | `claude/pendalaman-fungsi` | branch #1 | 12 soal Pendalaman per fungsi (Fe, Ti, Te, Ni, Ne, Si, Se), maks. 16 soal per orang. |
 | #3 | `claude/kuis-seru` | branch #1 | Mengisi soal jadi seru: rasi bintang per modul, babak ~11 soal + kartu jeda fakta, pesan 25/50/75%, sapaan "selamat datang lagi". Semua hiasan netral terhadap isi jawaban. |
-| (belum PR) | `claude/karakter` | #3 (sudah memuat #1 + #3) | Karakter di web: `karakter.js` (Roh Peta + Telur Nebula), telur netral di layar soal/beranda, menetas setelah 4 modul utama, karakter di hero hasil/riwayat, gaya kartu Karakter (bawaan) + maskot mini Poster, karakter di sampul PDF kiri bawah + melambai di penutup. Tes 47 unit, 144 E2E. Menunggu pemilik mencoba di HP; PR bisa dibuat kalau diminta (base #3). |
+| #5 | `claude/karakter` | #3 | Karakter di web: `karakter.js` (Roh Peta + Telur Nebula), telur netral di layar soal/beranda, menetas setelah 4 modul utama, karakter di hero/riwayat, kartu Karakter (bawaan) + maskot mini Poster, sampul PDF (karakter + cap satu baris di bawah kotak teks) + melambai di penutup. Urutan merge: #1 → #3 → #5. |
 | #4 | `claude/penjelasan` | branch #1 | Penjelasan istilah di hasil (masukan teman pemilik): Tim di kepalamu, ikon garis SVG sendiri (tanpa emoji), nama asli fungsi, arti fungsi/facet/Big Five yang bisa diketuk, detail ikut di PDF. `penjelasan.js`. |
 
 Urutan merge yang disepakati: #1 dulu (**squash merge**, lalu hapus branch-nya, karena riwayat branch memuat data pribadi yang sudah dihapus dari file), lalu ganti base #2 dan #3 ke `main` (di GitHub: Edit base), lalu merge sesuai pilihan pemilik. #2 dan #3 tidak saling bergantung. Kalau #2 dan #3 sama-sama menyentuh `CHANGELOG.md`/`README.md`, merge base ke branch-nya dan selesaikan konflik (jangan rebase/force-push).
@@ -31,7 +31,7 @@ Pemilik mencoba lewat raw.githack, dikunci ke commit supaya tidak kena cache:
 `https://raw.githack.com/tendorethane-code/mbti/<SHA commit>/index.html`
 Selalu berikan link dengan SHA terbaru setelah push. Data di raw.githack terpisah dari situs live (beda alamat), jadi uji upgrade data lama baru bisa setelah merge.
 
-## Keadaan sekarang (branch #1; tes: 46 unit, 130 E2E)
+## Keadaan sekarang (branch #1; tes: 46 unit, 131 E2E)
 - 189 soal di 4 modul utama + Pendalaman adaptif (`DEEP` di `data.js`, aturan `PROBE_RULES` di `core.js`). Bahasa "kamu"/"saya", tanpa perkiraan waktu. Soal sudah diaudit dan dicocokkan dengan IPIP-NEO-120.
 - File jawaban v3 per id soal; v1/v2 dibaca lewat `legacy.js`. Data browser versi lama dimigrasi otomatis, dan beranda memberi tahu berapa soal yang perlu dijawab lagi.
 - **Hasil web** (alur cerita, sama dengan PDF): hero (tipe bergradien, hook "yang paling khas", 3 tipe teratas, kotak **"Kenapa X, bukan Y?"** dari `typeWhy()` kalau huruf dan urutan fungsi menunjuk tipe berbeda atau selisih < 2 poin, tombol Simpan & bagikan) → Bab 1 satu kalimat + peta → Bab 2 kekuatan → Bab 3 tiga temuan paling khas (`storyFindings`) → Bab 4 keseharian → Bab 5 yang perlu dijaga + orang terdekat → penutup → "Angka di balik hasilmu" → "Seberapa bisa dipegang".

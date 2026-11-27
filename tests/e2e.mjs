@@ -224,6 +224,11 @@ try {
    await sleep(2500);
    check('ganti gaya saat kartu sedang diunduh: pratinjau tetap gaya terakhir', before && got && (await ev("document.getElementById('cardPrev').naturalWidth")) === 540, String(await ev("document.getElementById('cardPrev').naturalWidth")));
    await click('[data-card-style="takaran"]'); await waitFor("document.getElementById('cardPrev').naturalHeight>=960", 6000);}
+  // Unduh lalu pratinjau gaya yang SAMA dimuat ulang di latar (mis. popup dibuka, font selesai): hasil unduhan ukuran penuh tetap dipakai untuk pratinjau (tekan lama untuk simpan di HP).
+  {await click('#dlCard'); await click('[data-card-style="takaran"]');
+   const full = await waitFor("document.getElementById('cardPrev').naturalWidth===1080", 8000);
+   await sleep(1500);
+   check('unduh lalu pratinjau gaya yang sama dimuat ulang: pratinjau tetap ukuran penuh', full && (await ev("document.getElementById('cardPrev').naturalWidth")) === 1080, String(await ev("document.getElementById('cardPrev').naturalWidth")));}
   check('ganti gaya kartu: tersimpan dan kartu dibuat ulang', styleOk, styleOk ? '' : await ev("(()=>{const i=document.getElementById('cardPrev');return JSON.stringify({kartu:localStorage.getItem('tesKepribadian.kartu'),src:(i.getAttribute('src')||'').slice(0,30),complete:i.complete,w:i.naturalWidth,h:i.naturalHeight,hidden:i.hidden,connected:i.isConnected,msg:document.getElementById('copyMsg').textContent,fonts:document.fonts&&document.fonts.status,akhirOpen:document.getElementById('akhir').classList.contains('open')})})()"));
   await click('[data-card-style="poster"]');
   check('download kartu PNG valid', pf && fs.readFileSync(pf).subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])), pf || 'tidak ada file');
@@ -319,14 +324,14 @@ try {
 
   // K3. Catatan khusus dari file, termasuk teks berbahaya yang harus tampil sebagai teks
   const withNotes = path.join(DL, 'catatan.json');
-  fs.writeFileSync(withNotes, JSON.stringify(C.exportData('Gama', C.canon(full), {summary: 'Ringkasan khusus <b>tebal</b>', notes: [{tag: 'Pola 1', title: 'Judul catatan', text: '<img src=x onerror="window.__xss=1">isi'}]})));
+  fs.writeFileSync(withNotes, JSON.stringify(C.exportData('Contoh', C.canon(full), {summary: 'Ringkasan khusus <b>tebal</b>', notes: [{tag: 'Pola 1', title: 'Judul catatan', text: '<img src=x onerror="window.__xss=1">isi'}]})));
   await setFile(withNotes);
   await waitFor("!document.getElementById('res').hidden", 4000);
   check('catatan khusus: bagian "Temuan khusus" tampil', await ev("!!document.getElementById('catatan')&&/Judul catatan/.test(document.getElementById('catatan').innerText)"));
   check('catatan khusus: ringkasan dari file dipakai, ringkasan otomatis tetap ada', (await text('#sumText')).startsWith('Ringkasan khusus <b>tebal</b>') && /Ringkasan otomatis/.test(await text('#ringkasan')));
   check('catatan khusus: HTML tidak dijalankan', await ev("!document.querySelector('#res img:not(#cardPrev):not(#pcType):not(#pcMotif):not(#pcStamp)')&&!document.querySelector('#sumText b')&&!window.__xss"));
   await click('#dlJson');
-  const nf = await waitFile('jawaban-peta-kepribadian-gama.json');
+  const nf = await waitFile('jawaban-peta-kepribadian-contoh.json');
   check('catatan khusus ikut tersimpan di file jawaban', nf && JSON.parse(fs.readFileSync(nf, 'utf8')).notes?.[0]?.title === 'Judul catatan');
 
   // K4. Link hasil: dilihat tanpa menimpa jawaban sendiri
