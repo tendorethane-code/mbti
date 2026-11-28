@@ -1,5 +1,9 @@
 # Catatan rilis
 
+## Berikutnya: logo "Rasi Empat"
+- Logo pilihan pemilik (draf E di `docs/desain/logo/`) dipasang: ikon tab browser (`ikon.svg`), ikon layar utama HP (`ikon-180.png` untuk iPhone/iPad, `ikon-192.png` untuk Android; tanpa sudut bulat karena HP memotong sudutnya sendiri), dan tanda merek di bilah atas (menggantikan kotak gradien). Terbaca di 16 px, latar terang maupun gelap.
+- Belum dipasang di kartu PNG dan sampul PDF (menunggu keputusan pemilik).
+
 ## 2026-11-28 (rilis ketiga): suara dan ketukan telur lancar di HP, kualitas tetap penuh
 `?v=2026-11-27-3` untuk semua script (karakter.js berubah).
 - Masukan pemilik: di iPad lancar; di HP-nya ketukan telur agak patah dan suara hilang-muncul, animasi momen terungkap sendiri lancar. Diminta: perbaiki yang rusak saja, kualitas tidak boleh turun.
