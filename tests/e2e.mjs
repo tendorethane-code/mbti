@@ -117,6 +117,10 @@ try {
     const png=await Promise.all(L.filter(u=>/\.png/.test(u)).map(u=>new Promise(r=>{const i=new Image();i.onload=()=>r(i.naturalWidth+'x'+i.naturalHeight);i.onerror=()=>r('');i.src=u})));
     const bg=getComputedStyle(document.getElementById('brandHome'),'::before').backgroundImage;
     return ok.every(Boolean)&&png.sort().join()==='180x180,192x192'&&/ikon\.svg/.test(bg)})()`));
+  // Cetak di mesin WebKit (Safari, browser iPhone/iPad): seluruh cetakan diperkecil 0,9375 supaya halaman tidak luber; Chrome dan tampilan layar tidak berubah.
+  {const z = async wk => { await ev(`document.documentElement.classList.toggle('wk',${wk})`); await cmd('Emulation.setEmulatedMedia', {media: 'print'}); const v = await ev("getComputedStyle(document.body).zoom"); await cmd('Emulation.setEmulatedMedia', {media: ''}); const s = await ev("getComputedStyle(document.body).zoom"); return v + '/' + s; };
+   const chrome = await z(false), wk = await z(true); await ev("document.documentElement.classList.remove('wk')");
+   check('cetak: WebKit diperkecil 0,9375 (cetak saja), Chrome tetap 1, layar tetap 1', chrome === '1/1' && wk === '0.9375/1' && await ev("!document.documentElement.classList.contains('wk')"), chrome + ' | ' + wk);}
   check('beranda tanpa perkiraan waktu', await ev("!/menit/.test(document.getElementById('home').innerText)"));
   check('total soal 189', (await text('#totalQ')) === '189');
   check('tema bawaan: gelap', (await ev("document.documentElement.dataset.theme")) === 'dark' && (await ev("getComputedStyle(document.body).backgroundColor")) === 'rgb(18, 16, 25)');

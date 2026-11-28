@@ -1,5 +1,9 @@
 # Catatan rilis
 
+## Berikutnya: PDF rapi di Safari (iPad/iPhone)
+- Masukan pemilik: PDF dari iPad jadi 20 halaman; bagian bawah tiap bab luber ke halaman baru yang hampir kosong. Penyebab: WebKit (Safari dan semua browser di iPhone/iPad) melayout halaman cetak 1,25x lebih lebar dalam satuan poin, sehingga area isi A4 hanya ~256 mm CSS, sedangkan halaman kita setinggi 268 mm (Chrome punya 273 mm). Ditiru di Chromium dengan geometri itu: persis 20 halaman.
+- Perbaikan: khusus WebKit, cetakan diperkecil 0,9375 (= 0,75 x 1,25) sehingga geometrinya sama dengan Chrome dan ukuran di kertas tetap; di simulasi jadi 13 halaman, sama dengan Chrome. Chrome dan tampilan layar tidak berubah.
+
 ## Berikutnya: logo "Rasi Empat"
 - Logo pilihan pemilik (draf E di `docs/desain/logo/`) dipasang: ikon tab browser (`ikon.svg`), ikon layar utama HP (`ikon-180.png` untuk iPhone/iPad, `ikon-192.png` untuk Android; tanpa sudut bulat karena HP memotong sudutnya sendiri), dan tanda merek di bilah atas (menggantikan kotak gradien). Terbaca di 16 px, latar terang maupun gelap.
 - Belum dipasang di kartu PNG dan sampul PDF (menunggu keputusan pemilik).
